@@ -10,7 +10,7 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-white dark:bg-gray-900">
         <Navbar onInschrijfClick={handleInschrijfClick} />
-        <main className="pt-16">
+        <main className="pt-12">
           <PartnerCarrousel />
         </main>
       </div>
