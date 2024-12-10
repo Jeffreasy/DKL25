@@ -52,65 +52,38 @@ const PartnerCarrousel: React.FC = () => {
 
     const scrollContainer = scrollRef.current
     let animationFrameId: number
-    let lastTimestamp = 0
-    const SCROLL_SPEED = 0.5 // pixels per millisecond
+    const SCROLL_SPEED = 1 // Verhoogd voor vloeiendere beweging
 
-    const animate = (timestamp: number) => {
-      if (!lastTimestamp) lastTimestamp = timestamp
-      const elapsed = timestamp - lastTimestamp
-
+    const animate = () => {
       if (scrollContainer) {
-        // Bereken nieuwe scroll positie
-        const newPosition = scrollContainer.scrollLeft + SCROLL_SPEED * elapsed
+        scrollContainer.scrollLeft += SCROLL_SPEED
 
-        // Als we het einde bereiken, ga terug naar het begin
-        if (newPosition >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
           scrollContainer.scrollLeft = 0
-        } else {
-          scrollContainer.scrollLeft = newPosition
         }
       }
-
-      lastTimestamp = timestamp
       animationFrameId = requestAnimationFrame(animate)
     }
 
-    // Start de animatie
     animationFrameId = requestAnimationFrame(animate)
 
-    // Touch events voor mobiel
-    const handleTouchStart = () => {
-      cancelAnimationFrame(animationFrameId)
-    }
-
-    const handleTouchEnd = () => {
-      lastTimestamp = 0
-      animationFrameId = requestAnimationFrame(animate)
-    }
-
-    // Event listeners toevoegen
-    scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true })
-    scrollContainer.addEventListener('touchend', handleTouchEnd, { passive: true })
-
-    // Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId)
-      scrollContainer.removeEventListener('touchstart', handleTouchStart)
-      scrollContainer.removeEventListener('touchend', handleTouchEnd)
     }
   }, [isSmallScreen, partners])
 
-  const displayPartners = isSmallScreen ? [...partners, ...partners] : partners
+  const displayPartners = isSmallScreen ? [...partners, ...partners, ...partners] : partners
 
   return (
     <section className="w-full bg-white py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           ref={scrollRef}
-          className="flex items-center gap-4 xs:gap-6 sm:gap-8 mx-auto overflow-x-auto scrollbar-hide scroll-smooth touch-pan-x"
+          className="flex items-center gap-4 xs:gap-6 sm:gap-8 mx-auto overflow-hidden" // Verwijderd overflow-x-auto en andere scroll-gerelateerde classes
           style={{
             justifyContent: isSmallScreen ? 'flex-start' : 'center',
-            WebkitOverflowScrolling: 'touch',
+            touchAction: 'none', // Voorkomt alle touch interacties
+            userSelect: 'none', // Voorkomt selectie
           }}
         >
           {displayPartners.map((partner, index) => (
@@ -119,12 +92,13 @@ const PartnerCarrousel: React.FC = () => {
               onClick={() => setSelectedPartner(partner)}
               className="flex-none w-24 xs:w-32 sm:w-36 md:w-40 bg-transparent border-none p-1 xs:p-2 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
               aria-label={`Bekijk informatie over ${partner.name}`}
+              style={{ pointerEvents: 'auto' }} // Zorgt dat de klik nog werkt
             >
               <img
                 src={partner.logo}
                 alt={`${partner.name} Logo`}
                 loading="lazy"
-                className="w-full h-auto transition-transform duration-300"
+                className="w-full h-auto"
                 width="160"
                 height="80"
                 draggable="false"
