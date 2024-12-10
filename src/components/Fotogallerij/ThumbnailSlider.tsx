@@ -61,7 +61,7 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
               flex-none w-24 h-16 rounded-lg overflow-hidden
               transition-all duration-300
               ${index === currentIndex 
-                ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100' 
+                ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100 animate-pulse-slow' 
                 : 'ring-1 ring-gray-200 opacity-60 hover:opacity-80'
               }
             `}

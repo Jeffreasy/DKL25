@@ -5,7 +5,8 @@ import {
   HeroSection, 
   TitleSection, 
   CTACards,
-  PhotoGallery 
+  PhotoGallery,
+  DKLSocials 
 } from './components'
 import { VideoGallery } from './components/video'
 import { useState } from 'react'
@@ -33,15 +34,13 @@ export default function App() {
             onInschrijfClick={handleInschrijfClick}
             onDonatieClick={handleDonatieClick}
           />
-          <TitleSection 
-            onInschrijfClick={handleInschrijfClick}
-            onDonatieClick={handleDonatieClick}
-          />
-          <PhotoGallery />
+          <TitleSection />
           <CTACards
             onInschrijfClick={handleInschrijfClick}
             onDonatieClick={handleDonatieClick}
           />
+          <PhotoGallery />
+          <DKLSocials />
           <VideoGallery />
         </main>
 

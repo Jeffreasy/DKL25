@@ -11,7 +11,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden font-heading">
         {/* Header */}
         <div className="sticky top-0 bg-gradient-to-r from-primary to-primary-dark text-white px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Contact</h2>

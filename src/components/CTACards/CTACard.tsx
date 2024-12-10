@@ -14,23 +14,23 @@ const CTACard: React.FC<CTACardProps> = ({
   onClick
 }) => {
   return (
-    <div className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-      <div className="flex flex-col items-center text-center">
-        <div className="w-16 h-16 mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-          <MemoizedNavIcon name={icon} size={32} />
+    <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 font-heading">
+      <div className="flex flex-col items-center text-center space-y-4">
+        <div className="w-20 h-20 mb-2 flex items-center justify-center">
+          <MemoizedNavIcon name={icon} size={48} className="text-primary" />
         </div>
         
-        <h3 className="text-xl font-bold text-gray-900 mb-2">
+        <h3 className="text-2xl font-bold text-gray-900">
           {title}
         </h3>
         
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 text-lg leading-relaxed">
           {description}
         </p>
         
         <button
           onClick={onClick}
-          className="inline-flex items-center justify-center px-6 py-2 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors duration-300"
+          className="mt-4 px-8 py-3 bg-primary text-white text-lg font-medium rounded-full hover:bg-primary-dark transition-colors duration-300 hover:shadow-lg"
         >
           {buttonText}
         </button>

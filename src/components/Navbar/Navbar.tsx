@@ -20,9 +20,15 @@ interface NavbarProps {
   onInschrijfClick: () => void;
 }
 
-export const MemoizedNavIcon = memo(({ name, size = 20 }: { name: IconName; size?: number }) => {
+interface NavIconProps {
+  name: IconName;
+  size?: number;
+  className?: string;
+}
+
+export const MemoizedNavIcon = memo(({ name, size = 20, className }: NavIconProps) => {
   const Icon = ICONS[name];
-  return <Icon sx={{ fontSize: size }} />;
+  return <Icon sx={{ fontSize: size }} className={className} />;
 });
 MemoizedNavIcon.displayName = 'NavIcon';
 
@@ -69,7 +75,7 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg h-14" aria-label="Hoofdnavigatie">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg h-14 font-heading" aria-label="Hoofdnavigatie">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           {/* Logo met lazy loading */}

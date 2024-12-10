@@ -1,43 +1,91 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 interface VideoSlideProps {
-  url: string
-  title: string
-  isActive: boolean
-  onLoad: () => void
+  videoId: string;
+  url: string;
+  title: string;
+  isSelected?: boolean;
+  onClick?: () => void;
+  isThumbnail?: boolean;
 }
 
-const VideoSlide: React.FC<VideoSlideProps> = ({ url, title, isActive, onLoad }) => {
-  const [error, setError] = useState(false)
+const VideoSlide: React.FC<VideoSlideProps> = ({ 
+  videoId, 
+  url,
+  title,
+  isSelected, 
+  onClick,
+  isThumbnail = false 
+}) => {
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
-  if (error) {
+  // Gebruik de juiste Streamable thumbnail URL structuur
+  const thumbnailUrl = `https://cdn-cf-east.streamable.com/image/${videoId}.jpg`;
+
+  if (isThumbnail) {
     return (
-      <div className="flex-shrink-0 w-full">
-        <div className="relative w-full pt-[56.25%] bg-gray-100 flex items-center justify-center">
-          <p className="text-gray-500">Video kon niet worden geladen</p>
-        </div>
-      </div>
-    )
+      <button
+        onClick={onClick}
+        className={`
+          flex-none w-40 h-24 rounded-lg overflow-hidden
+          transition-all duration-300
+          ${isSelected 
+            ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100' 
+            : 'ring-1 ring-gray-200 opacity-60 hover:opacity-80'
+          }
+          relative
+        `}
+      >
+        <img
+          src={thumbnailUrl}
+          alt={`Thumbnail voor ${title}`}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/0 transition-colors" />
+      </button>
+    );
   }
 
   return (
-    <div className="flex-shrink-0 w-full">
-      <div className="relative w-full pt-[56.25%] bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-        {isActive && (
-          <iframe
-            src={url}
-            className="absolute inset-0 w-full h-full border-0"
-            allowFullScreen
-            allow="fullscreen"
-            loading="lazy"
-            title={title}
-            onLoad={onLoad}
-            onError={() => setError(true)}
-          />
-        )}
-      </div>
-    </div>
-  )
-}
+    <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg relative">
+      {/* Thumbnail als achtergrond */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${thumbnailUrl})` }}
+      />
+      {/* Overlay voor betere leesbaarheid van de video */}
+      <div className="absolute inset-0 bg-black/10" />
 
-export default VideoSlide 
+      {/* Loading indicator */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-20">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* Error state */}
+      {hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-20">
+          <p className="text-white">Video kon niet worden geladen</p>
+        </div>
+      )}
+
+      <iframe
+        src={url}
+        title={title}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="relative z-10 w-full h-full bg-transparent"
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false)
+          setHasError(true)
+        }}
+      />
+    </div>
+  );
+};
+
+export default VideoSlide;

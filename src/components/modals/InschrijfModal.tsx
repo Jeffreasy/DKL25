@@ -10,7 +10,7 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = ({ isOpen, onClose 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center p-1 xs:p-2 sm:p-4 overflow-hidden z-[100]" onClick={onClose}>
-        <Dialog.Panel className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-[calc(100%-0.5rem)] xs:max-w-[calc(100%-1rem)] sm:max-w-xl relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto" onClick={(e) => e.stopPropagation()}>
+        <Dialog.Panel className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-[calc(100%-0.5rem)] xs:max-w-[calc(100%-1rem)] sm:max-w-xl relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto font-heading" onClick={(e) => e.stopPropagation()}>
           <div className="relative">
             <div className="bg-primary p-6 flex items-center justify-between">
               <Dialog.Title className="text-xl font-bold text-white">

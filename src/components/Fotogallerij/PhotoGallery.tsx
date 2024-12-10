@@ -44,8 +44,10 @@ const PhotoGallery: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="py-16 px-5 bg-white font-['Roboto_Slab'] text-center">
-        <p>Foto's laden...</p>
+      <div className="py-16 px-5 bg-white font-heading text-center">
+        <div className="animate-pulse-slow">
+          <p className="text-gray-600">Foto's laden...</p>
+        </div>
       </div>
     );
   }
@@ -77,19 +79,19 @@ const PhotoGallery: React.FC = () => {
 
   return (
     <section 
-      className="py-16 px-5 bg-white font-['Roboto_Slab']"
+      className="py-16 px-5 bg-white font-heading"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
-      {/* Title Section met animatie */}
-      <div className="text-center mb-12 relative pb-8 opacity-0 animate-fade-in">
+      {/* Title Section met nieuwe animaties */}
+      <div className="text-center mb-12 relative pb-8 animate-fade-in">
         <h2 className="text-[clamp(2rem,4vw,2.75rem)] text-gray-900 font-semibold mb-3">
           Bekijk onze Foto's
         </h2>
         <p className="text-[clamp(1rem,2.5vw,1.25rem)] text-gray-600 mb-4">
           De Koninklijke Loop 2024
         </p>
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60px] h-[3px] bg-primary rounded-full" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60px] h-[3px] bg-gradient-45 from-primary to-primary-light rounded-full" />
       </div>
 
       {/* Gallery Container met controls */}

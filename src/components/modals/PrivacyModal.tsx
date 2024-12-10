@@ -9,7 +9,7 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <Dialog.Panel className="relative bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
+        <Dialog.Panel className="relative bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden font-heading">
           {/* Header */}
           <div className="sticky top-0 bg-gradient-to-r from-primary to-primary-dark text-white px-6 py-4 flex items-center justify-between">
             <Dialog.Title className="text-xl font-semibold">

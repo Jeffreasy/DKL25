@@ -45,7 +45,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose, onScrol
       
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel 
-          className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-xl animate-slide-up"
+          className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-xl animate-slide-up font-heading"
           onScroll={handleScroll}
         >
           {/* Header */}

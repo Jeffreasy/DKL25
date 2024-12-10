@@ -70,6 +70,70 @@ export interface Database {
           updated_at?: string
         }
       }
+      social_links: {
+        Row: {
+          id: string
+          platform: string
+          url: string
+          bg_color_class: string
+          icon_color_class: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          platform: string
+          url: string
+          bg_color_class: string
+          icon_color_class: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          platform?: string
+          url?: string
+          bg_color_class?: string
+          icon_color_class?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      videos: {
+        Row: {
+          id: string
+          video_id: string
+          url: string
+          title: string
+          description: string | null
+          thumbnail_url: string
+          order_number: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          video_id: string
+          url: string
+          title: string
+          description?: string | null
+          thumbnail_url: string
+          order_number: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          video_id?: string
+          url?: string
+          title?: string
+          description?: string | null
+          thumbnail_url?: string
+          order_number?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
