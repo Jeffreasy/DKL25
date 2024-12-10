@@ -1,8 +1,3 @@
-import forms from '@tailwindcss/forms'
-import typography from '@tailwindcss/typography'
-import aspectRatio from '@tailwindcss/aspect-ratio'
-import scrollbarHide from 'tailwind-scrollbar-hide'
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -51,19 +46,16 @@ export default {
       screens: {
         'xs': '375px',
       },
-      backgroundImage: {
-        'gradient-45': 'linear-gradient(45deg, var(--tw-gradient-from), var(--tw-gradient-to))',
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-      },
-      fontFamily: {
-        'heading': ['Roboto Slab', 'serif'],
-      },
     },
   },
   plugins: [
-    forms,
-    typography,
-    aspectRatio,
-    scrollbarHide
+    // @ts-ignore
+    import('@tailwindcss/forms'),
+    // @ts-ignore
+    import('@tailwindcss/typography'),
+    // @ts-ignore
+    import('@tailwindcss/aspect-ratio'),
+    // @ts-ignore
+    import('tailwind-scrollbar-hide')
   ],
 } 
