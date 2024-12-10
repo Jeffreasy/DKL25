@@ -1,3 +1,8 @@
+import forms from '@tailwindcss/forms'
+import typography from '@tailwindcss/typography'
+import aspectRatio from '@tailwindcss/aspect-ratio'
+import scrollbarHide from 'tailwind-scrollbar-hide'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -56,9 +61,9 @@ export default {
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/aspect-ratio'),
-    require('tailwind-scrollbar-hide'),
+    forms,
+    typography,
+    aspectRatio,
+    scrollbarHide
   ],
 } 
