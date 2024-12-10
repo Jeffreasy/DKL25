@@ -52,9 +52,14 @@ const PartnerCarrousel: React.FC = () => {
 
     const scrollContainer = scrollRef.current
     let scrollInterval: ReturnType<typeof setInterval>
+    let isScrolling = true
 
     const startAutoScroll = () => {
+      if (!isScrolling) return
+      
       scrollInterval = setInterval(() => {
+        if (!scrollContainer || !isScrolling) return
+
         if (
           scrollContainer.scrollLeft + scrollContainer.clientWidth >=
           scrollContainer.scrollWidth
@@ -66,40 +71,59 @@ const PartnerCarrousel: React.FC = () => {
       }, 30)
     }
 
-    startAutoScroll()
+    const stopScroll = () => {
+      isScrolling = false
+      clearInterval(scrollInterval)
+    }
 
-    const stopScroll = () => clearInterval(scrollInterval)
     const resumeScroll = () => {
-      stopScroll()
+      isScrolling = true
       startAutoScroll()
     }
 
-    scrollContainer.addEventListener('mouseenter', stopScroll)
-    scrollContainer.addEventListener('mouseleave', resumeScroll)
-    scrollContainer.addEventListener('touchstart', stopScroll)
-    scrollContainer.addEventListener('touchend', resumeScroll)
+    // Touch events voor mobiel
+    const handleTouchStart = () => {
+      stopScroll()
+    }
 
+    const handleTouchEnd = () => {
+      // Wacht even voordat we weer gaan scrollen
+      setTimeout(resumeScroll, 1000)
+    }
+
+    // Mouse events voor desktop
+    const handleMouseEnter = () => {
+      stopScroll()
+    }
+
+    const handleMouseLeave = () => {
+      resumeScroll()
+    }
+
+    // Event listeners toevoegen
+    scrollContainer.addEventListener('touchstart', handleTouchStart, { passive: true })
+    scrollContainer.addEventListener('touchend', handleTouchEnd, { passive: true })
+    scrollContainer.addEventListener('mouseenter', handleMouseEnter)
+    scrollContainer.addEventListener('mouseleave', handleMouseLeave)
+
+    // Start het scrollen
+    startAutoScroll()
+
+    // Cleanup
     return () => {
-      clearInterval(scrollInterval)
-      scrollContainer.removeEventListener('mouseenter', stopScroll)
-      scrollContainer.removeEventListener('mouseleave', resumeScroll)
-      scrollContainer.removeEventListener('touchstart', stopScroll)
-      scrollContainer.removeEventListener('touchend', resumeScroll)
+      stopScroll()
+      scrollContainer.removeEventListener('touchstart', handleTouchStart)
+      scrollContainer.removeEventListener('touchend', handleTouchEnd)
+      scrollContainer.removeEventListener('mouseenter', handleMouseEnter)
+      scrollContainer.removeEventListener('mouseleave', handleMouseLeave)
     }
   }, [isSmallScreen, partners])
 
   const displayPartners = isSmallScreen ? [...partners, ...partners] : partners
 
   return (
-    <section className="w-full bg-white py-12" aria-labelledby="partners-title">
+    <section className="w-full bg-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 
-          id="partners-title" 
-          className="text-3xl font-bold text-gray-900 text-center mb-8"
-        >
-          Onze Partners
-        </h2>
-        
         <div
           ref={scrollRef}
           className="flex items-center gap-4 xs:gap-6 sm:gap-8 mx-auto overflow-x-auto scrollbar-hide scroll-smooth"
