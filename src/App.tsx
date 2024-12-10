@@ -1,5 +1,5 @@
 import { BrowserRouter } from 'react-router-dom'
-import { Navbar, PartnerCarrousel, HeroSection } from './components'
+import { Navbar, PartnerCarrousel, HeroSection, TitleSection, CTACards } from './components'
 import { VideoGallery } from './components/video'
 
 export default function App() {
@@ -18,6 +18,11 @@ export default function App() {
         <main className="pt-12">
           <PartnerCarrousel />
           <HeroSection 
+            onInschrijfClick={handleInschrijfClick}
+            onDonatieClick={handleDonatieClick}
+          />
+          <TitleSection />
+          <CTACards
             onInschrijfClick={handleInschrijfClick}
             onDonatieClick={handleDonatieClick}
           />

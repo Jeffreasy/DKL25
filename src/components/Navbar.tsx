@@ -20,7 +20,7 @@ interface NavbarProps {
   onInschrijfClick: () => void;
 }
 
-const MemoizedNavIcon = memo(({ name, size = 20 }: { name: IconName; size?: number }) => {
+export const MemoizedNavIcon = memo(({ name, size = 20 }: { name: IconName; size?: number }) => {
   const Icon = ICONS[name];
   return <Icon sx={{ fontSize: size }} />;
 });
