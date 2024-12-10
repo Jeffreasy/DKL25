@@ -10,7 +10,7 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = ({ onInschrijfClick, onDonatieClick }) => {
   return (
     <section 
-      className="relative h-[calc(100vh-8rem)]"
+      className="relative h-[calc(100vh-8rem)] font-heading"
       role="banner"
       aria-label="Hero sectie"
     >
