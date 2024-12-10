@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useRef, useEffect } from 'react';
 import { IconName, ICONS } from '../../icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -67,6 +67,92 @@ const SocialLink = memo<SocialLinkProps>(({ href, icon }) => (
 ));
 SocialLink.displayName = 'SocialLink';
 
+const MobileMenu: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  onInschrijfClick: () => void;
+}> = ({ isOpen, onClose, onInschrijfClick }) => {
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        ref={menuRef}
+        className="fixed right-0 top-0 w-[280px] h-full bg-primary p-6 shadow-xl animate-slide-in"
+        tabIndex={-1}
+      >
+        {/* Header met logo en sluit knop */}
+        <div className="flex items-center justify-between mb-8">
+          <Link to="/" className="block" onClick={onClose} aria-label="Home">
+            <img 
+              src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
+              alt="Logo" 
+              className="h-12 w-auto"
+              loading="lazy"
+              width={48}
+              height={48}
+            />
+          </Link>
+          <button 
+            onClick={onClose}
+            className="p-2 text-white hover:bg-primary-dark rounded-full transition-colors"
+            aria-label="Sluit menu"
+          >
+            <CloseIcon sx={{ fontSize: 24 }} />
+          </button>
+        </div>
+
+        {/* Navigatie menu */}
+        <nav className="mb-8">
+          <ul className="space-y-4">
+            <NavItem to="/" icon="home" onClick={onClose}>Home</NavItem>
+            <NavItem icon="register" onClick={() => { onInschrijfClick(); onClose(); }}>
+              Inschrijven
+            </NavItem>
+            <NavItem to="/over-ons" icon="about" onClick={onClose}>Over Ons</NavItem>
+            <NavItem to="/faq" icon="contact" onClick={onClose}>Contact</NavItem>
+            <NavItem to="/wat-is-de-koninklijkeloop" icon="info" onClick={onClose}>DKL</NavItem>
+          </ul>
+        </nav>
+
+        {/* Social media links */}
+        <div className="mt-auto pt-6 border-t border-white/20">
+          <p className="text-sm text-white/90 font-medium mb-4 text-center">
+            Volg ons
+          </p>
+          <div className="flex justify-center space-x-4">
+            <SocialLink href="https://www.facebook.com/p/De-Koninklijke-Loop-61556315443279/" icon="facebook" />
+            <SocialLink href="https://www.instagram.com/koninklijkeloop/" icon="instagram" />
+            <SocialLink href="https://www.youtube.com/@DeKoninklijkeLoop" icon="youtube" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -117,52 +203,11 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
       </div>
 
       {/* Mobile menu met verbeterde animaties */}
-      <div 
-        className={`lg:hidden fixed inset-0 z-50 bg-primary transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        id="mobile-menu"
-        aria-hidden={!isMenuOpen}
-      >
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-8">
-            <Link to="/" className="block" aria-label="Home">
-              <img 
-                src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
-                alt="Logo" 
-                className="h-12 w-auto"
-                loading="lazy"
-                width={48}
-                height={48}
-              />
-            </Link>
-            <button 
-              className="p-2 text-white hover:bg-primary-dark rounded-full transition-colors"
-              onClick={toggleMenu}
-              aria-label="Menu sluiten"
-            >
-              <CloseIcon sx={{ fontSize: 24 }} />
-            </button>
-          </div>
-          
-          <ul className="space-y-4 text-center">
-            <NavItem to="/" icon="home">Home</NavItem>
-            <NavItem icon="register" onClick={onInschrijfClick}>Inschrijven</NavItem>
-            <NavItem to="/over-ons" icon="about">Over Ons</NavItem>
-            <NavItem to="/faq" icon="contact">Contact</NavItem>
-            <NavItem to="/wat-is-de-koninklijkeloop" icon="info">DKL</NavItem>
-          </ul>
-
-          <div className="mt-8 pt-6 border-t border-white/20 text-center animate-fade-in">
-            <p className="text-sm text-white/90 font-medium mb-4">Volg ons</p>
-            <div className="flex justify-center space-x-4">
-              <SocialLink href="https://www.facebook.com/p/De-Koninklijke-Loop-61556315443279/" icon="facebook" />
-              <SocialLink href="https://www.instagram.com/koninklijkeloop/" icon="instagram" />
-              <SocialLink href="https://www.youtube.com/@DeKoninklijkeLoop" icon="youtube" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={toggleMenu}
+        onInschrijfClick={onInschrijfClick}
+      />
     </nav>
   );
 });

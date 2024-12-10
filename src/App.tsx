@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/home/Home';
 import { OverOns, Contact, DKL } from './pages';
@@ -25,16 +25,18 @@ const AppContent: React.FC<{
       onInschrijfClick={onInschrijfClick} 
       onDonatieClick={onDonatieClick}
     >
-      <Route path="/" element={
-        <Home 
-          onInschrijfClick={onInschrijfClick}
-          onDonatieClick={onDonatieClick}
-        />
-      } />
-      <Route path="/over-ons" element={<OverOns />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/faq" element={<Contact />} />
-      <Route path="/wat-is-de-koninklijkeloop" element={<DKL />} />
+      <Routes>
+        <Route path="/" element={
+          <Home 
+            onInschrijfClick={onInschrijfClick}
+            onDonatieClick={onDonatieClick}
+          />
+        } />
+        <Route path="/over-ons" element={<OverOns />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/faq" element={<Contact />} />
+        <Route path="/wat-is-de-koninklijkeloop" element={<DKL />} />
+      </Routes>
     </Layout>
 
     <InschrijfModal 
