@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoizedNavIcon } from '../Navbar';
+import { MemoizedNavIcon } from '../Navbar/Navbar';
 import type { CTACardData } from './types';
 
 type CTACardProps = CTACardData & {

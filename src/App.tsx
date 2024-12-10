@@ -1,14 +1,26 @@
 import { BrowserRouter } from 'react-router-dom'
-import { Navbar, PartnerCarrousel, HeroSection, TitleSection, CTACards } from './components'
+import { 
+  Navbar, 
+  PartnerCarrousel, 
+  HeroSection, 
+  TitleSection, 
+  CTACards,
+  PhotoGallery 
+} from './components'
 import { VideoGallery } from './components/video'
+import { useState } from 'react'
+import { InschrijfModal, DonatieModal } from './components/modals'
 
 export default function App() {
+  const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);
+  const [isDonatieModalOpen, setIsDonatieModalOpen] = useState(false);
+
   const handleInschrijfClick = () => {
-    console.log('Inschrijven clicked')
+    setIsInschrijfModalOpen(true);
   }
 
   const handleDonatieClick = () => {
-    console.log('Donatie clicked')
+    setIsDonatieModalOpen(true);
   }
 
   return (
@@ -21,13 +33,27 @@ export default function App() {
             onInschrijfClick={handleInschrijfClick}
             onDonatieClick={handleDonatieClick}
           />
-          <TitleSection />
+          <TitleSection 
+            onInschrijfClick={handleInschrijfClick}
+            onDonatieClick={handleDonatieClick}
+          />
+          <PhotoGallery />
           <CTACards
             onInschrijfClick={handleInschrijfClick}
             onDonatieClick={handleDonatieClick}
           />
           <VideoGallery />
         </main>
+
+        {/* Modals */}
+        <InschrijfModal 
+          isOpen={isInschrijfModalOpen}
+          onClose={() => setIsInschrijfModalOpen(false)}
+        />
+        <DonatieModal 
+          isOpen={isDonatieModalOpen}
+          onClose={() => setIsDonatieModalOpen(false)}
+        />
       </div>
     </BrowserRouter>
   )

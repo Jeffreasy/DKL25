@@ -1,6 +1,11 @@
 import React from 'react';
 
-const TitleSection: React.FC = () => {
+interface TitleSectionProps {
+  onInschrijfClick: () => void;
+  onDonatieClick: () => void;
+}
+
+const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onDonatieClick }) => {
   return (
     <section className="relative w-full bg-white py-8 text-center font-['Roboto_Slab'] overflow-hidden isolate">
       {/* Accent Bars */}
@@ -27,6 +32,22 @@ const TitleSection: React.FC = () => {
           <p className="text-[clamp(1.5rem,3.5vw,2rem)] leading-snug text-primary font-semibold">
             Loop mee met de Koninklijke Loop!
           </p>
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            <button
+              onClick={onInschrijfClick}
+              className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              Inschrijven
+            </button>
+            <button
+              onClick={onDonatieClick}
+              className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              Doneren
+            </button>
+          </div>
         </div>
 
         {/* Image */}

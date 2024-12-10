@@ -1,5 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
-import { IconName, ICONS } from '../icons';
+import { IconName, ICONS } from '../../icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
