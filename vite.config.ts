@@ -9,6 +9,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],
       manifest: {
         name: 'DKL25MAIN',
         short_name: 'DKL25',
@@ -18,17 +19,17 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: '/icon-192.png',
+            src: '/icons/icon-192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/icon-512.png',
+            src: '/icons/icon-512.png',
             sizes: '512x512',
             type: 'image/png'
           },
           {
-            src: '/icon-512.png',
+            src: '/icons/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
