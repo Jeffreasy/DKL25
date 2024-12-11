@@ -112,7 +112,7 @@ const MobileMenu: React.FC<{
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden"
+      className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
       role="dialog"
       aria-modal="true"
     >
@@ -190,7 +190,7 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg h-20 font-heading" aria-label="Hoofdnavigatie">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-primary shadow-lg h-20 font-heading" aria-label="Hoofdnavigatie">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Logo met shine effect */}
