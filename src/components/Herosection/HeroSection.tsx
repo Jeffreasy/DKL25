@@ -1,6 +1,7 @@
 import React from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import EmailIcon from '@mui/icons-material/Email';
+import BackgroundVideo from '../video/BackgroundVideo';
 
 interface HeroSectionProps {
   onInschrijfClick: () => void;
@@ -10,28 +11,19 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = ({ onInschrijfClick, onDonatieClick }) => {
   return (
     <section 
-      className="relative h-[calc(100vh-8rem)] font-heading"
+      className="relative h-[calc(100vh-5rem)] font-heading"
       role="banner"
       aria-label="Hero sectie"
     >
-      {/* Video Background */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden">
-        <div className="absolute inset-0 w-full h-full">
-          <iframe 
-            src="https://streamable.com/e/tt6k80?nocontrols=1&autoplay=1&muted=1&loop=1"
-            className="absolute w-[150%] h-[100%] -left-1/4 object-cover sm:w-full sm:h-full sm:left-0"
-            allow="autoplay"
-            title="Achtergrondvideo"
-            loading="lazy"
-          />
-        </div>
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
+      <BackgroundVideo 
+        posterUrl="https://cdn-cf-east.streamable.com/image/ei5kw8.jpg"
+      />
+      <div className="absolute inset-0 bg-black/30" />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center pt-8 px-4">
+      <div className="relative z-10 flex flex-col items-center h-full px-4 pt-2">
         {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-4 mb-2">
           <button
             onClick={onInschrijfClick}
             className="flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg min-w-[160px]"
