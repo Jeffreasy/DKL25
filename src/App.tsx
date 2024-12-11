@@ -1,12 +1,19 @@
+import { Suspense, lazy } from 'react';
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import Layout from './components/Layout';
-import Home from './pages/home/Home';
-import { OverOns, Contact, DKL } from './pages';
+import LoadingScreen from './components/LoadingScreen';
 import { useState } from 'react';
 import { InschrijfModal, DonatieModal } from './components/modals';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AIChatButton from './components/AIChatButton';
+
+// Lazy load pages
+const Home = lazy(() => import('./pages/home/Home'));
+const OverOns = lazy(() => import('./pages/over-ons/OverOns'));
+const Contact = lazy(() => import('./pages/contact/Contact'));
+const DKL = lazy(() => import('./pages/dkl/DKL'));
 
 export default function App() {
   const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);
@@ -40,16 +47,46 @@ export default function App() {
         <Route 
           path="/" 
           element={
-            <Home 
-              onInschrijfClick={handleInschrijfClick}
-              onDonatieClick={handleDonatieClick}
-            />
+            <Suspense fallback={<LoadingScreen />}>
+              <Home 
+                onInschrijfClick={handleInschrijfClick}
+                onDonatieClick={handleDonatieClick}
+              />
+            </Suspense>
           } 
         />
-        <Route path="/over-ons" element={<OverOns />} />
-        <Route path="/contact" element={<Contact onInschrijfClick={handleInschrijfClick} />} />
-        <Route path="/faq" element={<Contact onInschrijfClick={handleInschrijfClick} />} />
-        <Route path="/wat-is-de-koninklijkeloop" element={<DKL />} />
+        <Route 
+          path="/over-ons" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <OverOns />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/contact" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Contact onInschrijfClick={handleInschrijfClick} />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/faq" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Contact onInschrijfClick={handleInschrijfClick} />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/wat-is-de-koninklijkeloop" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <DKL />
+            </Suspense>
+          } 
+        />
       </Route>
     )
   );
@@ -59,6 +96,7 @@ export default function App() {
       <RouterProvider router={router} />
       <AIChatButton />
       <ScrollToTopButton />
+      <Analytics />
     </>
   );
 }
