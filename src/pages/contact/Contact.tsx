@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import FAQ from './components/FAQ';
 import { ContactModal } from '../../components/modals';
 
-const Contact: React.FC = () => {
+interface ContactProps {
+  onInschrijfClick?: () => void;
+}
+
+const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const handleContactClick = () => {
     setIsContactModalOpen(true);
-  };
-
-  const handleInschrijfClick = () => {
-    console.log('Inschrijf clicked');
   };
 
   const handlePrivacyClick = () => {
@@ -22,7 +22,7 @@ const Contact: React.FC = () => {
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FAQ 
           onContactClick={handleContactClick}
-          onInschrijfClick={handleInschrijfClick}
+          onInschrijfClick={onInschrijfClick}
         />
       </div>
 

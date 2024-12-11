@@ -5,6 +5,8 @@ import { OverOns, Contact, DKL } from './pages';
 import { useState } from 'react';
 import { InschrijfModal, DonatieModal } from './components/modals';
 import ScrollToTop from './components/ScrollToTop';
+import ScrollToTopButton from './components/ScrollToTopButton';
+import AIChatButton from './components/AIChatButton';
 
 export default function App() {
   const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);
@@ -45,12 +47,18 @@ export default function App() {
           } 
         />
         <Route path="/over-ons" element={<OverOns />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/faq" element={<Contact />} />
+        <Route path="/contact" element={<Contact onInschrijfClick={handleInschrijfClick} />} />
+        <Route path="/faq" element={<Contact onInschrijfClick={handleInschrijfClick} />} />
         <Route path="/wat-is-de-koninklijkeloop" element={<DKL />} />
       </Route>
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <AIChatButton />
+      <ScrollToTopButton />
+    </>
+  );
 }
