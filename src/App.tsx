@@ -4,6 +4,7 @@ import Home from './pages/home/Home';
 import { OverOns, Contact, DKL } from './pages';
 import { useState } from 'react';
 import { InschrijfModal, DonatieModal } from './components/modals';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);
@@ -22,6 +23,7 @@ export default function App() {
       <Route
         element={
           <Layout onInschrijfClick={handleInschrijfClick}>
+            <ScrollToTop />
             <InschrijfModal 
               isOpen={isInschrijfModalOpen}
               onClose={() => setIsInschrijfModalOpen(false)}
