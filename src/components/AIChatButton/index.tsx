@@ -21,7 +21,7 @@ const AIChatButton = () => {
   };
 
   return (
-    <div className="fixed bottom-24 right-4 sm:right-8 z-40">
+    <div className="fixed bottom-24 right-4 sm:right-8 z-100">
       {isOpen && (
         <div className="absolute bottom-full right-0 mb-4 bg-white rounded-2xl shadow-2xl w-[320px] sm:w-[380px] animate-fade-in overflow-hidden">
           {/* Header */}

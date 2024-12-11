@@ -81,6 +81,10 @@ export default {
         'heading': ['Roboto Slab', 'serif'],
         'body': ['Roboto', 'sans-serif'],
       },
+      zIndex: {
+        '60': '60',
+        '100': '100',
+      },
     },
   },
   plugins: [
