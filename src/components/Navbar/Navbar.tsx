@@ -37,18 +37,22 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick }) => (
     {onClick ? (
       <button
         onClick={onClick}
-        className="flex items-center justify-center gap-2 px-4 py-2 text-white hover:bg-primary-dark rounded-lg transition-colors w-full"
+        className="flex items-center justify-center gap-3 px-5 py-2.5 text-white hover:bg-primary-dark rounded-lg transition-all duration-300 hover:shadow-lg"
       >
-        <MemoizedNavIcon name={icon} />
-        <span className="font-medium">{children}</span>
+        <MemoizedNavIcon name={icon} size={24} />
+        <span className="font-medium text-lg">
+          {children}
+        </span>
       </button>
     ) : (
       <Link
         to={to || '/'}
-        className="flex items-center justify-center gap-2 px-4 py-2 text-white hover:bg-primary-dark rounded-lg transition-colors w-full"
+        className="flex items-center justify-center gap-3 px-5 py-2.5 text-white hover:bg-primary-dark rounded-lg transition-all duration-300 hover:shadow-lg"
       >
-        <MemoizedNavIcon name={icon} />
-        <span className="font-medium">{children}</span>
+        <MemoizedNavIcon name={icon} size={24} />
+        <span className="font-medium text-lg">
+          {children}
+        </span>
       </Link>
     )}
   </li>
@@ -161,26 +165,26 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg h-14 font-heading" aria-label="Hoofdnavigatie">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg h-20 font-heading" aria-label="Hoofdnavigatie">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div className="flex items-center justify-between h-full">
           {/* Logo met lazy loading */}
           <div className="flex-shrink-0">
             <Link to="/" className="block relative" aria-label="Home">
               <img 
                 src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
                 alt="Logo" 
-                className="h-12 w-auto"
+                className="h-16 w-auto"
                 loading="lazy"
-                width={48}
-                height={48}
+                width={64}
+                height={64}
               />
             </Link>
           </div>
 
           {/* Desktop Navigation met animaties */}
           <div className="hidden lg:flex lg:items-center lg:justify-center lg:flex-1 animate-fade-in">
-            <ul className="flex items-center space-x-8">
+            <ul className="flex items-center space-x-10">
               <NavItem to="/" icon="home">Home</NavItem>
               <NavItem icon="register" onClick={onInschrijfClick}>Inschrijven</NavItem>
               <NavItem to="/over-ons" icon="about">Over Ons</NavItem>
@@ -191,13 +195,13 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
 
           {/* Mobile menu button met aria labels */}
           <button 
-            className="lg:hidden p-2 rounded-md text-white hover:bg-primary-dark transition-colors"
+            className="lg:hidden p-3 rounded-lg text-white hover:bg-primary-dark transition-colors"
             onClick={toggleMenu}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
             aria-label="Menu openen"
           >
-            <MenuIcon sx={{ fontSize: 24 }} />
+            <MenuIcon sx={{ fontSize: 28 }} />
           </button>
         </div>
       </div>
