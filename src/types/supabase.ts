@@ -106,10 +106,11 @@ export interface Database {
           url: string
           title: string
           description: string | null
-          thumbnail_url: string
+          visible: string
           order_number: number
           created_at: string
           updated_at: string
+          thumbnail_url?: string
         }
         Insert: {
           id?: string
@@ -117,10 +118,11 @@ export interface Database {
           url: string
           title: string
           description?: string | null
-          thumbnail_url: string
+          visible: string
           order_number: number
           created_at?: string
           updated_at?: string
+          thumbnail_url?: string
         }
         Update: {
           id?: string
@@ -128,10 +130,11 @@ export interface Database {
           url?: string
           title?: string
           description?: string | null
-          thumbnail_url?: string
+          visible?: string
           order_number?: number
           created_at?: string
           updated_at?: string
+          thumbnail_url?: string
         }
       }
     }

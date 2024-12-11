@@ -1,23 +1,25 @@
-import React, { useState } from 'react'
-import VideoSlide from './VideoSlide'
-import NavigationButton from './NavigationButton'
-import { videos } from './data'
-import type { Video } from './types'
+import React from 'react';
+import VideoSlide from './VideoSlide';
+import NavigationButton from './NavigationButton';
+import { useVideoGallery } from '@/hooks/useVideoGallery';
 
 const VideoGallery: React.FC = () => {
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
+  const {
+    videos,
+    currentIndex,
+    isLoading,
+    error,
+    handlePrevious,
+    handleNext,
+    setCurrentIndex
+  } = useVideoGallery();
 
-  if (videos.length === 0) return null
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (videos.length === 0) return null;
 
-  const currentVideo = videos[currentVideoIndex] as Video
-
-  const handlePrevious = () => {
-    setCurrentVideoIndex(prev => (prev === 0 ? videos.length - 1 : prev - 1))
-  }
-
-  const handleNext = () => {
-    setCurrentVideoIndex(prev => (prev === videos.length - 1 ? 0 : prev + 1))
-  }
+  const currentVideo = videos[currentIndex];
+  if (!currentVideo) return null;
 
   return (
     <section className="py-16 px-5 bg-gray-50 font-heading">
@@ -35,7 +37,7 @@ const VideoGallery: React.FC = () => {
         {/* Main Video met navigatie */}
         <div className="relative mb-8 group">
           <VideoSlide
-            videoId={currentVideo.videoId}
+            videoId={currentVideo.video_id}
             url={currentVideo.url}
             title={currentVideo.title}
           />
@@ -53,19 +55,19 @@ const VideoGallery: React.FC = () => {
             {videos.map((video, index) => (
               <VideoSlide
                 key={video.id}
-                videoId={video.videoId}
+                videoId={video.video_id}
                 url={video.url}
                 title={video.title}
                 isThumbnail
-                isSelected={index === currentVideoIndex}
-                onClick={() => setCurrentVideoIndex(index)}
+                isSelected={index === currentIndex}
+                onClick={() => setCurrentIndex(index)}
               />
             ))}
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default VideoGallery 
+export default VideoGallery; 
