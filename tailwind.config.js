@@ -32,8 +32,8 @@ export default {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         shine: {
-          '0%': { transform: 'translateX(-100%) rotate(45deg)' },
-          '20%, 100%': { transform: 'translateX(100%) rotate(45deg)' },
+          '0%': { transform: 'translateX(-100%)' },
+          '50%, 100%': { transform: 'translateX(100%)' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
