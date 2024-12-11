@@ -16,14 +16,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onInschrijfClick, onDonatieCl
     >
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
-        <div className="absolute inset-0 w-[300%] h-[300%] -translate-x-1/4 -translate-y-1/4">
+        <div className="absolute inset-0 w-full h-full">
           <iframe 
             src="https://streamable.com/e/tt6k80?nocontrols=1&autoplay=1&muted=1&loop=1"
-            className="w-full h-full object-cover"
-            style={{
-              transform: 'scale(1.5)',
-              transformOrigin: 'center center'
-            }}
+            className="absolute w-[150%] h-[100%] -left-1/4 object-cover sm:w-full sm:h-full sm:left-0"
             allow="autoplay"
             title="Achtergrondvideo"
             loading="lazy"
