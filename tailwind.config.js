@@ -14,8 +14,8 @@ export default {
         },
       },
       animation: {
-        slideIn: 'slideIn 0.3s ease-out',
-        shine: 'shine 3s infinite',
+        'slideIn': 'slideIn 0.3s ease-out',
+        'shine': 'shine 3s infinite',
         'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
         'slide': 'slide 15s linear infinite',
@@ -81,9 +81,7 @@ export default {
     },
   },
   plugins: [
-    // @ts-ignore
-    import('@tailwindcss/typography'),
-    // @ts-ignore
-    import('tailwind-scrollbar-hide')
+    require('@tailwindcss/typography'),
+    require('tailwind-scrollbar-hide')
   ],
 } 
