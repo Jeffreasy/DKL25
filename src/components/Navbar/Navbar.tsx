@@ -193,17 +193,18 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg h-20 font-heading" aria-label="Hoofdnavigatie">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="flex items-center justify-between h-full">
-          {/* Logo met lazy loading */}
-          <div className="flex-shrink-0">
+          {/* Logo met shine effect */}
+          <div className="flex-shrink-0 relative overflow-hidden rounded-lg">
             <Link to="/" className="block relative" aria-label="Home">
               <img 
                 src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
                 alt="Logo" 
-                className="h-16 w-auto"
+                className="h-16 w-auto relative z-10"
                 loading="lazy"
                 width={64}
                 height={64}
               />
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shine" />
             </Link>
           </div>
 
