@@ -24,7 +24,7 @@ export default {
         'slide-up': 'slideUp 0.5s ease-out forwards',
         'spin-slow': 'rotate 20s linear infinite',
         'hue-rotate': 'hue-rotate 10s linear infinite',
-        'slide-in': 'slideIn 0.3s ease-out forwards',
+        'slide-in': 'slideInRight 0.3s ease-out forwards',
       },
       keyframes: {
         slideIn: {
@@ -59,7 +59,7 @@ export default {
           '0%': { filter: 'hue-rotate(0deg)' },
           '100%': { filter: 'hue-rotate(360deg)' },
         },
-        slideIn: {
+        slideInRight: {
           '0%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(0)' }
         },

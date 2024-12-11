@@ -32,31 +32,41 @@ export const MemoizedNavIcon = memo(({ name, size = 20, className }: NavIconProp
 });
 MemoizedNavIcon.displayName = 'NavIcon';
 
-const NavItem = memo<NavItemProps>(({ to, icon, children, onClick }) => (
-  <li className="animate-fade-in">
-    {onClick ? (
-      <button
-        onClick={onClick}
-        className="flex items-center justify-center gap-3 px-5 py-2.5 text-white hover:bg-primary-dark rounded-lg transition-all duration-300 hover:shadow-lg"
-      >
-        <MemoizedNavIcon name={icon} size={24} />
-        <span className="font-medium text-lg">
-          {children}
-        </span>
-      </button>
-    ) : (
-      <Link
-        to={to || '/'}
-        className="flex items-center justify-center gap-3 px-5 py-2.5 text-white hover:bg-primary-dark rounded-lg transition-all duration-300 hover:shadow-lg"
-      >
-        <MemoizedNavIcon name={icon} size={24} />
-        <span className="font-medium text-lg">
-          {children}
-        </span>
-      </Link>
-    )}
-  </li>
-));
+const NavItem = memo<NavItemProps>(({ to, icon, children, onClick }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      if (!to) {
+        e.preventDefault();
+      }
+      onClick();
+    }
+  };
+
+  const linkClasses = "flex items-center gap-3 px-5 py-2.5 text-white hover:bg-primary-dark rounded-lg transition-all duration-300 hover:shadow-lg w-full";
+
+  return (
+    <li className="animate-fade-in w-full">
+      {to ? (
+        <Link
+          to={to}
+          className={linkClasses}
+          onClick={onClick ? handleClick : undefined}
+        >
+          <MemoizedNavIcon name={icon} size={24} />
+          <span className="font-medium text-lg">{children}</span>
+        </Link>
+      ) : (
+        <button
+          onClick={handleClick}
+          className={linkClasses}
+        >
+          <MemoizedNavIcon name={icon} size={24} />
+          <span className="font-medium text-lg">{children}</span>
+        </button>
+      )}
+    </li>
+  );
+});
 NavItem.displayName = 'NavItem';
 
 const SocialLink = memo<SocialLinkProps>(({ href, icon }) => (
@@ -94,6 +104,10 @@ const MobileMenu: React.FC<{
     };
   }, [isOpen, onClose]);
 
+  const handleNavigation = () => {
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -104,12 +118,17 @@ const MobileMenu: React.FC<{
     >
       <div
         ref={menuRef}
-        className="fixed right-0 top-0 w-[280px] h-full bg-primary p-6 shadow-xl animate-slide-in"
+        className="fixed right-0 top-0 w-[280px] h-full bg-primary p-6 shadow-xl animate-slide-in overflow-y-auto"
         tabIndex={-1}
       >
         {/* Header met logo en sluit knop */}
         <div className="flex items-center justify-between mb-8">
-          <Link to="/" className="block" onClick={onClose} aria-label="Home">
+          <Link 
+            to="/" 
+            className="block" 
+            onClick={handleNavigation} 
+            aria-label="Home"
+          >
             <img 
               src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
               alt="Logo" 
@@ -130,14 +149,20 @@ const MobileMenu: React.FC<{
 
         {/* Navigatie menu */}
         <nav className="mb-8">
-          <ul className="space-y-4">
-            <NavItem to="/" icon="home" onClick={onClose}>Home</NavItem>
-            <NavItem icon="register" onClick={() => { onInschrijfClick(); onClose(); }}>
+          <ul className="space-y-4 w-full">
+            <NavItem to="/" icon="home" onClick={handleNavigation}>Home</NavItem>
+            <NavItem 
+              icon="register" 
+              onClick={() => {
+                onInschrijfClick();
+                onClose();
+              }}
+            >
               Inschrijven
             </NavItem>
-            <NavItem to="/over-ons" icon="about" onClick={onClose}>Over Ons</NavItem>
-            <NavItem to="/faq" icon="contact" onClick={onClose}>Contact</NavItem>
-            <NavItem to="/wat-is-de-koninklijkeloop" icon="info" onClick={onClose}>DKL</NavItem>
+            <NavItem to="/over-ons" icon="about" onClick={handleNavigation}>Over Ons</NavItem>
+            <NavItem to="/faq" icon="contact" onClick={handleNavigation}>Contact</NavItem>
+            <NavItem to="/wat-is-de-koninklijkeloop" icon="info" onClick={handleNavigation}>DKL</NavItem>
           </ul>
         </nav>
 

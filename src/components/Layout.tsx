@@ -5,15 +5,17 @@ import { Footer } from './footer';
 
 interface LayoutProps {
   onInschrijfClick: () => void;
-  onDonatieClick: () => void;
   children?: ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ onInschrijfClick, onDonatieClick, children }) => {
+const Layout: React.FC<LayoutProps> = ({ onInschrijfClick, children }) => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <Navbar onInschrijfClick={onInschrijfClick} />
-      {children || <Outlet context={{ onInschrijfClick, onDonatieClick }} />}
+      <main>
+        <Outlet />
+      </main>
+      {children}
       <Footer onInschrijfClick={onInschrijfClick} />
     </div>
   );
