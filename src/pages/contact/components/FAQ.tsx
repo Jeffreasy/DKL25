@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { faqData } from './faq.data';
 import { useDebounce } from '../../../hooks/ui/useDebounce';
 
@@ -103,38 +103,9 @@ const CategoryHeader: React.FC<{ title: string; icon: string }> = ({ title, icon
   </div>
 );
 
-const BackToTopButton: React.FC<{
-  show: boolean;
-  onClick: () => void;
-}> = ({ show, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`fixed bottom-5 right-5 w-12 h-12 bg-primary text-white rounded-full shadow-lg transition-all duration-300 hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 z-50 ${
-      show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-    }`}
-    aria-label="Terug naar boven"
-  >
-    ⬆
-  </button>
-);
-
 const FAQ: React.FC<FAQProps> = ({ onInschrijfClick, onContactClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [showBackToTop, setShowBackToTop] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-
-  const handleScroll = useCallback(() => {
-    setShowBackToTop(window.scrollY > 300);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
-
-  const handleBackToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const filteredCategories = useMemo(() => {
     const searchLower = debouncedSearchTerm.toLowerCase();
@@ -207,11 +178,6 @@ const FAQ: React.FC<FAQProps> = ({ onInschrijfClick, onContactClick }) => {
           </button>
         </div>
       </div>
-
-      <BackToTopButton 
-        show={showBackToTop}
-        onClick={handleBackToTop}
-      />
     </section>
   );
 };

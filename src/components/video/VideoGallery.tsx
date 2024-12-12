@@ -51,7 +51,7 @@ const VideoGallery: React.FC = () => {
 
         {/* Thumbnails */}
         <div className="relative px-12">
-          <div className="flex justify-center gap-4 overflow-x-auto scrollbar-hide py-2 max-w-[800px] mx-auto">
+          <div className="flex justify-start gap-4 overflow-x-auto scrollbar-hide py-2">
             {videos.map((video, index) => (
               <VideoSlide
                 key={video.id}

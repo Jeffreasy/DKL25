@@ -50,7 +50,7 @@ const VideoSlide: React.FC<VideoSlideProps> = ({
   return (
     <div className="w-full max-w-[1280px] mx-auto">
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-        {/* Video Container */}
+        {/* Video Container - voeg overflow-hidden toe */}
         <div className="absolute inset-0 rounded-xl overflow-hidden shadow-lg">
           {/* Thumbnail en Overlay */}
           {isLoading && (
@@ -77,14 +77,17 @@ const VideoSlide: React.FC<VideoSlideProps> = ({
             </div>
           )}
 
-          {/* Video iFrame */}
+          {/* Video iFrame - voeg overflow-hidden toe */}
           <iframe
             src={url}
             title={title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            className="absolute inset-0 w-full h-full z-0"
-            style={{ backgroundColor: 'transparent' }}
+            className="absolute inset-0 w-full h-full z-0 overflow-hidden"
+            style={{ 
+              backgroundColor: 'transparent',
+              border: 'none' // Voeg dit toe om mogelijke iframe borders te verwijderen
+            }}
             onLoad={() => setIsLoading(false)}
             onError={() => {
               setIsLoading(false)
