@@ -9,11 +9,11 @@ import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AIChatButton from './components/AIChatButton';
 
-// Lazy load pages
-const Home = lazy(() => import('./pages/home/Home'));
-const OverOns = lazy(() => import('./pages/over-ons/OverOns'));
-const Contact = lazy(() => import('./pages/contact/Contact'));
-const DKL = lazy(() => import('./pages/dkl/DKL'));
+// Lazy load pages met expliciete extensies
+const Home = lazy(() => import('./pages/home/Home.tsx'));
+const OverOns = lazy(() => import('./pages/over-ons/OverOns.tsx'));
+const Contact = lazy(() => import('./pages/contact/Contact.tsx'));
+const DKL = lazy(() => import('./pages/dkl/DKL.tsx'));
 
 export default function App() {
   const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);

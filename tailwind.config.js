@@ -52,8 +52,14 @@ export default {
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+          '0%': { 
+            transform: 'translateY(20px)', 
+            opacity: '0' 
+          },
+          '100%': { 
+            transform: 'translateY(0)', 
+            opacity: '1' 
+          },
         },
         rotate: {
           '0%': { transform: 'rotate(0deg)' },

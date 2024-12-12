@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar/Navbar';
-import { Footer } from './footer';
+import Navbar from './core/Navbar/Navbar';
+import { Footer } from './core/footer';
 
 interface LayoutProps {
   onInschrijfClick: () => void;
