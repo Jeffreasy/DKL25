@@ -20,6 +20,8 @@ export interface Database {
           since: string
           created_at: string
           updated_at: string
+          visible: string
+          order_number: number
         }
         Insert: {
           id: string
@@ -31,6 +33,8 @@ export interface Database {
           since: string
           created_at?: string
           updated_at?: string
+          visible: string
+          order_number: number
         }
         Update: {
           id?: string
@@ -42,6 +46,8 @@ export interface Database {
           since?: string
           created_at?: string
           updated_at?: string
+          visible?: string
+          order_number?: number
         }
       }
       photos: {

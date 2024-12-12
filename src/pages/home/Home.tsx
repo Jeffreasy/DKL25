@@ -16,8 +16,10 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ onInschrijfClick, onDonatieClick }) => (
-  <main className="pt-12 flex-grow">
-    <PartnerCarrousel />
+  <main className="flex-grow">
+    <section className="bg-white relative">
+      <PartnerCarrousel />
+    </section>
     <HeroSection 
       onInschrijfClick={onInschrijfClick}
       onDonatieClick={onDonatieClick}

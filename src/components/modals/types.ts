@@ -14,7 +14,7 @@ export interface DonatieModalProps extends BaseModalProps {}
 export interface InschrijfModalProps extends BaseModalProps {}
 
 export interface PartnerModalProps extends BaseModalProps {
-  partner: Partner;
+  partner: Partner | null;
 }
 
 export interface PrivacyModalProps extends BaseModalProps {}

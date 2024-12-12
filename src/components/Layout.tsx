@@ -8,14 +8,14 @@ interface LayoutProps {
   children?: ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ onInschrijfClick, children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, onInschrijfClick }) => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar onInschrijfClick={onInschrijfClick} />
-      <main>
+      <main className="flex-grow">
         <Outlet />
+        {children}
       </main>
-      {children}
       <Footer onInschrijfClick={onInschrijfClick} />
     </div>
   );

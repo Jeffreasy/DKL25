@@ -28,6 +28,7 @@ export default {
         'spin-slow': 'rotate 20s linear infinite',
         'hue-rotate': 'hue-rotate 10s linear infinite',
         'slide-in': 'slideInRight 0.3s ease-out forwards',
+        'partnerSlide': 'partnerSlide 30s linear infinite'
       },
       keyframes: {
         slideIn: {
@@ -66,6 +67,10 @@ export default {
           '0%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(0)' }
         },
+        partnerSlide: {
+          '0%': { transform: 'translateX(100vw)' },
+          '100%': { transform: 'translateX(-100%)' }
+        }
       },
       screens: {
         'xs': '375px',
