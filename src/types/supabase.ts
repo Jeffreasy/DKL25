@@ -6,6 +6,17 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export interface ContactBericht {
+  id: string;
+  naam: string;
+  email: string;
+  telefoon: string | null;
+  bericht: string;
+  aangemaakt_op: string;
+  status: 'ongelezen' | 'gelezen' | 'beantwoord';
+  gearchiveerd: boolean;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -142,6 +153,11 @@ export interface Database {
           updated_at?: string
           thumbnail_url?: string
         }
+      }
+      contact_berichten: {
+        Row: ContactBericht;
+        Insert: Omit<ContactBericht, 'id' | 'aangemaakt_op' | 'status' | 'gearchiveerd'>;
+        Update: Partial<Omit<ContactBericht, 'id' | 'aangemaakt_op'>>;
       }
     }
     Views: {
