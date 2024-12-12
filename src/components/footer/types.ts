@@ -2,6 +2,7 @@ import type { SocialPlatform } from '../Socials/types';
 
 export interface FooterProps {
   onInschrijfClick: () => void;
+  onPrivacyClick?: () => void;
 }
 
 export interface QuickLinkType {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FAQ from './components/FAQ';
-import { ContactModal } from '../../components/modals';
+import { ContactModal, PrivacyModal } from '../../components/modals';
 
 interface ContactProps {
   onInschrijfClick?: () => void;
@@ -8,13 +8,14 @@ interface ContactProps {
 
 const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   const handleContactClick = () => {
     setIsContactModalOpen(true);
   };
 
   const handlePrivacyClick = () => {
-    console.log('Privacy clicked');
+    setIsPrivacyModalOpen(true);
   };
 
   return (
@@ -30,6 +31,11 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
         onPrivacyClick={handlePrivacyClick}
+      />
+
+      <PrivacyModal
+        isOpen={isPrivacyModalOpen}
+        onClose={() => setIsPrivacyModalOpen(false)}
       />
     </div>
   );

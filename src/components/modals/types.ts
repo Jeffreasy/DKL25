@@ -17,8 +17,12 @@ export interface PartnerModalProps extends BaseModalProps {
   partner: Partner | null;
 }
 
-export interface PrivacyModalProps extends BaseModalProps {}
+export interface PrivacyModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-export interface TermsModalProps extends BaseModalProps {
-  onScrollComplete?: () => void;
+export interface TermsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
 } 

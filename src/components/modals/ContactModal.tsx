@@ -1,151 +1,120 @@
 import React from 'react';
-import { FaTimes, FaUser, FaEnvelope, FaPhone, FaComment, FaPaperPlane } from 'react-icons/fa';
-import { useContactForm } from './hooks/useContactForm';
+import { Dialog } from '@headlessui/react';
+import CloseIcon from '@mui/icons-material/Close';
+import EmailIcon from '@mui/icons-material/Email';
 import type { ContactModalProps } from './types';
 
 export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onPrivacyClick }) => {
-  if (!isOpen) return null;
-
-  const { form, isSubmitting, submitError, onSubmit } = useContactForm(onClose);
-  const { register, formState: { errors } } = form;
-
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden font-heading">
-        {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-primary to-primary-dark text-white px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Contact</h2>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-white/10 rounded-full transition-colors"
-            aria-label="Sluit contact formulier"
-          >
-            <FaTimes size={24} />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 overflow-y-auto">
-          <form onSubmit={onSubmit} className="space-y-6" noValidate>
-            {/* Honeypot */}
-            <input type="text" {...register('website')} className="hidden" />
-
-            <div className="space-y-4">
-              {/* Naam */}
-              <div className="form-group">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                  <FaUser className="text-primary" />
-                  Naam <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  {...register('naam', { required: 'Naam is verplicht' })}
-                  className={`w-full px-4 py-3 rounded-lg border-2 focus:ring-2 focus:ring-primary/20 transition-all
-                    ${errors.naam ? 'border-red-500' : 'border-gray-200 hover:border-gray-300'}`}
-                  placeholder="Bijv. Jan Jansen"
-                />
-                {errors.naam && (
-                  <p className="mt-1 text-sm text-red-500">{errors.naam.message}</p>
-                )}
-              </div>
-
-              {/* Email */}
-              <div className="form-group">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                  <FaEnvelope className="text-primary" />
-                  E-mailadres <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  {...register('email', {
-                    required: 'E-mailadres is verplicht',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Ongeldig e-mailadres'
-                    }
-                  })}
-                  className={`w-full px-4 py-3 rounded-lg border-2 focus:ring-2 focus:ring-primary/20 transition-all
-                    ${errors.email ? 'border-red-500' : 'border-gray-200 hover:border-gray-300'}`}
-                  placeholder="Bijv. jan@example.com"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
-                )}
-              </div>
-
-              {/* Telefoon */}
-              <div className="form-group">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                  <FaPhone className="text-primary" />
-                  Telefoonnummer
-                </label>
-                <input
-                  type="tel"
-                  {...register('telefoon')}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 hover:border-gray-300 focus:ring-2 focus:ring-primary/20 transition-all"
-                  placeholder="(123) 456-7890"
-                />
-              </div>
-
-              {/* Bericht */}
-              <div className="form-group">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                  <FaComment className="text-primary" />
-                  Bericht <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  {...register('bericht', { required: 'Bericht is verplicht' })}
-                  rows={5}
-                  className={`w-full px-4 py-3 rounded-lg border-2 focus:ring-2 focus:ring-primary/20 transition-all
-                    ${errors.bericht ? 'border-red-500' : 'border-gray-200 hover:border-gray-300'}`}
-                  placeholder="Schrijf je bericht hier..."
-                />
-                {errors.bericht && (
-                  <p className="mt-1 text-sm text-red-500">{errors.bericht.message}</p>
-                )}
-              </div>
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
+        <Dialog.Panel 
+          className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-[calc(100%-0.5rem)] xs:max-w-[calc(100%-1rem)] sm:max-w-xl relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="relative">
+            <div className="bg-primary p-4 sm:p-6 flex items-center justify-between">
+              <Dialog.Title className="text-xl sm:text-2xl font-bold text-white tracking-tight font-heading">
+                Contact
+              </Dialog.Title>
+              <button 
+                onClick={onClose}
+                className="text-white hover:bg-white/10 p-1.5 rounded-full transition-colors"
+                aria-label="Sluiten"
+              >
+                <CloseIcon fontSize="small" />
+              </button>
             </div>
 
-            <p className="text-center text-sm text-gray-500">
-              Door dit formulier te verzenden ga je akkoord met ons{' '}
-              <button
-                type="button"
-                onClick={onPrivacyClick}
-                className="text-primary hover:text-primary-dark font-medium underline focus:outline-none focus:ring-2 focus:ring-primary/20 rounded"
-              >
-                privacybeleid
-              </button>
-              .
-            </p>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-medium rounded-lg
-                flex items-center justify-center gap-2 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300
-                disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Verzenden...
-                </>
-              ) : (
-                <>
-                  <FaPaperPlane />
-                  Stuur mijn bericht
-                </>
-              )}
-            </button>
-
-            {submitError && (
-              <div className="p-4 bg-red-50 text-red-600 rounded-lg">
-                {submitError}
+            <div className="p-4 sm:p-6 space-y-4">
+              <div className="flex justify-center mb-6">
+                <EmailIcon className="text-primary" sx={{ fontSize: { xs: 56, sm: 72 } }} />
               </div>
-            )}
-          </form>
-        </div>
+
+              <form className="space-y-4">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Naam
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    placeholder="Uw naam"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    E-mailadres
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    placeholder="uw@email.nl"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    Bericht
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={4}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none"
+                    placeholder="Uw bericht..."
+                    required
+                  />
+                </div>
+
+                <div className="flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="privacy"
+                      name="privacy"
+                      type="checkbox"
+                      className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+                      required
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="privacy" className="text-gray-600">
+                      Ik ga akkoord met het{' '}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onPrivacyClick();
+                        }}
+                        className="text-primary hover:text-primary-dark underline focus:outline-none"
+                      >
+                        privacybeleid
+                      </button>
+                    </label>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div className="p-4 sm:p-6 bg-gray-50 border-t border-gray-100">
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                Versturen
+              </button>
+            </div>
+          </div>
+        </Dialog.Panel>
       </div>
-    </div>
+    </Dialog>
   );
 }; 

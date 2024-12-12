@@ -53,7 +53,7 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick }) => {
           onClick={onClick ? handleClick : undefined}
         >
           <MemoizedNavIcon name={icon} size={24} />
-          <span className="font-medium text-lg">{children}</span>
+          <span className="font-medium text-lg whitespace-nowrap">{children}</span>
         </Link>
       ) : (
         <button
@@ -61,7 +61,7 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick }) => {
           className={linkClasses}
         >
           <MemoizedNavIcon name={icon} size={24} />
-          <span className="font-medium text-lg">{children}</span>
+          <span className="font-medium text-lg whitespace-nowrap">{children}</span>
         </button>
       )}
     </li>
