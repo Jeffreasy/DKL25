@@ -1,6 +1,16 @@
 export interface Photo {
-  id: string;
+  id: number;
   url: string;
+  alt: string;
+  thumbnail_url?: string;
+}
+
+export interface MainSliderProps {
+  photos: Photo[];
+  currentIndex: number;
+  onPrevious: () => void;
+  onNext: () => void;
+  isAnimating: boolean;
 }
 
 export interface ThumbnailSliderProps {
@@ -10,5 +20,5 @@ export interface ThumbnailSliderProps {
 }
 
 export interface PhotoGalleryProps {
-  // Add any props if needed, currently empty as component doesn't receive props
+  // Add any props if needed
 } 

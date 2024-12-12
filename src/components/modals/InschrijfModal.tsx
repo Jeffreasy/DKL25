@@ -120,4 +120,6 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = ({ isOpen, onClose 
       </div>
     </Dialog>
   );
-}; 
+};
+
+export default InschrijfModal; 

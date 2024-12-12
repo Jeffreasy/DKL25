@@ -65,4 +65,6 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) =
       </div>
     </Dialog>
   );
-}; 
+};
+
+export default PrivacyModal; 

@@ -92,4 +92,6 @@ export const Footer: React.FC<FooterProps> = ({ onInschrijfClick }) => {
       />
     </>
   );
-}; 
+};
+
+export default Footer; 

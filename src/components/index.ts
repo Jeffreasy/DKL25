@@ -1,9 +1,4 @@
-export { default as Navbar } from './Navbar/Navbar'
-export { PhotoGallery } from '../pages/home/components/foto'
-export { default as PartnerCarrousel } from '../pages/home/components/partners/PartnerCarrousel'
-export { default as HeroSection } from '../pages/home/components/Herosection/HeroSection'
-export { default as TitleSection } from '../pages/home/components/Title/TitleSection'
-export { default as CTACards } from '../pages/home/components/CTACards'
-export { default as DKLSocials } from '../pages/home/components/Socials/DKLSocials'
-export { DKLSponsors } from '../pages/home/components/sponsors'
-export { Footer } from './core/footer'
+export { default as Navbar } from './core/Navbar/Navbar';
+export { Footer } from './core/footer/Footer';
+export { InschrijfModal } from './modals/InschrijfModal';
+export { PrivacyModal } from './modals/PrivacyModal';
