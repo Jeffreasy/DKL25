@@ -129,7 +129,7 @@ const TitleSection: React.FC = () => {
   if (!content) return null;
 
   return (
-    <section className={`relative w-full bg-white py-12 font-heading overflow-hidden isolate transition-all duration-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+    <section className={`relative w-full bg-orange-50/80 font-heading overflow-hidden isolate transition-all duration-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
       {/* Accent Bars */}
       <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary-light to-primary animate-gradient" aria-hidden="true" />
       <div className="absolute bottom-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary-light to-primary animate-gradient" aria-hidden="true" />
@@ -165,6 +165,21 @@ const TitleSection: React.FC = () => {
           >
             Schrijf je nu in!
           </button>
+        </div>
+      </div>
+
+      {/* Divider over volledige breedte */}
+      <div className="w-full h-1 bg-gradient-to-r from-primary via-primary-light to-primary" />
+
+      <div className="max-w-[1000px] mx-auto px-4 py-12 relative">
+        {/* Social Media Section Title */}
+        <div className="flex flex-col gap-4 mb-12 text-center">
+          <h2 className="text-[clamp(2rem,5vw,3rem)] leading-tight text-gray-900 font-bold tracking-tight">
+            Laatste nieuws
+          </h2>
+          <p className="text-[clamp(1.5rem,3.5vw,2rem)] leading-snug text-gray-600">
+            Bekijk op onze social media
+          </p>
         </div>
 
         {/* Social Media Embeds */}
