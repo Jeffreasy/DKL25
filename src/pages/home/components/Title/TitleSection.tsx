@@ -129,7 +129,7 @@ const TitleSection: React.FC = () => {
   if (!content) return null;
 
   return (
-    <section className={`relative w-full bg-orange-200/95 font-heading overflow-hidden isolate transition-all duration-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+    <section className={`relative w-full bg-orange-100/95 font-heading overflow-hidden isolate transition-all duration-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
       {/* Accent Bars */}
       <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary-light to-primary animate-gradient" aria-hidden="true" />
       <div className="absolute bottom-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary-light to-primary animate-gradient" aria-hidden="true" />
