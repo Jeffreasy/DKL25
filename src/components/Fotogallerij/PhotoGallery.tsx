@@ -17,12 +17,17 @@ const PhotoGallery: React.FC = () => {
       const { data, error } = await supabase
         .from('photos')
         .select('*')
+        .eq('visible', true)
         .order('order_number', { ascending: true });
 
       if (error) {
         console.error('Error fetching photos:', error);
       } else {
-        setPhotos(data || []);
+        const transformedData = (data || []).map(photo => ({
+          ...photo,
+          visible: true
+        }));
+        setPhotos(transformedData);
       }
       setIsLoading(false);
     };
