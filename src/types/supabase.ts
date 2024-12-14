@@ -143,6 +143,79 @@ export interface Database {
           thumbnail_url?: string
         }
       }
+      title_sections: {
+        Row: {
+          id: string
+          title: string
+          subtitle: string
+          cta_text: string
+          image_url: string
+          event_details: {
+            icon: string
+            title: string
+            description: string
+          }[]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          subtitle: string
+          cta_text: string
+          image_url: string
+          event_details: {
+            icon: string
+            title: string
+            description: string
+          }[]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          subtitle?: string
+          cta_text?: string
+          image_url?: string
+          event_details?: {
+            icon: string
+            title: string
+            description: string
+          }[]
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      social_embeds: {
+        Row: {
+          id: string
+          platform: 'facebook' | 'instagram'
+          embed_code: string
+          post_url: string
+          likes_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          platform: 'facebook' | 'instagram'
+          embed_code: string
+          post_url: string
+          likes_count: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          platform?: 'facebook' | 'instagram'
+          embed_code?: string
+          post_url?: string
+          likes_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
