@@ -60,12 +60,15 @@ const TitleSection: React.FC = () => {
     return (
       <div 
         key={index}
-        className="flex flex-col items-center p-6 bg-gray-50/80 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-300 hover:bg-white hover:-translate-y-1"
+        className="flex flex-col items-center p-6 bg-white rounded-xl border border-gray-100 
+        shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] 
+        hover:shadow-[0_8px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] 
+        transition-all duration-300 hover:-translate-y-1"
       >
-        <div className="text-primary mb-3 transform transition-transform group-hover:scale-110">
-          <Icon className="w-6 h-6" />
+        <div className="text-primary mb-4 bg-orange-50 p-3 rounded-full transform transition-transform group-hover:scale-110">
+          <Icon className="w-7 h-7" />
         </div>
-        <h3 className="font-semibold text-gray-900 mb-1">
+        <h3 className="font-semibold text-gray-900 mb-2 text-lg">
           {detail.title}
         </h3>
         <p className="text-gray-600 text-center">
@@ -129,7 +132,7 @@ const TitleSection: React.FC = () => {
   if (!content) return null;
 
   return (
-    <section className={`relative w-full bg-orange-100/95 font-heading overflow-hidden isolate transition-all duration-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+    <section className={`relative w-full bg-orange-50/90 font-heading overflow-hidden isolate transition-all duration-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
       {/* Accent Bars */}
       <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary-light to-primary animate-gradient" aria-hidden="true" />
       <div className="absolute bottom-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-primary-light to-primary animate-gradient" aria-hidden="true" />
