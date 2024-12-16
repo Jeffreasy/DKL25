@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SocialIcon from '@/pages/home/components/Socials/SocialIcon';
 import { socialLinks, createQuickLinks } from './data';
 import { PrivacyModal } from '../../modals';
 import type { FooterProps, QuickLinkType } from './types';
 
-export const Footer: React.FC<FooterProps> = ({ onInschrijfClick }) => {
+export const Footer: React.FC<FooterProps> = () => {
+  const navigate = useNavigate();
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   
   const handlePrivacyClick = () => {
     setIsPrivacyModalOpen(true);
   };
 
-  const quickLinks = createQuickLinks(onInschrijfClick, handlePrivacyClick);
+  const handleInschrijfClick = () => {
+    navigate('/inschrijving');
+  };
+
+  const quickLinks = createQuickLinks(handleInschrijfClick, handlePrivacyClick);
   
   return (
     <>

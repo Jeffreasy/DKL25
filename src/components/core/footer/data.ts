@@ -23,11 +23,13 @@ export const socialLinks: SocialLinkType[] = [
   }
 ];
 
-export const createQuickLinks = (onInschrijfClick?: () => void, onPrivacyClick?: () => void): QuickLinkType[] => [
+export const createQuickLinks = (
+  handleInschrijfClick: () => void,
+  handlePrivacyClick: () => void
+): QuickLinkType[] => [
   { text: 'Home', to: '/' },
   { text: 'Over Ons', to: '/over-ons' },
-  { text: 'Contact', to: '/faq' },
-  { text: 'Inschrijven', action: onInschrijfClick },
-  { text: 'Privacybeleid', action: onPrivacyClick },
-  { text: 'DKL', to: '/wat-is-de-koninklijkeloop' }
+  { text: 'Contact', to: '/contact' },
+  { text: 'Inschrijven', to: '/inschrijving' },
+  { text: 'Privacy Policy', action: handlePrivacyClick }
 ]; 
