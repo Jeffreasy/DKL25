@@ -15,13 +15,15 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
       const { data, error } = await supabase
         .from('photos')
         .select('*')
+        .eq('visible', true)
+        .ilike('alt', 'DKL 2024%')
         .order('order_number');
-      
+
       if (error) {
         console.error('Error fetching photos:', error);
         return;
       }
-      
+
       setPhotos(data || []);
       setIsLoading(false);
     };
@@ -52,10 +54,9 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
   }
   
   if (photos.length === 0) {
-    return null;
+    return <div>Geen foto's gevonden.</div>;
   }
   
-  // Touch handlers met type safety
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
     if (touch) {
@@ -82,7 +83,6 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
-      {/* Title Section met nieuwe animaties */}
       <div className="text-center mb-12 relative pb-8 animate-fade-in">
         <h2 className="text-[clamp(2rem,4vw,2.75rem)] text-gray-900 font-semibold mb-3">
           Bekijk onze Foto's
@@ -93,7 +93,6 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[60px] h-[3px] bg-gradient-45 from-primary to-primary-light rounded-full" />
       </div>
   
-      {/* Gallery Container met controls */}
       <div className="max-w-[1200px] mx-auto">
         <div className="relative">
           <MainSlider
@@ -104,7 +103,6 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
             isAnimating={isAnimating}
           />
   
-          {/* Auto-play control */}
           <button
             onClick={toggleAutoPlay}
             className="absolute bottom-4 right-4 z-10 bg-white/90 p-2 rounded-full shadow-lg hover:bg-white transition-all"
@@ -117,7 +115,6 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
             )}
           </button>
   
-          {/* Progress bar */}
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200">
             <div
               className="h-full bg-primary transition-all duration-300"
@@ -135,7 +132,6 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
           onSelect={setCurrentIndex}
         />
   
-        {/* Keyboard controls info */}
         <div className="mt-4 text-center text-sm text-gray-500">
           <p>Gebruik de pijltjestoetsen om te navigeren, spatiebalk voor autoplay</p>
         </div>
@@ -144,4 +140,4 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = () => {
   );
 };
   
-export default PhotoGallery; 
+export default PhotoGallery;
