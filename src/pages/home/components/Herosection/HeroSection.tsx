@@ -2,13 +2,19 @@ import React from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import EmailIcon from '@mui/icons-material/Email';
 import BackgroundVideo from '../video/BackgroundVideo';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroSectionProps {
-  onInschrijfClick: () => void;
   onDonatieClick: () => void;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onInschrijfClick, onDonatieClick }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({ onDonatieClick }) => {
+  const navigate = useNavigate();
+
+  const handleInschrijfClick = () => {
+    navigate('/inschrijving');
+  };
+
   return (
     <section 
       className="relative h-[calc(100vh-5rem)] font-heading"
@@ -25,7 +31,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onInschrijfClick, onDonatieCl
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mb-2">
           <button
-            onClick={onInschrijfClick}
+            onClick={handleInschrijfClick}
             className="flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg min-w-[160px]"
           >
             <EmailIcon />

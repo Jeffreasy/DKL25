@@ -1,7 +1,7 @@
 import type { SocialIconName } from '@/components/icons/types';
 
 export interface FooterProps {
-  onInschrijfClick: () => void;
+  // Verwijder onInschrijfClick requirement
 }
 
 export interface QuickLinkType {

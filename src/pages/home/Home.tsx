@@ -9,22 +9,19 @@ import { DKLSponsors } from './components/sponsors';
 import { VideoGallery } from './components/video';
 
 interface HomeProps {
-  onInschrijfClick: () => void;
   onDonatieClick: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({ onInschrijfClick, onDonatieClick }) => (
+const Home: React.FC<HomeProps> = ({ onDonatieClick }) => (
   <main className="flex-grow">
     <section className="bg-white relative">
       <PartnerCarrousel />
     </section>
     <HeroSection 
-      onInschrijfClick={onInschrijfClick}
       onDonatieClick={onDonatieClick}
     />
     <TitleSection />
     <CTACards
-      onInschrijfClick={onInschrijfClick}
       onDonatieClick={onDonatieClick}
     />
     <VideoGallery />
