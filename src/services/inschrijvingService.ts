@@ -34,4 +34,23 @@ export const getInschrijving = async (id: string) => {
   }
 
   return data;
+};
+
+export const checkEmailExists = async (email: string): Promise<boolean> => {
+  try {
+    const { count, error } = await supabase
+      .from('inschrijvingen')
+      .select('*', { count: 'exact', head: true })
+      .eq('email', email);
+
+    if (error) {
+      console.error('Error checking email:', error);
+      return false;
+    }
+
+    return count ? count > 0 : false;
+  } catch (error) {
+    console.error('Error in checkEmailExists:', error);
+    return false;
+  }
 }; 

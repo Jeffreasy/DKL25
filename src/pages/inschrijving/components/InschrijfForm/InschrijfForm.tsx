@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AlgemeneVoorwaardenModal from '@/components/modals/AlgemeneVoorwaardenModal';
-import { createInschrijving } from '@/services/inschrijvingService';
+import { createInschrijving, checkEmailExists } from '@/services/inschrijvingService';
 import { submitToMake } from '@/services/makeWebhookService';
 import type { Inschrijving } from '@/types/inschrijving';
 
@@ -22,12 +22,54 @@ const InschrijfForm: React.FC = () => {
   const [showVoorwaarden, setShowVoorwaarden] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [terms, setTerms] = useState(false);
+  const [emailError, setEmailError] = useState<string>('');
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [debouncedEmail, setDebouncedEmail] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (formData.email && formData.email.includes('@')) {
+        setDebouncedEmail(formData.email);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [formData.email]);
+
+  useEffect(() => {
+    if (debouncedEmail) {
+      handleEmailCheck(debouncedEmail);
+    }
+  }, [debouncedEmail]);
+
+  const handleEmailCheck = async (email: string) => {
+    if (!email || !email.includes('@')) return;
+    
+    setIsCheckingEmail(true);
+    try {
+      const exists = await checkEmailExists(email);
+      if (exists) {
+        setEmailError('Dit e-mailadres is al geregistreerd voor dit evenement');
+      } else {
+        setEmailError('');
+      }
+    } catch (error) {
+      console.error('Error checking email:', error);
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!terms) {
       alert('Je moet akkoord gaan met de algemene voorwaarden');
+      return;
+    }
+
+    if (emailError) {
+      alert('Dit e-mailadres is al geregistreerd');
       return;
     }
 
@@ -66,6 +108,7 @@ const InschrijfForm: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
+    
     if (type === 'checkbox') {
       setTerms((e.target as HTMLInputElement).checked);
     } else {
@@ -73,6 +116,11 @@ const InschrijfForm: React.FC = () => {
         ...prev,
         [name]: value
       }));
+
+      // Check email wanneer het email veld wordt aangepast
+      if (name === 'email') {
+        handleEmailCheck(value);
+      }
     }
   };
 
@@ -105,16 +153,31 @@ const InschrijfForm: React.FC = () => {
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 E-mailadres
               </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={inputClasses}
-                placeholder="Vul je e-mailadres in"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`${inputClasses} ${emailError ? 'border-red-500' : ''}`}
+                  placeholder="Vul je e-mailadres in"
+                  required
+                />
+                {isCheckingEmail && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <svg className="animate-spin h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </div>
+                )}
+              </div>
+              {emailError && (
+                <p className="mt-2 text-sm text-red-600">
+                  {emailError}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -387,25 +450,77 @@ const InschrijfForm: React.FC = () => {
               </div>
 
               <div className="bg-gray-50 rounded-xl p-6 mb-6">
-                <h3 className="font-semibold mb-4">Jouw inschrijfgegevens:</h3>
+                <h3 className="font-semibold text-gray-900 mb-4">Jouw inschrijfgegevens:</h3>
                 <dl className="space-y-2">
-                  <div className="flex justify-between">
-                    <dt className="text-gray-600">Naam:</dt>
-                    <dd className="font-medium">{formData.naam}</dd>
+                  <div className="flex justify-between items-center">
+                    <dt className="text-gray-600 font-medium">Naam:</dt>
+                    <dd className="text-gray-900 font-medium">{formData.naam}</dd>
                   </div>
-                  <div className="flex justify-between">
-                    <dt className="text-gray-600">E-mail:</dt>
-                    <dd className="font-medium">{formData.email}</dd>
+                  <div className="flex justify-between items-center">
+                    <dt className="text-gray-600 font-medium">E-mail:</dt>
+                    <dd className="text-gray-900 font-medium">{formData.email}</dd>
                   </div>
-                  <div className="flex justify-between">
-                    <dt className="text-gray-600">Rol:</dt>
-                    <dd className="font-medium">{formData.rol}</dd>
+                  <div className="flex justify-between items-center">
+                    <dt className="text-gray-600 font-medium">Rol:</dt>
+                    <dd className="text-gray-900 font-medium">{formData.rol}</dd>
                   </div>
-                  <div className="flex justify-between">
-                    <dt className="text-gray-600">Afstand:</dt>
-                    <dd className="font-medium">{formData.afstand}</dd>
+                  <div className="flex justify-between items-center">
+                    <dt className="text-gray-600 font-medium">Afstand:</dt>
+                    <dd className="text-gray-900 font-medium">{formData.afstand}</dd>
                   </div>
                 </dl>
+              </div>
+
+              <div className="text-center mb-6">
+                <h3 className="font-semibold text-gray-900 mb-4">
+                  Volg ons op sociale media
+                </h3>
+                <div className="flex justify-center gap-4">
+                  <a
+                    href="https://www.facebook.com/p/De-Koninklijke-Loop-61556315443279/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#4267B2] text-white hover:opacity-90 transition-opacity"
+                    aria-label="Facebook"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.77,7.46H14.5v-1.9c0-.9.6-1.1,1-1.1h3V.5h-4.33C10.24.5,9.5,3.44,9.5,5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4Z"/>
+                    </svg>
+                  </a>
+                  <a
+                    href="https://www.instagram.com/koninklijkeloop/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E1306C] text-white hover:opacity-90 transition-opacity"
+                    aria-label="Instagram"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12,2.16c3.2,0,3.58,0,4.85.07,3.25.15,4.77,1.69,4.92,4.92.06,1.27.07,1.65.07,4.85s0,3.58-.07,4.85c-.15,3.23-1.66,4.77-4.92,4.92-1.27.06-1.64.07-4.85.07s-3.58,0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.64-.07-4.85s0-3.58.07-4.85C2.38,3.92,3.9,2.38,7.15,2.23,8.42,2.18,8.8,2.16,12,2.16ZM12,0C8.74,0,8.33,0,7.05.07c-4.35.2-6.78,2.62-7,7C0,8.33,0,8.74,0,12S0,15.67.07,17c.2,4.36,2.62,6.78,7,7C8.33,24,8.74,24,12,24s3.67,0,4.95-.07c4.35-.2,6.78-2.62,7-7C24,15.67,24,15.26,24,12s0-3.67-.07-4.95c-.2-4.35-2.62-6.78-7-7C15.67,0,15.26,0,12,0Zm0,5.84A6.16,6.16,0,1,0,18.16,12,6.16,6.16,0,0,0,12,5.84ZM12,16a4,4,0,1,1,4-4A4,4,0,0,1,12,16ZM18.41,4.15a1.44,1.44,0,1,0,1.44,1.44A1.44,1.44,0,0,0,18.41,4.15Z"/>
+                    </svg>
+                  </a>
+                  <a
+                    href="https://www.youtube.com/@DeKoninklijkeLoop"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FF0000] text-white hover:opacity-90 transition-opacity"
+                    aria-label="YouTube"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.5,6.19a3.02,3.02,0,0,0-2.12-2.12C19.54,3.5,12,3.5,12,3.5s-7.54,0-9.38.57A3.02,3.02,0,0,0,.5,6.19C0,8.03,0,12,0,12s0,3.97.5,5.81a3.02,3.02,0,0,0,2.12,2.12C4.46,20.5,12,20.5,12,20.5s7.54,0,9.38-.57a3.02,3.02,0,0,0,2.12-2.12C24,15.97,24,12,24,12S24,8.03,23.5,6.19ZM9.5,15.5v-7l6,3.5Z"/>
+                    </svg>
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/company/dekoninklijkeloop"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0A66C2] text-white hover:opacity-90 transition-opacity"
+                    aria-label="LinkedIn"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19,3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V5C21,3.9,20.1,3,19,3z M9,17H6.5v-7H9V17z M7.7,8.7c-0.8,0-1.4-0.7-1.4-1.4c0-0.8,0.6-1.4,1.4-1.4c0.8,0,1.4,0.6,1.4,1.4C9.1,8.1,8.5,8.7,7.7,8.7z M18,17h-2.4v-3.8c0-1.1,0-2.5-1.5-2.5s-1.8,1.2-1.8,2.4V17h-2.4v-7h2.3v1h0c0.4-0.7,1.3-1.5,2.7-1.5c2.9,0,3.4,1.9,3.4,4.3V17z"/>
+                    </svg>
+                  </a>
+                </div>
               </div>
 
               <div className="flex gap-4">
