@@ -24,7 +24,7 @@ export const socialLinks: SocialLinkType[] = [
 ];
 
 export const createQuickLinks = (
-  handleInschrijfClick: () => void,
+  _handleInschrijfClick: () => void,
   handlePrivacyClick: () => void
 ): QuickLinkType[] => [
   { text: 'Home', to: '/' },

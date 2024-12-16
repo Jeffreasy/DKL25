@@ -1,22 +1,21 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar/Navbar';
-import { Footer } from './footer/Footer';
-import ScrollToTop from '../ScrollToTop';
+import { Footer } from './footer';
 
 interface LayoutProps {
   children: React.ReactNode;
-  onInschrijfClick: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, onInschrijfClick }) => {
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen">
-      <ScrollToTop />
-      <Navbar onInschrijfClick={onInschrijfClick} />
+    <div className="min-h-screen flex flex-col bg-white">
+      <Navbar />
       <main className="flex-grow">
+        <Outlet />
         {children}
       </main>
-      <Footer onInschrijfClick={onInschrijfClick} />
+      <Footer />
     </div>
   );
 };
