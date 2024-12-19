@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  FaHollyBerry, 
+  FaSnowflake, 
+  FaCandyCane, 
+  FaGift, 
+  FaBell,
+  FaTree,
+  FaStar
+} from 'react-icons/fa';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PeopleIcon from '@mui/icons-material/People';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -87,62 +96,100 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
   if (!data) return null;
 
   return (
-    <section className="relative w-full bg-primary/5 py-8 text-center font-heading overflow-hidden isolate">
-      {/* Accent Bars */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary-light" aria-hidden="true" />
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary-light" aria-hidden="true" />
-
-      {/* Side Decorations */}
-      <div className="absolute top-0 -left-24 bottom-0 w-[15vw] min-w-[60px] max-w-[200px] bg-gradient-45 from-primary/10 to-primary-light/10 -skew-x-15 -z-10" aria-hidden="true" />
-      <div className="absolute top-0 -right-24 bottom-0 w-[15vw] min-w-[60px] max-w-[200px] bg-gradient-45 from-primary/10 to-primary-light/10 skew-x-15 -z-10" aria-hidden="true" />
-
-      <div className="max-w-[900px] mx-auto px-4 py-6 relative">
-        {/* Circular Decorations */}
-        <div className="hidden lg:block absolute top-1/2 -left-[60px] w-[clamp(30px,4vw,40px)] h-[clamp(30px,4vw,40px)] bg-primary/10 rounded-full -translate-y-1/2" aria-hidden="true" />
-        <div className="hidden lg:block absolute top-1/2 -right-[60px] w-[clamp(30px,4vw,40px)] h-[clamp(30px,4vw,40px)] bg-primary/10 rounded-full -translate-y-1/2" aria-hidden="true" />
-
-        {/* Content */}
-        <div className="flex flex-col gap-2">
-          <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] leading-tight text-gray-900 font-bold tracking-tight">
-            {data.title}
-          </h2>
-          <p className="text-[clamp(1.5rem,3.5vw,2rem)] leading-snug text-gray-600">
-            {data.subtitle}
-          </p>
-          <p className="text-[clamp(1.5rem,3.5vw,2rem)] leading-snug text-primary font-semibold">
-            {data.cta_text}
-          </p>
+    <section className="relative w-full bg-gradient-to-b from-[#ff9328]/40 to-[#ff9328]/50 py-8 text-center font-heading overflow-hidden isolate">
+      {/* Grote centrale kerstboom op de achtergrond */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div className="relative transform translate-y-[60%]">
+          <FaTree className="text-festive-green text-[25rem] opacity-20 animate-pulse-slow" />
+          <FaStar className="absolute top-20 left-0 text-festive-gold text-4xl animate-pulse" />
+          <FaStar className="absolute top-32 right-0 text-festive-gold text-3xl animate-pulse delay-300" />
+          <FaStar className="absolute top-40 left-10 text-festive-gold text-2xl animate-pulse delay-500" />
         </div>
+      </div>
 
-        {/* Image */}
-        <div className="mt-6 max-w-[600px] mx-auto p-2.5">
-          <img 
-            src={data.image_url}
-            alt="Deelnemers van de Koninklijke Loop in actie"
-            className="w-full h-auto aspect-video object-cover rounded-lg shadow-lg"
-            loading="lazy"
-            width="400"
-            height="300"
-            decoding="async"
+      {/* Linker kerstboom onderaan */}
+      <div className="absolute bottom-0 left-20 transform -translate-y-20">
+        <FaTree className="text-festive-green text-[12rem] opacity-30 animate-pulse-slow" />
+      </div>
+
+      {/* Rechter kerstboom onderaan */}
+      <div className="absolute bottom-0 right-20 transform -translate-y-20">
+        <FaTree className="text-festive-green text-[12rem] opacity-30 animate-pulse-slow" />
+      </div>
+
+      {/* Sneeuwvlokken bovenaan */}
+      <div className="absolute top-0 left-0 right-0 flex justify-around py-2">
+        {[...Array(8)].map((_, i) => (
+          <FaSnowflake 
+            key={i}
+            className={`text-white text-3xl animate-float delay-${(i * 200) % 1000}`}
+            style={{ opacity: 0.6 }}
           />
-        </div>
+        ))}
+      </div>
 
-        {/* Event Details Grid */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {data.event_details.map((detail, index) => (
-            <EventDetailCard key={index} {...detail} />
-          ))}
-        </div>
+      {/* Linker decoratie kolom */}
+      <div className="absolute left-8 top-20 flex flex-col gap-10 z-10">
+        <FaHollyBerry className="text-primary text-5xl animate-float opacity-90" />
+        <FaCandyCane className="text-primary text-5xl animate-float delay-200 opacity-90 rotate-45" />
+        <FaGift className="text-primary text-5xl animate-float delay-400 opacity-90" />
+      </div>
 
-        {/* Inschrijf Button */}
-        <div className="mt-12">
-          <button
-            onClick={onInschrijfClick}
-            className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center gap-2 mx-auto"
-          >
-            <span>Schrijf je nu in</span>
-            <ArrowForwardIcon />
-          </button>
+      {/* Rechter decoratie kolom */}
+      <div className="absolute right-8 top-20 flex flex-col gap-10 z-10">
+        <FaBell className="text-festive-gold text-5xl animate-float opacity-90" />
+        <FaGift className="text-primary text-5xl animate-float delay-200 opacity-90" />
+        <FaCandyCane className="text-primary text-5xl animate-float delay-400 opacity-90 -rotate-45" />
+      </div>
+
+      {/* Content container met feestelijke border */}
+      <div className="max-w-[900px] mx-auto px-8 py-12 relative z-10">
+        <div className="relative border-4 border-white/20 rounded-2xl p-8 backdrop-blur-sm">
+          {/* Content */}
+          <div className="flex flex-col gap-4">
+            <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] leading-tight text-gray-900 font-bold tracking-tight">
+              {data.title}
+            </h2>
+            <p className="text-[clamp(1.5rem,3.5vw,2rem)] leading-snug text-gray-700">
+              {data.subtitle}
+            </p>
+            <p className="text-[clamp(1.5rem,3.5vw,2rem)] leading-snug text-primary font-semibold">
+              {data.cta_text}
+            </p>
+          </div>
+
+          {/* Image met feestelijke border */}
+          <div className="mt-8 max-w-[600px] mx-auto">
+            <div className="p-2 bg-gradient-to-r from-festive-gold/20 to-primary/20 rounded-xl">
+              <img 
+                src={data.image_url}
+                alt="Deelnemers van de Koninklijke Loop in actie"
+                className="w-full h-auto aspect-video object-cover rounded-lg shadow-lg"
+                loading="lazy"
+                width="400"
+                height="300"
+                decoding="async"
+              />
+            </div>
+          </div>
+
+          {/* Event Details met verbeterde styling */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {data.event_details.map((detail, index) => (
+              <EventDetailCard key={index} {...detail} />
+            ))}
+          </div>
+
+          {/* Verbeterde Inschrijf Button */}
+          <div className="mt-12">
+            <button
+              onClick={onInschrijfClick}
+              className="bg-primary hover:bg-primary-dark text-white px-10 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-3 mx-auto border-2 border-white/20"
+            >
+              <span>Schrijf je nu in</span>
+              <ArrowForwardIcon />
+            </button>
+          </div>
         </div>
       </div>
 
