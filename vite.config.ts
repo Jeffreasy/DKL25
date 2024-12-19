@@ -1,9 +1,9 @@
+// Deelt altijd de volledige code
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -38,6 +38,9 @@ export default defineConfig({
       }
     })
   ],
+  server: {
+    port: 3000,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -46,6 +49,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash][extname]',
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
