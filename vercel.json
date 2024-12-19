@@ -1,4 +1,3 @@
-// Deelt altijd de volledige code
 {
   "framework": "vite",
   "buildCommand": "npm run build",
