@@ -9,30 +9,22 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],
+      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
-        name: 'DKL25MAIN',
-        short_name: 'DKL25',
-        description: 'De Koninklijke Loop 2025',
-        theme_color: '#ff9328',
-        background_color: '#ffffff',
-        display: 'standalone',
+        name: 'De Koninklijke Loop 2025',
+        short_name: 'DKL 2025',
+        description: 'De Koninklijke Loop 2025 is een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.',
+        theme_color: '#FF6B00',
         icons: [
           {
-            src: '/icons/icon-192.png',
+            src: '/icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-512.png',
+            src: '/icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png'
-          },
-          {
-            src: '/icons/icon-512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
           }
         ]
       }
@@ -54,10 +46,11 @@ export default defineConfig({
         assetFileNames: 'assets/[name].[hash][extname]',
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
+          ui: ['@headlessui/react', '@mui/material', '@mui/icons-material']
         }
       }
     },
-    chunkSizeWarningLimit: 600
+    sourcemap: true,
+    target: 'esnext'
   }
 })

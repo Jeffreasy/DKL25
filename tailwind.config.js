@@ -74,6 +74,7 @@ export default {
       },
       screens: {
         'xs': '375px',
+        'print': {'raw': 'print'},
       },
       backgroundImage: {
         'gradient-45': 'linear-gradient(45deg, var(--tw-gradient-from), var(--tw-gradient-to))',

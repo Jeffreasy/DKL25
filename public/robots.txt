@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Bescherm privacy-gevoelige routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+
+# Voorkom indexering van zoekresultaten
+Disallow: /*?*query=
+
+# Sta media toe
+Allow: /images/
+Allow: /assets/
+Allow: /media/
+
+# Sitemap locatie
+Sitemap: https://dekoninklijkeloop.nl/sitemap.xml 

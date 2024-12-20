@@ -1,13 +1,322 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DKL25MAIN</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Basis SEO -->
+  <title>De Koninklijke Loop 2025 - Loop mee en steun het goede doel</title>
+  <meta name="description" content="De Koninklijke Loop 2025 is een uniek hardloopevenement in Nederland. Schrijf je in, steun het goede doel en ervaar een onvergetelijke dag!">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="De Koninklijke Loop 2025" />
+  <meta property="og:description" content="Loop mee met de Koninklijke Loop, steun het goede doel en beleef een sportieve dag vol plezier!" />
+  <meta property="og:image" content="https://www.koninklijkeloop.nl/images/hero.jpg" />
+  <meta property="og:url" content="https://www.koninklijkeloop.nl" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="De Koninklijke Loop 2025" />
+  <meta name="twitter:description" content="Doe mee met de Koninklijke Loop 2025 en steun een goed doel!" />
+  <meta name="twitter:image" content="https://www.koninklijkeloop.nl/images/hero.jpg" />
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Gestructureerde data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.koninklijkeloop.nl/#website",
+        "url": "https://www.koninklijkeloop.nl",
+        "name": "De Koninklijke Loop",
+        "description": "Een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.",
+        "publisher": {
+          "@id": "https://www.koninklijkeloop.nl/#organization"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://www.koninklijkeloop.nl/#webpage",
+        "url": "https://www.koninklijkeloop.nl",
+        "name": "Home - De Koninklijke Loop",
+        "isPartOf": {
+          "@id": "https://www.koninklijkeloop.nl/#website"
+        },
+        "description": "Startpagina van De Koninklijke Loop 2025",
+        "inLanguage": "nl"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.koninklijkeloop.nl/#organization",
+        "name": "De Koninklijke Loop",
+        "url": "https://www.koninklijkeloop.nl",
+        "logo": "https://www.koninklijkeloop.nl/images/logo.png",
+        "sameAs": [
+          "https://www.instagram.com/koninklijkeloop/",
+          "https://www.facebook.com/p/De-Koninklijke-Loop-61556315443279/"
+        ],
+        "description": "De organisatie achter De Koninklijke Loop 2025."
+      },
+      {
+        "@type": "Event",
+        "@id": "https://www.koninklijkeloop.nl/#event",
+        "name": "De Koninklijke Loop 2025",
+        "startDate": "2025-05-17T09:00",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {
+          "@type": "Place",
+          "name": "Koninklijke Weg",
+          "address": "Apeldoorn, Nederland"
+        },
+        "description": "De Koninklijke Loop 2025 is een sponsorloop mede georganiseerd door mensen met een beperking voor mensen met een beperking. Loop mee en steun een goed doel!",
+        "image": "https://www.koninklijkeloop.nl/images/hero.jpg",
+        "url": "https://www.koninklijkeloop.nl",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.koninklijkeloop.nl/aanmelden",
+          "price": "0",
+          "priceCurrency": "EUR",
+          "availability": "https://schema.org/InStock",
+          "validFrom": "2025-01-15T00:00"
+        },
+        "organizer": {
+          "@id": "https://www.koninklijkeloop.nl/#organization"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://www.koninklijkeloop.nl/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Wat maakt De Koninklijke Loop zo bijzonder?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "De Koninklijke Loop is een sponsorloop mede georganiseerd door mensen met een beperking voor mensen met een beperking. We lopen de route over de Koninklijke weg, een rolstoelvriendelijke wandelroute."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Waar vindt de Koninklijke Loop plaats?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "De Koninklijke Loop vindt plaats op de Koninklijke Weg, een rolstoelvriendelijke route. We lopen verschillende afstanden tussen Assel en Paleis het Loo, Apeldoorn. De deelnemers worden vanaf de Grote Kerk in Apeldoorn naar de startpunten van de verschillende afstanden gebracht. Vanuit hier wandelen de deelnemers naar de finish, de Grote Kerk, waar de feestelijke inhuldiging plaatsvindt."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Wanneer vindt de Koninklijke Loop 2025 plaats?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "De Koninklijke Loop vindt op zaterdag 17 mei 2025 plaats."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Kun je winnen bij de Koninklijke Loop?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "De Koninklijke Loop is geen wedstrijd. Wel krijgt iedereen die de finish haalt een mooie medaille. Dus ook al is het geen wedstrijd, bij de Koninklijke Loop is iedereen een winnaar."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hoe kan ik meedoen?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Super dat je mee wilt doen! Inschrijven kan via de inschrijvingspagina vanaf 15 januari 2025. Als je voor deze datum het formulier invult, krijg je tzt een seintje wanneer de inschrijving echt begint."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Moet je betalen om mee te doen met DKL 25?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Deelname aan de loop is helemaal gratis. Wel moet je jezelf van tevoren opgeven."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Wat als je hulp of begeleiding nodig hebt tijdens de loop?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Een begeleider of iemand die je helpt, kan zich ook via het formulier opgeven. Heb je niemand die je kan begeleiden of helpen en heb je dit wel nodig, geef dit even aan bij de bijzonderheden, dan kijken we of we je vanuit de organisatie kunnen helpen."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 25?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Er kunnen maximaal 75 mensen meedoen met de Koninklijke Loop. Zorg dus dat je op tijd inschrijft!"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Wanneer sluit de inschrijving?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Je kunt je inschrijven t/m 7 mei 2025. Let wel op: er kunnen maximaal 75 wandelaars deelnemen, mochten er eerder dan 7 mei 2025 al 75 deelnemers zijn, dan sluit de inschrijving eerder."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Oeps, ik kan toch niet meedoen. Wat nu?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Wat vervelend, maar je kunt je altijd afmelden via de contactgegevens van de organisatie. Deze heb je gekregen bij je aanmelding. Of je kunt het contactformulier op deze site gebruiken. Voor de afmelding worden verder geen kosten in rekening gebracht."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Welke afstanden kan ik kiezen?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Je kunt kiezen uit de 15, 10, 6 of 2,5 km."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is de 2,5 km iets voor mij?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Tijdens de 2,5 km afstand lopen we vanaf Berg en Bos in Apeldoorn door de groene buitenwijken rond Paleis het Loo naar de finish. Hier wandel je over vlak terrein en deze afstand is geschikt voor de onervaren wandelaar."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hoe pittig is de 6 km?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In Hoog Soeren start de loop van de 6 kilometer. Hier ga je over heuvelachtig landschap, deze afstand is geschikt voor de licht getrainde wandelaar."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Ben ik klaar voor de 10 km?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Bij halte Assel is het beginpunt van de 10 kilometerloop. Over de prachtige Asselse hei lopen we dan verder naar Hoog Soeren en Apeldoorn. Voor de 10 km moet je een redelijk goed getrainde wandelaar zijn en ga je door heuvelachtig gebied."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Wie durft de 15 km aan?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Bij het oude kerkje in het hartje Kootwijk start de 15 km van de Koninklijke Loop. De 15 km is geschikt voor getrainde lopers, want je gaat over heuvelachtig terrein lopen."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Zijn er plekken om even op adem te komen?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Er zijn diverse punten onderweg waar je even kunt zitten en uitrusten, hier wordt drinken uitgedeeld. Voordat je start, krijg je ook een pakketje met drinken en wat snacks mee. Dus als je moe bent, kun je ook tussen de rustpunten door even stoppen."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is er hulp tijdens de loop?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Heb je een persoonlijke begeleider of hulp nodig, dan kan hij of zij zich ook inschrijven voor de loop. Tijdens de loop lopen er ook verschillende vrijwilligers mee om de loop in zijn geheel te begeleiden. Zij hebben bijvoorbeeld een EHBO-kit bij zich en kunnen medische hulp verlenen."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Kan ik zelf vrijwilliger worden?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Alle hulp is welkom! Neem contact op via het contactformulier, we horen graag van je!"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hoe kan ik doneren?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Doneren kan vanaf het moment dat de inschrijving geopend is. De inzameling verloopt via GoFundMe en alle giften komen, op de administratieve kosten van GoFundMe na, volledig ten goede van het goede doel."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Welk goed doel steunen we dit jaar?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Dit jaar is het goede doel wederom het Liliane Fonds. Het Liliane Fonds ondersteunt wereldwijd kinderen met een beperking en helpt hen door hun leefsituatie te verbeteren."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Wil je ons als bedrijf of organisatie sponsoren?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Bedrijven of organisaties zijn natuurlijk van harte welkom om de Koninklijke Loop of het goede doel te sponsoren. We horen graag van je via ons contactformulier."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hoe kan ik contact opnemen?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Je kunt direct contact met ons opnemen via het contactformulier. We reageren zo snel mogelijk op je bericht."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "TouristTrip",
+        "@id": "https://www.koninklijkeloop.nl/#route",
+        "name": "Koninklijke Weg",
+        "description": "De Koninklijke Weg loopt van Paleis Noordeinde in Den Haag, via Soestdijk naar Paleis Het Loo. Onderweg loop je door het Groene Hart, over de Utrechtse Heuvelrug en via de Veluwe.",
+        "image": "https://cdn.prod.website-files.com/65c6896e8519c5d0bae5586f/671ff32e5e9bec64a207e3b2_route%20Koninklijke%20weg.jpg",
+        "touristType": "Rolstoelvriendelijke wandelroute",
+        "subjectOf": {
+          "@type": "Place",
+          "name": "Paleis Noordeinde",
+          "description": "Paleis Noordeinde is het beginpunt van de Koninklijke Weg. Het paleis is een van de drie paleizen die door de Nederlandse staat ter beschikking zijn gesteld aan het staatshoofd.",
+          "address": "Den Haag, Nederland"
+        },
+        "additionalProperty": [
+          {
+            "@type": "PropertyValue",
+            "name": "Toegankelijkheid",
+            "value": "Het pad is onderverdeeld in 21 etappes van 5,4 tot 14 km en is geschikt voor mensen met een lichamelijke beperking."
+          }
+        ],
+        "hasPart": {
+          "@type": "WebPage",
+          "name": "Interactieve Kaart",
+          "url": "https://www.komoot.com/nl-nl/tour/1914852208/embed",
+          "description": "Interactieve kaart van de Koninklijke Weg."
+        }
+      },
+      {
+        "@type": "Article",
+        "@id": "https://www.koninklijkeloop.nl/#terms",
+        "name": "Algemene Voorwaarden De Koninklijke Loop 2025",
+        "description": "Volledige algemene voorwaarden voor deelname aan De Koninklijke Loop 2025.",
+        "articleBody": "Hier komt de volledige tekst van de algemene voorwaarden uit de TermsModal. (Gebruik de eerder gegeven content.)",
+        "isPartOf": {
+          "@id": "https://www.koninklijkeloop.nl/#event"
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>

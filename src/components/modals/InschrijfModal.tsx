@@ -8,13 +8,14 @@ import HelpIcon from '@mui/icons-material/Help';
 import GroupsIcon from '@mui/icons-material/Groups';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import type { InschrijfModalProps } from './types';
+import { modalBaseStyles } from './styles';
 
 export const InschrijfModal: React.FC<InschrijfModalProps> = ({ isOpen, onClose }) => {
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
+      <div className={modalBaseStyles.overlay}>
         <Dialog.Panel 
-          className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-[calc(100%-0.5rem)] xs:max-w-[calc(100%-1rem)] sm:max-w-xl relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8"
+          className={modalBaseStyles.panel}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="relative">

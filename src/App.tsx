@@ -8,12 +8,14 @@ import { InschrijfModal, DonatieModal } from './components/modals';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AIChatButton from './components/AIChatButton';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/home/Home'));
 const OverOns = lazy(() => import('./pages/over-ons/OverOns'));
 const Contact = lazy(() => import('./pages/contact/Contact'));
 const DKL = lazy(() => import('./pages/dkl/DKL'));
+const Aanmelden = lazy(() => import('./pages/Aanmelden/aanmelden'));
 
 export default function App() {
   const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);
@@ -87,16 +89,24 @@ export default function App() {
             </Suspense>
           } 
         />
+        <Route 
+          path="/aanmelden" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <Aanmelden />
+            </Suspense>
+          } 
+        />
       </Route>
     )
   );
 
   return (
-    <>
+    <HelmetProvider>
       <RouterProvider router={router} />
       <AIChatButton />
       <ScrollToTopButton />
       <Analytics />
-    </>
+    </HelmetProvider>
   );
 }
