@@ -14,15 +14,14 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/email/send-confirmation",
-      "dest": "/api/email/send-confirmation.ts",
-      "methods": ["POST", "OPTIONS"]
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
