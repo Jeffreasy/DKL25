@@ -158,18 +158,21 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
             </p>
           </div>
 
-          {/* Image met feestelijke border */}
+          {/* Video met feestelijke border ipv Image */}
           <div className="mt-8 max-w-[600px] mx-auto">
             <div className="p-2 bg-gradient-to-r from-festive-gold/20 to-primary/20 rounded-xl">
-              <img 
-                src={data.image_url}
-                alt="Deelnemers van de Koninklijke Loop in actie"
-                className="w-full h-auto aspect-video object-cover rounded-lg shadow-lg"
-                loading="lazy"
-                width="400"
-                height="300"
-                decoding="async"
-              />
+              <div className="relative w-full aspect-video rounded-lg shadow-lg overflow-hidden">
+                <iframe
+                  src="https://streamable.com/e/opjpma"
+                  frameBorder="0"
+                  width="100%"
+                  height="100%"
+                  allowFullScreen
+                  allow="autoplay"
+                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                  title="De Koninklijke Loop promotievideo"
+                />
+              </div>
             </div>
           </div>
 
