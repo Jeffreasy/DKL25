@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { aanmeldSchema, AanmeldFormData } from '../types/schema';
 import { supabase } from '@/lib/supabaseClient';
+import { sendConfirmationEmail } from '@/utils/emailService';
 
 export const useAanmeldForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,6 +43,15 @@ export const useAanmeldForm = () => {
         .insert([submissionData]);
 
       if (error) throw error;
+
+      // Stuur bevestigingsmail
+      await sendConfirmationEmail({
+        email: formData.email,
+        naam: formData.naam,
+        rol: formData.rol,
+        afstand: formData.afstand
+      });
+
       setShowSuccess(true);
       form.reset();
     } catch (error) {
