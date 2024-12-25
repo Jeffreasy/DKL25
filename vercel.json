@@ -17,8 +17,7 @@
   "rewrites": [
     {
       "source": "/api/email/send-confirmation",
-      "destination": "/api/email/send-confirmation",
-      "methods": ["POST"]
+      "destination": "/api/email/send-confirmation"
     },
     {
       "source": "/api/:path*",
