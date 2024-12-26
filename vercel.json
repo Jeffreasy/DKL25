@@ -14,18 +14,19 @@
       }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/email/send-confirmation",
-      "destination": "/api/email/send-confirmation"
+      "src": "/api/email/send-contact",
+      "dest": "api/email/send-contact.ts"
     },
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/api/email/send-confirmation",
+      "dest": "api/email/send-confirmation.ts"
     }
-  ]
+  ],
+  "env": {
+    "MAILGUN_API_KEY": "@mailgun-api-key",
+    "MAILGUN_DOMAIN": "@mailgun-domain",
+    "MAILGUN_FROM": "@mailgun-from"
+  }
 }

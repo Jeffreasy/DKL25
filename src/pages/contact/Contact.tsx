@@ -14,25 +14,19 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
     setIsContactModalOpen(true);
   };
 
-  const handlePrivacyClick = () => {
-    setIsPrivacyModalOpen(true);
-  };
-
   return (
     <div className="min-h-screen pt-20 bg-white">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FAQ 
-          onContactClick={handleContactClick}
-          onInschrijfClick={onInschrijfClick}
-        />
-      </div>
-
+      <FAQ 
+        onContactClick={handleContactClick}
+        onInschrijfClick={onInschrijfClick}
+      />
+      
       <ContactModal 
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
-        onPrivacyClick={handlePrivacyClick}
+        onPrivacyClick={() => setIsPrivacyModalOpen(true)}
       />
-
+      
       <PrivacyModal
         isOpen={isPrivacyModalOpen}
         onClose={() => setIsPrivacyModalOpen(false)}

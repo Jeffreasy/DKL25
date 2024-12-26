@@ -1,317 +1,397 @@
-import { useState } from 'react';
-import { useAanmeldForm } from '../hooks/useAanmeldForm';
-import { TermsModal } from '../components/TermsModal';
-import { SuccessMessage } from './SuccessMessage';
+import { useState, useEffect } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { RegistrationSchema, type RegistrationFormData, validateForm } from '../types/schema';
+import { TermsModal } from './TermsModal';
+import { supabase } from '../../../lib/supabase';
 
-export const FormContainer = () => {
-  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const {
-    form,
-    isSubmitting,
-    showSuccess,
-    showError,
-    showTelefoon,
-    showBijzonderheden,
-    onSubmit
-  } = useAanmeldForm();
+export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void }> = ({ 
+  onSuccess 
+}) => {
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [hasReadTerms, setHasReadTerms] = useState(false);
 
-  const {
-    register,
-    formState: { errors },
-    setValue,
-    handleSubmit,
-    watch
-  } = form;
+  const { register, handleSubmit, setValue, control, formState: { errors } } = useForm<RegistrationFormData>({
+    resolver: zodResolver(RegistrationSchema),
+    defaultValues: {
+      ondersteuning: 'Nee' as const,
+      bijzonderheden: ''
+    }
+  });
 
-  const selectedRole = watch('rol');
-  const selectedDistance = watch('afstand');
-  const selectedSupport = watch('ondersteuning');
+  const selectedRole = useWatch({
+    control,
+    name: 'rol'
+  });
 
-  const submitHandler = handleSubmit(onSubmit);
+  const selectedOndersteuning = useWatch({
+    control,
+    name: 'ondersteuning'
+  });
 
-  if (showSuccess) {
-    return <SuccessMessage 
-      data={{
-        ...form.getValues(),
-        telefoon: form.getValues().telefoon || '',
-        bijzonderheden: form.getValues().bijzonderheden || ''
-      }} 
-    />;
-  }
+  const handleAcceptTerms = () => {
+    setHasReadTerms(true);
+    setValue('terms', true);
+    setIsTermsOpen(false);
+  };
+
+  const onSubmit = async (data: RegistrationFormData) => {
+    try {
+      console.log('Form submitted with data:', data); // Debug log
+      setIsSubmitting(true);
+      setSubmitError(null);
+      
+      const validatedData = validateForm(data);
+      console.log('Data validated:', validatedData); // Debug log
+
+      // Sla op in Supabase
+      const { data: registration, error: supabaseError } = await supabase
+        .from('aanmeldingen')
+        .insert([{
+          naam: validatedData.naam,
+          email: validatedData.email,
+          telefoon: validatedData.telefoon,
+          rol: validatedData.rol,
+          afstand: validatedData.afstand,
+          ondersteuning: validatedData.ondersteuning,
+          bijzonderheden: validatedData.bijzonderheden,
+          terms: validatedData.terms
+        }]);
+
+      console.log('Supabase response:', { registration, error: supabaseError }); // Debug log
+
+      if (supabaseError) {
+        console.error('Supabase error:', supabaseError);
+        throw new Error('Er ging iets mis bij het opslaan van je aanmelding');
+      }
+
+      // Verstuur bevestigingsmail
+      const response = await fetch('/api/email/send-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(validatedData)
+      });
+
+      console.log('Email response:', response); // Debug log
+
+      if (!response.ok) {
+        throw new Error('Er ging iets mis bij het versturen van de bevestigingsmail');
+      }
+
+      onSuccess(validatedData);
+    } catch (error) {
+      console.error('Submit error:', error);
+      setSubmitError(error instanceof Error ? error.message : 'Er ging iets mis bij je aanmelding');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Reset bijzonderheden when ondersteuning changes to 'Nee'
+  useEffect(() => {
+    if (selectedOndersteuning === 'Nee') {
+      setValue('bijzonderheden', '');
+    }
+  }, [selectedOndersteuning, setValue]);
 
   return (
-    <div className="w-full max-w-[900px] mx-auto my-16 p-12 bg-white rounded-xl shadow-lg text-gray-900">
-      <form onSubmit={submitHandler} className="space-y-12">
+    <div className="p-6 sm:p-8">
+      <form 
+        onSubmit={(e) => {
+          console.log('Form submit triggered'); // Debug log
+          handleSubmit(onSubmit)(e);
+        }} 
+        className="space-y-10"
+      >
         {/* Contactgegevens */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 pb-4 relative
-            after:content-[''] after:absolute after:bottom-0 after:left-0 
-            after:w-12 after:h-1 after:bg-primary">
+        <div className="space-y-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
             Je contactgegevens
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label htmlFor="naam" className="block text-sm font-medium text-gray-700">
                 Naam
               </label>
               <input
                 type="text"
-                {...register('naam')}
-                className={`w-full px-5 py-4 rounded-xl border-2 text-gray-900 
-                  ${errors.naam ? 'border-red-500' : 'border-gray-200'}
-                  hover:border-primary focus:border-primary focus:ring-2 
-                  focus:ring-primary/20 transition-all
-                  placeholder:text-gray-400`}
+                id="naam"
+                className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                  text-gray-900 placeholder-gray-400 bg-white
+                  ${errors.naam ? 'border-red-500' : 'border-gray-200 focus:border-[#ff9328]'}`}
                 placeholder="Vul je naam in"
+                {...register('naam')}
               />
               {errors.naam && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.naam.message}
-                </p>
+                <p className="text-sm text-red-500 mt-1 font-medium">{errors.naam.message}</p>
               )}
             </div>
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 E-mailadres
               </label>
               <input
                 type="email"
-                {...register('email')}
-                className={`w-full px-5 py-4 rounded-xl border-2 text-gray-900
-                  ${errors.email ? 'border-red-500' : 'border-gray-200'}
-                  hover:border-primary focus:border-primary focus:ring-2 
-                  focus:ring-primary/20 transition-all
-                  placeholder:text-gray-400`}
+                id="email"
+                className={`w-full px-4 py-3 rounded-xl border-2 transition-colors 
+                  focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                  text-gray-900 placeholder-gray-400 bg-white
+                  ${errors.email ? 'border-red-500' : 'border-gray-200 focus:border-[#ff9328]'}`}
                 placeholder="Vul je e-mailadres in"
+                {...register('email')}
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.email.message}
-                </p>
+                <p className="text-sm text-red-500 mt-1 font-medium">{errors.email.message}</p>
               )}
             </div>
           </div>
         </div>
 
         {/* Rol sectie */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 pb-4 relative
-            after:content-[''] after:absolute after:bottom-0 after:left-0 
-            after:w-12 after:h-1 after:bg-primary">
+        <div className="space-y-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
             Kies je rol
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { value: 'Deelnemer', icon: '👥' },
-              { value: 'Begeleider', icon: '🥢' },
-              { value: 'Vrijwilliger', icon: '🤝' }
-            ].map(({ value, icon }) => (
-              <label key={value} className="cursor-pointer">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {['Deelnemer', 'Begeleider', 'Vrijwilliger'].map((role) => (
+              <label key={role} className="relative cursor-pointer">
                 <input
                   type="radio"
-                  value={value}
-                  {...register('rol')}
+                  value={role}
                   className="peer sr-only"
+                  {...register('rol')}
                 />
-                <div className={`flex flex-col items-center justify-center p-8 rounded-xl 
-                  border border-gray-200 transition-all
-                  ${selectedRole === value ? 'bg-primary/10 border-primary' : 'bg-white'}
-                  hover:border-primary/50`}
-                >
-                  <span className="text-4xl mb-3">{icon}</span>
-                  <span className="font-medium text-center">{value}</span>
+                <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200 
+                  bg-white transition-all hover:shadow-md 
+                  peer-checked:border-[#ff9328] peer-checked:bg-[#ff9328] 
+                  peer-checked:text-white text-gray-900
+                  min-h-[140px] group">
+                  <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
+                    {role === 'Deelnemer' ? '👥' : role === 'Begeleider' ? '🤝' : '💪'}
+                  </span>
+                  <span className="font-semibold text-center text-base">{role}</span>
                 </div>
               </label>
             ))}
           </div>
+          {errors.rol && (
+            <p className="text-sm text-red-500 mt-1 font-medium">{errors.rol.message}</p>
+          )}
+        </div>
 
-          {/* Telefoonveld direct onder rol selectie */}
-          {showTelefoon && (
-            <div className="mt-8">
-              <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg mb-4">
-                <p className="text-sm text-blue-700">
-                  <span className="font-medium">Waarom vragen we je telefoonnummer?</span><br />
-                  Als begeleider/vrijwilliger ben je een belangrijke schakel tijdens het evenement. 
-                  We gebruiken je telefoonnummer alleen om contact met je op te nemen over:
-                  <ul className="mt-2 ml-4 list-disc">
-                    <li>Laatste updates voor het evenement</li>
-                    <li>Belangrijke informatie op de dag zelf</li>
-                    <li>Noodgevallen tijdens het evenement</li>
-                  </ul>
+        {/* Telefoonnummer sectie - alleen voor Begeleider/Vrijwilliger */}
+        {(selectedRole === 'Begeleider' || selectedRole === 'Vrijwilliger') && (
+          <div className="space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
+              Contactgegevens voor tijdens het evenement
+            </h2>
+            <div className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 className="text-base font-semibold text-blue-900 mb-2">
+                  Waarom vragen we je telefoonnummer?
+                </h3>
+                <ul className="text-sm text-blue-800 space-y-2">
+                  <li className="flex items-start">
+                    <span className="text-[#ff9328] mr-2">•</span>
+                    Voor snelle communicatie tijdens het evenement
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#ff9328] mr-2">•</span>
+                    Om je te kunnen bereiken bij last-minute wijzigingen
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-[#ff9328] mr-2">•</span>
+                    Voor coördinatie met andere vrijwilligers/begeleiders
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-2">
+                  Privacy waarborg
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Je telefoonnummer wordt alleen gebruikt voor communicatie rondom het evenement en wordt na afloop niet bewaard. We delen deze informatie nooit met derden.
                 </p>
               </div>
-              <div className="max-w-md">
-                <label className="block text-gray-700 font-semibold mb-2">
+
+              <div className="space-y-2">
+                <label htmlFor="telefoon" className="block text-sm font-medium text-gray-700">
                   Telefoonnummer (optioneel)
                 </label>
                 <input
                   type="tel"
+                  id="telefoon"
+                  className="w-full px-4 py-3 rounded-xl border-2 transition-colors 
+                    focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                    text-gray-900 placeholder-gray-400 bg-white
+                    border-gray-200 focus:border-[#ff9328]"
+                  placeholder="06 - "
                   {...register('telefoon')}
-                  className={`w-full px-5 py-4 rounded-xl border-2 text-gray-900
-                    ${errors.telefoon ? 'border-red-500' : 'border-gray-200'}
-                    hover:border-primary focus:border-primary focus:ring-2 
-                    focus:ring-primary/20 transition-all
-                    placeholder:text-gray-400`}
-                  placeholder="Vul je telefoonnummer in"
                 />
-                {errors.telefoon && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.telefoon.message}
-                  </p>
-                )}
+                <p className="text-sm text-gray-500 mt-1">
+                  Tip: Voeg een tweede nummer toe in het bijzonderheden veld als back-up
+                </p>
+              </div>
+
+              <div className="mt-4">
+                <label htmlFor="bijzonderheden" className="block text-sm font-medium text-gray-700">
+                  Bijzonderheden of voorkeuren
+                </label>
+                <textarea
+                  id="bijzonderheden"
+                  className="w-full px-4 py-3 rounded-xl border-2 transition-colors 
+                    focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                    text-gray-900 placeholder-gray-400 bg-white
+                    border-gray-200 focus:border-[#ff9328]
+                    min-h-[100px] resize-y"
+                  placeholder="Optioneel: Voeg hier eventuele voorkeuren toe voor je rol als begeleider/vrijwilliger, of een alternatief telefoonnummer..."
+                  {...register('bijzonderheden')}
+                />
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Afstand sectie */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 pb-4 relative
-            after:content-[''] after:absolute after:bottom-0 after:left-0 
-            after:w-12 after:h-1 after:bg-primary">
+        {/* Afstand sectie - voor iedereen */}
+        <div className="space-y-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
             Kies je afstand
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { value: '2.5 KM', icon: '🚶', label: '2.5 KM' },
-              { value: '6 KM', icon: '🏃', label: '6 KM' },
-              { value: '10 KM', icon: '🏃‍♂️', label: '10 KM' },
-              { value: '15 KM', icon: '🏃‍♀️', label: '15 KM' }
-            ].map(({ value, icon, label }) => (
-              <label key={value} className="cursor-pointer">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {['2.5 KM', '6 KM', '10 KM', '15 KM'].map((distance) => (
+              <label key={distance} className="relative cursor-pointer">
                 <input
                   type="radio"
-                  value={value}
-                  {...register('afstand')}
+                  value={distance}
                   className="peer sr-only"
+                  {...register('afstand')}
                 />
-                <div className={`flex flex-col items-center justify-center p-8 rounded-xl 
-                  border border-gray-200 transition-all
-                  ${selectedDistance === value ? 'bg-primary/10 border-primary' : 'bg-white'}
-                  hover:border-primary/50`}
-                >
-                  <span className="text-4xl mb-3">{icon}</span>
-                  <span className="font-medium text-center">{label}</span>
+                <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200 
+                  bg-white transition-all hover:shadow-md 
+                  peer-checked:border-[#ff9328] peer-checked:bg-[#ff9328] 
+                  peer-checked:text-white text-gray-900
+                  min-h-[140px] group">
+                  <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
+                    {distance === '2.5 KM' ? '🚶' : distance === '6 KM' ? '🏃' : distance === '10 KM' ? '🏃‍♂️' : '🏃‍♀️'}
+                  </span>
+                  <span className="font-semibold text-center">{distance}</span>
                 </div>
               </label>
             ))}
           </div>
+          {errors.afstand && (
+            <p className="text-sm text-red-500 mt-1 font-medium">{errors.afstand.message}</p>
+          )}
         </div>
 
         {/* Ondersteuning sectie */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 pb-4 relative
-            after:content-[''] after:absolute after:bottom-0 after:left-0 
-            after:w-12 after:h-1 after:bg-primary">
+        <div className="space-y-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
             Heb je ondersteuning nodig?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { value: 'Ja', icon: '✅', label: 'Ja' },
-              { value: 'Nee', icon: '❌', label: 'Nee' },
-              { value: 'Anders', icon: '❓', label: 'Anders' }
-            ].map(({ value, icon, label }) => (
-              <label key={value} className="cursor-pointer">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {['Ja', 'Nee', 'Anders'].map((option) => (
+              <label key={option} className="relative cursor-pointer">
                 <input
                   type="radio"
-                  value={value}
-                  {...register('ondersteuning')}
+                  value={option}
                   className="peer sr-only"
+                  {...register('ondersteuning')}
                 />
-                <div className={`flex flex-col items-center justify-center p-8 rounded-xl 
-                  border border-gray-200 transition-all
-                  ${selectedSupport === value ? 'bg-primary/10 border-primary' : 'bg-white'}
-                  hover:border-primary/50`}
-                >
-                  <span className="text-4xl mb-3">{icon}</span>
-                  <span className="font-medium text-center">{label}</span>
+                <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 
+                  border-gray-200 bg-white transition-all hover:shadow-md 
+                  peer-checked:border-[#ff9328] peer-checked:bg-[#ff9328] 
+                  peer-checked:text-white text-gray-900
+                  min-h-[140px] group">
+                  <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
+                    {option === 'Ja' ? '✅' : option === 'Nee' ? '❌' : '❓'}
+                  </span>
+                  <span className="font-semibold text-center text-gray-900 peer-checked:text-white">
+                    {option}
+                  </span>
                 </div>
               </label>
             ))}
           </div>
-
-          {/* Bijzonderheden veld */}
-          {showBijzonderheden && (
-            <div className="mt-8">
-              <label className="block text-gray-700 font-semibold mb-2">
-                Bijzonderheden
-              </label>
-              <textarea
-                {...register('bijzonderheden')}
-                className="w-full min-h-[140px] px-5 py-4 rounded-xl border-2 text-gray-900
-                  border-gray-200 hover:border-primary focus:border-primary focus:ring-2 
-                  focus:ring-primary/20 transition-all resize-y
-                  placeholder:text-gray-400"
-                placeholder="Vul hier uw bijzonderheden in..."
-              />
-            </div>
+          {errors.ondersteuning && (
+            <p className="text-sm text-red-500 mt-1 font-medium">{errors.ondersteuning.message}</p>
           )}
         </div>
 
-        {/* Terms & Submit sectie */}
-        <div className="flex flex-col items-center space-y-8">
-          <label className="flex items-center gap-3 cursor-pointer group">
+        {/* Terms checkbox */}
+        <div className="flex justify-center pt-6">
+          <label className="flex items-center space-x-3">
             <input
               type="checkbox"
+              disabled={!hasReadTerms}
+              className={`w-5 h-5 rounded border-gray-300 
+                ${hasReadTerms 
+                  ? 'text-[#ff9328] focus:ring-[#ff9328] cursor-pointer' 
+                  : 'text-gray-300 cursor-not-allowed'
+                }`}
               {...register('terms')}
-              className="w-5 h-5 rounded border-2 border-gray-200 
-                text-primary focus:ring-2 focus:ring-primary/20 transition-all
-                checked:bg-primary checked:border-primary
-                group-hover:border-primary/50"
             />
-            <span className="text-gray-700 select-none">
+            <span className="text-sm text-gray-600">
               Ik ga akkoord met de{' '}
               <button
                 type="button"
-                onClick={() => setIsTermsModalOpen(true)}
-                className="text-primary hover:text-primary-dark font-medium 
-                  underline-offset-2 hover:underline focus:outline-none 
-                  focus:ring-2 focus:ring-primary/20 rounded-sm
-                  transition-colors"
+                className="text-[#ff9328] underline hover:text-[#e67f1c] font-medium"
+                onClick={() => setIsTermsOpen(true)}
               >
                 Algemene Voorwaarden
               </button>
             </span>
           </label>
+        </div>
+        {errors.terms && (
+          <p className="text-sm text-red-500 text-center mt-2 font-medium">
+            {errors.terms.message}
+          </p>
+        )}
 
+        {/* Error message */}
+        {submitError && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+            {submitError}
+          </div>
+        )}
+
+        {/* Submit button met loading state */}
+        <div className="mt-8 sm:mt-10">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full max-w-[350px] px-8 py-5 bg-primary text-white font-semibold 
-              rounded-xl hover:bg-primary-dark transform hover:-translate-y-1 
-              hover:shadow-lg transition-all disabled:opacity-50 
-              disabled:cursor-not-allowed"
+            className="w-full max-w-md mx-auto flex justify-center items-center px-8 py-4 
+              text-lg font-semibold text-white bg-[#ff9328] rounded-full 
+              hover:bg-[#e67f1c] transition-all duration-300 
+              hover:-translate-y-0.5 hover:shadow-lg
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
+              active:bg-[#d97919]
+              focus:outline-none focus:ring-2 focus:ring-[#ff9328] focus:ring-offset-2"
           >
-            {isSubmitting ? 'Bezig met verzenden...' : 'Inschrijven'}
+            {isSubmitting ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Bezig met inschrijven...
+              </>
+            ) : (
+              'Inschrijven'
+            )}
           </button>
         </div>
       </form>
 
-      <TermsModal 
-        isOpen={isTermsModalOpen}
-        onClose={() => setIsTermsModalOpen(false)}
-        onAccept={() => {
-          setValue('terms', true);
-          setIsTermsModalOpen(false);
-        }}
+      <TermsModal
+        isOpen={isTermsOpen}
+        onClose={() => setIsTermsOpen(false)}
+        onAccept={handleAcceptTerms}
       />
-
-      {showError && (
-        <div className="mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm text-red-600 font-medium">
-                Er is iets misgegaan bij het versturen van je inschrijving. Probeer het later opnieuw.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

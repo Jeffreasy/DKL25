@@ -1,18 +1,17 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
-import { getRegistrationEmailHtml } from './templates/registration';
+import { getContactEmailHtml } from './templates/contact';
 import { z } from 'zod';
 
 // Request body validatie schema
-const RequestSchema = z.object({
+const ContactSchema = z.object({
   naam: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
   email: z.string().email('Ongeldig email adres'),
-  rol: z.enum(['Deelnemer', 'Begeleider', 'Vrijwilliger']),
-  afstand: z.string(),
-  telefoon: z.string().optional(),
-  ondersteuning: z.enum(['Ja', 'Nee', 'Anders']),
-  bijzonderheden: z.string().optional()
+  bericht: z.string()
+    .min(10, 'Bericht moet minimaal 10 karakters zijn')
+    .max(1000, 'Bericht mag maximaal 1000 karakters zijn'),
+  privacy: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met het privacybeleid')
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -33,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const validatedData = RequestSchema.parse(req.body);
+    const validatedData = ContactSchema.parse(req.body);
 
     const mailgun = new Mailgun(FormData);
     const mg = mailgun.client({
@@ -42,29 +41,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       url: 'https://api.eu.mailgun.net'
     });
 
-    // Stuur bevestigingsmail naar deelnemer
-    await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
-      from: 'De Koninklijke Loop <noreply@dekoninklijkeloop.nl>',
-      to: validatedData.email,
-      subject: 'Bedankt voor je aanmelding - De Koninklijke Loop',
-      html: getRegistrationEmailHtml({ ...validatedData, isConfirmation: true })
-    });
-
     // Stuur notificatie naar admin
     await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
       from: 'De Koninklijke Loop <noreply@dekoninklijkeloop.nl>',
       to: 'info@dekoninklijkeloop.nl',
-      subject: `Nieuwe ${validatedData.rol.toLowerCase()} aanmelding: ${validatedData.naam}`,
-      html: getRegistrationEmailHtml({ ...validatedData, isAdmin: true })
+      subject: `Nieuw contactformulier bericht van ${validatedData.naam}`,
+      html: getContactEmailHtml({ ...validatedData, isConfirmation: false })
+    });
+
+    // Stuur bevestiging naar afzender
+    await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
+      from: 'De Koninklijke Loop <noreply@dekoninklijkeloop.nl>',
+      to: validatedData.email,
+      subject: 'Bedankt voor je bericht - De Koninklijke Loop',
+      html: getContactEmailHtml({ ...validatedData, isConfirmation: true })
     });
 
     return res.status(200).json({
       success: true,
-      message: 'Bevestigingsmail is verstuurd'
+      message: 'Bericht is succesvol verzonden'
     });
 
   } catch (error) {
-    console.error('Email error:', error);
+    console.error('Contact form error:', error);
 
     if (error instanceof z.ZodError) {
       return res.status(400).json({
@@ -76,7 +75,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(500).json({
       success: false,
-      message: 'Er ging iets mis bij het versturen van de bevestigingsmail'
+      message: 'Er ging iets mis bij het versturen van je bericht'
     });
   }
-}
+} 

@@ -9,6 +9,8 @@ import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AIChatButton from './components/AIChatButton';
 import { HelmetProvider } from 'react-helmet-async';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { Toaster } from 'react-hot-toast';
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/home/Home'));
@@ -92,9 +94,9 @@ export default function App() {
         <Route 
           path="/aanmelden" 
           element={
-            <Suspense fallback={<LoadingScreen />}>
+            <ErrorBoundary>
               <Aanmelden />
-            </Suspense>
+            </ErrorBoundary>
           } 
         />
       </Route>
@@ -102,11 +104,14 @@ export default function App() {
   );
 
   return (
-    <HelmetProvider>
-      <RouterProvider router={router} />
-      <AIChatButton />
-      <ScrollToTopButton />
-      <Analytics />
-    </HelmetProvider>
+    <>
+      <Toaster />
+      <HelmetProvider>
+        <RouterProvider router={router} />
+        <AIChatButton />
+        <ScrollToTopButton />
+        <Analytics />
+      </HelmetProvider>
+    </>
   );
 }
