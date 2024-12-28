@@ -11,7 +11,7 @@ import {
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PeopleIcon from '@mui/icons-material/People';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase';
 import type { Database } from '@/types/supabase';
 import { loadInstagramEmbed } from '@/utils/socialScripts';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';

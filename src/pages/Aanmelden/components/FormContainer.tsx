@@ -31,6 +31,8 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
     name: 'ondersteuning'
   });
 
+  const showBijzonderheden = selectedOndersteuning === 'Ja' || selectedOndersteuning === 'Anders';
+
   const handleAcceptTerms = () => {
     setHasReadTerms(true);
     setValue('terms', true);
@@ -39,14 +41,13 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
   const onSubmit = async (data: RegistrationFormData) => {
     try {
-      console.log('Form submitted with data:', data); // Debug log
+      console.log('Form submitted with data:', data);
       setIsSubmitting(true);
       setSubmitError(null);
       
       const validatedData = validateForm(data);
-      console.log('Data validated:', validatedData); // Debug log
 
-      // Sla op in Supabase
+      // 1. Sla op in Supabase
       const { data: registration, error: supabaseError } = await supabase
         .from('aanmeldingen')
         .insert([{
@@ -57,27 +58,37 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           afstand: validatedData.afstand,
           ondersteuning: validatedData.ondersteuning,
           bijzonderheden: validatedData.bijzonderheden,
-          terms: validatedData.terms
-        }]);
+          terms: validatedData.terms,
+          email_verzonden: false // Zet initieel op false
+        }])
+        .select()
+        .single();
 
-      console.log('Supabase response:', { registration, error: supabaseError }); // Debug log
+      if (supabaseError) throw supabaseError;
 
-      if (supabaseError) {
-        console.error('Supabase error:', supabaseError);
-        throw new Error('Er ging iets mis bij het opslaan van je aanmelding');
-      }
-
-      // Verstuur bevestigingsmail
+      // 2. Verstuur bevestigingsmail
       const response = await fetch('/api/email/send-confirmation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(validatedData)
       });
 
-      console.log('Email response:', response); // Debug log
-
       if (!response.ok) {
         throw new Error('Er ging iets mis bij het versturen van de bevestigingsmail');
+      }
+
+      // 3. Update de email_verzonden status in Supabase
+      const { error: updateError } = await supabase
+        .from('aanmeldingen')
+        .update({ 
+          email_verzonden: true,
+          email_verzonden_op: new Date().toISOString()
+        })
+        .eq('id', registration.id);
+
+      if (updateError) {
+        console.error('Error updating email status:', updateError);
+        // Niet blokkeren voor de gebruiker als dit mislukt
       }
 
       onSuccess(validatedData);
@@ -89,7 +100,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
     }
   };
 
-  // Reset bijzonderheden when ondersteuning changes to 'Nee'
+  // Effect om bijzonderheden te resetten als ondersteuning 'Nee' wordt
   useEffect(() => {
     if (selectedOndersteuning === 'Nee') {
       setValue('bijzonderheden', '');
@@ -236,9 +247,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 </p>
               </div>
 
-              <div className="mt-4">
+              <div className={`mt-4 transition-all duration-300 ${showBijzonderheden ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
                 <label htmlFor="bijzonderheden" className="block text-sm font-medium text-gray-700">
-                  Bijzonderheden of voorkeuren
+                  {selectedOndersteuning === 'Ja' ? 'Beschrijf welke ondersteuning je nodig hebt' : 'Beschrijf je situatie'}
                 </label>
                 <textarea
                   id="bijzonderheden"
@@ -247,9 +258,17 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                     text-gray-900 placeholder-gray-400 bg-white
                     border-gray-200 focus:border-[#ff9328]
                     min-h-[100px] resize-y"
-                  placeholder="Optioneel: Voeg hier eventuele voorkeuren toe voor je rol als begeleider/vrijwilliger, of een alternatief telefoonnummer..."
+                  placeholder={selectedOndersteuning === 'Ja' 
+                    ? "Beschrijf hier welke ondersteuning je nodig hebt..." 
+                    : "Beschrijf hier je situatie..."}
                   {...register('bijzonderheden')}
+                  required={showBijzonderheden}
                 />
+                {errors.bijzonderheden && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.bijzonderheden.message?.toString()}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -299,7 +318,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                   type="radio"
                   value={option}
                   className="peer sr-only"
-                  {...register('ondersteuning')}
+                  {...register('ondersteuning', {
+                    onChange: (e) => {
+                      // Extra logging om te zien wat er gebeurt
+                      console.log('Ondersteuning changed:', e.target.value);
+                    }
+                  })}
                 />
                 <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 
                   border-gray-200 bg-white transition-all hover:shadow-md 
@@ -317,8 +341,42 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             ))}
           </div>
           {errors.ondersteuning && (
-            <p className="text-sm text-red-500 mt-1 font-medium">{errors.ondersteuning.message}</p>
+            <p className="text-sm text-red-500 mt-1 font-medium">
+              {errors.ondersteuning.message?.toString()}
+            </p>
           )}
+        </div>
+
+        {/* Bijzonderheden veld met verbeterde transitie */}
+        <div className={`transition-all duration-300 ease-in-out ${
+          showBijzonderheden 
+            ? 'opacity-100 max-h-[500px] mt-6' 
+            : 'opacity-0 max-h-0 overflow-hidden'
+        }`}>
+          <div className="space-y-2">
+            <label htmlFor="bijzonderheden" className="block text-sm font-medium text-gray-700">
+              {selectedOndersteuning === 'Ja' 
+                ? 'Beschrijf welke ondersteuning je nodig hebt'
+                : 'Beschrijf je situatie'}
+            </label>
+            <textarea
+              id="bijzonderheden"
+              className="w-full px-4 py-3 rounded-xl border-2 transition-colors 
+                focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                text-gray-900 placeholder-gray-400 bg-white
+                border-gray-200 focus:border-[#ff9328]
+                min-h-[100px] resize-y"
+              placeholder={selectedOndersteuning === 'Ja' 
+                ? "Beschrijf hier welke ondersteuning je nodig hebt..." 
+                : "Beschrijf hier je situatie..."}
+              {...register('bijzonderheden')}
+            />
+            {errors.bijzonderheden && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.bijzonderheden.message?.toString()}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Terms checkbox */}

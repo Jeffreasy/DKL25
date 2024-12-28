@@ -23,10 +23,5 @@
       "src": "/api/email/send-confirmation",
       "dest": "api/email/send-confirmation.ts"
     }
-  ],
-  "env": {
-    "MAILGUN_API_KEY": "@mailgun-api-key",
-    "MAILGUN_DOMAIN": "@mailgun-domain",
-    "MAILGUN_FROM": "@mailgun-from"
-  }
+  ]
 }

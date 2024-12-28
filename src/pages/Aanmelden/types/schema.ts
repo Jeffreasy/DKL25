@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-// Registratie form schema (zelfde als API)
-export const RegistrationSchema = z.object({
+const baseSchema = z.object({
   naam: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
   email: z.string().email('Ongeldig email adres'),
   rol: z.enum(['Deelnemer', 'Begeleider', 'Vrijwilliger'], {
@@ -17,6 +16,20 @@ export const RegistrationSchema = z.object({
   bijzonderheden: z.string().optional(),
   terms: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met de algemene voorwaarden')
 });
+
+export const RegistrationSchema = baseSchema.refine(
+  (data) => {
+    if ((data.ondersteuning === 'Ja' || data.ondersteuning === 'Anders') && 
+        (!data.bijzonderheden || data.bijzonderheden.length === 0)) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: 'Vul de bijzonderheden in als je ondersteuning nodig hebt',
+    path: ['bijzonderheden'], // Dit zorgt ervoor dat de error bij het juiste veld komt
+  }
+);
 
 export type RegistrationFormData = z.infer<typeof RegistrationSchema>;
 

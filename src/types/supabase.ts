@@ -216,20 +216,24 @@ export interface Database {
           updated_at?: string
         }
       }
-      inschrijvingen: {
+      aanmeldingen: {
         Row: {
-          id: string;
-          created_at: string;
-          naam: string;
-          email: string;
-          rol: 'Deelnemer' | 'Begeleider' | 'Vrijwilliger';
-          afstand: '2.5 KM' | '6 KM' | '10 KM' | '15 KM';
-          ondersteuning: 'Ja' | 'Nee' | 'Anders';
-          bijzonderheden?: string;
-          status: 'pending' | 'approved' | 'rejected';
-        };
-        Insert: Omit<Database['public']['Tables']['inschrijvingen']['Row'], 'id' | 'created_at'>;
-        Update: Partial<Database['public']['Tables']['inschrijvingen']['Row']>;
+          id: string
+          created_at: string
+          updated_at: string
+          naam: string
+          email: string
+          telefoon?: string
+          rol: 'Deelnemer' | 'Begeleider' | 'Vrijwilliger'
+          afstand: '2.5 KM' | '6 KM' | '10 KM' | '15 KM'
+          ondersteuning: 'Ja' | 'Nee' | 'Anders'
+          bijzonderheden: string
+          terms: boolean
+          email_verzonden: boolean
+          email_verzonden_op?: string
+        }
+        Insert: Omit<Database['public']['Tables']['aanmeldingen']['Row'], 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Database['public']['Tables']['aanmeldingen']['Row']>
       }
     }
     Views: {

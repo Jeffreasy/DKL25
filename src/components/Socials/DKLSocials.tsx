@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { SocialLink } from './types';
 import SocialIcon from './SocialIcon';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase';
 
 const socialColors = {
   facebook: '#4267B2',

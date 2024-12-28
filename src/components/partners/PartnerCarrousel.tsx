@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { usePartners } from '@/hooks/usePartners';
 import { PartnerModal } from '@/components/modals/PartnerModal';
-import type { Partner } from '@/types/partner';
 
 const PartnerCarrousel: React.FC = () => {
   const { partners, isLoading, error } = usePartners();
-  const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -20,7 +19,7 @@ const PartnerCarrousel: React.FC = () => {
             {partners.map((partner) => (
               <button
                 key={partner.id}
-                onClick={() => setSelectedPartner(partner)}
+                onClick={() => setSelectedPartnerId(partner.id)}
                 className="w-32 h-16 flex items-center justify-center hover:opacity-75 transition-opacity"
               >
                 <img
@@ -42,7 +41,7 @@ const PartnerCarrousel: React.FC = () => {
                     className="flex-shrink-0"
                   >
                     <button
-                      onClick={() => setSelectedPartner(partner)}
+                      onClick={() => setSelectedPartnerId(partner.id)}
                       className="w-[100px] h-16 flex items-center justify-center"
                     >
                       <img
@@ -59,11 +58,11 @@ const PartnerCarrousel: React.FC = () => {
         </div>
       </section>
 
-      {selectedPartner && (
+      {selectedPartnerId && (
         <PartnerModal 
           isOpen={true}
-          onClose={() => setSelectedPartner(null)}
-          partner={selectedPartner}
+          onClose={() => setSelectedPartnerId(null)}
+          partnerId={selectedPartnerId}
         />
       )}
     </>

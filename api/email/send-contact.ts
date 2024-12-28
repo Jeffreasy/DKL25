@@ -4,6 +4,24 @@ import Mailgun from 'mailgun.js';
 import { getContactEmailHtml } from './templates/contact';
 import { z } from 'zod';
 
+// Definieer de types lokaal voor de API route
+interface ContactFormData {
+  naam: string;
+  email: string;
+  bericht: string;
+  privacy_akkoord: boolean;
+}
+
+interface ContactApiResponse {
+  success: boolean;
+  message: string;
+  errors?: Array<{
+    code: string;
+    message: string;
+    path: string[];
+  }>;
+}
+
 // Request body validatie schema
 const ContactSchema = z.object({
   naam: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
@@ -11,7 +29,7 @@ const ContactSchema = z.object({
   bericht: z.string()
     .min(10, 'Bericht moet minimaal 10 karakters zijn')
     .max(1000, 'Bericht mag maximaal 1000 karakters zijn'),
-  privacy: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met het privacybeleid')
+  privacy_akkoord: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met het privacybeleid')
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -28,7 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({
       success: false,
       message: 'Method not allowed'
-    });
+    } as ContactApiResponse);
   }
 
   try {
@@ -60,7 +78,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({
       success: true,
       message: 'Bericht is succesvol verzonden'
-    });
+    } as ContactApiResponse);
 
   } catch (error) {
     console.error('Contact form error:', error);
@@ -70,12 +88,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         success: false,
         message: 'Validatie error',
         errors: error.errors
-      });
+      } as ContactApiResponse);
     }
 
     return res.status(500).json({
       success: false,
       message: 'Er ging iets mis bij het versturen van je bericht'
-    });
+    } as ContactApiResponse);
   }
 } 

@@ -31,9 +31,27 @@ export interface PrivacyModalProps extends BaseModalProps {
 // Partner modal props
 export interface PartnerModalProps extends BaseModalProps {
   partnerId?: string;
+  partner?: {
+    id: string;
+    name: string;
+    logo: string;
+    website: string | null;
+    description: string;
+    tier: "gold" | "silver" | "bronze";
+    since: string;
+    created_at: string;
+    updated_at: string;
+    visible: string;
+    order_number: number;
+  };
 }
 
 // Donatie modal props
 export interface DonatieModalProps extends BaseModalProps {
   initialAmount?: number;
+}
+
+// Inschrijf modal props
+export interface InschrijfModalProps extends BaseModalProps {
+  // Voeg hier eventuele extra props toe die je nodig hebt
 } 

@@ -4,7 +4,7 @@ import ThumbnailSlider from './ThumbnailSlider';
 import { usePhotoGallery } from './hooks/usePhotoGallery';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase';
 import { useState, useEffect } from 'react';
 import type { Photo } from './types';
 

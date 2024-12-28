@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../lib/supabase'
 
 interface AuthContextType {
   isAuthenticated: boolean

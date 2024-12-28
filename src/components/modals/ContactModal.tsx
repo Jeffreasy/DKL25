@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Dialog } from '@headlessui/react';
 import CloseIcon from '@mui/icons-material/Close';
-import { z } from 'zod';
-import type { ContactModalProps } from './types';
 import { toast } from 'react-hot-toast';
+import { useContactForm } from '@/hooks/useContactForm';
+import type { ContactModalProps } from './types';
+import type { ContactFormData } from '@/types/contact';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 // Validatie schema
 const ContactSchema = z.object({
@@ -12,92 +16,57 @@ const ContactSchema = z.object({
   bericht: z.string()
     .min(10, 'Bericht moet minimaal 10 karakters zijn')
     .max(1000, 'Bericht mag maximaal 1000 karakters zijn'),
-  privacy: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met het privacybeleid')
+  privacy_akkoord: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met het privacybeleid')
 });
 
-type ContactFormData = z.infer<typeof ContactSchema>;
-
 export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onPrivacyClick }) => {
-  const [formData, setFormData] = useState<ContactFormData>({
-    naam: '',
-    email: '',
-    bericht: '',
-    privacy: false
+  const { submitContactForm, isSubmitting } = useContactForm();
+  
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(ContactSchema)
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = async (data: ContactFormData) => {
     try {
-      setIsSubmitting(true);
-      setError(null);
-
-      // Valideer de data
-      const validatedData = ContactSchema.parse(formData);
-
-      // Verstuur naar API
-      const response = await fetch('/api/email/send-contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(validatedData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Er ging iets mis bij het versturen van je bericht');
-      }
-
-      // Toon succes melding
-      toast.success('Je bericht is succesvol verzonden! We nemen zo snel mogelijk contact met je op.', {
-        duration: 5000,
-        position: 'top-center',
-      });
-
-      // Reset form
-      setFormData({
-        naam: '',
-        email: '',
-        bericht: '',
-        privacy: false
-      });
+      const result = await submitContactForm(data);
       
-      // Wacht even zodat de gebruiker de success melding kan zien
-      setTimeout(() => {
-        onClose();
-      }, 2000);
-
+      if (result.success) {
+        toast.success('Je bericht is succesvol verzonden! We nemen zo snel mogelijk contact met je op.', {
+          duration: 5000,
+          position: 'top-center',
+        });
+        
+        reset(); // Reset form
+        
+        // Wacht even met sluiten zodat gebruiker de success melding kan zien
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+      } else {
+        throw new Error(result.message);
+      }
     } catch (err) {
       console.error('Submit error:', err);
-      if (err instanceof z.ZodError) {
-        setError(err.errors[0]?.message || 'Validatie error');
-      } else if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Er ging iets mis bij het versturen van je bericht');
-      }
       
-      // Toon error toast
       toast.error('Er ging iets mis. Probeer het opnieuw of neem contact op via email.', {
         duration: 5000,
         position: 'top-center',
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
-        <Dialog.Panel 
-          className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-lg relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <form id="contactForm" onSubmit={handleSubmit}>
+        <Dialog.Panel className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-lg relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="relative">
+              {/* Header */}
               <div className="bg-primary p-6 flex items-center justify-between">
                 <Dialog.Title className="text-2xl font-bold text-white tracking-tight font-heading">
                   Contact
@@ -111,6 +80,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                 </button>
               </div>
 
+              {/* Form content */}
               <div className="p-6">
                 <div className="flex justify-center mb-8">
                   <div className="text-primary text-5xl">✉️</div>
@@ -125,15 +95,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                     <input
                       type="text"
                       id="naam"
-                      value={formData.naam}
-                      onChange={(e) => setFormData(prev => ({ ...prev, naam: e.target.value }))}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg 
+                      className={`w-full px-4 py-2 border rounded-lg transition-colors
                         focus:ring-2 focus:ring-primary focus:border-primary 
-                        transition-colors
-                        text-gray-900 placeholder-gray-400 bg-white"
+                        ${errors.naam ? 'border-red-500' : 'border-gray-300'}
+                        text-gray-900 placeholder-gray-400 bg-white`}
                       placeholder="Uw naam"
-                      required
+                      {...register('naam')}
                     />
+                    {errors.naam && (
+                      <p className="text-sm text-red-500 mt-1">{errors.naam.message}</p>
+                    )}
                   </div>
 
                   {/* Email */}
@@ -144,15 +115,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                     <input
                       type="email"
                       id="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg 
+                      className={`w-full px-4 py-2 border rounded-lg transition-colors
                         focus:ring-2 focus:ring-primary focus:border-primary 
-                        transition-colors
-                        text-gray-900 placeholder-gray-400 bg-white"
+                        ${errors.email ? 'border-red-500' : 'border-gray-300'}
+                        text-gray-900 placeholder-gray-400 bg-white`}
                       placeholder="uw@email.nl"
-                      required
+                      {...register('email')}
                     />
+                    {errors.email && (
+                      <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+                    )}
                   </div>
 
                   {/* Bericht */}
@@ -162,28 +134,28 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                     </label>
                     <textarea
                       id="bericht"
-                      value={formData.bericht}
-                      onChange={(e) => setFormData(prev => ({ ...prev, bericht: e.target.value }))}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg 
+                      className={`w-full px-4 py-2 border rounded-lg transition-colors resize-none
                         focus:ring-2 focus:ring-primary focus:border-primary 
-                        transition-colors resize-none
-                        text-gray-900 placeholder-gray-400 bg-white"
+                        ${errors.bericht ? 'border-red-500' : 'border-gray-300'}
+                        text-gray-900 placeholder-gray-400 bg-white`}
                       rows={4}
                       placeholder="Uw bericht..."
-                      required
+                      {...register('bericht')}
                     />
+                    {errors.bericht && (
+                      <p className="text-sm text-red-500 mt-1">{errors.bericht.message}</p>
+                    )}
                   </div>
 
                   {/* Privacy */}
                   <div className="flex items-start space-x-2 mt-2">
                     <input
                       type="checkbox"
-                      id="privacy"
-                      checked={formData.privacy}
-                      onChange={(e) => setFormData(prev => ({ ...prev, privacy: e.target.checked }))}
+                      id="privacy_akkoord"
                       className="mt-1"
+                      {...register('privacy_akkoord')}
                     />
-                    <label htmlFor="privacy" className="text-sm text-gray-600">
+                    <label htmlFor="privacy_akkoord" className="text-sm text-gray-600">
                       Ik ga akkoord met het{' '}
                       <button
                         type="button"
@@ -194,17 +166,13 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                       </button>
                     </label>
                   </div>
+                  {errors.privacy_akkoord && (
+                    <p className="text-sm text-red-500">{errors.privacy_akkoord.message}</p>
+                  )}
                 </div>
               </div>
 
-              {error && (
-                <div className="px-6 pb-4">
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-                    {error}
-                  </div>
-                </div>
-              )}
-
+              {/* Submit button */}
               <div className="p-6 bg-gray-50 border-t border-gray-100">
                 <button
                   type="submit"
