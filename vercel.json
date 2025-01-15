@@ -13,30 +13,27 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-      },
-      "continue": true
-    },
-    {
       "src": "/api/email/send-confirmation",
-      "methods": ["POST"],
-      "dest": "api/email/send-confirmation.ts"
+      "methods": ["OPTIONS", "POST"],
+      "dest": "/api/email/send-confirmation.ts"
     },
     {
       "src": "/api/email/send-contact",
-      "methods": ["POST"],
-      "dest": "api/email/send-contact.ts"
+      "methods": ["OPTIONS", "POST"],
+      "dest": "/api/email/send-contact.ts"
     },
     {
-      "handle": "filesystem"
+      "src": "/api/(.*)",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+      },
+      "dest": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "index.html"
+      "src": "/((?!api/.*).*)",
+      "dest": "/index.html"
     }
   ],
   "env": {
