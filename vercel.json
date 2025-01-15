@@ -16,24 +16,23 @@
   ],
   "routes": [
     {
-      "src": "/api/email/send-confirmation",
-      "methods": ["OPTIONS", "POST"],
+      "src": "/api/(.*)",
       "headers": {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS, POST",
+        "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
         "Access-Control-Allow-Headers": "Content-Type, Accept"
       },
-      "dest": "/api/email/send-confirmation"
+      "continue": true
+    },
+    {
+      "src": "/api/email/send-confirmation",
+      "methods": ["POST", "OPTIONS"],
+      "dest": "api/email/send-confirmation.ts"
     },
     {
       "src": "/api/email/send-contact",
-      "methods": ["OPTIONS", "POST"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS, POST",
-        "Access-Control-Allow-Headers": "Content-Type, Accept"
-      },
-      "dest": "/api/email/send-contact"
+      "methods": ["POST", "OPTIONS"],
+      "dest": "api/email/send-contact.ts"
     },
     {
       "src": "^/assets/.*\\.js$",

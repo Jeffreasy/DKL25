@@ -69,7 +69,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
       // 2. Verstuur bevestigingsmail
       const baseUrl = import.meta.env.PROD 
-        ? import.meta.env.VITE_API_URL || 'https://www.dekoninklijkeloop.nl'
+        ? 'https://dekoninklijkeloop.nl'
         : '';
       const apiUrl = `${baseUrl}/api/email/send-confirmation`;
 
