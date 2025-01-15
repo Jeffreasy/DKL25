@@ -4,19 +4,33 @@ import { RegistrationSchema } from '../../src/pages/Aanmelden/types/schema';
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({
-  username: 'api',
-  key: process.env.MAILGUN_API_KEY ?? '',
-  url: 'https://api.eu.mailgun.net',
-  timeout: 30000
-});
+// Valideer environment variables eerst
+if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
+  console.error('Missing required environment variables:', {
+    hasApiKey: !!process.env.MAILGUN_API_KEY,
+    hasDomain: !!process.env.MAILGUN_DOMAIN,
+    hasFrom: !!process.env.MAILGUN_FROM
+  });
+  throw new Error('Missing required environment variables');
+}
 
 // Valideer API key format
 if (!process.env.MAILGUN_API_KEY?.startsWith('key-')) {
-  console.error('Invalid API key format');
+  console.error('Invalid API key format:', {
+    keyLength: process.env.MAILGUN_API_KEY?.length,
+    keyStart: process.env.MAILGUN_API_KEY?.substring(0, 10)
+  });
   throw new Error('Invalid API key format');
 }
+
+// Initialiseer Mailgun client
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.MAILGUN_API_KEY,
+  url: 'https://api.eu.mailgun.net',
+  timeout: 30000
+});
 
 export default async function handler(
   request: VercelRequest,
