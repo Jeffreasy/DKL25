@@ -18,9 +18,10 @@
     {
       "src": "/api/(.*)",
       "headers": {
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": "https://www.dekoninklijkeloop.nl",
         "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
-        "Access-Control-Allow-Headers": "Content-Type, Accept"
+        "Access-Control-Allow-Headers": "Content-Type, Accept",
+        "Access-Control-Allow-Credentials": "true"
       },
       "continue": true
     },
@@ -57,6 +58,13 @@
       "headers": {
         "Cache-Control": "public, max-age=0, must-revalidate"
       }
+    }
+  ],
+  "redirects": [
+    {
+      "source": "https://dekoninklijkeloop.nl/:path*",
+      "destination": "https://www.dekoninklijkeloop.nl/:path*",
+      "permanent": true
     }
   ]
 }
