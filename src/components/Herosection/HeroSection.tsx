@@ -18,7 +18,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onInschrijfClick, onDonatieCl
       <BackgroundVideo 
         posterUrl="https://cdn-cf-east.streamable.com/image/ei5kw8.jpg"
       />
-      <div className="absolute inset-0 bg-black/30" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center h-full px-4 pt-2">

@@ -1,82 +1,98 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import FormData from 'form-data';
+import { VercelRequest, VercelResponse } from '@vercel/node';
+import { getConfirmationEmailTemplate } from './templates/confirmation';
+import { RegistrationSchema } from '../../src/pages/Aanmelden/types/schema';
+import formData from 'form-data';
 import Mailgun from 'mailgun.js';
-import { getRegistrationEmailHtml } from './templates/registration';
-import { z } from 'zod';
 
-// Request body validatie schema
-const RequestSchema = z.object({
-  naam: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
-  email: z.string().email('Ongeldig email adres'),
-  rol: z.enum(['Deelnemer', 'Begeleider', 'Vrijwilliger']),
-  afstand: z.string(),
-  telefoon: z.string().optional(),
-  ondersteuning: z.enum(['Ja', 'Nee', 'Anders']),
-  bijzonderheden: z.string().optional()
+// Valideer environment variables en definieer ze als string
+const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY as string;
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN as string;
+const MAILGUN_FROM = process.env.MAILGUN_FROM as string;
+
+// Runtime checks blijven behouden
+if (!MAILGUN_API_KEY) {
+  throw new Error('MAILGUN_API_KEY is not set in environment variables');
+}
+
+if (!MAILGUN_DOMAIN) {
+  throw new Error('MAILGUN_DOMAIN is not set in environment variables');
+}
+
+if (!MAILGUN_FROM) {
+  throw new Error('MAILGUN_FROM is not set in environment variables');
+}
+
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({
+  username: 'api',
+  key: MAILGUN_API_KEY,
+  url: 'https://api.eu.mailgun.net'
 });
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      success: false,
-      message: 'Method not allowed'
+export default async function handler(
+  request: VercelRequest,
+  response: VercelResponse
+) {
+  if (request.method !== 'POST') {
+    return response.status(405).json({ 
+      success: false, 
+      message: 'Method not allowed' 
     });
   }
 
   try {
-    const validatedData = RequestSchema.parse(req.body);
+    // Log environment variables (verwijder dit in productie)
+    console.log('MAILGUN_DOMAIN:', MAILGUN_DOMAIN);
+    console.log('MAILGUN_FROM:', MAILGUN_FROM);
+    
+    // Valideer de input data
+    const validatedData = RegistrationSchema.parse(request.body);
+    
+    // Genereer email HTML
+    const html = getConfirmationEmailTemplate(validatedData);
 
-    const mailgun = new Mailgun(FormData);
-    const mg = mailgun.client({
-      username: 'api',
-      key: process.env.MAILGUN_API_KEY || '',
-      url: 'https://api.eu.mailgun.net'
-    });
+    // Verstuur email naar deelnemer
+    try {
+      await mg.messages.create(MAILGUN_DOMAIN, {
+        from: MAILGUN_FROM,
+        to: validatedData.email,
+        subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
+        html: html,
+        'h:Reply-To': 'info@dekoninklijkeloop.nl'
+      });
+    } catch (emailError) {
+      console.error('Error sending participant email:', emailError);
+      throw emailError;
+    }
 
-    // Stuur bevestigingsmail naar deelnemer
-    await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
-      from: 'De Koninklijke Loop <noreply@dekoninklijkeloop.nl>',
-      to: validatedData.email,
-      subject: 'Bedankt voor je aanmelding - De Koninklijke Loop',
-      html: getRegistrationEmailHtml({ ...validatedData, isConfirmation: true })
-    });
+    // Verstuur kopie naar administratie
+    try {
+      await mg.messages.create(MAILGUN_DOMAIN, {
+        from: MAILGUN_FROM,
+        to: 'administratie@dekoninklijkeloop.nl',
+        subject: `Nieuwe aanmelding: ${validatedData.naam} (${validatedData.rol})`,
+        html: html
+      });
+    } catch (adminEmailError) {
+      console.error('Error sending admin email:', adminEmailError);
+      // Niet blokkeren voor gebruiker als admin mail mislukt
+    }
 
-    // Stuur notificatie naar admin
-    await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
-      from: 'De Koninklijke Loop <noreply@dekoninklijkeloop.nl>',
-      to: 'info@dekoninklijkeloop.nl',
-      subject: `Nieuwe ${validatedData.rol.toLowerCase()} aanmelding: ${validatedData.naam}`,
-      html: getRegistrationEmailHtml({ ...validatedData, isAdmin: true })
-    });
-
-    return res.status(200).json({
+    return response.status(200).json({
       success: true,
       message: 'Bevestigingsmail is verstuurd'
     });
 
   } catch (error) {
-    console.error('Email error:', error);
-
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        success: false,
-        message: 'Validatie error',
-        errors: error.errors
-      });
-    }
-
-    return res.status(500).json({
+    console.error('Error sending confirmation email:', error);
+    
+    return response.status(500).json({
       success: false,
-      message: 'Er ging iets mis bij het versturen van de bevestigingsmail'
+      message: 'Er ging iets mis bij het versturen van de bevestigingsmail',
+      errors: error instanceof Error ? [{ 
+        message: error.message,
+        details: error.toString()
+      }] : undefined
     });
   }
-}
+} 

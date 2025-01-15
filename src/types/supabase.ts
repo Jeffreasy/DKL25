@@ -1,3 +1,5 @@
+import type { TextStyling } from './shared';
+
 export type Json =
   | string
   | number
@@ -149,42 +151,48 @@ export interface Database {
           title: string
           subtitle: string
           cta_text: string
-          image_url: string
-          event_details: {
+          event_details: Array<{
             icon: string
             title: string
             description: string
-          }[]
-          created_at: string
-          updated_at: string
+          }>
+          styling?: {
+            title?: TextStyling;
+            subtitle?: TextStyling;
+            cta_text?: TextStyling;
+          }
         }
         Insert: {
           id?: string
           title: string
           subtitle: string
           cta_text: string
-          image_url: string
-          event_details: {
+          event_details: Array<{
             icon: string
             title: string
             description: string
-          }[]
-          created_at?: string
-          updated_at?: string
+          }>
+          styling?: {
+            title?: TextStyling;
+            subtitle?: TextStyling;
+            cta_text?: TextStyling;
+          }
         }
         Update: {
           id?: string
           title?: string
           subtitle?: string
           cta_text?: string
-          image_url?: string
-          event_details?: {
+          event_details?: Array<{
             icon: string
             title: string
             description: string
-          }[]
-          created_at?: string
-          updated_at?: string
+          }>
+          styling?: {
+            title?: TextStyling;
+            subtitle?: TextStyling;
+            cta_text?: TextStyling;
+          }
         }
       }
       social_embeds: {
@@ -234,6 +242,26 @@ export interface Database {
         }
         Insert: Omit<Database['public']['Tables']['aanmeldingen']['Row'], 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Database['public']['Tables']['aanmeldingen']['Row']>
+      }
+      contact_formulieren: {
+        Row: {
+          id: string;
+          naam: string;
+          email: string;
+          bericht: string;
+          privacy_akkoord: boolean;
+          created_at: string;
+          updated_at: string;
+          email_verzonden: boolean;
+          email_verzonden_op: string | null;
+          status: 'nieuw' | 'in_behandeling' | 'afgehandeld';
+          behandeld_door: string | null;
+          behandeld_op: string | null;
+          notities: string | null;
+        };
+        Insert: Omit<Database['public']['Tables']['contact_formulieren']['Row'], 
+          'id' | 'created_at' | 'updated_at' | 'email_verzonden_op' | 'behandeld_op'>;
+        Update: Partial<Database['public']['Tables']['contact_formulieren']['Row']>;
       }
     }
     Views: {

@@ -1,27 +1,19 @@
 {
   "version": 2,
   "builds": [
-    { 
+    {
       "src": "api/**/*.ts",
       "use": "@vercel/node"
     },
     {
       "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "npm run build",
-        "outputDirectory": "dist"
-      }
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/email/send-contact",
-      "dest": "api/email/send-contact.ts"
-    },
-    {
-      "src": "/api/email/send-confirmation",
-      "dest": "api/email/send-confirmation.ts"
+      "src": "/api/(.*)",
+      "dest": "/api/$1.ts"
     }
   ]
 }

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RegistrationSchema, type RegistrationFormData, validateForm } from '../types/schema';
 import { TermsModal } from './TermsModal';
 import { supabase } from '../../../lib/supabase';
+import { sendConfirmationEmail } from '../../../utils/emailService';
 
 export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void }> = ({ 
   onSuccess 
@@ -67,15 +68,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       if (supabaseError) throw supabaseError;
 
       // 2. Verstuur bevestigingsmail
-      const response = await fetch('/api/email/send-confirmation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(validatedData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Er ging iets mis bij het versturen van de bevestigingsmail');
-      }
+      await sendConfirmationEmail(validatedData);
 
       // 3. Update de email_verzonden status in Supabase
       const { error: updateError } = await supabase

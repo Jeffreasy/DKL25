@@ -1,37 +1,23 @@
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from '../types/supabase'
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from '../types/supabase';
 
-// Log environment variables bij startup
-console.log('API Supabase Config:', {
-  hasUrl: !!process.env.VITE_SUPABASE_URL,
-  hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-  urlStart: process.env.VITE_SUPABASE_URL?.substring(0, 30)
+// Gebruik de VITE_ versie als fallback
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// Log voor debugging
+console.log('API Environment:', {
+  url: supabaseUrl?.slice(0, 20) + '...',
+  key: supabaseKey?.slice(0, 10) + '...',
+  hasUrl: !!supabaseUrl,
+  hasKey: !!supabaseKey
 });
 
-if (!process.env.VITE_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error('Missing required environment variables for Supabase')
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Missing Supabase environment variables');
 }
 
-// API client met service role key
 export const supabase = createClient<Database>(
-  process.env.VITE_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
-)
-
-// Test de connectie
-supabase.from('aanmeldingen')
-  .select('count')
-  .limit(1)
-  .then(({ error }) => {
-    if (error) {
-      console.error('API Supabase connection test failed:', error);
-    } else {
-      console.log('API Supabase connection test successful');
-    }
-  }); 
+  supabaseUrl || '',
+  supabaseKey || ''
+); 

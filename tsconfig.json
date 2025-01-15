@@ -3,41 +3,14 @@
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
-    "skipLibCheck": true,
-    "useDefineForClassFields": true,
-
-    /* Bundling */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
-
-    /* Path Aliases */
+    "strict": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "forceConsistentCasingInFileNames": true,
-
-    "types": ["node"],
-    "typeRoots": ["./node_modules/@types"],
-
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "skipLibCheck": true
   },
-  "include": [
-    "src"
-  ],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src"]
 }
