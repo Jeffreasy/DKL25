@@ -4,28 +4,31 @@ import { RegistrationSchema } from '../../src/pages/Aanmelden/types/schema';
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-// Valideer environment variables en definieer ze als string
-const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY as string;
-const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN as string;
-const MAILGUN_FROM = process.env.MAILGUN_FROM as string;
-
-// Runtime checks blijven behouden
-if (!MAILGUN_API_KEY) {
-  throw new Error('MAILGUN_API_KEY is not set in environment variables');
+// Type voor Mailgun error
+interface MailgunError extends Error {
+  message: string;
+  details?: string;
 }
 
-if (!MAILGUN_DOMAIN) {
-  throw new Error('MAILGUN_DOMAIN is not set in environment variables');
-}
+// Valideer environment variables en log ze (verwijder logs in productie)
+const requiredEnvVars = {
+  MAILGUN_API_KEY: process.env.MAILGUN_API_KEY ?? '',
+  MAILGUN_DOMAIN: process.env.MAILGUN_DOMAIN ?? '',
+  MAILGUN_FROM: process.env.MAILGUN_FROM ?? ''
+} as const;
 
-if (!MAILGUN_FROM) {
-  throw new Error('MAILGUN_FROM is not set in environment variables');
-}
+// Check alle environment variables
+Object.entries(requiredEnvVars).forEach(([key, value]) => {
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+  console.log(`${key} is set`); // Verwijder in productie
+});
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({
   username: 'api',
-  key: MAILGUN_API_KEY,
+  key: requiredEnvVars.MAILGUN_API_KEY, // Nu is dit een string
   url: 'https://api.eu.mailgun.net'
 });
 
@@ -48,63 +51,56 @@ export default async function handler(
   }
 
   if (request.method !== 'POST') {
-    console.log('Method not allowed:', request.method);
     return response.status(405).json({ 
       success: false, 
-      message: `Method ${request.method} not allowed`,
-      allowedMethods: ['POST', 'OPTIONS']
+      message: `Method ${request.method} not allowed` 
     });
   }
 
   try {
-    // Log environment variables (verwijder dit in productie)
-    console.log('MAILGUN_DOMAIN:', MAILGUN_DOMAIN);
-    console.log('MAILGUN_FROM:', MAILGUN_FROM);
-    
-    // Valideer de input data
     const validatedData = RegistrationSchema.parse(request.body);
-    
-    // Genereer email HTML
     const html = getConfirmationEmailTemplate(validatedData);
 
-    // Verstuur email naar deelnemer
     try {
-      await mg.messages.create(MAILGUN_DOMAIN, {
-        from: MAILGUN_FROM,
+      // Test Mailgun connectie
+      console.log('Testing Mailgun connection...');
+      const domains = await mg.domains.list();
+      console.log('Mailgun domains:', domains);
+
+      // Verstuur email
+      const result = await mg.messages.create(requiredEnvVars.MAILGUN_DOMAIN, {
+        from: requiredEnvVars.MAILGUN_FROM,
         to: validatedData.email,
         subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
         html: html,
         'h:Reply-To': 'info@dekoninklijkeloop.nl'
       });
-    } catch (emailError) {
-      console.error('Error sending participant email:', emailError);
-      throw emailError;
-    }
 
-    // Verstuur kopie naar administratie
-    try {
-      await mg.messages.create(MAILGUN_DOMAIN, {
-        from: MAILGUN_FROM,
-        to: 'administratie@dekoninklijkeloop.nl',
-        subject: `Nieuwe aanmelding: ${validatedData.naam} (${validatedData.rol})`,
-        html: html
+      console.log('Email sent:', result);
+
+      return response.status(200).json({
+        success: true,
+        message: 'Bevestigingsmail is verstuurd'
       });
-    } catch (adminEmailError) {
-      console.error('Error sending admin email:', adminEmailError);
-      // Niet blokkeren voor gebruiker als admin mail mislukt
-    }
 
-    return response.status(200).json({
-      success: true,
-      message: 'Bevestigingsmail is verstuurd'
-    });
+    } catch (error) {
+      const mailgunError = error as MailgunError;
+      console.error('Mailgun error:', mailgunError);
+      return response.status(500).json({
+        success: false,
+        message: 'Er ging iets mis bij het versturen van de bevestigingsmail',
+        errors: [{
+          message: mailgunError.message,
+          details: mailgunError.toString()
+        }]
+      });
+    }
 
   } catch (error) {
-    console.error('Error sending confirmation email:', error);
-    
+    console.error('Error processing request:', error);
     return response.status(500).json({
       success: false,
-      message: 'Er ging iets mis bij het versturen van de bevestigingsmail',
+      message: 'Er ging iets mis bij het verwerken van je aanmelding',
       errors: error instanceof Error ? [{ 
         message: error.message,
         details: error.toString()
