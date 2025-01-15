@@ -68,10 +68,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       if (supabaseError) throw supabaseError;
 
       // 2. Verstuur bevestigingsmail
-      const baseUrl = import.meta.env.PROD 
-        ? 'https://www.dekoninklijkeloop.nl'
-        : '';
-      const apiUrl = `${baseUrl}/api/email/send-confirmation`;
+      const apiUrl = import.meta.env.PROD 
+        ? `${window.location.origin}/api/email/send-confirmation`
+        : '/api/email/send-confirmation';
 
       await sendConfirmationEmail(validatedData, apiUrl);
 
