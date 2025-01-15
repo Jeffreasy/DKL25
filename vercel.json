@@ -22,7 +22,8 @@
         "Access-Control-Allow-Origin": "https://www.dekoninklijkeloop.nl",
         "Access-Control-Allow-Methods": "OPTIONS, POST",
         "Access-Control-Allow-Headers": "Content-Type, Accept",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "86400"
       },
       "dest": "/api/email/send-confirmation.ts"
     },
@@ -33,7 +34,8 @@
         "Access-Control-Allow-Origin": "https://www.dekoninklijkeloop.nl",
         "Access-Control-Allow-Methods": "OPTIONS, POST",
         "Access-Control-Allow-Headers": "Content-Type, Accept",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "86400"
       },
       "dest": "/api/email/send-contact.ts"
     },
