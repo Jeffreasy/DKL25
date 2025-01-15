@@ -3,11 +3,17 @@ import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 
 // Initialiseer Mailgun client
+console.log('Initializing Mailgun client with:', {
+  url: 'https://api.eu.mailgun.net',
+  hasKey: !!process.env.MAILGUN_API_KEY,
+  keyLength: process.env.MAILGUN_API_KEY?.length
+});
+
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
   key: process.env.MAILGUN_API_KEY || '',
-  url: 'https://api.eu.mailgun.net'  // Gebruik EU endpoint
+  url: 'https://api.eu.mailgun.net'
 });
 
 export default async function handler(
@@ -16,7 +22,12 @@ export default async function handler(
 ) {
   // Valideer environment variables
   if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
-    console.error('Missing required environment variables');
+    console.error('Missing required environment variables:', {
+      hasApiKey: !!process.env.MAILGUN_API_KEY,
+      hasDomain: !!process.env.MAILGUN_DOMAIN,
+      hasFrom: !!process.env.MAILGUN_FROM,
+      envKeys: Object.keys(process.env).filter(key => key.includes('MAILGUN'))
+    });
     return response.status(500).json({
       success: false,
       message: 'Server configuration error'
