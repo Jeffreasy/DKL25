@@ -5,18 +5,18 @@ import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
 const mailgun = new Mailgun(formData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.MAILGUN_API_KEY ?? '',
+  url: 'https://api.eu.mailgun.net',
+  timeout: 30000
+});
 
 // Valideer API key format
 if (!process.env.MAILGUN_API_KEY?.startsWith('key-')) {
   console.error('Invalid API key format');
   throw new Error('Invalid API key format');
 }
-
-const mg = mailgun.client({
-  username: 'api',
-  key: process.env.MAILGUN_API_KEY,
-  url: 'https://api.eu.mailgun.net'
-});
 
 export default async function handler(
   request: VercelRequest,
