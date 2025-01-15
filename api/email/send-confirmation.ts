@@ -1,21 +1,15 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getConfirmationEmailTemplate } from './templates/confirmation';
 import { RegistrationSchema } from '../../src/pages/Aanmelden/types/schema';
-import nodemailer from 'nodemailer';
+import FormData from 'form-data';
+import Mailgun from 'mailgun.js';
 
-// Maak een SMTP transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT ?? '587'),
-  secure: false,  // false voor STARTTLS
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    minVersion: 'TLSv1.2',  // Gebruik moderne TLS versie
-    rejectUnauthorized: false
-  }
+// Initialiseer Mailgun client
+const mailgun = new Mailgun(FormData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.MAILGUN_API_KEY || '',
+  url: 'https://api.eu.mailgun.net'  // Gebruik EU endpoint
 });
 
 export default async function handler(
@@ -23,11 +17,11 @@ export default async function handler(
   response: VercelResponse
 ) {
   // Valideer environment variables
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
     console.error('Missing required environment variables:', {
-      hasHost: !!process.env.SMTP_HOST,
-      hasUser: !!process.env.SMTP_USER,
-      hasPass: !!process.env.SMTP_PASS
+      hasApiKey: !!process.env.MAILGUN_API_KEY,
+      hasDomain: !!process.env.MAILGUN_DOMAIN,
+      hasFrom: !!process.env.MAILGUN_FROM
     });
     return response.status(500).json({
       success: false,
@@ -66,8 +60,8 @@ export default async function handler(
 
     console.log('Attempting to send email to:', validatedData.email);
 
-    const result = await transporter.sendMail({
-      from: process.env.SMTP_FROM,
+    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
+      from: process.env.MAILGUN_FROM,
       to: validatedData.email,
       subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
       html: html
