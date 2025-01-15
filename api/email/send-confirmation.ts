@@ -33,10 +33,17 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
+  // Handle CORS preflight
+  if (request.method === 'OPTIONS') {
+    response.setHeader('Access-Control-Allow-Methods', 'POST');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return response.status(200).end();
+  }
+
   if (request.method !== 'POST') {
     return response.status(405).json({ 
       success: false, 
-      message: 'Method not allowed' 
+      message: `Method ${request.method} not allowed` 
     });
   }
 
