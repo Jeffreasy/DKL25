@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
   "builds": [
     {
       "src": "api/**/*.ts",
@@ -12,14 +10,14 @@
       "use": "@vercel/static-build",
       "config": { 
         "distDir": "dist",
-        "buildCommand": "npm run build"
+        "buildCommand": "npm run build:client"
       }
     }
   ],
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
       "source": "/(.*)",
@@ -36,12 +34,5 @@
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
       ]
     }
-  ],
-  "env": {
-    "MAILGUN_API_KEY": "@mailgun_api_key",
-    "MAILGUN_DOMAIN": "@mailgun_domain",
-    "MAILGUN_FROM": "@mailgun_from",
-    "MAILGUN_WEBHOOK_SIGNING_KEY": "@mailgun_webhook_signing_key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key"
-  }
+  ]
 }

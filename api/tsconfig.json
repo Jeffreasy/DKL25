@@ -9,9 +9,11 @@
     "types": ["node"],
     "strict": true,
     "baseUrl": ".",
+    "outDir": "../dist/api",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["../src/*"]
     }
   },
-  "include": ["**/*.ts"]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
 } 
