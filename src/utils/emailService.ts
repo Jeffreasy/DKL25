@@ -23,10 +23,16 @@ export const sendEmail = async ({
   replyTo
 }: EmailParams) => {
   try {
-    const response = await fetch('/api/email/send', {
+    const fullUrl = `/api/email/send`;
+    const apiUrl = fullUrl.startsWith('http') 
+      ? fullUrl 
+      : `${window.location.origin}${fullUrl}`;
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify({
         to,
@@ -37,10 +43,20 @@ export const sendEmail = async ({
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Server response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        headers: Object.fromEntries(response.headers.entries()),
+        url: response.url,
+        origin: window.location.origin
+      });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const result: EmailResponse = await response.json();
+    console.log('Success response:', result);
     return result;
   } catch (error) {
     console.error('Email service error:', error);
@@ -50,22 +66,40 @@ export const sendEmail = async ({
 
 export const sendContactForm = async (data: ContactFormData) => {
   try {
-    const response = await fetch('/api/email/send-contact', {
+    const fullUrl = `/api/email/send-contact`;
+    const apiUrl = fullUrl.startsWith('http') 
+      ? fullUrl 
+      : `${window.location.origin}${fullUrl}`;
+
+    console.log('Sending contact request to:', apiUrl, 'with data:', data);
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify(data)
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Server response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        headers: Object.fromEntries(response.headers.entries()),
+        url: response.url,
+        origin: window.location.origin
+      });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
+    console.log('Success response:', result);
     return result;
   } catch (error) {
-    console.error('Email error:', error);
+    console.error('Contact form error:', error);
     throw error;
   }
 };
@@ -79,7 +113,7 @@ export const sendConfirmationEmail = async (
       ? apiUrl 
       : `${window.location.origin}${apiUrl}`;
 
-    console.log('Sending request to:', fullUrl, 'with data:', data);
+    console.log('Sending confirmation request to:', fullUrl, 'with data:', data);
     
     const response = await fetch(fullUrl, {
       method: 'POST',
