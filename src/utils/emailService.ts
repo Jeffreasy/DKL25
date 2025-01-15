@@ -70,9 +70,12 @@ export const sendContactForm = async (data: ContactFormData) => {
   }
 };
 
-export const sendConfirmationEmail = async (data: RegistrationFormData) => {
+export const sendConfirmationEmail = async (
+  data: RegistrationFormData, 
+  apiUrl = '/api/email/send-confirmation'
+) => {
   try {
-    const response = await fetch('/api/email/send-confirmation', {
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json'
