@@ -42,6 +42,27 @@ export default async function handler(
   try {
     const { to, subject, html, replyTo } = request.body;
 
+    // Log de request body
+    console.log('Request body:', {
+      to,
+      subject: subject?.slice(0, 50),
+      htmlLength: html?.length,
+      replyTo
+    });
+
+    // Valideer verplichte velden
+    if (!to || !subject || !html) {
+      console.error('Missing required fields:', { 
+        hasTo: !!to, 
+        hasSubject: !!subject, 
+        hasHtml: !!html 
+      });
+      return response.status(400).json({
+        success: false,
+        message: 'Verplichte velden ontbreken'
+      });
+    }
+
     const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
       from: process.env.MAILGUN_FROM,
       to,
