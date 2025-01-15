@@ -1,26 +1,17 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { getConfirmationEmailTemplate } from './templates/confirmation';
 import { RegistrationSchema } from '../../src/pages/Aanmelden/types/schema';
-import formData from 'form-data';
-import Mailgun from 'mailgun.js';
+import nodemailer from 'nodemailer';
 
-// Valideer environment variables eerst
-if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
-  console.error('Missing required environment variables:', {
-    hasApiKey: !!process.env.MAILGUN_API_KEY,
-    hasDomain: !!process.env.MAILGUN_DOMAIN,
-    hasFrom: !!process.env.MAILGUN_FROM
-  });
-  throw new Error('Missing required environment variables');
-}
-
-// Initialiseer Mailgun client
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({
-  username: 'api',
-  key: process.env.MAILGUN_API_KEY,
-  url: 'https://api.eu.mailgun.net',
-  timeout: 30000
+// Maak een SMTP transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT ?? '587'),
+  secure: false, // true voor 465, false voor andere ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
 });
 
 export default async function handler(
@@ -28,11 +19,11 @@ export default async function handler(
   response: VercelResponse
 ) {
   // Valideer environment variables
-  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.error('Missing required environment variables:', {
-      hasApiKey: !!process.env.MAILGUN_API_KEY,
-      hasDomain: !!process.env.MAILGUN_DOMAIN,
-      hasFrom: !!process.env.MAILGUN_FROM
+      hasHost: !!process.env.SMTP_HOST,
+      hasUser: !!process.env.SMTP_USER,
+      hasPass: !!process.env.SMTP_PASS
     });
     return response.status(500).json({
       success: false,
@@ -40,18 +31,10 @@ export default async function handler(
     });
   }
 
-  console.log('Mailgun Config:', {
-    domain: process.env.MAILGUN_DOMAIN,
-    from: process.env.MAILGUN_FROM,
-    hasApiKey: !!process.env.MAILGUN_API_KEY,
-    endpoint: 'https://api.eu.mailgun.net'
-  });
-
-  // Log request details
-  console.log('Received request:', {
-    method: request.method,
-    headers: request.headers,
-    url: request.url
+  console.log('SMTP Config:', {
+    host: process.env.SMTP_HOST,
+    user: process.env.SMTP_USER,
+    from: process.env.SMTP_FROM
   });
 
   // Handle CORS preflight
@@ -75,18 +58,10 @@ export default async function handler(
     const validatedData = RegistrationSchema.parse(request.body);
     const html = getConfirmationEmailTemplate(validatedData);
 
-    const fromEmail = process.env.MAILGUN_FROM;
-    const domain = process.env.MAILGUN_DOMAIN;
+    console.log('Attempting to send email to:', validatedData.email);
 
-    console.log('Attempting to send email with config:', {
-      domain,
-      from: fromEmail,
-      to: validatedData.email,
-      hasApiKey: !!process.env.MAILGUN_API_KEY
-    });
-
-    const result = await mg.messages.create(domain, {
-      from: fromEmail,
+    const result = await transporter.sendMail({
+      from: process.env.SMTP_FROM,
       to: validatedData.email,
       subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
       html: html
@@ -102,11 +77,7 @@ export default async function handler(
   } catch (error) {
     console.error('Detailed error:', {
       error,
-      stack: error instanceof Error ? error.stack : undefined,
-      config: {
-        domain: process.env.MAILGUN_DOMAIN,
-        from: process.env.MAILGUN_FROM
-      }
+      stack: error instanceof Error ? error.stack : undefined
     });
 
     return response.status(500).json({
