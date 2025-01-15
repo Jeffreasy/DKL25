@@ -69,7 +69,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
       // 2. Verstuur bevestigingsmail
       const apiUrl = import.meta.env.PROD 
-        ? 'https://dekoninklijkeloop.nl/api/email/send-confirmation'
+        ? 'https://www.dekoninklijkeloop.nl/api/email/send-confirmation'
         : '/api/email/send-confirmation';
 
       await sendConfirmationEmail(validatedData, apiUrl);
