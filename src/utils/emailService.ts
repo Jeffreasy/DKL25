@@ -75,6 +75,7 @@ export const sendConfirmationEmail = async (
   apiUrl = '/api/email/send-confirmation'
 ) => {
   try {
+    console.log('Sending request to:', apiUrl);
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 
@@ -86,7 +87,12 @@ export const sendConfirmationEmail = async (
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Server response:', errorText);
+      console.error('Server response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
