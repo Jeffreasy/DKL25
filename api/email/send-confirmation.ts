@@ -14,15 +14,6 @@ if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.
   throw new Error('Missing required environment variables');
 }
 
-// Valideer API key format
-if (!process.env.MAILGUN_API_KEY?.startsWith('key-')) {
-  console.error('Invalid API key format:', {
-    keyLength: process.env.MAILGUN_API_KEY?.length,
-    keyStart: process.env.MAILGUN_API_KEY?.substring(0, 10)
-  });
-  throw new Error('Invalid API key format');
-}
-
 // Initialiseer Mailgun client
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({
