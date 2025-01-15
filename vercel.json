@@ -1,75 +1,16 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { 
-        "distDir": "dist",
-        "buildCommand": "npm run build:client"
-      }
+  "functions": {
+    "api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 10
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/email/send-confirmation",
-      "destination": "/api/email/send-confirmation.ts"
-    },
-    {
-      "source": "/api/email/send-contact",
-      "destination": "/api/email/send-contact.ts"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://www.dekoninklijkeloop.nl"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "OPTIONS, POST"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Accept"
-        },
-        {
-          "key": "Access-Control-Allow-Credentials",
-          "value": "true"
-        },
-        {
-          "key": "Access-Control-Max-Age",
-          "value": "86400"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    }
-  ]
+  },
+  "env": {
+    "SMTP_HOST": "smtp.hostnet.nl",
+    "SMTP_PORT": "465",
+    "SMTP_USER": "noreply@dekoninklijkeloop.nl",
+    "SMTP_PASS": "@Oprotten@12",
+    "SMTP_FROM": "noreply@dekoninklijkeloop.nl",
+    "SMTP_SECURE": "true"
+  }
 }

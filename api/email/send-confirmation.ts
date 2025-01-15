@@ -31,10 +31,12 @@ export default async function handler(
     });
   }
 
-  console.log('SMTP Config:', {
+  console.log('Function started with config:', {
     host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
     user: process.env.SMTP_USER,
-    from: process.env.SMTP_FROM
+    secure: process.env.SMTP_SECURE,
+    hasPass: !!process.env.SMTP_PASS
   });
 
   // Handle CORS preflight
