@@ -68,10 +68,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       if (supabaseError) throw supabaseError;
 
       // 2. Verstuur bevestigingsmail
-      const apiUrl = import.meta.env.PROD 
-        ? `${window.location.origin}/api/email/send-confirmation`
-        : '/api/email/send-confirmation';
-
+      const apiUrl = '/api/email/send-confirmation';
       await sendConfirmationEmail(validatedData, apiUrl);
 
       // 3. Update de email_verzonden status in Supabase

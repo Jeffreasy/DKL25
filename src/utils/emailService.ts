@@ -109,8 +109,9 @@ export const sendConfirmationEmail = async (
   apiUrl = '/api/email/send-confirmation'
 ) => {
   try {
-    const currentUrl = window.location.origin;
-    const fullUrl = `${currentUrl}${apiUrl}`;
+    const fullUrl = apiUrl.startsWith('http') 
+      ? apiUrl 
+      : `${window.location.origin}${apiUrl}`;
 
     console.log('Sending confirmation request to:', fullUrl);
     

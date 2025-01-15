@@ -14,32 +14,46 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "https://www.dekoninklijkeloop.nl",
-        "Access-Control-Allow-Methods": "OPTIONS, POST",
-        "Access-Control-Allow-Headers": "Content-Type, Accept",
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Max-Age": "86400"
-      },
-      "continue": true
+      "source": "/api/email/send-confirmation",
+      "destination": "/api/email/send-confirmation.ts"
     },
     {
-      "src": "/api/email/send-confirmation",
-      "methods": ["POST", "OPTIONS"],
-      "dest": "/api/email/send-confirmation.ts"
+      "source": "/api/email/send-contact",
+      "destination": "/api/email/send-contact.ts"
     },
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://www.dekoninklijkeloop.nl"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "OPTIONS, POST"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Accept"
+        },
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Max-Age",
+          "value": "86400"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [

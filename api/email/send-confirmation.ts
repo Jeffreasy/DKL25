@@ -15,6 +15,13 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
+  console.log('Mailgun Config:', {
+    domain: process.env.MAILGUN_DOMAIN,
+    from: process.env.MAILGUN_FROM,
+    hasApiKey: !!process.env.MAILGUN_API_KEY,
+    endpoint: 'https://api.eu.mailgun.net'
+  });
+
   // Log request details
   console.log('Received request:', {
     method: request.method,
@@ -43,6 +50,12 @@ export default async function handler(
     const validatedData = RegistrationSchema.parse(request.body);
     const html = getConfirmationEmailTemplate(validatedData);
 
+    console.log('Attempting to send email with config:', {
+      domain: process.env.MAILGUN_DOMAIN,
+      from: process.env.MAILGUN_FROM,
+      to: validatedData.email
+    });
+
     const result = await mg.messages.create(process.env.MAILGUN_DOMAIN ?? '', {
       from: process.env.MAILGUN_FROM,
       to: validatedData.email,
@@ -58,7 +71,15 @@ export default async function handler(
     });
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Detailed error:', {
+      error,
+      stack: error instanceof Error ? error.stack : undefined,
+      config: {
+        domain: process.env.MAILGUN_DOMAIN,
+        from: process.env.MAILGUN_FROM
+      }
+    });
+
     return response.status(500).json({
       success: false,
       message: 'Er ging iets mis bij het versturen van de bevestigingsmail',

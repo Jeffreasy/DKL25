@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "npm run build:api && npm run build:client",
-    "build:client": "tsc && vite build",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:client": "vite build",
     "build:api": "tsc --project api/tsconfig.json",
     "preview": "vite preview"
   },
