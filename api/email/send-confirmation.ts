@@ -5,9 +5,16 @@ import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
 const mailgun = new Mailgun(formData);
+
+// Valideer API key format
+if (!process.env.MAILGUN_API_KEY?.startsWith('key-')) {
+  console.error('Invalid API key format');
+  throw new Error('Invalid API key format');
+}
+
 const mg = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY ?? '',
+  key: process.env.MAILGUN_API_KEY,
   url: 'https://api.eu.mailgun.net'
 });
 
@@ -15,6 +22,19 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
+  // Valideer environment variables
+  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
+    console.error('Missing required environment variables:', {
+      hasApiKey: !!process.env.MAILGUN_API_KEY,
+      hasDomain: !!process.env.MAILGUN_DOMAIN,
+      hasFrom: !!process.env.MAILGUN_FROM
+    });
+    return response.status(500).json({
+      success: false,
+      message: 'Server configuration error'
+    });
+  }
+
   console.log('Mailgun Config:', {
     domain: process.env.MAILGUN_DOMAIN,
     from: process.env.MAILGUN_FROM,
@@ -50,14 +70,18 @@ export default async function handler(
     const validatedData = RegistrationSchema.parse(request.body);
     const html = getConfirmationEmailTemplate(validatedData);
 
+    const fromEmail = process.env.MAILGUN_FROM;
+    const domain = process.env.MAILGUN_DOMAIN;
+
     console.log('Attempting to send email with config:', {
-      domain: process.env.MAILGUN_DOMAIN,
-      from: process.env.MAILGUN_FROM,
-      to: validatedData.email
+      domain,
+      from: fromEmail,
+      to: validatedData.email,
+      hasApiKey: !!process.env.MAILGUN_API_KEY
     });
 
-    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN ?? '', {
-      from: process.env.MAILGUN_FROM,
+    const result = await mg.messages.create(domain, {
+      from: fromEmail,
       to: validatedData.email,
       subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
       html: html
