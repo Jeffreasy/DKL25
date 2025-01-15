@@ -1,15 +1,13 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
-import nodemailer from 'nodemailer';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import FormData from 'form-data';
+import Mailgun from 'mailgun.js';
 
-// Maak een SMTP transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT ?? '587'),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
+// Initialiseer Mailgun client
+const mailgun = new Mailgun(FormData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.MAILGUN_API_KEY || '',
+  url: 'https://api.eu.mailgun.net'  // Gebruik EU endpoint
 });
 
 export default async function handler(
@@ -17,7 +15,7 @@ export default async function handler(
   response: VercelResponse
 ) {
   // Valideer environment variables
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
     console.error('Missing required environment variables');
     return response.status(500).json({
       success: false,
@@ -44,12 +42,12 @@ export default async function handler(
   try {
     const { to, subject, html, replyTo } = request.body;
 
-    const result = await transporter.sendMail({
-      from: process.env.SMTP_FROM,
+    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
+      from: process.env.MAILGUN_FROM,
       to,
       subject,
       html,
-      replyTo
+      'h:Reply-To': replyTo
     });
 
     console.log('Email sent:', result);
