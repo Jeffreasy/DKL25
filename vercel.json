@@ -7,13 +7,25 @@
     },
     {
       "src": "package.json",
-      "use": "@vercel/static"
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1.ts"
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "MAILGUN_API_KEY": "@mailgun_api_key",
+    "MAILGUN_DOMAIN": "@mailgun_domain",
+    "MAILGUN_FROM": "@mailgun_from",
+    "MAILGUN_WEBHOOK_SIGNING_KEY": "@mailgun_webhook_signing_key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key"
+  }
 }
