@@ -1,5 +1,7 @@
 import type { ContactFormData } from '@/types/contact';
 import type { RegistrationFormData } from '@/pages/Aanmelden/types/schema';
+import Mailgun from 'mailgun.js';
+import formData from 'form-data';
 
 interface EmailParams {
   to: string;
@@ -15,6 +17,23 @@ interface EmailResponse {
     message: string;
   }>;
 }
+
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.MAILGUN_API_KEY ?? '',  // Gebruik de volledige key
+  url: 'https://api.eu.mailgun.net',
+  timeout: 30000  // Verhoog timeout
+});
+
+// Log meer details voor debugging
+console.log('Mailgun Client Config:', {
+  hasKey: !!process.env.MAILGUN_API_KEY,
+  keyLength: process.env.MAILGUN_API_KEY?.length,
+  domain: process.env.MAILGUN_DOMAIN,
+  from: process.env.MAILGUN_FROM,
+  endpoint: 'https://api.eu.mailgun.net'
+});
 
 export const sendEmail = async ({
   to,
