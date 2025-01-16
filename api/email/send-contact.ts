@@ -16,6 +16,23 @@ const mg = mailgun.client({
   url: 'https://api.eu.mailgun.net'
 });
 
+// Log domein configuratie
+console.log('Mailgun configuration:', {
+  domain: process.env.MAILGUN_DOMAIN,
+  from: process.env.MAILGUN_FROM,
+  endpoint: 'https://api.eu.mailgun.net'
+});
+
+// Log alle environment variables bij startup
+console.log('Available environment variables:', {
+  allKeys: Object.keys(process.env),
+  mailgunKeys: Object.keys(process.env).filter(key => key.includes('MAILGUN')),
+  mailgunDomain: process.env.MAILGUN_DOMAIN,
+  mailgunFrom: process.env.MAILGUN_FROM,
+  // Niet de API key loggen voor veiligheid
+  hasApiKey: !!process.env.MAILGUN_API_KEY
+});
+
 export default async function handler(
   request: VercelRequest,
   response: VercelResponse
@@ -52,6 +69,13 @@ export default async function handler(
 
   try {
     const { to, subject, html, replyTo } = request.body;
+
+    // Log de request details
+    console.log('Processing request:', {
+      method: request.method,
+      headers: request.headers,
+      bodyKeys: Object.keys(request.body)
+    });
 
     // Log de request body
     console.log('Request body:', {
