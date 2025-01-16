@@ -13,7 +13,7 @@ console.log('Initializing Mailgun client with:', {
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: `key-${process.env.MAILGUN_API_KEY?.replace('key-', '')}`,
+  key: process.env.MAILGUN_API_KEY || '',
   url: 'https://api.eu.mailgun.net'
 });
 
@@ -34,6 +34,8 @@ console.log('Available environment variables:', {
   // Niet de API key loggen voor veiligheid
   hasApiKey: !!process.env.MAILGUN_API_KEY
 });
+
+const SANDBOX_DOMAIN = 'sandbox20ddf648b5ee4a13831d9d7bc2c512c6.mailgun.org';
 
 export default async function handler(
   request: VercelRequest,
@@ -107,8 +109,8 @@ export default async function handler(
       endpoint: 'https://api.eu.mailgun.net'
     });
 
-    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
-      from: `De Koninklijke Loop <postmaster@${process.env.MAILGUN_DOMAIN}>`,
+    const result = await mg.messages.create(SANDBOX_DOMAIN, {
+      from: `De Koninklijke Loop <postmaster@${SANDBOX_DOMAIN}>`,
       to,
       subject,
       html,
