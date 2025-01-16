@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
+import { getContactEmailHtml } from '@/utils/emailTemplates';
 
 // Initialiseer Mailgun client
 console.log('Initializing Mailgun client with:', {
@@ -12,7 +13,7 @@ console.log('Initializing Mailgun client with:', {
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY || '',
+  key: process.env.MAILGUN_API_KEY?.trim() || '',
   url: 'https://api.eu.mailgun.net'
 });
 
@@ -98,8 +99,8 @@ export default async function handler(
       });
     }
 
-    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
-      from: process.env.MAILGUN_FROM,
+    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN?.trim() || '', {
+      from: `De Koninklijke Loop <noreply@${process.env.MAILGUN_DOMAIN?.trim() || ''}>`,
       to,
       subject,
       html,
