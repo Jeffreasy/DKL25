@@ -4,17 +4,23 @@ import Mailgun from 'mailgun.js';
 import { getContactEmailHtml } from '@/utils/emailTemplates';
 
 // Initialiseer Mailgun client
-console.log('Initializing Mailgun client with:', {
-  url: 'https://api.eu.mailgun.net',
-  hasKey: !!process.env.MAILGUN_API_KEY,
-  keyLength: process.env.MAILGUN_API_KEY?.length
-});
-
 const mailgun = new Mailgun(FormData);
+
+// Voeg key- prefix toe als het ontbreekt
+const apiKey = process.env.MAILGUN_API_KEY || '';
+const formattedApiKey = apiKey.startsWith('key-') ? apiKey : `key-${apiKey}`;
+
 const mg = mailgun.client({
   username: 'api',
-  key: `key-${process.env.MAILGUN_API_KEY?.replace('key-', '')}`,
+  key: formattedApiKey,
   url: 'https://api.eu.mailgun.net'
+});
+
+// Log de API key setup
+console.log('API Key debug:', {
+  original: process.env.MAILGUN_API_KEY?.slice(0, 5) + '...',
+  hasPrefix: process.env.MAILGUN_API_KEY?.startsWith('key-'),
+  length: process.env.MAILGUN_API_KEY?.length
 });
 
 // Log domein configuratie

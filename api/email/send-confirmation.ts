@@ -8,8 +8,10 @@ import Mailgun from 'mailgun.js';
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: `key-${process.env.MAILGUN_API_KEY?.trim()}` || '',
-  url: 'https://api.eu.mailgun.net'  // Gebruik EU endpoint
+  key: process.env.MAILGUN_API_KEY?.startsWith('key-') 
+    ? process.env.MAILGUN_API_KEY 
+    : `key-${process.env.MAILGUN_API_KEY}` || '',
+  url: 'https://api.eu.mailgun.net'
 });
 
 export default async function handler(
