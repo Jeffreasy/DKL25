@@ -16,106 +16,39 @@ interface EmailResponse {
   }>;
 }
 
-export const sendEmail = async ({
-  to,
-  subject,
-  html,
-  replyTo
-}: EmailParams) => {
+export const sendEmail = async (params: EmailParams): Promise<EmailResponse> => {
   try {
-    const fullUrl = `/api/email/send`;
-    const apiUrl = fullUrl.startsWith('http') 
-      ? fullUrl 
-      : `${window.location.origin}${fullUrl}`;
-
-    const response = await fetch(apiUrl, {
+    const response = await fetch('/api/email/send-contact', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({
-        to,
-        subject,
-        html,
-        replyTo
-      })
+      body: JSON.stringify(params)
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Server response:', {
+      console.error('Email error:', {
         status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-        headers: Object.fromEntries(response.headers.entries()),
-        url: response.url,
-        origin: window.location.origin
+        body: errorText
       });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const result: EmailResponse = await response.json();
-    console.log('Success response:', result);
-    return result;
+    return await response.json();
   } catch (error) {
     console.error('Email service error:', error);
     throw error;
   }
 };
 
-export const sendContactForm = async (data: ContactFormData) => {
-  try {
-    const fullUrl = `/api/email/send-contact`;
-    const apiUrl = fullUrl.startsWith('http') 
-      ? fullUrl 
-      : `${window.location.origin}${fullUrl}`;
-
-    console.log('Sending contact request to:', apiUrl, 'with data:', data);
-
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Server response:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-        headers: Object.fromEntries(response.headers.entries()),
-        url: response.url,
-        origin: window.location.origin
-      });
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log('Success response:', result);
-    return result;
-  } catch (error) {
-    console.error('Contact form error:', error);
-    throw error;
-  }
-};
-
 export const sendConfirmationEmail = async (
-  data: RegistrationFormData, 
-  apiUrl = '/api/email/send-confirmation'
-) => {
+  data: RegistrationFormData,
+  endpoint: string = '/api/email/send-confirmation'
+): Promise<EmailResponse> => {
   try {
-    const fullUrl = apiUrl.startsWith('http') 
-      ? apiUrl 
-      : `${window.location.origin}${apiUrl}`;
-
-    console.log('Sending confirmation request to:', fullUrl);
-    
-    const response = await fetch(fullUrl, {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -125,20 +58,10 @@ export const sendConfirmationEmail = async (
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Server response:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-        headers: Object.fromEntries(response.headers.entries()),
-        url: response.url
-      });
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const result = await response.json();
-    console.log('Success response:', result);
-    return result;
+    return await response.json();
   } catch (error) {
     console.error('Confirmation email error:', error);
     throw error;
