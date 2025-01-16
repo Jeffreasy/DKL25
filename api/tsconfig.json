@@ -6,7 +6,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "types": ["node"],
+    "types": [
+      "node",
+      "mailgun.js",
+      "form-data"
+    ],
     "strict": true,
     "baseUrl": ".",
     "outDir": "../dist/api",

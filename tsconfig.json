@@ -12,9 +12,7 @@
     },
     "skipLibCheck": true,
     "types": [
-      "node",
-      "mailgun.js",
-      "form-data"
+      "vite/client"
     ]
   },
   "include": ["src"]
