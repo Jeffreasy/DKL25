@@ -39,11 +39,10 @@ export default async function handler(
   response: VercelResponse
 ) {
   // Valideer environment variables
-  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN || !process.env.MAILGUN_FROM) {
+  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN) {
     console.error('Missing required environment variables:', {
       hasApiKey: !!process.env.MAILGUN_API_KEY,
       hasDomain: !!process.env.MAILGUN_DOMAIN,
-      hasFrom: !!process.env.MAILGUN_FROM,
       envKeys: Object.keys(process.env).filter(key => key.includes('MAILGUN'))
     });
     return response.status(500).json({
