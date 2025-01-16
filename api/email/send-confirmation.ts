@@ -8,7 +8,7 @@ import Mailgun from 'mailgun.js';
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY || '',
+  key: process.env.MAILGUN_API_KEY?.trim() || '',
   url: 'https://api.eu.mailgun.net'  // Gebruik EU endpoint
 });
 
@@ -29,12 +29,10 @@ export default async function handler(
     });
   }
 
-  console.log('Function started with config:', {
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    user: process.env.SMTP_USER,
-    secure: process.env.SMTP_SECURE,
-    hasPass: !!process.env.SMTP_PASS
+  console.log('Email configuration:', {
+    hasApiKey: !!process.env.MAILGUN_API_KEY,
+    hasDomain: !!process.env.MAILGUN_DOMAIN,
+    hasFrom: !!process.env.MAILGUN_FROM
   });
 
   // Handle CORS preflight
@@ -60,8 +58,8 @@ export default async function handler(
 
     console.log('Attempting to send email to:', validatedData.email);
 
-    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
-      from: process.env.MAILGUN_FROM,
+    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN?.trim() || '', {
+      from: `De Koninklijke Loop <noreply@${process.env.MAILGUN_DOMAIN?.trim() || ''}>`,
       to: validatedData.email,
       subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
       html: html
