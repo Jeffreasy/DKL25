@@ -13,7 +13,8 @@ const formattedApiKey = apiKey.startsWith('key-') ? apiKey : `key-${apiKey}`;
 const mg = mailgun.client({
   username: 'api',
   key: formattedApiKey,
-  url: 'https://api.eu.mailgun.net'
+  url: 'https://api.eu.mailgun.net',
+  timeout: 30000
 });
 
 // Log de API key setup
@@ -21,6 +22,14 @@ console.log('API Key debug:', {
   original: process.env.MAILGUN_API_KEY?.slice(0, 5) + '...',
   hasPrefix: process.env.MAILGUN_API_KEY?.startsWith('key-'),
   length: process.env.MAILGUN_API_KEY?.length
+});
+
+// Voeg extra logging toe
+console.log('API Key Debug:', {
+  rawKey: process.env.MAILGUN_API_KEY?.slice(0, 10) + '...',
+  formattedKey: formattedApiKey.slice(0, 10) + '...',
+  hasKeyPrefix: formattedApiKey.startsWith('key-'),
+  keyLength: formattedApiKey.length
 });
 
 // Log domein configuratie
@@ -47,6 +56,13 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
+  // Aan het begin van de handler
+  console.log('Environment Check:', {
+    MAILGUN_API_KEY: process.env.MAILGUN_API_KEY?.slice(0, 10) + '...',
+    MAILGUN_DOMAIN: process.env.MAILGUN_DOMAIN,
+    NODE_ENV: process.env.NODE_ENV
+  });
+
   // Valideer environment variables
   if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN) {
     console.error('Missing required environment variables:', {
