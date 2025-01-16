@@ -1,16 +1,51 @@
 {
   "functions": {
-    "api/**/*.ts": {
+    "api/email/send-contact.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/email/send-confirmation.ts": {
       "memory": 1024,
       "maxDuration": 10
     }
   },
-  "env": {
-    "SMTP_HOST": "smtp.hostnet.nl",
-    "SMTP_PORT": "465",
-    "SMTP_USER": "noreply@dekoninklijkeloop.nl",
-    "SMTP_PASS": "@Oprotten@12",
-    "SMTP_FROM": "noreply@dekoninklijkeloop.nl",
-    "SMTP_SECURE": "true"
-  }
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://www.dekoninklijkeloop.nl"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Accept"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options", 
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "framework": "vite"
 }
