@@ -13,9 +13,7 @@ console.log('Initializing Mailgun client with:', {
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY?.startsWith('key-') 
-    ? process.env.MAILGUN_API_KEY?.trim() 
-    : `key-${process.env.MAILGUN_API_KEY?.trim()}` || '',
+  key: process.env.MAILGUN_API_KEY || '',
   url: 'https://api.eu.mailgun.net'
 });
 
@@ -101,8 +99,17 @@ export default async function handler(
       });
     }
 
-    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN?.trim() || '', {
-      from: `De Koninklijke Loop <noreply@${process.env.MAILGUN_DOMAIN?.trim() || ''}>`,
+    // Voor de API call
+    console.log('Attempting to send email with:', {
+      domain: process.env.MAILGUN_DOMAIN,
+      from: `De Koninklijke Loop <noreply@${process.env.MAILGUN_DOMAIN}>`,
+      to,
+      hasApiKey: !!process.env.MAILGUN_API_KEY,
+      apiKeyLength: process.env.MAILGUN_API_KEY?.length
+    });
+
+    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
+      from: `De Koninklijke Loop <noreply@${process.env.MAILGUN_DOMAIN || ''}>`,
       to,
       subject,
       html,
