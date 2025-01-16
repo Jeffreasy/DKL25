@@ -13,7 +13,7 @@ console.log('Initializing Mailgun client with:', {
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY || '',
+  key: process.env.MAILGUN_API_KEY?.replace('key-', '') || '',
   url: 'https://api.eu.mailgun.net'
 });
 
@@ -109,7 +109,7 @@ export default async function handler(
     });
 
     const result = await mg.messages.create(process.env.MAILGUN_DOMAIN || '', {
-      from: `De Koninklijke Loop <noreply@${process.env.MAILGUN_DOMAIN || ''}>`,
+      from: process.env.MAILGUN_FROM || `De Koninklijke Loop <noreply@${process.env.MAILGUN_DOMAIN}>`,
       to,
       subject,
       html,
