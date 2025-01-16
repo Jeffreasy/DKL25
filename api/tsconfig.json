@@ -14,6 +14,9 @@
       "@/*": ["../src/*"]
     }
   },
-  "include": ["./**/*.ts"],
+  "include": [
+    "./**/*.ts",
+    "../src/utils/emailTemplates.ts"
+  ],
   "exclude": ["node_modules"]
 } 
