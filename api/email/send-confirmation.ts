@@ -8,7 +8,7 @@ import Mailgun from 'mailgun.js';
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY?.trim() || '',
+  key: `key-${process.env.MAILGUN_API_KEY?.trim()}` || '',
   url: 'https://api.eu.mailgun.net'  // Gebruik EU endpoint
 });
 
@@ -32,7 +32,7 @@ export default async function handler(
   console.log('Email configuration:', {
     hasApiKey: !!process.env.MAILGUN_API_KEY,
     hasDomain: !!process.env.MAILGUN_DOMAIN,
-    hasFrom: !!process.env.MAILGUN_FROM
+    keyFormat: process.env.MAILGUN_API_KEY?.startsWith('key-') ? 'correct' : 'needs prefix'
   });
 
   // Handle CORS preflight

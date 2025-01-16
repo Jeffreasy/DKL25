@@ -13,15 +13,18 @@ console.log('Initializing Mailgun client with:', {
 const mailgun = new Mailgun(FormData);
 const mg = mailgun.client({
   username: 'api',
-  key: process.env.MAILGUN_API_KEY?.trim() || '',
+  key: process.env.MAILGUN_API_KEY?.startsWith('key-') 
+    ? process.env.MAILGUN_API_KEY?.trim() 
+    : `key-${process.env.MAILGUN_API_KEY?.trim()}` || '',
   url: 'https://api.eu.mailgun.net'
 });
 
 // Log domein configuratie
 console.log('Mailgun configuration:', {
   domain: process.env.MAILGUN_DOMAIN,
-  from: process.env.MAILGUN_FROM,
-  endpoint: 'https://api.eu.mailgun.net'
+  endpoint: 'https://api.eu.mailgun.net',
+  hasKey: !!process.env.MAILGUN_API_KEY,
+  keyFormat: process.env.MAILGUN_API_KEY?.startsWith('key-') ? 'correct' : 'needs prefix'
 });
 
 // Log alle environment variables bij startup
