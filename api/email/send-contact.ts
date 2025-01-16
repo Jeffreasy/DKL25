@@ -5,23 +5,27 @@ import Mailgun from 'mailgun.js';
 // Initialiseer Mailgun client
 const mailgun = new Mailgun(FormData);
 const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY || '';
-const MAILGUN_DOMAIN = 'dekoninklijkeloop.nl';  // Gebruik het echte domain
+const MAILGUN_DOMAIN = 'dekoninklijkeloop.nl';
 
 // Debug logging
-console.log('API Key Check:', {
-  key: MAILGUN_API_KEY.replace(/./g, '*'),  // Mask the key
-  length: MAILGUN_API_KEY.length,
-  hasPrefix: MAILGUN_API_KEY.startsWith('key-'),
-  domain: MAILGUN_DOMAIN
+console.log('Mailgun Config:', {
+  key: MAILGUN_API_KEY.slice(-12),  // Alleen laatste deel van key
+  domain: MAILGUN_DOMAIN,
+  region: 'EU'
 });
 
-// Eén enkele client instantie
 const mg = mailgun.client({
   username: 'api',
-  key: MAILGUN_API_KEY.startsWith('key-') 
-    ? MAILGUN_API_KEY 
-    : `key-${MAILGUN_API_KEY}`,
+  key: MAILGUN_API_KEY,
   url: 'https://api.eu.mailgun.net'
+});
+
+// Test de verbinding
+console.log('Testing Mailgun connection:', {
+  domain: 'dekoninklijkeloop.nl',
+  hasKey: !!MAILGUN_API_KEY,
+  keyLength: MAILGUN_API_KEY.length,
+  region: 'EU'
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
