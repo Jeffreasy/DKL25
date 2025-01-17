@@ -45,7 +45,7 @@ interface FAQItem {
       questions: [
         {
           question: "Hoe kan ik meedoen?",
-          answer: "Super dat je mee wilt doen! Inschrijven kan via de inschrijvingspagina vanaf 15 januari 2025. Als je voor deze datum het formulier invult, krijg je tzt een seintje wanneer de inschrijving echt begint.",
+          answer: "Super dat je mee wilt doen! Je kunt je nu al inschrijven voor De Koninklijke Loop 2025. Vul het formulier in en je ontvangt direct een bevestiging.",
           icon: "✍",
           action: true,
           actionText: "Schrijf je nu in"
@@ -67,7 +67,7 @@ interface FAQItem {
         },
         {
           question: "Wanneer sluit de inschrijving?",
-          answer: "Je kunt je inschrijven t/m 7 mei 2025. Let wel op: er kunnen maximaal 75 wandelaars deelnemen, mochten er eerder dan 7 mei 2025 al 75 deelnemers zijn, dan sluit de inschrijving eerder.",
+          answer: "Je kunt je inschrijven t/m 7 mei 2025. Let wel op: er kunnen maximaal 75 wandelaars deelnemen, dus wees er op tijd bij!",
           icon: "⚠"
         },
         {
@@ -135,7 +135,7 @@ interface FAQItem {
       questions: [
         {
           question: "Hoe kan ik doneren?",
-          answer: "Doneren kan vanaf het moment dat de inschrijving geopend is. De inzameling verloopt via GoFundMe en alle giften komen, op de administratieve kosten van GoFundMe na, volledig ten goede van het goede doel.",
+          answer: "Doneren kan direct via onze GoFundMe pagina. Alle giften komen, op de administratieve kosten van GoFundMe na, volledig ten goede van het Liliane Fonds.",
           icon: "💳"
         },
         {
