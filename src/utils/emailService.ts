@@ -2,7 +2,7 @@ import type { ContactFormData } from '@/types/contact';
 import type { RegistrationFormData } from '@/pages/Aanmelden/types/schema';
 
 interface EmailParams {
-  type: 'contact' | 'registration';
+  type: 'contact' | 'aanmelding';
   to: string;
   subject: string;
   data: {
@@ -17,14 +17,10 @@ interface EmailParams {
   replyTo?: string;
 }
 
-const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL;
+const N8N_WEBHOOK_URL = 'https://jeffreyed.app.n8n.cloud/webhook/b128339d-4dad-4945-a7bd-e7da64c419cd';
 
-// Gecombineerde email service
+// Basis email service
 export const sendEmail = async (params: EmailParams) => {
-  if (!N8N_WEBHOOK_URL) {
-    throw new Error('N8N webhook URL not configured');
-  }
-
   try {
     const response = await fetch(N8N_WEBHOOK_URL, {
       method: 'POST',
@@ -50,7 +46,7 @@ export const sendEmail = async (params: EmailParams) => {
   }
 };
 
-// Helper functies
+// Helper functies blijven hetzelfde
 export const sendContactEmail = async (data: ContactFormData) => {
   return sendEmail({
     type: 'contact',
@@ -65,9 +61,9 @@ export const sendContactEmail = async (data: ContactFormData) => {
   });
 };
 
-export const sendConfirmationEmail = async (data: RegistrationFormData) => {
+export const sendAanmeldingEmail = async (data: RegistrationFormData) => {
   return sendEmail({
-    type: 'registration',
+    type: 'aanmelding',
     to: data.email,
     subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
     data: {

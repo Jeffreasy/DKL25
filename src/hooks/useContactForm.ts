@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { ContactFormData } from '@/types/contact';
-import { sendEmail } from '@/utils/emailService';
+import { sendEmail, sendContactEmail } from '@/utils/emailService';
 
 export const useContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -11,17 +11,7 @@ export const useContactForm = () => {
       // Verstuur beide emails
       await Promise.all([
         // Gebruiker bevestiging
-        sendEmail({
-          type: 'contact',
-          to: data.email,
-          subject: 'Bedankt voor je bericht - De Koninklijke Loop',
-          data: {
-            naam: data.naam,
-            email: data.email,
-            bericht: data.bericht
-          },
-          replyTo: 'info@dekoninklijkeloop.nl'
-        }),
+        sendContactEmail(data),
         // Admin notificatie
         sendEmail({
           type: 'contact',

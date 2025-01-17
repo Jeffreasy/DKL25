@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RegistrationSchema, type RegistrationFormData, validateForm } from '../types/schema';
 import { TermsModal } from './TermsModal';
 import { supabase } from '../../../lib/supabase';
-import { sendEmail } from '@/utils/emailService';
+import { sendAanmeldingEmail } from '@/utils/emailService';
 
 export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void }> = ({ 
   onSuccess 
@@ -68,20 +68,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       if (supabaseError) throw supabaseError;
 
       // 2. Verstuur bevestigingsmail
-      await sendEmail({
-        type: 'registration',
-        to: validatedData.email,
-        subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
-        data: {
-          naam: validatedData.naam,
-          email: validatedData.email,
-          rol: validatedData.rol,
-          afstand: validatedData.afstand,
-          ondersteuning: validatedData.ondersteuning,
-          bijzonderheden: validatedData.bijzonderheden
-        },
-        replyTo: 'info@dekoninklijkeloop.nl'
-      });
+      await sendAanmeldingEmail(validatedData);
 
       // 3. Update de email_verzonden status in Supabase
       const { error: updateError } = await supabase
