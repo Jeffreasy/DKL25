@@ -53,12 +53,13 @@ export const useContactForm = () => {
       console.log('Contact Form - Sending webhook data:', JSON.stringify(webhookData, null, 2));
       console.log('Contact Form - To URL:', n8nWebhookUrl?.trim());
 
-      const response = await fetch(n8nWebhookUrl?.trim() ?? '', {
+      let response: Response;
+      response = await fetch(n8nWebhookUrl?.trim() ?? '', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(webhookData),
+        body: JSON.stringify(webhookData)
       });
 
       const responseText = await response.text();

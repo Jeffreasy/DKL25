@@ -81,93 +81,83 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       }
 
       // 2. Stuur data naar n8n webhook
-      try {
-        const webhookData = {
-          type: 'aanmelding',
-          registrationId: registration.id,
-          naam: validatedData.naam,
-          email: validatedData.email,
-          telefoon: validatedData.telefoon || 'Niet opgegeven',
-          rol: validatedData.rol,
-          afstand: validatedData.afstand,
-          ondersteuning: validatedData.ondersteuning,
-          bijzonderheden: validatedData.bijzonderheden || 'Geen bijzonderheden',
-          timestamp: new Date().toISOString()
-        };
+      const webhookData = {
+        type: 'aanmelding',
+        registrationId: registration.id,
+        naam: validatedData.naam,
+        email: validatedData.email,
+        telefoon: validatedData.telefoon || 'Niet opgegeven',
+        rol: validatedData.rol,
+        afstand: validatedData.afstand,
+        ondersteuning: validatedData.ondersteuning,
+        bijzonderheden: validatedData.bijzonderheden || 'Geen bijzonderheden',
+        timestamp: new Date().toISOString()
+      };
 
-        // Log de exacte data die we versturen
-        console.log('Sending webhook data:', JSON.stringify(webhookData, null, 2));
+      let response: Response;
+      response = await fetch(n8nWebhookUrl.trim(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(webhookData)
+      });
 
-        const response = await fetch(n8nWebhookUrl.trim(), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(webhookData),
+      const responseText = await response.text();
+      console.log('N8N Response Status:', response.status);
+      console.log('N8N Response Body:', responseText);
+
+      if (!response.ok) {
+        // Parse response text als JSON als mogelijk
+        try {
+          const errorData = JSON.parse(responseText);
+          if (errorData.hint?.includes('Test workflow')) {
+            console.warn('Webhook in test mode - email niet verzonden');
+            toast('Bevestigingsmail kon niet worden verzonden. We nemen contact met je op.', {
+              icon: '⚠️',
+              duration: 5000,
+              style: {
+                background: '#FEF3C7',
+                color: '#92400E',
+                border: '1px solid #F59E0B'
+              }
+            });
+          } else if (errorData.message.includes('not registered for POST requests')) {
+            console.error('Webhook not configured for POST requests');
+            toast('Systeem configuratie fout. We nemen contact met je op.', {
+              icon: '🔧',
+              duration: 5000,
+              style: {
+                background: '#FEF3C7',
+                color: '#92400E',
+                border: '1px solid #F59E0B'
+              }
+            });
+          } else {
+            throw new Error(`Email workflow error: ${errorData.message}`);
+          }
+        } catch (e) {
+          throw new Error(`Failed to trigger email workflow: ${response.status} - ${responseText}`);
+        }
+      } else {
+        // Succesvolle response
+        toast.success('Je ontvangt binnen enkele minuten een bevestigingsmail', {
+          duration: 5000
         });
 
-        const responseText = await response.text();
-        console.log('N8N Response Status:', response.status);
-        console.log('N8N Response Body:', responseText);
+        // 3. Update de email_verzonden status in Supabase
+        const { error: updateError } = await supabase
+          .from('aanmeldingen')
+          .update({ 
+            email_verzonden: true,
+            email_verzonden_op: new Date().toISOString()
+          })
+          .eq('id', registration.id);
 
-        if (!response.ok) {
-          // Parse response text als JSON als mogelijk
-          try {
-            const errorData = JSON.parse(responseText);
-            if (errorData.hint?.includes('Test workflow')) {
-              console.warn('Webhook in test mode - email niet verzonden');
-              toast('Bevestigingsmail kon niet worden verzonden. We nemen contact met je op.', {
-                icon: '⚠️',
-                duration: 5000,
-                style: {
-                  background: '#FEF3C7',
-                  color: '#92400E',
-                  border: '1px solid #F59E0B'
-                }
-              });
-            } else if (errorData.message.includes('not registered for POST requests')) {
-              console.error('Webhook not configured for POST requests');
-              toast('Systeem configuratie fout. We nemen contact met je op.', {
-                icon: '🔧',
-                duration: 5000,
-                style: {
-                  background: '#FEF3C7',
-                  color: '#92400E',
-                  border: '1px solid #F59E0B'
-                }
-              });
-            } else {
-              throw new Error(`Email workflow error: ${errorData.message}`);
-            }
-          } catch (e) {
-            throw new Error(`Failed to trigger email workflow: ${response.status} - ${responseText}`);
-          }
-        } else {
-          // Succesvolle response
-          toast.success('Je ontvangt binnen enkele minuten een bevestigingsmail', {
-            duration: 5000
-          });
-
-          // 3. Update de email_verzonden status in Supabase
-          const { error: updateError } = await supabase
-            .from('aanmeldingen')
-            .update({ 
-              email_verzonden: true,
-              email_verzonden_op: new Date().toISOString()
-            })
-            .eq('id', registration.id);
-
-          if (updateError) {
-            console.error('Error updating email status:', updateError);
-            // Niet blokkeren voor de gebruiker als dit mislukt
-          }
+        if (updateError) {
+          console.error('Error updating email status:', updateError);
+          // Niet blokkeren voor de gebruiker als dit mislukt
         }
-
-      } catch (error) {
-        console.error('N8N webhook error:', error);
-        toast.error('Er ging iets mis bij het versturen van de bevestigingsmail. We nemen contact met je op.');
-        // Ga wel door met success flow
-        onSuccess(validatedData);
       }
 
       // Ga door naar success pagina
