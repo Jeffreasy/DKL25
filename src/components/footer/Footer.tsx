@@ -5,7 +5,7 @@ import { socialLinks, createQuickLinks } from './data';
 import { PrivacyModal } from '../modals';
 import type { FooterProps, QuickLinkType } from './types';
 
-const Footer: React.FC<FooterProps> = ({ onInschrijfClick }) => {
+const Footer: React.FC<FooterProps> = () => {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const currentYear = new Date().getFullYear();
   
@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ onInschrijfClick }) => {
     setIsPrivacyModalOpen(true);
   };
 
-  const quickLinks = createQuickLinks(onInschrijfClick, handlePrivacyClick);
+  const quickLinks = createQuickLinks(handlePrivacyClick);
   
   return (
     <>

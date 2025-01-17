@@ -1,4 +1,5 @@
-import type { QuickLinkType, SocialLinkType } from './types';
+import type { QuickLinkType } from './types';
+import type { SocialLinkType } from './types';
 import type { SocialPlatform } from '../Socials/types';
 
 export const socialLinks: SocialLinkType[] = [
@@ -24,11 +25,25 @@ export const socialLinks: SocialLinkType[] = [
   }
 ];
 
-export const createQuickLinks = (onInschrijfClick?: () => void, onPrivacyClick?: () => void): QuickLinkType[] => [
-  { text: 'Home', to: '/' },
-  { text: 'Over Ons', to: '/over-ons' },
-  { text: 'Contact', to: '/faq' },
-  { text: 'Inschrijven', action: onInschrijfClick },
-  { text: 'Privacybeleid', action: onPrivacyClick },
-  { text: 'DKL', to: '/wat-is-de-koninklijkeloop' }
+export const createQuickLinks = (handlePrivacyClick: () => void): QuickLinkType[] => [
+  {
+    text: 'Home',
+    to: '/',
+  },
+  {
+    text: 'Inschrijven',
+    to: '/aanmelden',
+  },
+  {
+    text: 'Over Ons',
+    to: '/over-ons',
+  },
+  {
+    text: 'Contact',
+    to: '/faq',
+  },
+  {
+    text: 'Privacy Policy',
+    action: handlePrivacyClick,
+  },
 ]; 

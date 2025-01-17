@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
 import { useState } from 'react';
-import { InschrijfModal, DonatieModal } from './components/modals';
+import { DonatieModal } from './components/modals';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AIChatButton from './components/AIChatButton';
@@ -20,12 +20,7 @@ const DKL = lazy(() => import('./pages/dkl/DKL'));
 const Aanmelden = lazy(() => import('./pages/Aanmelden/aanmelden'));
 
 export default function App() {
-  const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);
   const [isDonatieModalOpen, setIsDonatieModalOpen] = useState(false);
-
-  const handleInschrijfClick = () => {
-    setIsInschrijfModalOpen(true);
-  };
 
   const handleDonatieClick = () => {
     setIsDonatieModalOpen(true);
@@ -35,12 +30,8 @@ export default function App() {
     createRoutesFromElements(
       <Route
         element={
-          <Layout onInschrijfClick={handleInschrijfClick}>
+          <Layout>
             <ScrollToTop />
-            <InschrijfModal 
-              isOpen={isInschrijfModalOpen}
-              onClose={() => setIsInschrijfModalOpen(false)}
-            />
             <DonatieModal 
               isOpen={isDonatieModalOpen}
               onClose={() => setIsDonatieModalOpen(false)}
@@ -53,7 +44,6 @@ export default function App() {
           element={
             <Suspense fallback={<LoadingScreen />}>
               <Home 
-                onInschrijfClick={handleInschrijfClick}
                 onDonatieClick={handleDonatieClick}
               />
             </Suspense>
@@ -71,7 +61,7 @@ export default function App() {
           path="/contact" 
           element={
             <Suspense fallback={<LoadingScreen />}>
-              <Contact onInschrijfClick={handleInschrijfClick} />
+              <Contact />
             </Suspense>
           } 
         />
@@ -79,7 +69,7 @@ export default function App() {
           path="/faq" 
           element={
             <Suspense fallback={<LoadingScreen />}>
-              <Contact onInschrijfClick={handleInschrijfClick} />
+              <Contact />
             </Suspense>
           } 
         />

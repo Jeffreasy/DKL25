@@ -16,10 +16,6 @@ interface SocialLinkProps {
   icon: IconName;
 }
 
-interface NavbarProps {
-  onInschrijfClick: () => void;
-}
-
 interface NavIconProps {
   name: IconName;
   size?: number;
@@ -84,8 +80,7 @@ SocialLink.displayName = 'SocialLink';
 const MobileMenu: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  onInschrijfClick: () => void;
-}> = ({ isOpen, onClose, onInschrijfClick }) => {
+}> = ({ isOpen, onClose }) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -152,11 +147,9 @@ const MobileMenu: React.FC<{
           <ul className="space-y-4 w-full">
             <NavItem to="/" icon="home" onClick={handleNavigation}>Home</NavItem>
             <NavItem 
+              to="/aanmelden" 
               icon="register" 
-              onClick={() => {
-                onInschrijfClick();
-                onClose();
-              }}
+              onClick={handleNavigation}
             >
               Inschrijven
             </NavItem>
@@ -182,7 +175,7 @@ const MobileMenu: React.FC<{
   );
 };
 
-const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
+const Navbar = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = useCallback(() => {
@@ -213,7 +206,7 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
             <div className="hidden lg:flex lg:items-center lg:justify-center lg:flex-1 animate-fade-in">
               <ul className="flex items-center space-x-10">
                 <NavItem to="/" icon="home">Home</NavItem>
-                <NavItem icon="register" onClick={onInschrijfClick}>Inschrijven</NavItem>
+                <NavItem to="/aanmelden" icon="register">Inschrijven</NavItem>
                 <NavItem to="/over-ons" icon="about">Over Ons</NavItem>
                 <NavItem to="/faq" icon="contact">Contact</NavItem>
                 <NavItem to="/wat-is-de-koninklijkeloop" icon="info">DKL</NavItem>
@@ -237,7 +230,6 @@ const Navbar = memo<NavbarProps>(({ onInschrijfClick }) => {
         <MobileMenu
           isOpen={isMenuOpen}
           onClose={toggleMenu}
-          onInschrijfClick={onInschrijfClick}
         />
       </nav>
       {/* Add spacer div to push content down */}

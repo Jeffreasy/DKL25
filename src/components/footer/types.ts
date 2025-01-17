@@ -1,8 +1,7 @@
 import type { SocialPlatform } from '../Socials/types';
 
 export interface FooterProps {
-  onInschrijfClick: () => void;
-  onPrivacyClick?: () => void;
+  // Verwijder onInschrijfClick
 }
 
 export interface QuickLinkType {

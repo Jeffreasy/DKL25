@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   PartnerCarrousel, 
   HeroSection, 
@@ -9,45 +9,38 @@ import {
   DKLSponsors,
 } from '../../components';
 import { VideoGallery } from '../../components/video';
-import { InschrijfModal } from '@/components/modals/InschrijfModal';
+import { useNavigate } from 'react-router-dom';
 
 interface HomeProps {
-  onInschrijfClick: () => void;
   onDonatieClick: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({ onInschrijfClick, onDonatieClick }) => {
-  const [isInschrijfModalOpen, setIsInschrijfModalOpen] = useState(false);
+const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
+  const navigate = useNavigate();
 
-  const handleInschrijfClick = () => {
-    setIsInschrijfModalOpen(true);
+  const handleInschrijven = () => {
+    navigate('/aanmelden');
   };
 
   return (
-    <>
-      <main className="flex-grow">
-        <section className="bg-white relative">
-          <PartnerCarrousel />
-        </section>
-        <HeroSection 
-          onInschrijfClick={onInschrijfClick}
-          onDonatieClick={onDonatieClick}
-        />
-        <TitleSection onInschrijfClick={handleInschrijfClick} />
-        <CTACards
-          onInschrijfClick={onInschrijfClick}
-          onDonatieClick={onDonatieClick}
-        />
-        <VideoGallery />
-        <PhotoGallery />
-        <DKLSocials />
-        <DKLSponsors />
-      </main>
-      <InschrijfModal 
-        isOpen={isInschrijfModalOpen} 
-        onClose={() => setIsInschrijfModalOpen(false)} 
+    <main className="flex-grow">
+      <section className="bg-white relative">
+        <PartnerCarrousel />
+      </section>
+      <HeroSection 
+        onInschrijfClick={handleInschrijven}
+        onDonatieClick={onDonatieClick}
       />
-    </>
+      <TitleSection onInschrijfClick={handleInschrijven} />
+      <CTACards
+        onInschrijfClick={handleInschrijven}
+        onDonatieClick={onDonatieClick}
+      />
+      <VideoGallery />
+      <PhotoGallery />
+      <DKLSocials />
+      <DKLSponsors />
+    </main>
   );
 };
 
