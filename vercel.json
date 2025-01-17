@@ -1,6 +1,4 @@
 {
-  "functions": {
-  },
   "headers": [
     {
       "source": "/api/(.*)",
