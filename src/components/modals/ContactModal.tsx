@@ -8,6 +8,7 @@ import type { ContactFormData } from '@/types/contact';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import LoadingSpinner from '../LoadingSpinner';
 
 // Validatie schema
 const ContactSchema = z.object({
@@ -32,31 +33,14 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
   });
 
   const onSubmit = async (data: ContactFormData) => {
-    try {
-      const result = await submitContactForm(data);
-      
-      if (result.success) {
-        toast.success('Je bericht is succesvol verzonden! We nemen zo snel mogelijk contact met je op.', {
-          duration: 5000,
-          position: 'top-center',
-        });
-        
-        reset(); // Reset form
-        
-        // Wacht even met sluiten zodat gebruiker de success melding kan zien
-        setTimeout(() => {
-          onClose();
-        }, 2000);
-      } else {
-        throw new Error(result.message);
-      }
-    } catch (err) {
-      console.error('Submit error:', err);
-      
-      toast.error('Er ging iets mis. Probeer het opnieuw of neem contact op via email.', {
-        duration: 5000,
-        position: 'top-center',
-      });
+    const result = await submitContactForm(data);
+    
+    if (result.success) {
+      toast.success('Je bericht is verzonden! We nemen zo snel mogelijk contact met je op.');
+      reset(); // Reset form
+      onClose();
+    } else {
+      toast.error(result.message || 'Er ging iets mis bij het versturen van je bericht.');
     }
   };
 
@@ -177,11 +161,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full 
-                    font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg
-                    disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Versturen...' : 'Versturen'}
+                  {isSubmitting ? (
+                    <>
+                      <LoadingSpinner className="w-5 h-5 mr-2" />
+                      Verzenden...
+                    </>
+                  ) : (
+                    'Versturen'
+                  )}
                 </button>
               </div>
             </div>

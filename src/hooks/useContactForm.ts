@@ -37,8 +37,6 @@ export const useContactForm = () => {
         throw supabaseError;
       }
 
-      console.log('Contact Form - Supabase success:', contact);
-
       // 2. Stuur naar n8n webhook
       const webhookData = {
         type: 'contact',
@@ -48,10 +46,6 @@ export const useContactForm = () => {
         bericht: data.bericht,
         timestamp: new Date().toISOString()
       };
-
-      // Log de exacte data die we versturen
-      console.log('Contact Form - Sending webhook data:', JSON.stringify(webhookData, null, 2));
-      console.log('Contact Form - To URL:', n8nWebhookUrl?.trim());
 
       let response: Response;
       response = await fetch(n8nWebhookUrl?.trim() ?? '', {
@@ -63,16 +57,14 @@ export const useContactForm = () => {
       });
 
       const responseText = await response.text();
-      console.log('Contact Form - N8N Response Status:', response.status);
-      console.log('Contact Form - N8N Response Body:', responseText);
+      console.log('Contact Form - N8N Response:', responseText);
 
       if (!response.ok) {
-        console.error('Contact Form - Webhook error:', responseText);
         throw new Error(`Failed to send notification: ${responseText}`);
       }
 
-      // 3. Update email status
-      const { error: updateError } = await supabase
+      // 3. Update status
+      await supabase
         .from('contact_formulieren')
         .update({ 
           email_verzonden: true,
@@ -80,13 +72,9 @@ export const useContactForm = () => {
         })
         .eq('id', contact.id);
 
-      if (updateError) {
-        console.error('Contact Form - Update status error:', updateError);
-      }
-
       return { success: true };
     } catch (error) {
-      console.error('Contact Form - Submission error:', error);
+      console.error('Contact Form - Error:', error);
       return { 
         success: false, 
         message: error instanceof Error ? error.message : 'Er ging iets mis'
