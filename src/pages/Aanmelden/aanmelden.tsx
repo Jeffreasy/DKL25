@@ -4,7 +4,7 @@ import { SuccessMessage } from './components/SuccessMessage';
 import { RegistrationFormData } from './types/schema';
 import { SEO } from '../../components/SEO';
 
-export const Aanmelden: React.FC = () => {
+const Aanmelden = () => {
   const [registrationData, setRegistrationData] = useState<RegistrationFormData | null>(null);
 
   if (registrationData) {

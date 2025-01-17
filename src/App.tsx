@@ -30,13 +30,7 @@ export default function App() {
     createRoutesFromElements(
       <Route
         element={
-          <Layout>
-            <ScrollToTop />
-            <DonatieModal 
-              isOpen={isDonatieModalOpen}
-              onClose={() => setIsDonatieModalOpen(false)}
-            />
-          </Layout>
+          <Layout />
         }
       >
         <Route 
@@ -84,9 +78,11 @@ export default function App() {
         <Route 
           path="/aanmelden" 
           element={
-            <ErrorBoundary>
-              <Aanmelden />
-            </ErrorBoundary>
+            <Suspense fallback={<LoadingScreen />}>
+              <ErrorBoundary>
+                <Aanmelden />
+              </ErrorBoundary>
+            </Suspense>
           } 
         />
       </Route>

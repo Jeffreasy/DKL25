@@ -65,7 +65,16 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
         .select()
         .single();
 
-      if (supabaseError) throw supabaseError;
+      if (supabaseError) {
+        console.error('Supabase error:', supabaseError);
+        if (supabaseError.code === 'PGRST301') {
+          throw new Error('De database is momenteel niet beschikbaar. Probeer het later opnieuw.');
+        } else if (supabaseError.code === '23505') {
+          throw new Error('Je bent al ingeschreven met dit e-mailadres.');
+        } else {
+          throw new Error('Er ging iets mis bij je aanmelding. Probeer het later opnieuw.');
+        }
+      }
 
       // 2. Verstuur bevestigingsmail
       await sendAanmeldingEmail(validatedData);
