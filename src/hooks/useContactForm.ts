@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { ContactFormData } from '@/types/contact';
-import { getContactEmailHtml } from '@/utils/emailTemplates';
-import { sendContactEmail } from '@/utils/emailService';
+import { sendEmail } from '@/utils/emailService';
 
 export const useContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -9,22 +8,30 @@ export const useContactForm = () => {
   const submitContactForm = async (data: ContactFormData) => {
     setIsSubmitting(true);
     try {
-      // Genereer HTML
-      const userHtml = getContactEmailHtml({ ...data, isConfirmation: true });
-      const adminHtml = getContactEmailHtml({ ...data, isConfirmation: false });
-
       // Verstuur beide emails
       await Promise.all([
-        sendContactEmail({
+        // Gebruiker bevestiging
+        sendEmail({
+          type: 'contact',
           to: data.email,
           subject: 'Bedankt voor je bericht - De Koninklijke Loop',
-          html: userHtml,
+          data: {
+            naam: data.naam,
+            email: data.email,
+            bericht: data.bericht
+          },
           replyTo: 'info@dekoninklijkeloop.nl'
         }),
-        sendContactEmail({
+        // Admin notificatie
+        sendEmail({
+          type: 'contact',
           to: 'info@dekoninklijkeloop.nl',
           subject: `Nieuw contactformulier van ${data.naam}`,
-          html: adminHtml,
+          data: {
+            naam: data.naam,
+            email: data.email,
+            bericht: data.bericht
+          },
           replyTo: data.email
         })
       ]);

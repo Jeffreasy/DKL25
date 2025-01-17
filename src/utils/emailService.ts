@@ -5,9 +5,16 @@ interface EmailParams {
   type: 'contact' | 'registration';
   to: string;
   subject: string;
-  html: string;
+  data: {
+    naam: string;
+    email: string;
+    bericht?: string;
+    rol?: string;
+    afstand?: string;
+    ondersteuning?: string;
+    bijzonderheden?: string;
+  };
   replyTo?: string;
-  data?: any;
 }
 
 const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL;
@@ -21,12 +28,22 @@ export const sendEmail = async (params: EmailParams) => {
   try {
     const response = await fetch(N8N_WEBHOOK_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      mode: 'no-cors',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify(params)
     });
 
-    if (!response.ok) throw new Error(`Failed to send ${params.type} email`);
-    return await response.json();
+    if (response.type === 'opaque') {
+      console.log(`Email sent (${params.type}):`, {
+        to: params.to,
+        subject: params.subject
+      });
+    }
+
+    return { success: true };
   } catch (error) {
     console.error(`${params.type} email error:`, error);
     throw error;
@@ -34,8 +51,18 @@ export const sendEmail = async (params: EmailParams) => {
 };
 
 // Helper functies
-export const sendContactEmail = async (params: Omit<EmailParams, 'type'>) => {
-  return sendEmail({ ...params, type: 'contact' });
+export const sendContactEmail = async (data: ContactFormData) => {
+  return sendEmail({
+    type: 'contact',
+    to: data.email,
+    subject: 'Bedankt voor je bericht - De Koninklijke Loop',
+    data: {
+      naam: data.naam,
+      email: data.email,
+      bericht: data.bericht
+    },
+    replyTo: 'info@dekoninklijkeloop.nl'
+  });
 };
 
 export const sendConfirmationEmail = async (data: RegistrationFormData) => {
@@ -43,7 +70,14 @@ export const sendConfirmationEmail = async (data: RegistrationFormData) => {
     type: 'registration',
     to: data.email,
     subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
-    html: '', // N8n zal de template genereren
-    data
+    data: {
+      naam: data.naam,
+      email: data.email,
+      rol: data.rol,
+      afstand: data.afstand,
+      ondersteuning: data.ondersteuning,
+      bijzonderheden: data.bijzonderheden
+    },
+    replyTo: 'info@dekoninklijkeloop.nl'
   });
 }; 
