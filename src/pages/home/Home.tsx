@@ -27,10 +27,7 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
       <section className="bg-white relative">
         <PartnerCarrousel />
       </section>
-      <HeroSection 
-        onInschrijfClick={handleInschrijven}
-        onDonatieClick={onDonatieClick}
-      />
+      <HeroSection />
       <TitleSection onInschrijfClick={handleInschrijven} />
       <CTACards
         onInschrijfClick={handleInschrijven}
