@@ -449,8 +449,20 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           </div>
         </div>
 
-        {/* Terms checkbox */}
-        <div className="flex justify-center pt-6">
+{/* Terms checkbox */}
+          <div className="flex flex-col items-center pt-6 space-y-2">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-2 text-center max-w-lg">
+            <span className="text-sm text-gray-700">
+              Je moet eerst de algemene voorwaarden lezen voordat je je kunt inschrijven.{' '}
+              <button
+                type="button"
+                className="text-[#ff9328] underline hover:text-[#e67f1c] font-medium"
+                onClick={() => setIsTermsOpen(true)}
+              >
+                Lees de Algemene Voorwaarden
+              </button>
+            </span>
+          </div>
           <label className="flex items-center space-x-3">
             <input
               type="checkbox"
@@ -462,23 +474,21 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 }`}
               {...register('terms')}
             />
-            <span className="text-sm text-gray-600">
-              Ik ga akkoord met de{' '}
-              <button
-                type="button"
-                className="text-[#ff9328] underline hover:text-[#e67f1c] font-medium"
-                onClick={() => setIsTermsOpen(true)}
-              >
-                Algemene Voorwaarden
-              </button>
+            <span className={`text-sm ${!hasReadTerms ? 'text-gray-400' : 'text-gray-600'}`}>
+              Ik heb de algemene voorwaarden gelezen en ga hiermee akkoord
+              {!hasReadTerms && (
+                <span className="ml-1 text-[#ff9328]">
+                  (eerst lezen aub)
+                </span>
+              )}
             </span>
           </label>
+          {errors.terms && (
+            <p className="text-sm text-red-500 text-center mt-1 font-medium">
+              {errors.terms.message}
+            </p>
+          )}
         </div>
-        {errors.terms && (
-          <p className="text-sm text-red-500 text-center mt-2 font-medium">
-            {errors.terms.message}
-          </p>
-        )}
 
         {/* Error message */}
         {submitError && (
