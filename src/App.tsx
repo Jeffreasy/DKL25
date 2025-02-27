@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { DonatieModal } from './components/modals';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
-import AIChatButton from './components/AIChatButton';
+import AIChatButton from './components/AIChatButton/AIChatButton';
 import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Toaster } from 'react-hot-toast';

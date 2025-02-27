@@ -1,4 +1,5 @@
-import { useState, KeyboardEvent } from 'react';
+// src/components/AIChatButton/ChatInput.tsx
+import React, { useState, KeyboardEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 
 interface ChatInputProps {
@@ -6,7 +7,7 @@ interface ChatInputProps {
   disabled?: boolean;
 }
 
-const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
   const [message, setMessage] = useState('');
 
   const handleSend = () => {
@@ -32,7 +33,7 @@ const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={disabled}
-          placeholder={disabled ? "Chat komt binnenkort beschikbaar!" : "Typ je bericht..."}
+          placeholder={disabled ? "Even geduld..." : "Typ je bericht..."}
           className="flex-1 bg-gray-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
         />
         <button
@@ -47,4 +48,4 @@ const ChatInput = ({ onSendMessage, disabled }: ChatInputProps) => {
   );
 };
 
-export default ChatInput; 
+export default ChatInput;
