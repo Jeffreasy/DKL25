@@ -10,6 +10,7 @@ import {
 } from '../../components';
 import { VideoGallery } from '../../components/video';
 import { useNavigate } from 'react-router-dom';
+import InschDoneerButton from '../../components/inschrijfdonatebutton/inschdoneerbutton';
 
 interface HomeProps {
   onDonatieClick: () => void;
@@ -37,6 +38,10 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
       <PhotoGallery />
       <DKLSocials />
       <DKLSponsors />
+      <InschDoneerButton 
+        onInschrijfClick={handleInschrijven}
+        onDonatieClick={onDonatieClick}
+      />
     </main>
   );
 };
