@@ -1,8 +1,8 @@
 // src/components/AIChatButton/aiChatService.ts
 import { v4 as uuidv4 } from 'uuid';
 import { Message } from './types';
-// Importeer de faqData van de juiste locatie
-import { faqData } from '../../pages/contact/components/faq.data';
+// Importeer de lokale kopie van faqData
+import { faqData } from './faq.data';
 
 // Helper functions voor betere zoekopdrachten
 const normalizeText = (text: string): string => {
@@ -37,6 +37,12 @@ const calculateSimilarity = (
     return 1.0;
   }
   
+  // Check for exact matches with suggestion chips
+  // This is the key fix - check if the query exactly matches suggestion chips
+  if (query === faqItem.question) {
+    return 1.0;
+  }
+  
   // Contains match
   if (normalizedQuestion.includes(normalizedQuery) || normalizedQuery.includes(normalizedQuestion)) {
     return 0.9;
@@ -64,7 +70,7 @@ const calculateSimilarity = (
   return matchCount / queryWords.length;
 };
 
-// Enhanced search function
+// Enhanced search function with direct lookup for suggestion chips
 const searchFAQ = (query: string): { 
   answer: string, 
   actionText?: string, 
@@ -74,6 +80,22 @@ const searchFAQ = (query: string): {
 } | null => {
   if (!query.trim()) return null;
   
+  // First check for exact match with suggestion chips
+  for (const category of faqData) {
+    for (const item of category.questions) {
+      if (item.question === query) {
+        return {
+          answer: item.answer,
+          actionText: item.actionText,
+          action: item.action,
+          category: category.title,
+          confidence: 1.0
+        };
+      }
+    }
+  }
+  
+  // If no exact match, proceed with similarity search
   let bestMatch = null;
   let highestScore = 0;
   let matchedCategory = '';
