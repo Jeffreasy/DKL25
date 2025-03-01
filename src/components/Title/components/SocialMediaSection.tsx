@@ -46,10 +46,16 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
   return (
     <div className="max-w-[900px] mx-auto px-4 py-6 relative">
       <div className="mb-8 text-center">
-        <h2 className="text-[clamp(1.75rem,4vw,2.5rem)] leading-tight text-gray-900 font-bold tracking-tight mb-2">
+        <h2 
+          className="text-[clamp(1.75rem,4vw,2.5rem)] leading-tight text-gray-900 font-bold tracking-tight mb-2"
+          style={{fontFamily: "'Montserrat', sans-serif"}}
+        >
           Laatste Nieuws
         </h2>
-        <p className="text-[clamp(1.25rem,3vw,1.5rem)] text-gray-600">
+        <p 
+          className="text-[clamp(1.25rem,3vw,1.5rem)] text-gray-600"
+          style={{fontFamily: "'Open Sans', sans-serif"}}
+        >
           Bekijk op onze social media
         </p>
       </div>

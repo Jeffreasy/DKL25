@@ -30,7 +30,10 @@ export default function App() {
     createRoutesFromElements(
       <Route
         element={
-          <Layout />
+          <Layout 
+            isDonatieModalOpen={isDonatieModalOpen}
+            onDonatieModalClose={() => setIsDonatieModalOpen(false)}
+          />
         }
       >
         <Route 

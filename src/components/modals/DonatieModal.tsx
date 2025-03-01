@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,6 +9,17 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import type { DonatieModalProps } from './types';
 
 export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) => {
+  // Laad de lettertypen
+  useEffect(() => {
+    // Voeg de Google Fonts link toe aan de head als deze nog niet bestaat
+    if (!document.querySelector('link[href*="fonts.googleapis.com/css2?family=Montserrat"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap';
+      document.head.appendChild(link);
+    }
+  }, []);
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
@@ -18,7 +29,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
         >
           <div className="relative">
             <div className="bg-primary p-6 flex items-center justify-between">
-              <Dialog.Title className="text-2xl font-bold text-white tracking-tight font-heading">
+              <Dialog.Title className="text-2xl font-bold text-white tracking-tight" style={{fontFamily: "'Montserrat', sans-serif"}}>
                 Doneren
               </Dialog.Title>
               <button 
@@ -34,13 +45,13 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
               <div className="flex justify-center mb-8">
                 <FavoriteIcon className="text-primary" sx={{ fontSize: 72 }} />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900 text-center mb-4 font-heading">
+              <h2 className="text-xl font-semibold text-gray-900 text-center mb-4" style={{fontFamily: "'Montserrat', sans-serif"}}>
                 Donaties openen binnenkort
               </h2>
-              <p className="text-gray-600 text-lg mb-4 text-center leading-relaxed">
+              <p className="text-gray-600 text-lg mb-4 text-center leading-relaxed" style={{fontFamily: "'Open Sans', sans-serif"}}>
                 Doneren voor De Koninklijke Loop 2025 starten vanaf 15 januari 2025.
               </p>
-              <p className="text-gray-600 text-lg text-center leading-relaxed">
+              <p className="text-gray-600 text-lg text-center leading-relaxed" style={{fontFamily: "'Open Sans', sans-serif"}}>
                 Wil je op de hoogte blijven? Volg ons dan op social media of neem contact met ons op.
               </p>
             </div>
@@ -50,6 +61,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                 to="/faq"
                 onClick={onClose}
                 className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                style={{fontFamily: "'Montserrat', sans-serif"}}
               >
                 <span>Contact opnemen</span>
                 <ArrowForwardIcon />
@@ -65,10 +77,10 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                 <div className="flex items-center gap-3">
                   <VolunteerActivismIcon className="text-primary text-2xl" />
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors font-heading">
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors" style={{fontFamily: "'Montserrat', sans-serif"}}>
                       Over het goede doel
                     </h3>
-                    <p className="text-gray-600 group-hover:translate-x-2 transition-transform duration-300">
+                    <p className="text-gray-600 group-hover:translate-x-2 transition-transform duration-300" style={{fontFamily: "'Open Sans', sans-serif"}}>
                       Lees meer over waar we voor lopen.
                     </p>
                   </div>
@@ -84,10 +96,10 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                 <div className="flex items-center gap-3">
                   <HelpOutlineIcon className="text-primary text-2xl" />
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors" style={{fontFamily: "'Montserrat', sans-serif"}}>
                       Vragen over doneren?
                     </h3>
-                    <p className="text-gray-600 group-hover:translate-x-2 transition-transform duration-300">
+                    <p className="text-gray-600 group-hover:translate-x-2 transition-transform duration-300" style={{fontFamily: "'Open Sans', sans-serif"}}>
                       Bekijk onze FAQ of neem contact op.
                     </p>
                   </div>
