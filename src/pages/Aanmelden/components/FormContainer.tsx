@@ -449,7 +449,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           </div>
         </div>
 
-{/* Terms checkbox */}
+        {/* Terms checkbox */}
           <div className="flex flex-col items-center pt-6 space-y-2">
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-2 text-center max-w-lg">
             <span className="text-sm text-gray-700">
@@ -476,11 +476,6 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             />
             <span className={`text-sm ${!hasReadTerms ? 'text-gray-400' : 'text-gray-600'}`}>
               Ik heb de algemene voorwaarden gelezen en ga hiermee akkoord
-              {!hasReadTerms && (
-                <span className="ml-1 text-[#ff9328]">
-                  (eerst lezen aub)
-                </span>
-              )}
             </span>
           </label>
           {errors.terms && (
