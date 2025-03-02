@@ -17,7 +17,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
         },
         {
           "key": "Pragma",
@@ -26,6 +26,10 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "Surrogate-Control",
+          "value": "no-store"
         }
       ]
     },
@@ -55,6 +59,14 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "Surrogate-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Vary",
+          "value": "*"
         }
       ]
     },
@@ -73,7 +85,10 @@
       "src": "/(.*)",
       "dest": "/$1",
       "continue": true,
-      "caseSensitive": true
+      "caseSensitive": true,
+      "headers": {
+        "x-vercel-cache-control": "s-maxage=1, stale-while-revalidate"
+      }
     }
   ],
   "cleanUrls": true,
