@@ -68,6 +68,14 @@
       ]
     }
   ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "continue": true,
+      "caseSensitive": true
+    }
+  ],
   "cleanUrls": true,
   "trailingSlash": false,
   "framework": "vite"
