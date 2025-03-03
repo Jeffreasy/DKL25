@@ -1,16 +1,10 @@
-import fs from 'fs';
-import { globby } from 'globby';
-import prettier from 'prettier';
+const fs = require('fs');
+const { globby } = require('globby');
+const prettier = require('prettier');
 
 const SITE_URL = 'https://www.dekoninklijkeloop.nl';
 
-interface Route {
-  path: string;
-  changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
-  priority: number;
-}
-
-const staticRoutes: Route[] = [
+const staticRoutes = [
   { path: '', changefreq: 'daily', priority: 1.0 },
   { path: '/over-ons', changefreq: 'weekly', priority: 0.8 },
   { path: '/contact', changefreq: 'monthly', priority: 0.8 },
@@ -18,7 +12,7 @@ const staticRoutes: Route[] = [
   { path: '/dkl', changefreq: 'weekly', priority: 0.8 },
 ];
 
-async function generateSitemap(): Promise<void> {
+async function generateSitemap() {
   // Haal alle pagina routes op
   const pages = await globby([
     'src/pages/**/*.tsx',
@@ -43,7 +37,7 @@ async function generateSitemap(): Promise<void> {
         })
         .join('')}
       ${pages
-        .map((page: string) => {
+        .map((page) => {
           const path = page
             .replace('src/pages', '')
             .replace('.tsx', '')
@@ -71,4 +65,4 @@ async function generateSitemap(): Promise<void> {
   fs.writeFileSync('public/sitemap.xml', formatted);
 }
 
-export default generateSitemap; 
+generateSitemap(); 

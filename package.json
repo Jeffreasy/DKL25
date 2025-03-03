@@ -4,12 +4,11 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "npm run generate-sitemap && vite build",
+    "build": "node src/utils/generateSitemap.js && vite build",
     "build:client": "vite build",
     "build:api": "tsc --project api/tsconfig.json",
     "type-check": "tsc --noEmit && tsc --project api/tsconfig.json --noEmit",
-    "preview": "vite preview",
-    "generate-sitemap": "ts-node src/utils/generateSitemap.ts"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
