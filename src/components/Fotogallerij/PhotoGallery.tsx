@@ -66,13 +66,36 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
         throw new Error('Geen zichtbaar album gevonden');
       }
 
+      // First check if photos exist
+      const { data: photoCheckData, error: photoCheckError } = await supabase
+        .from('photos')
+        .select('id, url, visible')
+        .in('id', [
+          'e1350a21-3d42-4252-bc56-5d9ce264ff41',
+          '4059d3cf-0e92-44c2-bbfa-93235dc19eae',
+          '5d350384-2f7f-41bb-98ea-386e33e40c35',
+          '0334c63c-230a-46c7-b87d-3f4a5cc946c0',
+          '245ddf1a-61ab-4b64-b8b2-13d5079d6592',
+          '7431c540-2aa5-42db-b5c5-df55a17856ae',
+          '8a4d5c20-ea73-4336-8c6b-af7a197ef7c2',
+          '3acaeca2-aa51-4cd6-9fad-7b20b607cba7',
+          '6fd90008-f1ca-4e3d-9915-32b914208239',
+          'af027789-d718-4899-88b2-d8f0814b73ee',
+          '8f6ee2f2-2270-40fb-9c91-ace741bf7796'
+        ]);
+
+      console.log('Photo check data:', photoCheckData);
+      if (photoCheckError) {
+        console.error('Photo check error:', photoCheckError);
+      }
+
       // Get photos for this album using the join table
       const { data: photosData, error: photosError } = await supabase
         .from('album_photos')
         .select(`
           order_number,
           photo_id,
-          photos!inner (
+          photos (
             id,
             url,
             alt,
