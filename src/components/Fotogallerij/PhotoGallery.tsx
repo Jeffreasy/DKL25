@@ -89,13 +89,24 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
         console.error('Photo check error:', photoCheckError);
       }
 
+      // Check album_photos directly
+      const { data: albumPhotosCheck, error: albumPhotosCheckError } = await supabase
+        .from('album_photos')
+        .select('*')
+        .eq('album_id', albumData.id);
+
+      console.log('Album photos check:', albumPhotosCheck);
+      if (albumPhotosCheckError) {
+        console.error('Album photos check error:', albumPhotosCheckError);
+      }
+
       // Get photos for this album using the join table
       const { data: photosData, error: photosError } = await supabase
         .from('album_photos')
         .select(`
           order_number,
           photo_id,
-          photos (
+          photos:photo_id (
             id,
             url,
             alt,
