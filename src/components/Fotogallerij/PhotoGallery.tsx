@@ -71,7 +71,8 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
         .from('album_photos')
         .select(`
           order_number,
-          photos:photo_id (
+          photo_id,
+          photos!inner (
             id,
             url,
             alt,
@@ -91,6 +92,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
       // Add detailed logging
       console.log('Raw photos data:', photosData);
       console.log('Album ID being used:', albumData.id);
+      console.log('Photo IDs in join table:', photosData?.map(item => item.photo_id));
       
       // Check if any photos are null
       const nullPhotos = photosData?.filter(item => !item.photos);
