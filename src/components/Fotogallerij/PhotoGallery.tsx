@@ -88,7 +88,15 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
         throw new Error('Fout bij het ophalen van de foto\'s');
       }
 
-      console.log('Photos data:', photosData);
+      // Add detailed logging
+      console.log('Raw photos data:', photosData);
+      console.log('Album ID being used:', albumData.id);
+      
+      // Check if any photos are null
+      const nullPhotos = photosData?.filter(item => !item.photos);
+      if (nullPhotos?.length > 0) {
+        console.log('Found null photos:', nullPhotos);
+      }
 
       if (!photosData || photosData.length === 0) {
         throw new Error('Geen foto\'s gevonden in dit album');
@@ -96,7 +104,17 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
 
       // Filter visible photos and clean up the join data
       const visiblePhotos = (photosData as unknown as PhotoJoinResult[])
-        .filter(item => item.photos?.visible)
+        .filter(item => {
+          if (!item.photos) {
+            console.log('Skipping null photo item:', item);
+            return false;
+          }
+          if (!item.photos.visible) {
+            console.log('Skipping invisible photo:', item.photos);
+            return false;
+          }
+          return true;
+        })
         .map(item => ({
           ...item.photos,
           order_number: item.order_number
