@@ -100,23 +100,12 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
         console.error('Album photos check error:', albumPhotosCheckError);
       }
 
-      // Get photos for this album using the join table
+      // Temporarily fetch photos directly without album_photos join
       const { data: photosData, error: photosError } = await supabase
-        .from('album_photos')
-        .select(`
-          order_number,
-          photo_id,
-          photos:photo_id (
-            id,
-            url,
-            alt,
-            visible,
-            created_at,
-            updated_at
-          )
-        `)
-        .eq('album_id', albumData.id)
-        .order('order_number', { ascending: true });
+        .from('photos')
+        .select('*')
+        .eq('visible', true)
+        .order('created_at', { ascending: true });
 
       if (photosError) {
         console.error('Photos error:', photosError);
@@ -124,41 +113,22 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
       }
 
       // Add detailed logging
-      console.log('Raw photos data:', photosData);
-      console.log('Album ID being used:', albumData.id);
-      console.log('Photo IDs in join table:', photosData?.map(item => item.photo_id));
+      console.log('Photos data:', photosData);
       
-      // Check if any photos are null
-      const nullPhotos = photosData?.filter(item => !item.photos);
-      if (nullPhotos?.length > 0) {
-        console.log('Found null photos:', nullPhotos);
-      }
-
       if (!photosData || photosData.length === 0) {
-        throw new Error('Geen foto\'s gevonden in dit album');
+        throw new Error('Geen foto\'s gevonden');
       }
 
-      // Filter visible photos and clean up the join data
-      const visiblePhotos = (photosData as unknown as PhotoJoinResult[])
-        .filter(item => {
-          if (!item.photos) {
-            console.log('Skipping null photo item:', item);
-            return false;
-          }
-          if (!item.photos.visible) {
-            console.log('Skipping invisible photo:', item.photos);
-            return false;
-          }
-          return true;
-        })
-        .map(item => ({
-          ...item.photos,
-          order_number: item.order_number
-        })) as Photo[];
+      // Map photos to include order_number
+      const visiblePhotos = photosData.map((photo, index) => ({
+        ...photo,
+        order_number: index + 1
+      })) as Photo[];
+      
       console.log('Visible photos:', visiblePhotos);
 
       if (visiblePhotos.length === 0) {
-        throw new Error('Geen zichtbare foto\'s gevonden in dit album');
+        throw new Error('Geen zichtbare foto\'s gevonden');
       }
 
       setPhotos(visiblePhotos);
