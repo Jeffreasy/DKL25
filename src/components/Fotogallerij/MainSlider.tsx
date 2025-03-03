@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { Photo } from './types';
 import NavigationButton from './NavigationButton';
+import { useSwipe } from '@/hooks/useSwipe';
+import ImageModal from './ImageModal';
 
 interface MainSliderProps {
   photos: Photo[];
@@ -8,6 +10,7 @@ interface MainSliderProps {
   onPrevious: () => void;
   onNext: () => void;
   isAnimating: boolean;
+  onModalChange?: (isOpen: boolean) => void;
 }
 
 const MainSlider: React.FC<MainSliderProps> = ({
@@ -15,44 +18,208 @@ const MainSlider: React.FC<MainSliderProps> = ({
   currentIndex,
   onPrevious,
   onNext,
-  isAnimating
+  isAnimating,
+  onModalChange
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
+  const [isGrabbing, setIsGrabbing] = useState(false);
+
+  // Notify parent component of modal state changes
+  useEffect(() => {
+    onModalChange?.(isModalOpen);
+  }, [isModalOpen, onModalChange]);
+
+  // Gesture handling
+  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe({
+    onSwipeLeft: onNext,
+    onSwipeRight: onPrevious,
+    threshold: 50
+  });
+
+  // Preload adjacent images
+  const preloadImages = useCallback(() => {
+    const preloadImage = (url: string) => {
+      if (!url || imageLoaded[url]) return;
+      const img = new Image();
+      img.onload = () => {
+        setImageLoaded(prev => ({ ...prev, [url]: true }));
+      };
+      img.src = url;
+    };
+
+    // Get adjacent indices
+    const prevIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
+    const nextIndex = (currentIndex + 1) % photos.length;
+
+    // Preload current and adjacent images
+    [prevIndex, currentIndex, nextIndex].forEach(index => {
+      const photo = photos[index];
+      if (photo) preloadImage(photo.url);
+    });
+  }, [currentIndex, photos, imageLoaded]);
+
+  useEffect(() => {
+    preloadImages();
+  }, [preloadImages]);
+
+  // Mouse drag handling
+  const handleMouseDown = () => setIsGrabbing(true);
+  const handleMouseUp = () => setIsGrabbing(false);
+  const handleMouseLeave = () => setIsGrabbing(false);
+
+  // Keyboard navigation voor de slider
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isModalOpen) return; // Laat de modal de toetsenbord events afhandelen als deze open is
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          onPrevious();
+          break;
+        case 'ArrowRight':
+          onNext();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onPrevious, onNext, isModalOpen]);
+
+  // Zorg ervoor dat we alleen geldige foto's tonen
+  const currentPhoto = photos[currentIndex];
+  if (!currentPhoto) return null;
+
   return (
-    <div className="relative aspect-[16/9] mb-4 rounded-2xl overflow-hidden bg-gray-100 group shadow-xl">
-      {photos.map((photo, index) => (
-        <div
-          key={photo.id}
-          className={`
-            absolute inset-0 
-            transition-all duration-500 ease-out
-            ${isAnimating ? 'scale-[1.02]' : 'scale-100'}
-            ${index === currentIndex 
-              ? 'opacity-100 visible transform-none' 
-              : index < currentIndex 
-                ? 'opacity-0 invisible -translate-x-full' 
-                : 'opacity-0 invisible translate-x-full'
-            }
-          `}
+    <>
+      <div 
+        ref={containerRef}
+        className={`
+          relative aspect-[16/9] mb-4 rounded-2xl overflow-hidden bg-gray-100 
+          group shadow-xl ${isGrabbing ? 'cursor-grabbing' : 'cursor-pointer'}
+          hover:shadow-2xl transition-shadow duration-300
+        `}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+        onClick={() => setIsModalOpen(true)}
+        role="button"
+        aria-label="Open foto in volledig scherm"
+        tabIndex={0}
+      >
+        {/* Render only visible and adjacent slides for performance */}
+        {photos.map((photo, index) => {
+          // Only render current and adjacent slides
+          if (Math.abs(index - currentIndex) > 1 && 
+              !(index === photos.length - 1 && currentIndex === 0) && 
+              !(index === 0 && currentIndex === photos.length - 1)) {
+            return null;
+          }
+
+          // Skip invalid photos
+          if (!photo?.url || !photo?.id) return null;
+
+          return (
+            <div
+              key={photo.id}
+              className={`
+                absolute inset-0 
+                transition-all duration-500 ease-out
+                ${isAnimating ? 'scale-[1.02]' : 'scale-100'}
+                ${index === currentIndex 
+                  ? 'opacity-100 visible transform-none' 
+                  : index < currentIndex 
+                    ? 'opacity-0 invisible -translate-x-full' 
+                    : 'opacity-0 invisible translate-x-full'
+                }
+              `}
+              style={{
+                willChange: 'transform, opacity',
+                backfaceVisibility: 'hidden'
+              }}
+            >
+              {/* Loading placeholder */}
+              {!imageLoaded[photo.url] && (
+                <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+              )}
+
+              <img
+                src={photo.url}
+                alt={photo.alt}
+                className={`
+                  w-full h-full object-cover 
+                  transition-transform duration-300 
+                  group-hover:scale-[1.02]
+                  ${!imageLoaded[photo.url] ? 'opacity-0' : 'opacity-100'}
+                `}
+                loading="lazy"
+                onLoad={() => setImageLoaded(prev => ({ ...prev, [photo.url]: true }))}
+                style={{ 
+                  willChange: 'transform',
+                  transform: `translate3d(0, 0, 0)` 
+                }}
+              />
+            </div>
+          );
+        })}
+
+        {/* Overlay met gradient */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ willChange: 'opacity' }}
+        />
+
+        {/* Navigation Buttons met hover effect */}
+        <div 
+          className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex items-center justify-between"
+          onClick={(e) => e.stopPropagation()}
         >
-          <img
-            src={photo.url}
-            alt={photo.alt}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-            loading="lazy"
+          <NavigationButton 
+            direction="previous" 
+            onClick={onPrevious}
+            disabled={isAnimating}
+          />
+          <NavigationButton 
+            direction="next" 
+            onClick={onNext}
+            disabled={isAnimating}
           />
         </div>
-      ))}
 
-      {/* Overlay met gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* Slide counter */}
+        <div 
+          className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {currentIndex + 1} / {photos.length}
+        </div>
 
-      {/* Navigation Buttons met hover effect */}
-      <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex items-center justify-between">
-        <NavigationButton direction="previous" onClick={onPrevious} />
-        <NavigationButton direction="next" onClick={onNext} />
+        {/* Fullscreen indicator */}
+        <div className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </div>
       </div>
-    </div>
+
+      <ImageModal
+        photo={currentPhoto}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onNext={onNext}
+        onPrevious={onPrevious}
+        totalPhotos={photos.length}
+        currentIndex={currentIndex}
+      />
+    </>
   );
 };
 
-export default MainSlider; 
+export default React.memo(MainSlider); 

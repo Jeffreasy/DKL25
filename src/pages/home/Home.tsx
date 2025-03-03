@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   PartnerCarrousel, 
   HeroSection, 
@@ -17,6 +17,7 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleInschrijven = () => {
@@ -24,25 +25,26 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
   };
 
   return (
-    <main className="flex-grow">
-      <section className="bg-white relative">
+    <div className="bg-white">
+      <main>
         <PartnerCarrousel />
-      </section>
-      <HeroSection />
-      <TitleSection onInschrijfClick={handleInschrijven} />
-      <CTACards
-        onInschrijfClick={handleInschrijven}
-        onDonatieClick={onDonatieClick}
-      />
-      <VideoGallery />
-      <PhotoGallery />
-      <DKLSocials />
-      <DKLSponsors />
-      <InschDoneerButton 
-        onInschrijfClick={handleInschrijven}
-        onDonatieClick={onDonatieClick}
-      />
-    </main>
+        <HeroSection />
+        <TitleSection onInschrijfClick={handleInschrijven} />
+        <CTACards
+          onInschrijfClick={handleInschrijven}
+          onDonatieClick={onDonatieClick}
+        />
+        <VideoGallery />
+        <PhotoGallery onModalChange={setIsModalOpen} />
+        <DKLSocials />
+        <DKLSponsors />
+        <InschDoneerButton
+          onInschrijfClick={handleInschrijven}
+          onDonatieClick={onDonatieClick}
+          isModalOpen={isModalOpen}
+        />
+      </main>
+    </div>
   );
 };
 

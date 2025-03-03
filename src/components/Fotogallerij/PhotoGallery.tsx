@@ -5,35 +5,131 @@ import { usePhotoGallery } from './hooks/usePhotoGallery';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import { supabase } from '@/lib/supabase';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Photo } from './types';
+import type { Database } from '@/types/supabase';
 
-const PhotoGallery: React.FC = () => {
+// Define types for the join query results
+type PhotoJoinResult = {
+  order_number: number;
+  photos: Photo;
+}
+
+interface PhotoGalleryProps {
+  onModalChange?: (isOpen: boolean) => void;
+}
+
+const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Notify parent component of modal state changes
   useEffect(() => {
-    const fetchPhotos = async () => {
-      const { data, error } = await supabase
-        .from('photos')
+    onModalChange?.(isModalOpen);
+  }, [isModalOpen, onModalChange]);
+
+  // Preload images
+  const preloadImages = useCallback((urls: string[]) => {
+    urls.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
+  }, []);
+
+  // Fetch photos with retry mechanism
+  const fetchPhotos = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Log the current database state
+      console.log('Fetching data...');
+
+      // Get the visible album
+      const { data: albumData, error: albumError } = await supabase
+        .from('albums')
         .select('*')
         .eq('visible', true)
+        .maybeSingle();
+
+      if (albumError) {
+        console.error('Album error:', albumError);
+        throw new Error('Fout bij het ophalen van het album');
+      }
+
+      console.log('Album data:', albumData);
+
+      if (!albumData) {
+        throw new Error('Geen zichtbaar album gevonden');
+      }
+
+      // Get photos for this album using the join table
+      const { data: photosData, error: photosError } = await supabase
+        .from('album_photos')
+        .select(`
+          order_number,
+          photos:photo_id (
+            id,
+            url,
+            alt,
+            visible,
+            created_at,
+            updated_at
+          )
+        `)
+        .eq('album_id', albumData.id)
         .order('order_number', { ascending: true });
 
-      if (error) {
-        console.error('Error fetching photos:', error);
-      } else {
-        const transformedData = (data || []).map(photo => ({
-          ...photo,
-          visible: true
-        }));
-        setPhotos(transformedData);
+      if (photosError) {
+        console.error('Photos error:', photosError);
+        throw new Error('Fout bij het ophalen van de foto\'s');
       }
-      setIsLoading(false);
-    };
 
+      console.log('Photos data:', photosData);
+
+      if (!photosData || photosData.length === 0) {
+        throw new Error('Geen foto\'s gevonden in dit album');
+      }
+
+      // Filter visible photos and clean up the join data
+      const visiblePhotos = (photosData as unknown as PhotoJoinResult[])
+        .filter(item => item.photos?.visible)
+        .map(item => ({
+          ...item.photos,
+          order_number: item.order_number
+        })) as Photo[];
+      console.log('Visible photos:', visiblePhotos);
+
+      if (visiblePhotos.length === 0) {
+        throw new Error('Geen zichtbare foto\'s gevonden in dit album');
+      }
+
+      setPhotos(visiblePhotos);
+
+      // Preload first few images
+      const preloadUrls = visiblePhotos.slice(0, 3).map(photo => photo.url);
+      preloadImages(preloadUrls);
+
+    } catch (err) {
+      console.error('Error in fetchPhotos:', err);
+      setError(err instanceof Error ? err.message : 'Er ging iets mis bij het ophalen van de foto\'s');
+      
+      if (retryCount < 3) {
+        setTimeout(() => {
+          setRetryCount(prev => prev + 1);
+        }, Math.pow(2, retryCount) * 1000);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [retryCount, preloadImages]);
+
+  useEffect(() => {
     fetchPhotos();
-  }, []);
+  }, [fetchPhotos]);
 
   const {
     currentIndex,
@@ -47,18 +143,56 @@ const PhotoGallery: React.FC = () => {
     setCurrentIndex
   } = usePhotoGallery(photos);
 
+  // Preload next image when current index changes
+  useEffect(() => {
+    if (!photos.length) return;
+    const nextIndex = (currentIndex + 1) % photos.length;
+    preloadImages([photos[nextIndex].url]);
+  }, [currentIndex, photos, preloadImages]);
+
   if (isLoading) {
     return (
+      <div className="py-16 px-5 bg-white font-heading">
+        <div className="max-w-[1200px] mx-auto">
+          {/* Skeleton loader */}
+          <div className="animate-pulse">
+            <div className="h-[600px] bg-gray-200 rounded-2xl mb-4" />
+            <div className="flex gap-2 justify-center">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="w-24 h-16 bg-gray-200 rounded-lg" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
       <div className="py-16 px-5 bg-white font-heading text-center">
-        <div className="animate-pulse-slow">
-          <p className="text-gray-600">Foto's laden...</p>
+        <div className="max-w-[600px] mx-auto">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={() => {
+              setRetryCount(0);
+              fetchPhotos();
+            }}
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+          >
+            Opnieuw proberen
+          </button>
         </div>
       </div>
     );
   }
 
   if (photos.length === 0) {
-    return null;
+    return (
+      <div className="py-16 px-5 bg-white font-heading text-center">
+        <p className="text-gray-600">Geen foto's beschikbaar</p>
+      </div>
+    );
   }
 
   // Touch handlers met type safety
@@ -108,6 +242,7 @@ const PhotoGallery: React.FC = () => {
             onPrevious={handlePrevious}
             onNext={handleNext}
             isAnimating={isAnimating}
+            onModalChange={setIsModalOpen}
           />
 
           {/* Auto-play control */}

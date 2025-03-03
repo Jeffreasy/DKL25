@@ -2,11 +2,11 @@ import type { CTACardData } from './types';
 
 export const ctaCardsData: CTACardData[] = [
   {
-    title: "Schrijf je in",
+    title: "Meld je aan",
     description: "Doe mee met De Koninklijke Loop en steun een goed doel.",
     icon: "register",
     actionType: "inschrijven",
-    buttonText: "Inschrijven"
+    buttonText: "Aanmelden"
   },
   {
     title: "Doneer",
