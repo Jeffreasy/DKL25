@@ -1,5 +1,5 @@
-import { Suspense, lazy } from 'react';
-import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
+import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
@@ -11,6 +11,10 @@ import AIChatButton from './components/AIChatButton/AIChatButton';
 import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Toaster } from 'react-hot-toast';
+import { initGA } from './utils/googleAnalytics';
+
+// Initialize Google Analytics
+initGA(import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX');
 
 // Lazy load pages
 const Home = lazy(() => import('./pages/home/Home'));
@@ -18,6 +22,19 @@ const OverOns = lazy(() => import('./pages/over-ons/OverOns'));
 const Contact = lazy(() => import('./pages/contact/Contact'));
 const DKL = lazy(() => import('./pages/dkl/DKL'));
 const Aanmelden = lazy(() => import('./pages/Aanmelden/aanmelden'));
+
+// PageTracker component to track route changes
+const PageTracker = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    import('./utils/googleAnalytics').then(({ logPageView }) => {
+      logPageView(location.pathname);
+    });
+  }, [location]);
+
+  return null;
+};
 
 export default function App() {
   const [isDonatieModalOpen, setIsDonatieModalOpen] = useState(false);
@@ -30,12 +47,16 @@ export default function App() {
     createRoutesFromElements(
       <Route
         element={
-          <Layout 
-            isDonatieModalOpen={isDonatieModalOpen}
-            onDonatieModalClose={() => setIsDonatieModalOpen(false)}
-          />
+          <>
+            <PageTracker />
+            <Layout 
+              isDonatieModalOpen={isDonatieModalOpen}
+              onDonatieModalClose={() => setIsDonatieModalOpen(false)}
+            />
+          </>
         }
       >
+        {/* Bestaande routes blijven ongewijzigd */}
         <Route 
           path="/" 
           element={
@@ -46,6 +67,7 @@ export default function App() {
             </Suspense>
           } 
         />
+        {/* Overige routes ongewijzigd */}
         <Route 
           path="/over-ons" 
           element={

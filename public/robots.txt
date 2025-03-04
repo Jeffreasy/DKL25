@@ -1,21 +1,9 @@
-# https://www.dekoninklijkeloop.nl/robots.txt
-# Allow all web crawlers to access all content
 User-agent: *
 Allow: /
 
-# Disallow admin and API routes
-Disallow: /api/
-Disallow: /admin/
-Disallow: /_next/
-Disallow: /_vercel/
-
-# Sitemap location
-Sitemap: https://www.dekoninklijkeloop.nl/sitemap.xml
-
-# Crawl-delay for all bots
-Crawl-delay: 10
-
 # Bescherm privacy-gevoelige routes
+Disallow: /admin/
+Disallow: /api/
 Disallow: /dashboard/
 
 # Voorkom indexering van zoekresultaten
@@ -24,4 +12,7 @@ Disallow: /*?*query=
 # Sta media toe
 Allow: /images/
 Allow: /assets/
-Allow: /media/ 
+Allow: /media/
+
+# Sitemap locatie
+Sitemap: https://dekoninklijkeloop.nl/sitemap.xml 
