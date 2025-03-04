@@ -4,6 +4,7 @@ import SocialIcon from '../Socials/SocialIcon';
 import { socialLinks, createQuickLinks } from './data';
 import { PrivacyModal } from '../modals';
 import type { FooterProps, QuickLinkType } from './types';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const Footer: React.FC<FooterProps> = () => {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
@@ -11,6 +12,15 @@ const Footer: React.FC<FooterProps> = () => {
   
   const handlePrivacyClick = () => {
     setIsPrivacyModalOpen(true);
+    trackEvent('footer', 'privacy_policy_click');
+  };
+
+  const handleSocialClick = (platform: string) => {
+    trackEvent('footer', 'social_media_click', platform);
+  };
+
+  const handleQuickLinkClick = (linkText: string) => {
+    trackEvent('footer', 'quick_link_click', linkText);
   };
 
   const quickLinks = createQuickLinks(handlePrivacyClick);
@@ -42,6 +52,7 @@ const Footer: React.FC<FooterProps> = () => {
                   aria-label={platform}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => handleSocialClick(platform)}
                 >
                   <SocialIcon 
                     platform={platform} 
@@ -62,12 +73,16 @@ const Footer: React.FC<FooterProps> = () => {
                     <Link
                       to={link.to}
                       className="text-sm opacity-90 hover:opacity-100 hover:underline transition-opacity"
+                      onClick={() => handleQuickLinkClick(link.text)}
                     >
                       {link.text}
                     </Link>
                   ) : (
                     <button
-                      onClick={link.action}
+                      onClick={() => {
+                        link.action?.();
+                        handleQuickLinkClick(link.text);
+                      }}
                       className="text-sm opacity-90 hover:opacity-100 hover:underline transition-opacity"
                     >
                       {link.text}

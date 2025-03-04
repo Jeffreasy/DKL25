@@ -1,7 +1,16 @@
 import React from 'react';
 import { sponsors } from './data';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const DKLSponsors: React.FC = () => {
+  const handleSponsorClick = (sponsorName: string) => {
+    trackEvent('sponsors', 'sponsor_click', sponsorName);
+  };
+
+  const handleImageError = (sponsorName: string) => {
+    trackEvent('sponsors', 'image_error', sponsorName);
+  };
+
   return (
     <section 
       className="py-20 px-5 bg-gradient-to-b from-white to-gray-50 font-heading relative overflow-hidden"
@@ -43,6 +52,7 @@ const DKLSponsors: React.FC = () => {
                 rel="noopener noreferrer"
                 className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-slideIn"
                 style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => handleSponsorClick(sponsor.name)}
               >
                 {/* Logo Container */}
                 <div className="aspect-[3/2] p-8 flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 transition-colors rounded-t-2xl">
@@ -53,6 +63,7 @@ const DKLSponsors: React.FC = () => {
                       className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-300 group-hover:scale-105"
                       loading="lazy"
                       onError={(e) => {
+                        handleImageError(sponsor.name);
                         e.currentTarget.src = '/fallback-logo.png'
                       }}
                     />

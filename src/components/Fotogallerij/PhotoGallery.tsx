@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { useState, useEffect, useCallback } from 'react';
 import type { Photo } from './types';
 import type { Database } from '@/types/supabase';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 // Define types for the join query results
 type PhotoJoinResult = {
@@ -45,7 +46,6 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
       setIsLoading(true);
       setError(null);
 
-      // Log the current database state
       console.log('Fetching data...');
 
       // Get the visible album
@@ -57,12 +57,14 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
 
       if (albumError) {
         console.error('Album error:', albumError);
+        trackEvent('gallery', 'error', 'album_fetch_failed');
         throw new Error('Fout bij het ophalen van het album');
       }
 
       console.log('Album data:', albumData);
 
       if (!albumData) {
+        trackEvent('gallery', 'error', 'no_visible_album');
         throw new Error('Geen zichtbaar album gevonden');
       }
 
@@ -116,8 +118,12 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
       console.log('Photos data:', photosData);
       
       if (!photosData || photosData.length === 0) {
+        trackEvent('gallery', 'error', 'no_photos_found');
         throw new Error('Geen foto\'s gevonden');
       }
+
+      // Track successful photo load
+      trackEvent('gallery', 'photos_loaded', `count:${photosData.length}`);
 
       // Map photos to include order_number
       const visiblePhotos = photosData.map((photo, index) => ({
@@ -166,6 +172,25 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
     setTouchStart,
     setCurrentIndex
   } = usePhotoGallery(photos);
+
+  // Track navigation
+  const handleNavigation = (direction: 'previous' | 'next') => {
+    trackEvent('gallery', 'navigation', direction);
+    direction === 'previous' ? handlePrevious() : handleNext();
+  };
+
+  // Track autoplay toggle
+  const handleAutoplayToggle = () => {
+    const newState = !isAutoPlaying;
+    trackEvent('gallery', 'autoplay_toggle', newState ? 'started' : 'stopped');
+    setIsAutoPlaying(newState);
+  };
+
+  // Track thumbnail selection
+  const handleThumbnailSelect = (index: number) => {
+    trackEvent('gallery', 'thumbnail_select', `index:${index}`);
+    setCurrentIndex(index);
+  };
 
   // Preload next image when current index changes
   useEffect(() => {
@@ -263,15 +288,15 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
           <MainSlider
             photos={photos}
             currentIndex={currentIndex}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
+            onPrevious={() => handleNavigation('previous')}
+            onNext={() => handleNavigation('next')}
             isAnimating={isAnimating}
             onModalChange={setIsModalOpen}
           />
 
           {/* Auto-play control */}
           <button
-            onClick={() => setIsAutoPlaying((prev: boolean) => !prev)}
+            onClick={handleAutoplayToggle}
             className="absolute bottom-4 right-4 z-10 bg-white/90 p-2 rounded-full shadow-lg hover:bg-white transition-all"
             aria-label={isAutoPlaying ? 'Pause slideshow' : 'Start slideshow'}
           >
@@ -297,7 +322,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
         <ThumbnailSlider
           photos={photos}
           currentIndex={currentIndex}
-          onSelect={setCurrentIndex}
+          onSelect={handleThumbnailSelect}
         />
 
         {/* Keyboard controls info */}

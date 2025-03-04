@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AboutHeader from './components/AboutHeader';
 import AboutImage from './components/AboutImage';
 import ContentGrid from './components/ContentGrid';
 import { SEO } from '../../components/SEO';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const OverOns: React.FC = () => {
+  useEffect(() => {
+    trackEvent('over_ons', 'page_view', 'over_ons_page');
+  }, []);
+
   return (
     <>
       <SEO 

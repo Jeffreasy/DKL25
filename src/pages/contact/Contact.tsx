@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FAQ from './components/FAQ';
 import { ContactModal, PrivacyModal } from '../../components/modals';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface ContactProps {
   onInschrijfClick?: () => void;
@@ -12,12 +13,28 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
+  useEffect(() => {
+    trackEvent('contact', 'page_view', 'contact_page');
+  }, []);
+
   const handleInschrijfClick = () => {
+    trackEvent('contact', 'inschrijf_click', 'from_contact_page');
     navigate('/aanmelden');
   };
 
   const handleContactClick = () => {
+    trackEvent('contact', 'modal_open', 'contact_form');
     setIsContactModalOpen(true);
+  };
+
+  const handleContactModalClose = () => {
+    trackEvent('contact', 'modal_close', 'contact_form');
+    setIsContactModalOpen(false);
+  };
+
+  const handlePrivacyClick = () => {
+    trackEvent('contact', 'privacy_click', 'from_contact_page');
+    navigate('/privacy');
   };
 
   return (
@@ -29,8 +46,8 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
       
       <ContactModal 
         isOpen={isContactModalOpen}
-        onClose={() => setIsContactModalOpen(false)}
-        onPrivacyClick={() => navigate('/privacy')}
+        onClose={handleContactModalClose}
+        onPrivacyClick={handlePrivacyClick}
       />
       
       <PrivacyModal

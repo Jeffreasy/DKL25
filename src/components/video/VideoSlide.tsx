@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface VideoSlideProps {
   videoId: string;
@@ -7,6 +8,9 @@ interface VideoSlideProps {
   isSelected?: boolean;
   onClick?: () => void;
   isThumbnail?: boolean;
+  onPlay?: () => void;
+  onPause?: () => void;
+  onEnded?: () => void;
 }
 
 const VideoSlide: React.FC<VideoSlideProps> = ({ 
@@ -15,20 +19,25 @@ const VideoSlide: React.FC<VideoSlideProps> = ({
   title,
   isSelected, 
   onClick,
-  isThumbnail = false 
+  isThumbnail = false,
+  onPlay,
+  onPause,
+  onEnded
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const slideRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Veilige URL constructie
+  const cleanVideoId = videoId.replace('e/', '');
   const thumbnailUrl = videoId 
-    ? `https://cdn-cf-east.streamable.com/image/${videoId.trim()}.jpg`
+    ? `https://cdn-cf-east.streamable.com/image/${cleanVideoId.trim()}.jpg`
     : '';
 
-  // Veilige video URL
-  const safeVideoUrl = url?.startsWith('http') ? url : '';
+  // Veilige video URL - gebruik de originele URL als deze al correct is
+  const safeVideoUrl = url.includes('streamable.com/e/') ? url : '';
 
   useEffect(() => {
     if (!slideRef.current) return;
@@ -57,6 +66,35 @@ const VideoSlide: React.FC<VideoSlideProps> = ({
     setIsLoading(true);
     setHasError(false);
   }, [url]);
+
+  // Luister naar berichten van de iframe voor video events
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Controleer of het bericht van Streamable komt
+      if (!event.origin.includes('streamable.com')) return;
+      if (!event.data || typeof event.data !== 'string') return;
+
+      if (event.data.includes('play')) {
+        setIsLoading(false);
+        trackEvent('video', 'play', title);
+        onPlay?.();
+      } else if (event.data.includes('pause')) {
+        trackEvent('video', 'pause', title);
+        onPause?.();
+      } else if (event.data.includes('ended')) {
+        trackEvent('video', 'ended', title);
+        onEnded?.();
+      } else if (event.data.includes('error')) {
+        console.error('Video error:', event.data);
+        setHasError(true);
+        setIsLoading(false);
+        trackEvent('video', 'error', `${title}: ${event.data}`);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [title, onPlay, onPause, onEnded]);
 
   if (isThumbnail) {
     return (
@@ -101,7 +139,10 @@ const VideoSlide: React.FC<VideoSlideProps> = ({
       <div className="w-full max-w-[1280px] mx-auto">
         <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
           <div className="absolute inset-0 rounded-xl overflow-hidden shadow-lg bg-gray-100 flex items-center justify-center">
-            <p className="text-gray-500">Video URL ontbreekt</p>
+            <div className="text-center text-gray-500">
+              <p className="mb-2">Video URL is ongeldig</p>
+              <p className="text-sm">Controleer of de URL correct is</p>
+            </div>
           </div>
         </div>
       </div>
@@ -137,8 +178,11 @@ const VideoSlide: React.FC<VideoSlideProps> = ({
                 <p className="mb-2">Video kon niet worden geladen</p>
                 <button
                   onClick={() => {
-                    setIsLoading(true);
-                    setHasError(false);
+                    if (iframeRef.current) {
+                      setIsLoading(true);
+                      setHasError(false);
+                      iframeRef.current.src = safeVideoUrl;
+                    }
                   }}
                   className="px-4 py-2 bg-primary rounded-lg hover:bg-primary-dark transition-colors"
                 >
@@ -148,21 +192,19 @@ const VideoSlide: React.FC<VideoSlideProps> = ({
             </div>
           )}
 
-          {/* Video iFrame */}
+          {/* Video iframe */}
           <iframe
+            ref={iframeRef}
             src={safeVideoUrl}
+            className="absolute inset-0 w-full h-full"
             title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            className="absolute inset-0 w-full h-full z-0 overflow-hidden"
-            style={{ 
-              backgroundColor: 'transparent',
-              border: 'none',
-              width: '100%',
-              height: '100%'
-            }}
+            allow="autoplay; fullscreen"
+            frameBorder="0"
+            scrolling="no"
             onLoad={() => setIsLoading(false)}
             onError={() => {
+              console.error('Video loading error:', safeVideoUrl);
               setIsLoading(false);
               setHasError(true);
             }}

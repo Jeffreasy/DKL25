@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import type { Photo } from './types';
 import { useSwipe } from '@/hooks/useSwipe';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface ImageModalProps {
   photo: Photo | null;
@@ -27,23 +28,42 @@ const ImageModal: React.FC<ImageModalProps> = ({
   const [scale, setScale] = useState(1);
   const [isClosing, setIsClosing] = useState(false);
 
+  // Track modal open/close
+  useEffect(() => {
+    if (isOpen) {
+      trackEvent('gallery', 'modal_opened', `photo_${currentIndex}`);
+    }
+  }, [isOpen, currentIndex]);
+
   // Swipe handling voor mobiel
   const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe({
-    onSwipeLeft: onNext,
-    onSwipeRight: onPrevious,
-    onSwipeDown: () => handleClose(),
-    onSwipeUp: () => handleClose(),
+    onSwipeLeft: () => {
+      trackEvent('gallery', 'modal_swipe', 'left');
+      onNext?.();
+    },
+    onSwipeRight: () => {
+      trackEvent('gallery', 'modal_swipe', 'right');
+      onPrevious?.();
+    },
+    onSwipeDown: () => {
+      trackEvent('gallery', 'modal_swipe', 'down');
+      handleClose();
+    },
+    onSwipeUp: () => {
+      trackEvent('gallery', 'modal_swipe', 'up');
+      handleClose();
+    },
     threshold: 50,
   });
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
-    // Wacht op de fade-out animatie voordat we echt sluiten
+    trackEvent('gallery', 'modal_closed', `photo_${currentIndex}`);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
     }, 200);
-  }, [onClose]);
+  }, [onClose, currentIndex]);
 
   // Keyboard navigatie
   useEffect(() => {
@@ -52,16 +72,20 @@ const ImageModal: React.FC<ImageModalProps> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'Escape':
+          trackEvent('gallery', 'modal_keyboard', 'escape');
           handleClose();
           break;
         case 'ArrowLeft':
+          trackEvent('gallery', 'modal_keyboard', 'left');
           onPrevious?.();
           break;
         case 'ArrowRight':
+          trackEvent('gallery', 'modal_keyboard', 'right');
           onNext?.();
           break;
         case ' ':
           e.preventDefault();
+          trackEvent('gallery', 'modal_zoom', isZoomed ? 'out' : 'in');
           setIsZoomed(prev => !prev);
           break;
         default:
@@ -71,7 +95,7 @@ const ImageModal: React.FC<ImageModalProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, handleClose, onNext, onPrevious]);
+  }, [isOpen, handleClose, onNext, onPrevious, isZoomed]);
 
   // Reset states wanneer foto verandert
   useEffect(() => {
@@ -83,15 +107,18 @@ const ImageModal: React.FC<ImageModalProps> = ({
 
   const handleImageLoad = () => {
     setIsLoading(false);
+    trackEvent('gallery', 'modal_image_loaded', `photo_${currentIndex}`);
   };
 
   const handleImageClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     if (isZoomed) {
+      trackEvent('gallery', 'modal_zoom', 'out');
       setIsZoomed(false);
       setScale(1);
       setDragPosition({ x: 0, y: 0 });
     } else {
+      trackEvent('gallery', 'modal_zoom', 'in');
       setIsZoomed(true);
       setScale(2);
       const rect = e.currentTarget.getBoundingClientRect();

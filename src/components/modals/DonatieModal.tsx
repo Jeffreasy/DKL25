@@ -6,8 +6,16 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import type { DonatieModalProps } from './types';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) => {
+  // Track modal open/close
+  useEffect(() => {
+    if (isOpen) {
+      trackEvent('donatie', 'modal_opened', 'donatie_form');
+    }
+  }, [isOpen]);
+
   // Laad de lettertypen
   useEffect(() => {
     // Voeg de Google Fonts link toe aan de head als deze nog niet bestaat
@@ -19,14 +27,24 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
     }
   }, []);
 
+  const handleClose = () => {
+    trackEvent('donatie', 'modal_closed', 'donatie_form');
+    onClose();
+  };
+
+  const handleLinkClick = (path: string) => {
+    trackEvent('donatie', 'link_click', path);
+    handleClose();
+  };
+
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
       <div className="fixed inset-0 overflow-y-auto">
         {/* Backdrop overlay voor het sluiten van de modal */}
         <div 
           className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" 
           aria-hidden="true"
-          onClick={onClose}
+          onClick={handleClose}
         />
 
         <div className="flex min-h-full items-start md:items-center justify-center p-0 md:p-4">
@@ -39,7 +57,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                   Doneren aan het Liliane Fonds
                 </Dialog.Title>
                 <button 
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="text-white hover:bg-white/10 p-2 rounded-full transition-colors touch-manipulation"
                   aria-label="Sluiten"
                 >
@@ -67,7 +85,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                 <Link 
                   to="/wat-is-de-koninklijkeloop"
                   className="group block p-2.5 md:p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors touch-manipulation"
-                  onClick={onClose}
+                  onClick={() => handleLinkClick('over_goed_doel')}
                 >
                   <div className="flex items-center gap-3">
                     <VolunteerActivismIcon className="text-primary text-lg md:text-xl" />
@@ -86,7 +104,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                 <Link 
                   to="/faq"
                   className="group block p-2.5 md:p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors touch-manipulation"
-                  onClick={onClose}
+                  onClick={() => handleLinkClick('faq')}
                 >
                   <div className="flex items-center gap-3">
                     <HelpOutlineIcon className="text-primary text-lg md:text-xl" />

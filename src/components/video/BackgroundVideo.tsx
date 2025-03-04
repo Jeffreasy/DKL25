@@ -2,9 +2,19 @@ import React, { useEffect, useRef } from 'react';
 
 interface BackgroundVideoProps {
   posterUrl: string;
+  onPlay?: () => void;
+  onPause?: () => void;
+  onEnded?: () => void;
+  onError?: (error: Error) => void;
 }
 
-const BackgroundVideo: React.FC<BackgroundVideoProps> = ({ posterUrl }) => {
+const BackgroundVideo: React.FC<BackgroundVideoProps> = ({ 
+  posterUrl,
+  onPlay,
+  onPause,
+  onEnded,
+  onError
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -18,11 +28,12 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({ posterUrl }) => {
         console.log('Video playing successfully');
       } catch (error) {
         console.error('Error playing video:', error);
+        onError?.(error instanceof Error ? error : new Error('Failed to play video'));
       }
     };
 
     playVideo();
-  }, []);
+  }, [onError]);
 
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
@@ -33,6 +44,10 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({ posterUrl }) => {
         loop
         playsInline
         poster={posterUrl}
+        onPlay={onPlay}
+        onPause={onPause}
+        onEnded={onEnded}
+        onError={(e) => onError?.(new Error('Video playback error'))}
         style={{
           position: 'absolute',
           width: '100%',

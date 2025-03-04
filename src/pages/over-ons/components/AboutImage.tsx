@@ -1,14 +1,20 @@
 import React from 'react';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const AboutImage: React.FC = () => {
+  const handleImageClick = () => {
+    trackEvent('over_ons', 'image_click', 'about_image');
+  };
+
   return (
     <div className="my-12 text-center max-w-4xl mx-auto">
       <div className="relative overflow-hidden rounded-xl mb-6 group">
         <img
           src="https://cdn.prod.website-files.com/65c6896e8519c5d0bae5586f/66c263cb03f03f94f9921898_8c4a504471.jpg"
           alt="Teamleden wandelend"
-          className="w-full h-auto block transition-transform duration-300 group-hover:scale-102"
+          className="w-full h-auto block transition-transform duration-300 group-hover:scale-102 cursor-pointer"
           loading="eager"
+          onClick={handleImageClick}
         />
       </div>
       <div className="flex flex-col items-center gap-4">

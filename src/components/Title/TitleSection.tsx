@@ -7,6 +7,7 @@ import { useInitialData } from './functions/hooks';
 import { TitleSectionRow, EventDetail } from './functions/types';
 import EventDetailCard from './components/EventDetailCard';
 import SocialMediaSection from './components/SocialMediaSection';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface TitleSectionProps {
   onInschrijfClick: () => void;
@@ -20,6 +21,12 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
       loadInstagramEmbed();
     }
   }, [socialEmbeds]);
+
+  useEffect(() => {
+    if (!isLoading && !error) {
+      trackEvent('title_section', 'section_viewed', 'title_section');
+    }
+  }, [isLoading, error]);
 
   // Laad de lettertypen
   useEffect(() => {
@@ -54,6 +61,10 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
   }
 
   if (!data) return null;
+
+  const handleRegisterClick = () => {
+    trackEvent('title_section', 'register_click', 'register_button');
+  };
 
   return (
     <section 
@@ -107,7 +118,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
             {/* CTA Button */}
             <div className="mt-10 sm:mt-12">
               <button
-                onClick={onInschrijfClick}
+                onClick={handleRegisterClick}
                 className="bg-[#ff9328] hover:bg-[#e87f1c] text-white px-8 sm:px-10 py-3 sm:py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-3 mx-auto"
                 style={{fontFamily: "'Montserrat', sans-serif"}}
                 aria-label="Schrijf je nu in voor De Koninklijke Loop"

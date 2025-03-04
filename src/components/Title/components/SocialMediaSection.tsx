@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { SocialEmbedRow } from '../functions/types';
 import DOMPurify from 'dompurify';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface SocialMediaSectionProps {
   socialEmbeds: SocialEmbedRow[];
@@ -18,6 +19,10 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
       window.FB.XFBML.parse();
     }
   }, [socialEmbeds]);
+
+  const handleSocialClick = (platform: string) => {
+    trackEvent('title_social', 'social_click', platform);
+  };
 
   const renderEmbed = (embed: SocialEmbedRow) => {
     switch (embed.platform) {

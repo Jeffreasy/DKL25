@@ -2,6 +2,7 @@ import React, { useRef, useState, useCallback, useEffect } from 'react';
 import type { Photo } from './types';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface ThumbnailSliderProps {
   photos: Photo[];
@@ -93,6 +94,7 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;
+    trackEvent('gallery', 'thumbnail_scroll', direction);
     const scrollAmount = direction === 'left' ? -THUMBNAIL_WIDTH * 3 : THUMBNAIL_WIDTH * 3;
     scrollRef.current.scrollBy({
       left: scrollAmount,
@@ -153,6 +155,7 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
             <button
               key={photo.id}
               onClick={() => {
+                trackEvent('gallery', 'thumbnail_select', `photo_${actualIndex}`);
                 onSelect(actualIndex);
                 scrollToThumbnail(actualIndex);
               }}
@@ -174,6 +177,7 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
                 className="w-full h-full object-cover"
                 loading="lazy"
                 draggable={false}
+                onLoad={() => trackEvent('gallery', 'thumbnail_loaded', `photo_${actualIndex}`)}
               />
             </button>
           );

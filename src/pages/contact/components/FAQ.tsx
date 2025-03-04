@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { faqData } from './faq.data';
 import { useDebounce } from '../../../hooks/ui/useDebounce';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface FAQProps {
   onInschrijfClick?: () => void;
@@ -37,60 +38,76 @@ const QuestionItem: React.FC<QuestionItemProps> = ({
   action,
   actionText,
   onInschrijfClick
-}) => (
-  <details className="group rounded-lg overflow-hidden">
-    <summary 
-      className="flex items-center cursor-pointer p-4 bg-primary text-white font-bold rounded-lg transition-all duration-300 hover:bg-primary-dark outline-none"
-      role="button"
-      tabIndex={0}
-    >
-      <span className="mr-2 text-xl" role="img" aria-label={icon}>
-        {icon}
-      </span>
-      <span className="flex-1">{question}</span>
-      <span 
-        className="transform transition-transform duration-300 group-open:rotate-45 text-xl ml-2 w-6 h-6 flex items-center justify-center"
-        aria-hidden="true"
+}) => {
+  const handleClick = () => {
+    trackEvent('faq', 'question_click', question);
+  };
+
+  return (
+    <details className="group rounded-lg overflow-hidden" onClick={handleClick}>
+      <summary 
+        className="flex items-center cursor-pointer p-4 bg-primary text-white font-bold rounded-lg transition-all duration-300 hover:bg-primary-dark outline-none"
+        role="button"
+        tabIndex={0}
       >
-        +
-      </span>
-    </summary>
-    <div className="overflow-hidden transition-all duration-300 max-h-0 group-open:max-h-[500px]">
-      <div className="p-4 bg-gray-50 rounded-b-lg transform transition-all duration-300 translate-y-[-100%] group-open:translate-y-0">
-        <p className="text-gray-700 leading-relaxed">{answer}</p>
-        {action && (
-          <button
-            onClick={onInschrijfClick}
-            className="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-            type="button"
-          >
-            {actionText}
-          </button>
-        )}
+        <span className="mr-2 text-xl" role="img" aria-label={icon}>
+          {icon}
+        </span>
+        <span className="flex-1">{question}</span>
+        <span 
+          className="transform transition-transform duration-300 group-open:rotate-45 text-xl ml-2 w-6 h-6 flex items-center justify-center"
+          aria-hidden="true"
+        >
+          +
+        </span>
+      </summary>
+      <div className="overflow-hidden transition-all duration-300 max-h-0 group-open:max-h-[500px]">
+        <div className="p-4 bg-gray-50 rounded-b-lg transform transition-all duration-300 translate-y-[-100%] group-open:translate-y-0">
+          <p className="text-gray-700 leading-relaxed">{answer}</p>
+          {action && (
+            <button
+              onClick={() => {
+                trackEvent('faq', 'action_click', `${actionText} - ${question}`);
+                onInschrijfClick?.();
+              }}
+              className="mt-4 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              type="button"
+            >
+              {actionText}
+            </button>
+          )}
+        </div>
       </div>
-    </div>
-  </details>
-);
+    </details>
+  );
+};
 
 const SearchBar: React.FC<{
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}> = ({ value, onChange }) => (
-  <div className="relative mb-8 group">
-    <input
-      type="text"
-      id="kl-qa-search-input"
-      placeholder="Zoek je vraag..."
-      value={value}
-      onChange={onChange}
-      className="w-full p-4 pl-12 text-lg border-2 border-primary/20 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300"
-      aria-label="Zoek in veelgestelde vragen"
-    />
-    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-primary/50 group-focus-within:text-primary transition-colors duration-300">
-      🔍
-    </span>
-  </div>
-);
+}> = ({ value, onChange }) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    trackEvent('faq', 'search', e.target.value);
+    onChange(e);
+  };
+
+  return (
+    <div className="relative mb-8 group">
+      <input
+        type="text"
+        id="kl-qa-search-input"
+        placeholder="Zoek je vraag..."
+        value={value}
+        onChange={handleSearch}
+        className="w-full p-4 pl-12 text-lg border-2 border-primary/20 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300"
+        aria-label="Zoek in veelgestelde vragen"
+      />
+      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-primary/50 group-focus-within:text-primary transition-colors duration-300">
+        🔍
+      </span>
+    </div>
+  );
+};
 
 const CategoryHeader: React.FC<{ title: string; icon: string }> = ({ title, icon }) => (
   <div className="flex items-center space-x-3 mb-6 pb-3 border-b-2 border-primary/10">
@@ -120,6 +137,11 @@ const FAQ: React.FC<FAQProps> = ({ onInschrijfClick, onContactClick }) => {
       .filter((category: FAQCategory) => category.questions.length > 0);
   }, [debouncedSearchTerm]);
 
+  const handleContactClick = () => {
+    trackEvent('faq', 'contact_click', 'contact_button');
+    onContactClick?.();
+  };
+
   return (
     <section className="w-full bg-white text-gray-800 p-8 rounded-xl shadow-lg">
       <div className="max-w-4xl mx-auto text-center mb-12">
@@ -147,7 +169,7 @@ const FAQ: React.FC<FAQProps> = ({ onInschrijfClick, onContactClick }) => {
                 <QuestionItem
                   key={qa.question}
                   {...qa}
-                  onInschrijfClick={qa.question.includes('contact') ? onContactClick : onInschrijfClick}
+                  onInschrijfClick={qa.question.includes('contact') ? handleContactClick : onInschrijfClick}
                 />
               ))}
             </div>
@@ -164,7 +186,7 @@ const FAQ: React.FC<FAQProps> = ({ onInschrijfClick, onContactClick }) => {
             We helpen je graag verder met al je vragen over De Koninklijke Loop
           </p>
           <button
-            onClick={onContactClick}
+            onClick={handleContactClick}
             className="bg-primary text-white px-8 py-3 rounded-xl
               font-medium hover:-translate-y-1 hover:shadow-lg 
               transition-all duration-300 hover:bg-primary-dark

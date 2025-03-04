@@ -1,8 +1,13 @@
 import React from 'react';
 import { ContentItem } from './ContentItem';
 import { contentItems } from './route.data';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const RouteSection: React.FC = () => {
+  React.useEffect(() => {
+    trackEvent('dkl', 'section_view', 'route_section');
+  }, []);
+
   return (
     <div className="w-full bg-white font-roboto text-gray-800 antialiased">
       {/* Header Sectie */}

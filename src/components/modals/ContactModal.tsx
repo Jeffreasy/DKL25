@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import LoadingSpinner from '../LoadingSpinner';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 // Validatie schema
 const ContactSchema = z.object({
@@ -32,20 +33,39 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
     resolver: zodResolver(ContactSchema)
   });
 
+  // Track modal open/close
+  React.useEffect(() => {
+    if (isOpen) {
+      trackEvent('contact', 'modal_opened', 'contact_form');
+    }
+  }, [isOpen]);
+
   const onSubmit = async (data: ContactFormData) => {
     const result = await submitContactForm(data);
     
     if (result.success) {
+      trackEvent('contact', 'form_submitted', 'success');
       toast.success('Je bericht is verzonden! We nemen zo snel mogelijk contact met je op.');
-      reset(); // Reset form
+      reset();
       onClose();
     } else {
+      trackEvent('contact', 'form_submitted', 'error');
       toast.error(result.message || 'Er ging iets mis bij het versturen van je bericht.');
     }
   };
 
+  const handleClose = () => {
+    trackEvent('contact', 'modal_closed', 'contact_form');
+    onClose();
+  };
+
+  const handlePrivacyClick = () => {
+    trackEvent('contact', 'privacy_click', 'privacy_policy');
+    onPrivacyClick();
+  };
+
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
         <Dialog.Panel className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-lg relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8">
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -56,7 +76,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                   Contact
                 </Dialog.Title>
                 <button 
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="text-white hover:bg-white/10 p-2 rounded-full transition-colors"
                   aria-label="Sluiten"
                 >
@@ -143,7 +163,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                       Ik ga akkoord met het{' '}
                       <button
                         type="button"
-                        onClick={onPrivacyClick}
+                        onClick={handlePrivacyClick}
                         className="text-[#ff9328] underline"
                       >
                         privacybeleid

@@ -1,22 +1,25 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import VideoSlide from './VideoSlide';
 import NavigationButton from './NavigationButton';
+import DotIndicator from './DotIndicator';
 import { useVideoGallery } from '@/hooks/useVideoGallery';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { useSwipe } from '@/hooks/useSwipe';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const VideoGallery: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoplay, setIsAutoplay] = useState(true);
   
   const {
     videos,
-    currentIndex,
     isLoading,
     error,
     handlePrevious,
     handleNext,
-    setCurrentIndex
+    setCurrentIndex: setCurrentIndexInGallery
   } = useVideoGallery();
 
   // Keyboard navigatie
@@ -81,6 +84,38 @@ const VideoGallery: React.FC = () => {
     });
   }, [currentIndex, videos]);
 
+  useEffect(() => {
+    if (isAutoplay) {
+      const timer = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
+      }, 5000);
+      return () => clearInterval(timer);
+    }
+  }, [isAutoplay, videos.length]);
+
+  const handleDotClick = (index: number) => {
+    trackEvent('video_gallery', 'dot_click', `slide_${index + 1}`);
+    setCurrentIndex(index);
+  };
+
+  const handleAutoplayToggle = () => {
+    const newState = !isAutoplay;
+    trackEvent('video_gallery', 'autoplay_toggle', newState ? 'enabled' : 'disabled');
+    setIsAutoplay(newState);
+  };
+
+  const handleVideoPlay = () => {
+    trackEvent('video_gallery', 'video_play', `slide_${currentIndex + 1}`);
+  };
+
+  const handleVideoPause = () => {
+    trackEvent('video_gallery', 'video_pause', `slide_${currentIndex + 1}`);
+  };
+
+  const handleVideoEnded = () => {
+    trackEvent('video_gallery', 'video_ended', `slide_${currentIndex + 1}`);
+  };
+
   if (isLoading) return (
     <div className="flex items-center justify-center min-h-[300px]">
       <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -132,6 +167,9 @@ const VideoGallery: React.FC = () => {
             videoId={currentVideo.video_id}
             url={currentVideo.url}
             title={currentVideo.title}
+            onPlay={handleVideoPlay}
+            onPause={handleVideoPause}
+            onEnded={handleVideoEnded}
           />
           
           {/* Navigation Buttons - Verborgen op mobiel */}
@@ -159,7 +197,7 @@ const VideoGallery: React.FC = () => {
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     index === currentIndex ? 'bg-primary w-4' : 'bg-gray-300'
                   }`}
-                  onClick={() => setCurrentIndex(index)}
+                  onClick={() => !isLoading && setCurrentIndex(index)}
                   aria-label={`Ga naar video ${index + 1}`}
                   disabled={isLoading}
                 />
@@ -186,6 +224,24 @@ const VideoGallery: React.FC = () => {
             </div>
           </div>
         )}
+
+        <div className="flex justify-center mt-4">
+          <DotIndicator
+            total={videos.length}
+            current={currentIndex}
+            onClick={(index: number) => handleDotClick(index)}
+          />
+        </div>
+
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handleAutoplayToggle}
+            className="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+            aria-label={isAutoplay ? 'Stop autoplay' : 'Start autoplay'}
+          >
+            {isAutoplay ? '⏸' : '▶'}
+          </button>
+        </div>
       </div>
     </section>
   );

@@ -3,6 +3,7 @@ import { IconName, ICONS } from '../../icons';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface NavItemProps {
   to?: string;
@@ -36,6 +37,8 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick }) => {
       }
       onClick();
     }
+    // Track navigation click
+    trackEvent('navbar', 'navigation_click', children as string);
   };
 
   const linkClasses = "flex items-center gap-3 px-5 py-2.5 text-white hover:bg-primary-dark rounded-lg transition-all duration-300 hover:shadow-lg w-full";
@@ -65,16 +68,23 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick }) => {
 });
 NavItem.displayName = 'NavItem';
 
-const SocialLink = memo<SocialLinkProps>(({ href, icon }) => (
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
-  >
-    <MemoizedNavIcon name={icon} />
-  </a>
-));
+const SocialLink = memo<SocialLinkProps>(({ href, icon }) => {
+  const handleClick = () => {
+    trackEvent('navbar', 'social_media_click', icon);
+  };
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+      onClick={handleClick}
+    >
+      <MemoizedNavIcon name={icon} />
+    </a>
+  );
+});
 SocialLink.displayName = 'SocialLink';
 
 const MobileMenu: React.FC<{
@@ -92,6 +102,7 @@ const MobileMenu: React.FC<{
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      trackEvent('navbar', 'mobile_menu_open');
     }
 
     return () => {
@@ -101,6 +112,7 @@ const MobileMenu: React.FC<{
 
   const handleNavigation = () => {
     onClose();
+    trackEvent('navbar', 'mobile_menu_close');
   };
 
   if (!isOpen) return null;
@@ -179,7 +191,11 @@ const Navbar = memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = useCallback(() => {
-    setIsMenuOpen(prev => !prev);
+    setIsMenuOpen(prev => {
+      const newState = !prev;
+      trackEvent('navbar', newState ? 'menu_open' : 'menu_close');
+      return newState;
+    });
   }, []);
 
   return (

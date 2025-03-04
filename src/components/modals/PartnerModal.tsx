@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { PartnerModalProps } from './types';
 import { Dialog } from '@headlessui/react';
 import CloseIcon from '@mui/icons-material/Close';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, partner }) => {
+  // Track modal open/close
+  useEffect(() => {
+    if (isOpen && partner) {
+      trackEvent('partners', 'modal_opened', partner.name);
+    }
+  }, [isOpen, partner]);
+
+  const handleClose = () => {
+    trackEvent('partners', 'modal_closed', partner?.name || 'partner_details');
+    onClose();
+  };
+
+  const handleWebsiteClick = () => {
+    if (partner?.website) {
+      trackEvent('partners', 'website_click', partner.name);
+    }
+  };
+
   if (!isOpen || !partner) return null;
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
         <Dialog.Panel 
           className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-[calc(100%-0.5rem)] xs:max-w-[calc(100%-1rem)] sm:max-w-xl relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8"
@@ -15,7 +34,7 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
         >
           <button
             className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300 hover:rotate-90"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Sluiten"
           >
             <CloseIcon />
@@ -50,6 +69,7 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
                 href={partner.website}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={handleWebsiteClick}
                 className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
               >
                 <span>Bezoek website</span>

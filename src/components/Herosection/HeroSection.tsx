@@ -1,7 +1,30 @@
-import React from 'react'; 
+import React, { useEffect } from 'react'; 
 import BackgroundVideo from '../video/BackgroundVideo';  
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const HeroSection: React.FC = () => {   
+  // Track when the hero section becomes visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            trackEvent('hero', 'section_view', 'hero_section');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const heroSection = document.querySelector('section[role="banner"]');
+    if (heroSection) {
+      observer.observe(heroSection);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (     
     <section
       className="relative h-[calc(100vh-5rem)] font-heading"
@@ -10,6 +33,10 @@ const HeroSection: React.FC = () => {
     >
       <BackgroundVideo
         posterUrl="https://cdn-cf-east.streamable.com/image/ei5kw8.jpg"
+        onPlay={() => trackEvent('hero', 'video_play', 'background_video')}
+        onPause={() => trackEvent('hero', 'video_pause', 'background_video')}
+        onEnded={() => trackEvent('hero', 'video_end', 'background_video')}
+        onError={(error: Error) => trackEvent('hero', 'video_error', error.message)}
       />
        
       {/* Content */}

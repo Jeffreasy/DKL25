@@ -8,6 +8,7 @@ import ChatInput from './ChatInput';
 import SuggestionChips from './SuggestionChips';
 import { Message } from './types';
 import { getIntroMessage, processMessage } from './aiChatService';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const AIChatButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,6 +55,7 @@ const AIChatButton = () => {
       // Voeg welkomstbericht toe bij eerste render
       setMessages([getIntroMessage()]);
       setSuggestions(initialSuggestions);
+      trackEvent('chat', 'chat_initialized');
     } else {
       // Toon "komt binnenkort beschikbaar" bericht als chat niet actief is
       setMessages([{
@@ -64,6 +66,7 @@ const AIChatButton = () => {
       }]);
       // Geen suggesties bij niet-actieve chat
       setSuggestions([]);
+      trackEvent('chat', 'chat_not_available');
     }
   }, [isChatActive]);
 
@@ -76,6 +79,7 @@ const AIChatButton = () => {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
+    trackEvent('chat', isOpen ? 'chat_closed' : 'chat_opened');
   };
 
   const handleSendMessage = async (text: string) => {
@@ -104,6 +108,10 @@ const AIChatButton = () => {
       // Voeg assistentantwoord toe
       setMessages(prev => [...prev, response]);
       
+      // Track successful message exchange
+      trackEvent('chat', 'message_sent', text);
+      trackEvent('chat', 'message_received', response.content);
+      
       // Toon nieuwe suggesties na een korte pauze
       setTimeout(() => {
         // Genereer relevante suggesties op basis van context
@@ -112,6 +120,9 @@ const AIChatButton = () => {
       }, 1000);
     } catch (error) {
       console.error("Error processing message:", error);
+      
+      // Track error
+      trackEvent('chat', 'error', 'message_processing_failed');
       
       // Voeg foutbericht toe
       setMessages(prev => [...prev, {
@@ -126,6 +137,11 @@ const AIChatButton = () => {
     } finally {
       setIsTyping(false);
     }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    trackEvent('chat', 'suggestion_clicked', suggestion);
+    handleSendMessage(suggestion);
   };
 
   return (
@@ -171,7 +187,7 @@ const AIChatButton = () => {
                 <div className="mt-2">
                   <SuggestionChips 
                     suggestions={suggestions} 
-                    onSelect={handleSendMessage} 
+                    onSelect={handleSuggestionClick} 
                   />
                 </div>
               )}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { SocialLink } from './types';
 import SocialIcon from './SocialIcon';
 import { supabase } from '@/lib/supabase';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 const socialColors = {
   facebook: '#4267B2',
@@ -36,6 +37,10 @@ const DKLSocials: React.FC = () => {
 
     fetchSocialLinks();
   }, []);
+
+  const handleSocialClick = (platform: string) => {
+    trackEvent('social', 'social_click', platform);
+  };
 
   return (
     <section className="bg-gray-900 py-20 px-5 font-heading">
@@ -74,6 +79,7 @@ const DKLSocials: React.FC = () => {
               aria-label={`Volg ons op ${social.platform}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => handleSocialClick(social.platform)}
             >
               <SocialIcon
                 platform={social.platform}

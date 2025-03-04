@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CTACard from './CTACard';
 import { ctaCardsData } from './data';
 import type { CTACardData } from './types';
+import { logEvent } from '../../utils/googleAnalytics'; // Importeer analytics functie
 
 interface CTACardsProps {
   onInschrijfClick: () => void;
@@ -12,7 +13,15 @@ interface CTACardsProps {
 const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick, onDonatieClick }) => {
   const navigate = useNavigate();
 
+  // Track page section view
+  React.useEffect(() => {
+    logEvent('section_view', 'cta_section_view', 'kom_in_actie');
+  }, []);
+
   const handleAction = (card: CTACardData) => {
+    // Track de CTA klik met de titel en actie type
+    logEvent('conversion', 'cta_click', `${card.title}_${card.actionType}`);
+    
     switch (card.actionType) {
       case 'inschrijven':
         onInschrijfClick();
@@ -52,4 +61,4 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick, onDonatieClick })
   );
 };
 
-export default CTACards; 
+export default CTACards;

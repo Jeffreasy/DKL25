@@ -3,6 +3,7 @@ import type { Photo } from './types';
 import NavigationButton from './NavigationButton';
 import { useSwipe } from '@/hooks/useSwipe';
 import ImageModal from './ImageModal';
+import { trackEvent } from '@/utils/googleAnalytics';
 
 interface MainSliderProps {
   photos: Photo[];
@@ -26,15 +27,24 @@ const MainSlider: React.FC<MainSliderProps> = ({
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
   const [isGrabbing, setIsGrabbing] = useState(false);
 
-  // Notify parent component of modal state changes
+  // Track modal state changes
   useEffect(() => {
+    if (isModalOpen) {
+      trackEvent('gallery', 'modal_opened', `photo_${currentIndex}`);
+    }
     onModalChange?.(isModalOpen);
-  }, [isModalOpen, onModalChange]);
+  }, [isModalOpen, onModalChange, currentIndex]);
 
-  // Gesture handling
+  // Gesture handling with tracking
   const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe({
-    onSwipeLeft: onNext,
-    onSwipeRight: onPrevious,
+    onSwipeLeft: () => {
+      trackEvent('gallery', 'swipe', 'left');
+      onNext();
+    },
+    onSwipeRight: () => {
+      trackEvent('gallery', 'swipe', 'right');
+      onPrevious();
+    },
     threshold: 50
   });
 
@@ -69,16 +79,18 @@ const MainSlider: React.FC<MainSliderProps> = ({
   const handleMouseUp = () => setIsGrabbing(false);
   const handleMouseLeave = () => setIsGrabbing(false);
 
-  // Keyboard navigation voor de slider
+  // Keyboard navigation voor de slider met tracking
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isModalOpen) return; // Laat de modal de toetsenbord events afhandelen als deze open is
+      if (isModalOpen) return;
       
       switch (e.key) {
         case 'ArrowLeft':
+          trackEvent('gallery', 'keyboard_navigation', 'left');
           onPrevious();
           break;
         case 'ArrowRight':
+          trackEvent('gallery', 'keyboard_navigation', 'right');
           onNext();
           break;
         default:
@@ -89,6 +101,12 @@ const MainSlider: React.FC<MainSliderProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onPrevious, onNext, isModalOpen]);
+
+  // Track image loading
+  const handleImageLoad = (url: string) => {
+    setImageLoaded(prev => ({ ...prev, [url]: true }));
+    trackEvent('gallery', 'image_loaded', `photo_${currentIndex}`);
+  };
 
   // Zorg ervoor dat we alleen geldige foto's tonen
   const currentPhoto = photos[currentIndex];
@@ -109,7 +127,10 @@ const MainSlider: React.FC<MainSliderProps> = ({
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => {
+          trackEvent('gallery', 'open_modal', `photo_${currentIndex}`);
+          setIsModalOpen(true);
+        }}
         role="button"
         aria-label="Open foto in volledig scherm"
         tabIndex={0}
@@ -160,7 +181,7 @@ const MainSlider: React.FC<MainSliderProps> = ({
                   ${!imageLoaded[photo.url] ? 'opacity-0' : 'opacity-100'}
                 `}
                 loading="lazy"
-                onLoad={() => setImageLoaded(prev => ({ ...prev, [photo.url]: true }))}
+                onLoad={() => handleImageLoad(photo.url)}
                 style={{ 
                   willChange: 'transform',
                   transform: `translate3d(0, 0, 0)` 
@@ -212,7 +233,10 @@ const MainSlider: React.FC<MainSliderProps> = ({
       <ImageModal
         photo={currentPhoto}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          trackEvent('gallery', 'close_modal', `photo_${currentIndex}`);
+          setIsModalOpen(false);
+        }}
         onNext={onNext}
         onPrevious={onPrevious}
         totalPhotos={photos.length}

@@ -5,6 +5,7 @@ import { RegistrationSchema, type RegistrationFormData, validateForm } from '../
 import { TermsModal } from './TermsModal';
 import { supabase } from '../../../lib/supabase';
 import { toast } from 'react-hot-toast';
+import { logEvent } from '../../../utils/googleAnalytics'; // Importeer analytics functie
 
 const n8nWebhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
 
@@ -36,9 +37,46 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
     name: 'ondersteuning'
   });
 
+  const selectedAfstand = useWatch({
+    control,
+    name: 'afstand'
+  });
+
   const showBijzonderheden = selectedOndersteuning === 'Ja' || selectedOndersteuning === 'Anders';
 
+  // Track page view when component mounts
+  useEffect(() => {
+    logEvent('page_view', 'registration_form_view', 'aanmeld_formulier');
+  }, []);
+
+  // Track when role selection changes
+  useEffect(() => {
+    if (selectedRole) {
+      logEvent('registration', 'select_role', selectedRole);
+    }
+  }, [selectedRole]);
+
+  // Track when afstand selection changes
+  useEffect(() => {
+    if (selectedAfstand) {
+      logEvent('registration', 'select_distance', selectedAfstand);
+    }
+  }, [selectedAfstand]);
+
+  // Track when ondersteuning selection changes
+  useEffect(() => {
+    if (selectedOndersteuning) {
+      logEvent('registration', 'select_support', selectedOndersteuning);
+    }
+  }, [selectedOndersteuning]);
+
+  const openTermsModal = () => {
+    logEvent('registration', 'open_terms_modal');
+    setIsTermsOpen(true);
+  };
+
   const handleAcceptTerms = () => {
+    logEvent('registration', 'accept_terms');
     setHasReadTerms(true);
     setValue('terms', true);
     setIsTermsOpen(false);
@@ -47,6 +85,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
   const onSubmit = async (data: RegistrationFormData) => {
     try {
       console.log('Form submitted with data:', data);
+      // Track form submission attempt
+      logEvent('registration', 'form_submit_attempt', `${data.rol}_${data.afstand}`);
+      
       setIsSubmitting(true);
       setSubmitError(null);
       
@@ -71,6 +112,10 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
       if (supabaseError) {
         console.error('Supabase error:', supabaseError);
+        
+        // Track registration error
+        logEvent('registration', 'registration_error', supabaseError.code);
+        
         if (supabaseError.code === 'PGRST301') {
           throw new Error('De database is momenteel niet beschikbaar. Probeer het later opnieuw.');
         } else if (supabaseError.code === '23505') {
@@ -79,6 +124,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           throw new Error('Er ging iets mis bij je aanmelding. Probeer het later opnieuw.');
         }
       }
+
+      // Track successful database save
+      logEvent('registration', 'database_save_success', `${validatedData.rol}_${validatedData.afstand}`);
 
       // 2. Stuur data naar n8n webhook
       const webhookData = {
@@ -108,6 +156,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       console.log('N8N Response Body:', responseText);
 
       if (!response.ok) {
+        // Track webhook error
+        logEvent('registration', 'webhook_error', `${response.status}`);
+        
         // Parse response text als JSON als mogelijk
         try {
           const errorData = JSON.parse(responseText);
@@ -140,6 +191,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           throw new Error(`Failed to trigger email workflow: ${response.status} - ${responseText}`);
         }
       } else {
+        // Track webhook success
+        logEvent('registration', 'webhook_success', 'email_notification_sent');
+        
         // Succesvolle response
         toast.success('Je ontvangt binnen enkele minuten een bevestigingsmail', {
           duration: 5000
@@ -156,14 +210,22 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
         if (updateError) {
           console.error('Error updating email status:', updateError);
+          // Track email status update error
+          logEvent('registration', 'email_status_update_error', updateError.code);
           // Niet blokkeren voor de gebruiker als dit mislukt
         }
       }
+
+      // Track complete registration success
+      logEvent('registration', 'registration_complete', `${validatedData.rol}_${validatedData.afstand}`);
 
       // Ga door naar success pagina
       onSuccess(validatedData);
     } catch (error) {
       console.error('Submit error:', error);
+      // Track form submission failure
+      logEvent('registration', 'form_submit_failure', error instanceof Error ? error.message : 'unknown_error');
+      
       setSubmitError(error instanceof Error ? error.message : 'Er ging iets mis bij je aanmelding');
     } finally {
       setIsSubmitting(false);
@@ -204,6 +266,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                   ${errors.naam ? 'border-red-500' : 'border-gray-200 focus:border-[#ff9328]'}`}
                 placeholder="Vul je naam in"
                 {...register('naam')}
+                onChange={(e) => {
+                  register('naam').onChange(e);
+                  if (e.target.value.length > 0) {
+                    logEvent('registration', 'input_interaction', 'naam_field');
+                  }
+                }}
               />
               {errors.naam && (
                 <p className="text-sm text-red-500 mt-1 font-medium">{errors.naam.message}</p>
@@ -222,6 +290,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                   ${errors.email ? 'border-red-500' : 'border-gray-200 focus:border-[#ff9328]'}`}
                 placeholder="Vul je e-mailadres in"
                 {...register('email')}
+                onChange={(e) => {
+                  register('email').onChange(e);
+                  if (e.target.value.length > 0) {
+                    logEvent('registration', 'input_interaction', 'email_field');
+                  }
+                }}
               />
               {errors.email && (
                 <p className="text-sm text-red-500 mt-1 font-medium">{errors.email.message}</p>
@@ -311,6 +385,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                     border-gray-200 focus:border-[#ff9328]"
                   placeholder="06 - "
                   {...register('telefoon')}
+                  onChange={(e) => {
+                    register('telefoon').onChange(e);
+                    if (e.target.value.length > 0) {
+                      logEvent('registration', 'input_interaction', 'telefoon_field');
+                    }
+                  }}
                 />
                 <p className="text-sm text-gray-500 mt-1">
                   Tip: Voeg een tweede nummer toe in het bijzonderheden veld als back-up
@@ -333,6 +413,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                     : "Beschrijf hier je situatie..."}
                   {...register('bijzonderheden')}
                   required={showBijzonderheden}
+                  onChange={(e) => {
+                    register('bijzonderheden').onChange(e);
+                    if (e.target.value.length > 0) {
+                      logEvent('registration', 'input_interaction', 'bijzonderheden_field');
+                    }
+                  }}
                 />
                 {errors.bijzonderheden && (
                   <p className="text-sm text-red-500 mt-1">
@@ -440,6 +526,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 ? "Beschrijf hier welke ondersteuning je nodig hebt..." 
                 : "Beschrijf hier je situatie..."}
               {...register('bijzonderheden')}
+              onChange={(e) => {
+                register('bijzonderheden').onChange(e);
+                if (e.target.value.length > 0) {
+                  logEvent('registration', 'input_interaction', 'bijzonderheden_main_field');
+                }
+              }}
             />
             {errors.bijzonderheden && (
               <p className="text-sm text-red-500 mt-1">
@@ -457,7 +549,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               <button
                 type="button"
                 className="text-[#ff9328] underline hover:text-[#e67f1c] font-medium"
-                onClick={() => setIsTermsOpen(true)}
+                onClick={openTermsModal}
               >
                 Lees de Algemene Voorwaarden
               </button>
@@ -473,6 +565,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                   : 'text-gray-300 cursor-not-allowed'
                 }`}
               {...register('terms')}
+              onChange={(e) => {
+                register('terms').onChange(e);
+                if (e.target.checked) {
+                  logEvent('registration', 'terms_checkbox_checked');
+                }
+              }}
             />
             <span className={`text-sm ${!hasReadTerms ? 'text-gray-400' : 'text-gray-600'}`}>
               Ik heb de algemene voorwaarden gelezen en ga hiermee akkoord
@@ -504,6 +602,11 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
               active:bg-[#d97919]
               focus:outline-none focus:ring-2 focus:ring-[#ff9328] focus:ring-offset-2"
+            onClick={() => {
+              if (!isSubmitting) {
+                logEvent('registration', 'submit_button_click', 'form_submit_attempt');
+              }
+            }}
           >
             {isSubmitting ? (
               <>
@@ -522,7 +625,10 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
       <TermsModal
         isOpen={isTermsOpen}
-        onClose={() => setIsTermsOpen(false)}
+        onClose={() => {
+          logEvent('registration', 'close_terms_modal', 'without_accepting');
+          setIsTermsOpen(false);
+        }}
         onAccept={handleAcceptTerms}
       />
     </div>
