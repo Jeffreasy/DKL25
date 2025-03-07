@@ -11,7 +11,6 @@ const VideoGallery: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoplay, setIsAutoplay] = useState(true);
   
   const {
     videos,
@@ -84,24 +83,9 @@ const VideoGallery: React.FC = () => {
     });
   }, [currentIndex, videos]);
 
-  useEffect(() => {
-    if (isAutoplay) {
-      const timer = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
-      }, 5000);
-      return () => clearInterval(timer);
-    }
-  }, [isAutoplay, videos.length]);
-
   const handleDotClick = (index: number) => {
     trackEvent('video_gallery', 'dot_click', `slide_${index + 1}`);
     setCurrentIndex(index);
-  };
-
-  const handleAutoplayToggle = () => {
-    const newState = !isAutoplay;
-    trackEvent('video_gallery', 'autoplay_toggle', newState ? 'enabled' : 'disabled');
-    setIsAutoplay(newState);
   };
 
   const handleVideoPlay = () => {
@@ -231,16 +215,6 @@ const VideoGallery: React.FC = () => {
             current={currentIndex}
             onClick={(index: number) => handleDotClick(index)}
           />
-        </div>
-
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={handleAutoplayToggle}
-            className="bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
-            aria-label={isAutoplay ? 'Stop autoplay' : 'Start autoplay'}
-          >
-            {isAutoplay ? '⏸' : '▶'}
-          </button>
         </div>
       </div>
     </section>
