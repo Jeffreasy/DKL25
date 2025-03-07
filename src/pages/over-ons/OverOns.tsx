@@ -28,4 +28,4 @@ const OverOns: React.FC = () => {
   );
 };
 
-export default OverOns; 
+export default OverOns;

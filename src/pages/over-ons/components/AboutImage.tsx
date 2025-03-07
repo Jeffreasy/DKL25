@@ -46,4 +46,4 @@ const AboutImage: React.FC = () => {
   );
 };
 
-export default AboutImage; 
+export default AboutImage;

@@ -47,4 +47,4 @@ const ContentSection: React.FC<ContentSectionProps> = ({ icon, title, content, i
   );
 };
 
-export default ContentSection; 
+export default ContentSection;

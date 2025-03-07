@@ -12,4 +12,4 @@ const ContentGrid: React.FC = () => {
   );
 };
 
-export default ContentGrid; 
+export default ContentGrid;
