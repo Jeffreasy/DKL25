@@ -4,9 +4,21 @@ import type { SocialLink } from './types';
 interface SocialIconProps {
   platform: SocialLink['platform'];
   className?: string;
+  showTooltip?: boolean;
 }
 
-export const SocialIcon: React.FC<SocialIconProps> = ({ platform, className = '' }) => {
+export const SocialIcon: React.FC<SocialIconProps> = ({ 
+  platform, 
+  className = '',
+  showTooltip = true
+}) => {
+  const platformNames = {
+    facebook: 'Facebook',
+    instagram: 'Instagram',
+    youtube: 'YouTube',
+    linkedin: 'LinkedIn'
+  };
+
   const icons = {
     facebook: (
       <path fill="currentColor" d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4V13.5z" />
@@ -23,10 +35,34 @@ export const SocialIcon: React.FC<SocialIconProps> = ({ platform, className = ''
   };
 
   return (
-    <svg className={className} viewBox="0 0 24 24">
-      {icons[platform]}
-    </svg>
+    <div className="relative group">
+      <svg 
+        className={`${className} transform-gpu`} 
+        viewBox="0 0 24 24"
+        role="img"
+        aria-label={`${platformNames[platform]} icon`}
+      >
+        {icons[platform]}
+      </svg>
+      
+      {showTooltip && (
+        <div className="
+          absolute -bottom-8 left-1/2 -translate-x-1/2
+          px-2 py-1 rounded bg-gray-900/90 text-white text-xs
+          opacity-0 group-hover:opacity-100
+          transition-opacity duration-200
+          pointer-events-none
+          whitespace-nowrap
+          backdrop-blur-sm
+          shadow-lg
+          z-50
+        ">
+          {platformNames[platform]}
+          <div className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-900/90" />
+        </div>
+      )}
+    </div>
   );
 };
 
-export default SocialIcon; 
+export default React.memo(SocialIcon); 

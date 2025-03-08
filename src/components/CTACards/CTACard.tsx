@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { MemoizedNavIcon } from '../Navbar/Navbar';
 import type { CTACardData } from './types';
 import { logEvent } from '../../utils/googleAnalytics'; // Importeer analytics functie
 
 type CTACardProps = CTACardData & {
   onClick: () => void;
+  index: number;
 };
+
+interface CardState {
+  isHovered: boolean;
+  isPressed: boolean;
+  isFocused: boolean;
+}
 
 const CTACard: React.FC<CTACardProps> = ({
   title,
@@ -13,12 +21,73 @@ const CTACard: React.FC<CTACardProps> = ({
   icon,
   buttonText,
   onClick,
-  actionType
+  actionType,
+  index
 }) => {
+  const [state, setState] = useState<CardState>({
+    isHovered: false,
+    isPressed: false,
+    isFocused: false
+  });
+
+  // Animation variants
+  const cardVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 20,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        delay: index * 0.1
+      }
+    },
+    hover: {
+      y: -8,
+      scale: 1.02,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
+    },
+    tap: {
+      scale: 0.98,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
+    }
+  };
+
   // Track card impressions
   React.useEffect(() => {
-    logEvent('impression', 'cta_card_impression', `${title}_${actionType}`);
-  }, [title, actionType]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            logEvent('impression', 'cta_card_impression', `${title}_${actionType}`);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const element = document.getElementById(`cta-card-${index}`);
+    if (element) observer.observe(element);
+
+    return () => {
+      if (element) observer.unobserve(element);
+    };
+  }, [title, actionType, index]);
 
   const handleClick = () => {
     // Track de knop klik specifiek in deze component voor meer gedetailleerde gegevens
@@ -26,17 +95,59 @@ const CTACard: React.FC<CTACardProps> = ({
     onClick();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <div 
-      className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 font-heading"
-      onMouseEnter={() => logEvent('interaction', 'cta_card_hover', title)}
+    <motion.div
+      id={`cta-card-${index}`}
+      className={`
+        bg-white rounded-3xl p-8 font-heading
+        shadow-lg hover:shadow-xl
+        transition-shadow duration-300
+        focus-within:ring-2 focus-within:ring-primary/40
+        ${state.isFocused ? 'ring-2 ring-primary/40' : ''}
+      `}
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+      whileTap="tap"
+      variants={cardVariants}
+      onHoverStart={() => {
+        setState(prev => ({ ...prev, isHovered: true }));
+        logEvent('interaction', 'cta_card_hover', title);
+      }}
+      onHoverEnd={() => setState(prev => ({ ...prev, isHovered: false }))}
+      role="article"
+      aria-labelledby={`cta-title-${index}`}
     >
       <div className="flex flex-col items-center text-center space-y-4">
-        <div className="w-20 h-20 mb-2 flex items-center justify-center">
-          <MemoizedNavIcon name={icon} size={48} className="text-primary" />
-        </div>
+        <motion.div 
+          className="w-20 h-20 mb-2 flex items-center justify-center"
+          animate={{ 
+            rotate: state.isHovered ? [0, -5, 5, -5, 0] : 0,
+            scale: state.isHovered ? 1.1 : 1
+          }}
+          transition={{ duration: 0.5 }}
+        >
+          <MemoizedNavIcon 
+            name={icon} 
+            size={48} 
+            className={`
+              text-primary transition-transform duration-300
+              ${state.isHovered ? 'scale-110' : ''}
+            `}
+          />
+        </motion.div>
         
-        <h3 className="text-2xl font-bold text-gray-900">
+        <h3 
+          id={`cta-title-${index}`}
+          className="text-2xl font-bold text-gray-900"
+        >
           {title}
         </h3>
         
@@ -44,14 +155,32 @@ const CTACard: React.FC<CTACardProps> = ({
           {description}
         </p>
         
-        <button
+        <motion.button
           onClick={handleClick}
-          className="mt-4 px-8 py-3 bg-primary text-white text-lg font-medium rounded-full hover:bg-primary-dark transition-colors duration-300 hover:shadow-lg"
+          onKeyDown={handleKeyDown}
+          className={`
+            mt-4 px-8 py-3 
+            bg-primary text-white text-lg font-medium 
+            rounded-full 
+            hover:bg-primary-dark
+            focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+            transition-all duration-300
+            transform-gpu
+            ${state.isPressed ? 'scale-95' : ''}
+            disabled:opacity-50 disabled:cursor-not-allowed
+          `}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onMouseDown={() => setState(prev => ({ ...prev, isPressed: true }))}
+          onMouseUp={() => setState(prev => ({ ...prev, isPressed: false }))}
+          onFocus={() => setState(prev => ({ ...prev, isFocused: true }))}
+          onBlur={() => setState(prev => ({ ...prev, isFocused: false }))}
+          aria-label={`${buttonText} - ${description}`}
         >
           {buttonText}
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

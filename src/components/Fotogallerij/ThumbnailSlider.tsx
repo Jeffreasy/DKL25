@@ -12,7 +12,6 @@ interface ThumbnailSliderProps {
 
 const THUMBNAIL_WIDTH = 96; // w-24
 const THUMBNAIL_GAP = 8; // gap-2
-const VISIBLE_THUMBNAILS = 8;
 
 const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
   photos,
@@ -102,22 +101,6 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
     });
   };
 
-  // Calculate visible range for virtualization
-  const getVisibleRange = () => {
-    if (!scrollRef.current) return { start: 0, end: Math.min(VISIBLE_THUMBNAILS, photos.length) };
-    
-    const scrollLeft = scrollRef.current.scrollLeft;
-    const start = Math.floor(scrollLeft / (THUMBNAIL_WIDTH + THUMBNAIL_GAP));
-    const end = start + VISIBLE_THUMBNAILS;
-    
-    return {
-      start: Math.max(0, start - 1),
-      end: Math.min(end + 1, photos.length)
-    };
-  };
-
-  const { start, end } = getVisibleRange();
-
   return (
     <div className="relative px-12 select-none">
       {/* Scroll Buttons */}
@@ -146,45 +129,36 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
           WebkitOverflowScrolling: 'touch'
         }}
       >
-        {/* Spacer for virtualization */}
-        <div style={{ width: `${start * (THUMBNAIL_WIDTH + THUMBNAIL_GAP)}px` }} />
-
-        {photos.slice(start, end).map((photo, virtualIndex) => {
-          const actualIndex = start + virtualIndex;
-          return (
-            <button
-              key={photo.id}
-              onClick={() => {
-                trackEvent('gallery', 'thumbnail_select', `photo_${actualIndex}`);
-                onSelect(actualIndex);
-                scrollToThumbnail(actualIndex);
-              }}
-              className={`
-                flex-none w-24 h-16 rounded-lg overflow-hidden
-                transition-all duration-300
-                ${actualIndex === currentIndex 
-                  ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100 animate-pulse-slow' 
-                  : 'ring-1 ring-gray-200 opacity-60 hover:opacity-80'
-                }
-                snap-center
-              `}
-              aria-label={`Selecteer foto ${actualIndex + 1}`}
-              aria-current={actualIndex === currentIndex}
-            >
-              <img
-                src={photo.url}
-                alt={`Thumbnail ${actualIndex + 1}`}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                draggable={false}
-                onLoad={() => trackEvent('gallery', 'thumbnail_loaded', `photo_${actualIndex}`)}
-              />
-            </button>
-          );
-        })}
-
-        {/* Spacer for virtualization */}
-        <div style={{ width: `${(photos.length - end) * (THUMBNAIL_WIDTH + THUMBNAIL_GAP)}px` }} />
+        {photos.map((photo, index) => (
+          <button
+            key={photo.id}
+            onClick={() => {
+              trackEvent('gallery', 'thumbnail_select', `photo_${index}`);
+              onSelect(index);
+              scrollToThumbnail(index);
+            }}
+            className={`
+              flex-none w-24 h-16 rounded-lg overflow-hidden
+              transition-all duration-300
+              ${index === currentIndex 
+                ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100 animate-pulse-slow' 
+                : 'ring-1 ring-gray-200 opacity-60 hover:opacity-80'
+              }
+              snap-center
+            `}
+            aria-label={`Selecteer foto ${index + 1}`}
+            aria-current={index === currentIndex}
+          >
+            <img
+              src={photo.thumbnail_url || photo.url}
+              alt={`Thumbnail ${index + 1}`}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              draggable={false}
+              onLoad={() => trackEvent('gallery', 'thumbnail_loaded', `photo_${index}`)}
+            />
+          </button>
+        ))}
       </div>
 
       {showRightArrow && (

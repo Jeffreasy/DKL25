@@ -16,7 +16,15 @@ export type TitleSectionRow = {
   };
 };
 
-export type SocialEmbedRow = Database['public']['Tables']['social_embeds']['Row'];
+export interface SocialEmbedRow {
+  id: string;
+  platform: 'facebook' | 'instagram';
+  embed_code: string;
+  order_number: number;
+  visible: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface EventDetail {
   icon: string;
