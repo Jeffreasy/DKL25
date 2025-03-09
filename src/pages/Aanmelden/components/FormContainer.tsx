@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 import { logEvent } from '../../../utils/googleAnalytics'; // Importeer analytics functie
 
 // In development, de API calls gaan via de Vite proxy
-const API_BASE_URL = import.meta.env.DEV ? '/api' : import.meta.env.VITE_EMAIL_SERVICE_URL;
+const API_BASE_URL = import.meta.env.VITE_EMAIL_SERVICE_URL || 'https://dklemailservice.onrender.com';
 
 console.log('Email Service URL:', API_BASE_URL);
 
@@ -124,7 +124,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       logEvent('registration', 'database_save_success', `${validatedData.rol}_${validatedData.afstand}`);
 
       // 2. Email service aanroepen
-      const emailResponse = await fetch(`${API_BASE_URL}/aanmelding-email`, {
+      const emailResponse = await fetch(`${API_BASE_URL}/api/aanmelding-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
