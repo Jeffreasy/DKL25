@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { SocialEmbedRow } from '../functions/types';
 import DOMPurify from 'dompurify';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { loadFacebookSDK, loadInstagramEmbed } from '@/utils/socialScripts';
 
 interface SocialMediaSectionProps {
   socialEmbeds: SocialEmbedRow[];
@@ -99,20 +100,23 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
         setIsLoading(true);
         setError(null);
 
-        // Load Instagram embed script
-        const instagramScript = document.createElement('script');
-        instagramScript.src = 'https://www.instagram.com/embed.js';
-        instagramScript.async = true;
-        document.body.appendChild(instagramScript);
+        // Load both scripts
+        await Promise.all([
+          loadFacebookSDK(),
+          loadInstagramEmbed()
+        ]);
 
-        instagramScript.onload = () => {
-          if (window.instgrm) {
-            window.instgrm.Embeds.process();
-          }
-          setEmbedsProcessed(true);
-          trackEvent('social_section', 'embeds_loaded', `count:${socialEmbeds.length}`);
-          setTimeout(() => setIsLoading(false), 500);
-        };
+        // Process embeds
+        if (window.instgrm) {
+          window.instgrm.Embeds.process();
+        }
+        if (window.FB) {
+          window.FB.XFBML.parse();
+        }
+
+        setEmbedsProcessed(true);
+        trackEvent('social_section', 'embeds_loaded', `count:${socialEmbeds.length}`);
+        setTimeout(() => setIsLoading(false), 500);
 
       } catch (err) {
         console.error('Error loading social embeds:', err);
@@ -127,11 +131,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
     } else {
       setIsLoading(false);
     }
-
-    return () => {
-      const scripts = document.querySelectorAll('script[src*="instagram.com"]');
-      scripts.forEach(script => script.remove());
-    };
   }, [socialEmbeds]);
 
   const handleSocialClick = (platform: string) => {
@@ -270,6 +269,14 @@ declare global {
       XFBML: {
         parse: () => void;
       };
+      init: (options: {
+        appId?: string;
+        version: string;
+        xfbml?: boolean;
+        status?: boolean;
+        cookie?: boolean;
+        autoLogAppEvents?: boolean;
+      }) => void;
     };
   }
 }
