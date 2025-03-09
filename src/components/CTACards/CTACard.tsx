@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MemoizedNavIcon } from '../Navbar/Navbar';
+import NavIcon from '../Navbar/NavIcon';
 import type { CTACardData } from './types';
-import { logEvent } from '../../utils/googleAnalytics'; // Importeer analytics functie
+import { logEvent } from '@/utils/googleAnalytics';
 
 type CTACardProps = CTACardData & {
   onClick: () => void;
@@ -134,7 +134,7 @@ const CTACard: React.FC<CTACardProps> = ({
           }}
           transition={{ duration: 0.5 }}
         >
-          <MemoizedNavIcon 
+          <NavIcon 
             name={icon} 
             size={48} 
             className={`
@@ -154,7 +154,7 @@ const CTACard: React.FC<CTACardProps> = ({
         <p className="text-gray-600 text-lg leading-relaxed">
           {description}
         </p>
-        
+
         <motion.button
           onClick={handleClick}
           onKeyDown={handleKeyDown}
