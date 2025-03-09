@@ -4,25 +4,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { toast } from 'react-hot-toast';
 import { useContactForm } from '@/hooks/useContactForm';
 import type { ContactModalProps } from './types';
-import type { ContactFormData } from '@/types/contact';
+import { contactSchema, type ContactFormData } from '@/types/contact';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import LoadingSpinner from '../LoadingSpinner';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { useNavigate } from 'react-router-dom';
 
-// Validatie schema
-const ContactSchema = z.object({
-  naam: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
-  email: z.string().email('Ongeldig email adres'),
-  bericht: z.string()
-    .min(10, 'Bericht moet minimaal 10 karakters zijn')
-    .max(1000, 'Bericht mag maximaal 1000 karakters zijn'),
-  privacy_akkoord: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met het privacybeleid')
-});
-
-export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onPrivacyClick }) => {
+export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   const { submitContactForm, isSubmitting } = useContactForm();
+  const navigate = useNavigate();
   
   const {
     register,
@@ -30,7 +21,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
     reset,
     formState: { errors }
   } = useForm<ContactFormData>({
-    resolver: zodResolver(ContactSchema)
+    resolver: zodResolver(contactSchema)
   });
 
   // Track modal open/close
@@ -61,7 +52,8 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
 
   const handlePrivacyClick = () => {
     trackEvent('contact', 'privacy_click', 'privacy_policy');
-    onPrivacyClick();
+    onClose(); // Sluit eerst de modal
+    navigate('/privacy'); // Navigeer dan naar de privacy pagina
   };
 
   return (
@@ -164,7 +156,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, onP
                       <button
                         type="button"
                         onClick={handlePrivacyClick}
-                        className="text-[#ff9328] underline"
+                        className="text-[#ff9328] underline hover:text-[#e67f1c] transition-colors"
                       >
                         privacybeleid
                       </button>

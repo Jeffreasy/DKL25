@@ -1,13 +1,19 @@
+import { z } from 'zod';
+
 // Contact formulier types
 export type ContactStatus = 'nieuw' | 'in_behandeling' | 'afgehandeld';
 
 // Base type voor het formulier (input)
-export interface ContactFormData {
-  naam: string;
-  email: string;
-  bericht: string;
-  privacy_akkoord: boolean;
-}
+export const contactSchema = z.object({
+  naam: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
+  email: z.string().email('Ongeldig email adres'),
+  bericht: z.string()
+    .min(10, 'Bericht moet minimaal 10 karakters zijn')
+    .max(1000, 'Bericht mag maximaal 1000 karakters zijn'),
+  privacy_akkoord: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met het privacybeleid')
+});
+
+export type ContactFormData = z.infer<typeof contactSchema>;
 
 // Database record type (inclusief alle velden)
 export interface ContactFormulier extends ContactFormData {
@@ -41,4 +47,9 @@ export type ContactFormInsert = Omit<
 >;
 
 // Database update type
-export type ContactFormUpdate = Partial<Omit<ContactFormulier, 'id' | 'created_at' | 'updated_at'>>; 
+export type ContactFormUpdate = Partial<Omit<ContactFormulier, 'id' | 'created_at' | 'updated_at'>>;
+
+export interface ContactResponse {
+  success: boolean;
+  message?: string;
+} 

@@ -22,6 +22,7 @@ const OverOns = lazy(() => import('./pages/over-ons/OverOns'));
 const Contact = lazy(() => import('./pages/contact/Contact'));
 const DKL = lazy(() => import('./pages/dkl/DKL'));
 const Aanmelden = lazy(() => import('./pages/Aanmelden/aanmelden'));
+const Privacy = lazy(() => import('./pages/privacy/Privacy'));
 
 // PageTracker component to track route changes
 const PageTracker = () => {
@@ -106,6 +107,16 @@ export default function App() {
             <Suspense fallback={<LoadingScreen />}>
               <ErrorBoundary>
                 <Aanmelden />
+              </ErrorBoundary>
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/privacy" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <ErrorBoundary>
+                <Privacy />
               </ErrorBoundary>
             </Suspense>
           } 

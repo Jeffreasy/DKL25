@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FAQ from './components/FAQ';
-import { ContactModal, PrivacyModal } from '../../components/modals';
+import { ContactModal } from '../../components/modals';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '@/utils/googleAnalytics';
 
@@ -11,7 +11,6 @@ interface ContactProps {
 const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
   const navigate = useNavigate();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   useEffect(() => {
     trackEvent('contact', 'page_view', 'contact_page');
@@ -32,11 +31,6 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
     setIsContactModalOpen(false);
   };
 
-  const handlePrivacyClick = () => {
-    trackEvent('contact', 'privacy_click', 'from_contact_page');
-    navigate('/privacy');
-  };
-
   return (
     <div className="min-h-screen pt-20 bg-white">
       <FAQ 
@@ -47,12 +41,6 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
       <ContactModal 
         isOpen={isContactModalOpen}
         onClose={handleContactModalClose}
-        onPrivacyClick={handlePrivacyClick}
-      />
-      
-      <PrivacyModal
-        isOpen={isPrivacyModalOpen}
-        onClose={() => setIsPrivacyModalOpen(false)}
       />
     </div>
   );

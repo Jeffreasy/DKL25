@@ -19,9 +19,7 @@ export const ContactFormSchema = z.object({
 export type ContactFormData = z.infer<typeof ContactFormSchema>;
 
 // Contact modal props
-export interface ContactModalProps extends BaseModalProps {
-  onPrivacyClick: () => void;
-}
+export interface ContactModalProps extends BaseModalProps {}
 
 // Privacy modal props
 export interface PrivacyModalProps extends BaseModalProps {

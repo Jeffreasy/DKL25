@@ -7,9 +7,10 @@ import { supabase } from '../../../lib/supabase';
 import { toast } from 'react-hot-toast';
 import { logEvent } from '../../../utils/googleAnalytics'; // Importeer analytics functie
 
-const n8nWebhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
+// In development, de API calls gaan via de Vite proxy
+const API_BASE_URL = import.meta.env.DEV ? '/api' : import.meta.env.VITE_EMAIL_SERVICE_URL;
 
-console.log('N8N Webhook URL:', n8nWebhookUrl);
+console.log('Email Service URL:', API_BASE_URL);
 
 export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void }> = ({ 
   onSuccess 
@@ -93,7 +94,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       
       const validatedData = validateForm(data);
 
-      // 1. Sla op in Supabase
+      // 1. Opslaan in Supabase
       const { data: registration, error: supabaseError } = await supabase
         .from('aanmeldingen')
         .insert([{
@@ -111,14 +112,8 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
         .single();
 
       if (supabaseError) {
-        console.error('Supabase error:', supabaseError);
-        
-        // Track registration error
-        logEvent('registration', 'registration_error', supabaseError.code);
-        
-        if (supabaseError.code === 'PGRST301') {
-          throw new Error('De database is momenteel niet beschikbaar. Probeer het later opnieuw.');
-        } else if (supabaseError.code === '23505') {
+        console.error('Database error:', supabaseError);
+        if (supabaseError.code === '23505') {
           throw new Error('Je bent al ingeschreven met dit e-mailadres.');
         } else {
           throw new Error('Er ging iets mis bij je aanmelding. Probeer het later opnieuw.');
@@ -128,92 +123,30 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       // Track successful database save
       logEvent('registration', 'database_save_success', `${validatedData.rol}_${validatedData.afstand}`);
 
-      // 2. Stuur data naar n8n webhook
-      const webhookData = {
-        type: 'aanmelding',
-        registrationId: registration.id,
-        naam: validatedData.naam,
-        email: validatedData.email,
-        telefoon: validatedData.telefoon || 'Niet opgegeven',
-        rol: validatedData.rol,
-        afstand: validatedData.afstand,
-        ondersteuning: validatedData.ondersteuning,
-        bijzonderheden: validatedData.bijzonderheden || 'Geen bijzonderheden',
-        timestamp: new Date().toISOString()
-      };
-
-      let response: Response;
-      response = await fetch(n8nWebhookUrl.trim(), {
+      // 2. Email service aanroepen
+      const emailResponse = await fetch(`${API_BASE_URL}/aanmelding-email`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(webhookData)
+        body: JSON.stringify({
+          id: registration.id,
+          naam: validatedData.naam,
+          email: validatedData.email,
+          telefoon: validatedData.telefoon,
+          rol: validatedData.rol,
+          afstand: validatedData.afstand,
+          ondersteuning: validatedData.ondersteuning,
+          bijzonderheden: validatedData.bijzonderheden || '',
+          terms: validatedData.terms,
+          email_verzonden: false,
+          email_verzonden_op: null
+        })
       });
 
-      const responseText = await response.text();
-      console.log('N8N Response Status:', response.status);
-      console.log('N8N Response Body:', responseText);
-
-      if (!response.ok) {
-        // Track webhook error
-        logEvent('registration', 'webhook_error', `${response.status}`);
-        
-        // Parse response text als JSON als mogelijk
-        try {
-          const errorData = JSON.parse(responseText);
-          if (errorData.hint?.includes('Test workflow')) {
-            console.warn('Webhook in test mode - email niet verzonden');
-            toast('Bevestigingsmail kon niet worden verzonden. We nemen contact met je op.', {
-              icon: '⚠️',
-              duration: 5000,
-              style: {
-                background: '#FEF3C7',
-                color: '#92400E',
-                border: '1px solid #F59E0B'
-              }
-            });
-          } else if (errorData.message.includes('not registered for POST requests')) {
-            console.error('Webhook not configured for POST requests');
-            toast('Systeem configuratie fout. We nemen contact met je op.', {
-              icon: '🔧',
-              duration: 5000,
-              style: {
-                background: '#FEF3C7',
-                color: '#92400E',
-                border: '1px solid #F59E0B'
-              }
-            });
-          } else {
-            throw new Error(`Email workflow error: ${errorData.message}`);
-          }
-        } catch (e) {
-          throw new Error(`Failed to trigger email workflow: ${response.status} - ${responseText}`);
-        }
-      } else {
-        // Track webhook success
-        logEvent('registration', 'webhook_success', 'email_notification_sent');
-        
-        // Succesvolle response
-        toast.success('Je ontvangt binnen enkele minuten een bevestigingsmail', {
-          duration: 5000
-        });
-
-        // 3. Update de email_verzonden status in Supabase
-        const { error: updateError } = await supabase
-          .from('aanmeldingen')
-          .update({ 
-            email_verzonden: true,
-            email_verzonden_op: new Date().toISOString()
-          })
-          .eq('id', registration.id);
-
-        if (updateError) {
-          console.error('Error updating email status:', updateError);
-          // Track email status update error
-          logEvent('registration', 'email_status_update_error', updateError.code);
-          // Niet blokkeren voor de gebruiker als dit mislukt
-        }
+      if (!emailResponse.ok) {
+        console.error('Email service error:', await emailResponse.text());
+        toast.error('Je aanmelding is verwerkt, maar er was een probleem met de bevestigingsmail.');
       }
 
       // Track complete registration success
