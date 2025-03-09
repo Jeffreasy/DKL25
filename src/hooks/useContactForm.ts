@@ -11,6 +11,8 @@ interface SubmitResult {
 
 type ContactFormulier = Database['public']['Tables']['contact_formulieren']['Insert'];
 
+const API_BASE_URL = import.meta.env.VITE_EMAIL_SERVICE_URL || 'https://dklemailservice.onrender.com';
+
 export const useContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -44,37 +46,30 @@ export const useContactForm = () => {
       }
 
       // Then send email
-      const response = await fetch('/api/contact-email', {
+      const response = await fetch(`${API_BASE_URL}/api/contact-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          email_verzonden: false,
-          status: 'nieuw'
-        })
+        body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Er ging iets mis bij het versturen van je bericht');
+        throw new Error('Er ging iets mis bij het versturen van je bericht');
       }
 
+      const result = await response.json();
       trackEvent('contact', 'submit_success', 'contact_form');
       return {
         success: true,
-        message: 'Je bericht is succesvol opgeslagen en verzonden'
+        message: 'Bericht succesvol verzonden'
       };
     } catch (error) {
       console.error('Contact Form - Error:', error);
       trackEvent('contact', 'submit_error', error instanceof Error ? error.message : 'unknown_error');
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Er ging iets mis bij het versturen van je bericht. Probeer het later opnieuw.'
+        message: error instanceof Error ? error.message : 'Er ging iets mis bij het versturen van je bericht'
       };
     } finally {
       setIsSubmitting(false);
