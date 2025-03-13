@@ -56,6 +56,7 @@
   "trailingSlash": false,
   "framework": "vite",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://dkl-backend.onrender.com/api/:path*" }
+    { "source": "/api/:path*", "destination": "https://dkl-backend.onrender.com/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
