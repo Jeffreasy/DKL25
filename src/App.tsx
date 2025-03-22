@@ -4,8 +4,6 @@ import { Analytics } from '@vercel/analytics/react';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
 import { useState } from 'react';
-import { DonatieModal } from './components/modals';
-import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AIChatButton from './components/AIChatButton/AIChatButton';
 import { HelmetProvider } from 'react-helmet-async';
