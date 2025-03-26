@@ -2,58 +2,40 @@
   "version": 2,
   "headers": [
     {
+      // Regel 1: Basis security headers voor alles
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options", 
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "no-store, max-age=0, must-revalidate, private"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        },
-        {
-          "key": "Surrogate-Control",
-          "value": "no-store"
-        },
-        {
-          "key": "Vary",
-          "value": "*"
-        },
-        {
-          "key": "x-vercel-cache-control",
-          "value": "s-maxage=1, stale-while-revalidate"
-        }
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+        // Verwijder hier de agressieve cache-headers en Vary: *
       ]
     },
     {
+      // Regel 2: Specifieke caching voor index.html (en root voor SPA's)
+      // Dwingt validatie af, maar staat cachen toe als er niets is gewijzigd.
+      "source": "/(index\\.html)?", // Matcht / en /index.html
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+        // 'no-cache' is hier meestal de beste balans: cache wel, maar valideer altijd.
+        // Alternatief: "max-age=0, must-revalidate"
+      ]
+    },
+    {
+      // Regel 3: Lange termijn caching voor assets (perfect zoals het was)
       "source": "/assets/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
+    // Eventueel een aparte regel voor andere static files (bv fonts, images niet in /assets)
+    // {
+    //   "source": "/fonts/(.*)",
+    //   "headers": [ ... cache settings ... ]
+    // }
   ],
   "rewrites": [
-    { 
+    {
       "source": "/api/:path*",
       "destination": "https://dkl-backend.onrender.com/api/:path*"
     },
