@@ -2,7 +2,6 @@
   "version": 2,
   "headers": [
     {
-      // Regel 1: Basis security headers voor alle requests
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
@@ -11,33 +10,23 @@
       ]
     },
     {
-      // Regel 2: Specifieke caching voor de root (/) en index.html
-      // Dwingt browsers/CDNs om altijd te controleren of er een nieuwe versie is
-      // voordat ze de cache gebruiken (voorkomt serveren oude HTML).
       "source": "/(index\\.html)?",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache" }
       ]
     },
     {
-      // Regel 3: Lange termijn caching voor bestanden in de /assets map
-      // (Gaat ervan uit dat Vite hier gehashte bestandsnamen plaatst).
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
-    // Voeg hier eventueel regels toe voor andere mappen met statische bestanden
-    // als die andere caching-instellingen nodig hebben.
   ],
   "rewrites": [
-    // Regel 4: API Proxy - Stuurt /api/* requests door naar je backend
     {
       "source": "/api/:path*",
       "destination": "https://dkl-backend.onrender.com/api/:path*"
     },
-    // Regel 5: SPA Fallback - Stuurt alle andere niet-gevonden paden naar index.html
-    // zodat je client-side router (bijv. React Router) de URL kan afhandelen.
     {
       "source": "/(.*)",
       "destination": "/index.html"
