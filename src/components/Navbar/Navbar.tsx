@@ -61,7 +61,7 @@ const Navbar = memo<NavbarProps>(({
   return (
     <>
       <nav className={navbarClasses} aria-label="Hoofdnavigatie">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 h-full max-w-full lg:max-w-6xl xl:max-w-7xl">
           <div className="flex items-center justify-between h-full">
             {/* Logo met shine effect */}
             <div className="flex-shrink-0 relative overflow-hidden rounded-lg group">
@@ -85,7 +85,7 @@ const Navbar = memo<NavbarProps>(({
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex lg:items-center lg:justify-center lg:flex-1 animate-fade-in">
-              <ul className="flex items-center space-x-10">
+              <ul className="flex items-center space-x-4">
                 {NAV_ITEMS.map((item) => (
                   <NavItem
                     key={item.to}

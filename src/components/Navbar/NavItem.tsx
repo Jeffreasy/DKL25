@@ -20,7 +20,7 @@ const NavItem = memo<NavItemProps>(({
     trackEvent('navbar', 'navigation_click', children as string);
   };
 
-  const baseClasses = "flex items-center gap-3 px-5 py-2.5 text-white transition-all duration-300 rounded-lg relative";
+  const baseClasses = "flex items-center gap-2 px-3 py-2.5 text-white transition-all duration-300 rounded-lg relative";
   const stateClasses = isActive 
     ? "bg-white/10 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-12 after:h-0.5 after:bg-white after:rounded-full" 
     : "hover:bg-primary-dark/50 hover:shadow-md active:bg-primary-dark active:shadow-lg";
@@ -35,7 +35,7 @@ const NavItem = memo<NavItemProps>(({
       />
       <span 
         className={`
-          font-medium text-lg whitespace-nowrap transition-all duration-300
+          font-medium text-base lg:text-lg whitespace-nowrap transition-all duration-300
           ${isActive ? 'text-white translate-x-1' : 'text-white/80'}
         `}
       >
