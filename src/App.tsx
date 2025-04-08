@@ -19,6 +19,7 @@ const Home = lazy(() => import('./pages/home/Home'));
 const OverOns = lazy(() => import('./pages/over-ons/OverOns'));
 const Contact = lazy(() => import('./pages/contact/Contact'));
 const DKL = lazy(() => import('./pages/dkl/DKL'));
+const RadioPage = lazy(() => import('./pages/Radiopage/RadioPage'));
 const Aanmelden = lazy(() => import('./pages/Aanmelden/aanmelden'));
 const Privacy = lazy(() => import('./pages/privacy/Privacy'));
 
@@ -96,6 +97,16 @@ export default function App() {
           element={
             <Suspense fallback={<LoadingScreen />}>
               <DKL />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/radio" 
+          element={
+            <Suspense fallback={<LoadingScreen />}>
+              <ErrorBoundary>
+                <RadioPage />
+              </ErrorBoundary>
             </Suspense>
           } 
         />

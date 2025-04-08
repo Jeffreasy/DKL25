@@ -6,6 +6,7 @@ import ContactSupportIcon from '@mui/icons-material/ContactSupport'
 import FacebookIcon from '@mui/icons-material/Facebook'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import YouTubeIcon from '@mui/icons-material/YouTube'
+import RadioIcon from '@mui/icons-material/Radio'
 
 export const ICONS = {
   home: HomeIcon,
@@ -16,6 +17,7 @@ export const ICONS = {
   facebook: FacebookIcon,
   instagram: InstagramIcon,
   youtube: YouTubeIcon,
+  radio: RadioIcon,
 } as const
 
 export type IconName = keyof typeof ICONS 

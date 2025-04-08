@@ -7,6 +7,7 @@ import {
   PhotoGallery,
   DKLSocials,
   DKLSponsors,
+  RadioGallery,
 } from '../../components';
 import { VideoGallery } from '../../components/video';
 import { useNavigate } from 'react-router-dom';
@@ -36,6 +37,11 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
         />
         <VideoGallery />
         <PhotoGallery onModalChange={setIsModalOpen} />
+        <RadioGallery 
+          title="Radio Fragmenten 2024"
+          subtitle="Luister naar onze live radio uitzending tijdens De Koninklijke Loop 2024"
+          maxItems={1}
+        />
         <DKLSocials />
         <DKLSponsors />
         <InschDoneerButton

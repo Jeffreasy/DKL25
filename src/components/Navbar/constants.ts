@@ -17,6 +17,11 @@ export const NAV_ITEMS: Omit<NavItemProps, 'onClick'>[] = [
     children: 'Over Ons'
   },
   {
+    to: '/radio',
+    icon: 'radio',
+    children: 'Radio'
+  },
+  {
     to: '/faq',
     icon: 'contact',
     children: 'Contact'
