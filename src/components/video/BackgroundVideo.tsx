@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 interface BackgroundVideoProps {
+  videoUrl: string;
   posterUrl: string;
   onPlay?: () => void;
   onPause?: () => void;
@@ -9,6 +10,7 @@ interface BackgroundVideoProps {
 }
 
 const BackgroundVideo: React.FC<BackgroundVideoProps> = ({ 
+  videoUrl,
   posterUrl,
   onPlay,
   onPause,
@@ -57,7 +59,7 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
         }}
       >
         <source 
-          src="https://res.cloudinary.com/dgfuv7wif/video/upload/v1733928356/ei5kw8_1_yhkklg.mp4"
+          src={videoUrl}
           type="video/mp4"
         />
       </video>

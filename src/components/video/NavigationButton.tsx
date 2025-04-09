@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
@@ -8,7 +8,7 @@ interface NavigationButtonProps {
   disabled?: boolean
 }
 
-const NavigationButton: React.FC<NavigationButtonProps> = ({ direction, onClick, disabled }) => {
+const NavigationButton: React.FC<NavigationButtonProps> = memo(({ direction, onClick, disabled }) => {
   const Icon = direction === 'previous' ? ChevronLeftIcon : ChevronRightIcon
   
   return (
@@ -49,6 +49,8 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({ direction, onClick,
       )}
     </button>
   )
-}
+})
+
+NavigationButton.displayName = 'NavigationButton'
 
 export default NavigationButton

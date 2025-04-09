@@ -6,6 +6,7 @@ import { useVideoGallery } from '@/hooks/useVideoGallery';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { PRELOAD_CLEANUP_TIMEOUT } from './constants';
 
 const VideoGallery: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -16,10 +17,18 @@ const VideoGallery: React.FC = () => {
     videos,
     isLoading,
     error,
-    handlePrevious,
-    handleNext,
-    setCurrentIndex: setCurrentIndexInGallery
   } = useVideoGallery();
+
+  // Lokale navigatiefuncties die de lokale state aanpassen
+  const handlePrevious = useCallback(() => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? videos.length - 1 : prevIndex - 1
+    );
+  }, [videos.length]);
+
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
+  }, [videos.length]);
 
   // Keyboard navigatie
   useEffect(() => {
@@ -57,31 +66,43 @@ const VideoGallery: React.FC = () => {
     threshold: 50
   });
 
-  // Preload volgende video
+  // Preload alleen de *volgende* video
   useEffect(() => {
-    if (!videos.length) return;
+    if (!videos || videos.length <= 1 || !isVisible) return;
+
     const nextIndex = (currentIndex + 1) % videos.length;
-    const prevIndex = currentIndex === 0 ? videos.length - 1 : currentIndex - 1;
-    
-    // Preload next and previous videos
-    [nextIndex, prevIndex].forEach(index => {
-      const video = videos[index];
-      if (!video) return;
-      
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'video';
-      link.href = video.url;
-      document.head.appendChild(link);
-      
-      // Cleanup preload link after 5 seconds
-      setTimeout(() => {
+    const videoToPreload = videos[nextIndex];
+
+    if (!videoToPreload) return;
+
+    // Check of er al een preload link voor deze video bestaat
+    const existingLink = document.querySelector(`link[rel="preload"][href="${videoToPreload.url}"]`);
+    if (existingLink) return; // Al aan het preloadden
+
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'fetch';
+    link.href = videoToPreload.url;
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+
+    // Cleanup preload link 
+    const timer = setTimeout(() => {
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    }, PRELOAD_CLEANUP_TIMEOUT);
+
+    // Cleanup effect
+    return () => {
+        clearTimeout(timer);
+        // Verwijder de link direct bij cleanup 
         if (document.head.contains(link)) {
-          document.head.removeChild(link);
+           document.head.removeChild(link);
         }
-      }, 5000);
-    });
-  }, [currentIndex, videos]);
+    };
+
+  }, [currentIndex, videos, isVisible]);
 
   const handleDotClick = (index: number) => {
     trackEvent('video_gallery', 'dot_click', `slide_${index + 1}`);
@@ -148,9 +169,11 @@ const VideoGallery: React.FC = () => {
         {/* Main Video met navigatie */}
         <div className="relative mb-4 md:mb-8 group">
           <VideoSlide
+            key={currentVideo.id}
             videoId={currentVideo.video_id}
             url={currentVideo.url}
             title={currentVideo.title}
+            isSelected={true}
             onPlay={handleVideoPlay}
             onPause={handleVideoPause}
             onEnded={handleVideoEnded}
@@ -213,7 +236,7 @@ const VideoGallery: React.FC = () => {
           <DotIndicator
             total={videos.length}
             current={currentIndex}
-            onClick={(index: number) => handleDotClick(index)}
+            onClick={handleDotClick}
           />
         </div>
       </div>

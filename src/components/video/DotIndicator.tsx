@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 interface DotIndicatorProps {
   total: number;
@@ -7,7 +7,7 @@ interface DotIndicatorProps {
   className?: string;
 }
 
-const DotIndicator: React.FC<DotIndicatorProps> = ({ 
+const DotIndicator: React.FC<DotIndicatorProps> = memo(({ 
   total, 
   current, 
   onClick,
@@ -31,6 +31,8 @@ const DotIndicator: React.FC<DotIndicatorProps> = ({
       ))}
     </div>
   );
-};
+});
+
+DotIndicator.displayName = 'DotIndicator';
 
 export default DotIndicator 
