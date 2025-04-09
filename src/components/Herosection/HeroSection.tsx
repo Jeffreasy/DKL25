@@ -32,6 +32,7 @@ const HeroSection: React.FC = () => {
       aria-label="Hero sectie"
     >
       <BackgroundVideo
+        videoUrl="https://res.cloudinary.com/dgfuv7wif/video/upload/v1733928356/ei5kw8_1_yhkklg.mp4"
         posterUrl="https://cdn-cf-east.streamable.com/image/ei5kw8.jpg"
         onPlay={() => trackEvent('hero', 'video_play', 'background_video')}
         onPause={() => trackEvent('hero', 'video_pause', 'background_video')}
