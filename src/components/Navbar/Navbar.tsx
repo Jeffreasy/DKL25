@@ -63,8 +63,8 @@ const Navbar = memo<NavbarProps>(({
       <nav className={navbarClasses} aria-label="Hoofdnavigatie">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 h-full max-w-full lg:max-w-6xl xl:max-w-7xl">
           <div className="flex items-center justify-between h-full">
-            {/* Logo met shine effect */}
-            <div className="flex-shrink-0 relative overflow-hidden rounded-lg group">
+            {/* Logo met shine effect en padding */}
+            <div className="flex-shrink-0 relative overflow-hidden rounded-lg group p-1">
               <Link 
                 to="/" 
                 className="block relative" 
