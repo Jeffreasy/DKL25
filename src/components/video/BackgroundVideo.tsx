@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
 interface BackgroundVideoProps {
-  videoUrl: string;
+  // videoUrl: string; // Vervangen door specifieke formaten
+  webmUrl?: string; // Optionele WebM URL
+  mp4Url: string;  // MP4 URL (verplicht als fallback)
   posterUrl: string;
   onPlay?: () => void;
   onPause?: () => void;
@@ -10,7 +12,9 @@ interface BackgroundVideoProps {
 }
 
 const BackgroundVideo: React.FC<BackgroundVideoProps> = ({ 
-  videoUrl,
+  // videoUrl, 
+  webmUrl,
+  mp4Url,
   posterUrl,
   onPlay,
   onPause,
@@ -27,9 +31,7 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
       try {
         video.muted = true;
         await video.play();
-        console.log('Video playing successfully');
       } catch (error) {
-        console.error('Error playing video:', error);
         onError?.(error instanceof Error ? error : new Error('Failed to play video'));
       }
     };
@@ -39,6 +41,7 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
 
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+      {/* BELANGRIJK: Optimaliseer de videobestanden (compressie, resolutie, formaat) op je CDN (Cloudinary)! */}
       <video
         ref={videoRef}
         autoPlay
@@ -46,6 +49,7 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
         loop
         playsInline
         poster={posterUrl}
+        preload="metadata"
         onPlay={onPlay}
         onPause={onPause}
         onEnded={onEnded}
@@ -58,10 +62,14 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
           objectPosition: 'center'
         }}
       >
+        {/* Bied WebM aan ALS de prop is meegegeven */}
+        {webmUrl && <source src={webmUrl} type="video/webm" />}
+        {/* Gebruik de expliciete MP4 URL */}
         <source 
-          src={videoUrl}
+          src={mp4Url}
           type="video/mp4"
         />
+        Browser ondersteunt de video tag niet.
       </video>
     </div>
   );
