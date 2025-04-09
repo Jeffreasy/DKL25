@@ -1,8 +1,9 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import type { Photo } from './types';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { trackEvent } from '@/utils/googleAnalytics';
+import debounce from 'lodash.debounce';
 
 interface ThumbnailSliderProps {
   photos: Photo[];
@@ -25,27 +26,33 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // Scroll position monitoring
-  const updateArrowVisibility = useCallback(() => {
-    if (!scrollRef.current) return;
-    
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-    setShowLeftArrow(scrollLeft > 0);
-    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
-  }, []);
+  // Debounced versie van updateArrowVisibility
+  const debouncedUpdateArrows = useMemo(() => 
+    debounce(() => {
+      if (!scrollRef.current) return;
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setShowLeftArrow(scrollLeft > 5); // Kleine marge
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 5); // Kleine marge
+    }, 150), // Debounce met 150ms
+  []); // Lege dependency array
 
+  // Gebruik de debounced functie in de effecten
   useEffect(() => {
     const scrollElement = scrollRef.current;
     if (!scrollElement) return;
 
-    scrollElement.addEventListener('scroll', updateArrowVisibility);
-    window.addEventListener('resize', updateArrowVisibility);
+    // Roep direct aan bij mount
+    debouncedUpdateArrows(); 
+
+    scrollElement.addEventListener('scroll', debouncedUpdateArrows);
+    window.addEventListener('resize', debouncedUpdateArrows);
 
     return () => {
-      scrollElement.removeEventListener('scroll', updateArrowVisibility);
-      window.removeEventListener('resize', updateArrowVisibility);
+      scrollElement.removeEventListener('scroll', debouncedUpdateArrows);
+      window.removeEventListener('resize', debouncedUpdateArrows);
+      debouncedUpdateArrows.cancel(); // Cancel debounce bij unmount
     };
-  }, [updateArrowVisibility]);
+  }, [debouncedUpdateArrows]);
 
   // Scroll to current thumbnail
   useEffect(() => {

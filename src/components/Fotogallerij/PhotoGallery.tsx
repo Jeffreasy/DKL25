@@ -1,3 +1,7 @@
+// BELANGRIJK: Zorg ervoor dat de afbeeldingen (photos.url en photos.thumbnail_url) 
+// geoptimaliseerd zijn qua grootte en formaat (bv. WebP/AVIF) via de image provider (bv. Cloudinary/Supabase Storage)
+// voor de beste laadprestaties.
+
 import React from 'react';
 import MainSlider from './MainSlider';
 import ThumbnailSlider from './ThumbnailSlider';

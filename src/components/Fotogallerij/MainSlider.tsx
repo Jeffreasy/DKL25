@@ -48,59 +48,10 @@ const MainSlider: React.FC<MainSliderProps> = ({
     threshold: 50
   });
 
-  // Preload adjacent images
-  const preloadImages = useCallback(() => {
-    const preloadImage = (url: string) => {
-      if (!url || imageLoaded[url]) return;
-      const img = new Image();
-      img.onload = () => {
-        setImageLoaded(prev => ({ ...prev, [url]: true }));
-      };
-      img.src = url;
-    };
-
-    // Get adjacent indices
-    const prevIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
-    const nextIndex = (currentIndex + 1) % photos.length;
-
-    // Preload current and adjacent images
-    [prevIndex, currentIndex, nextIndex].forEach(index => {
-      const photo = photos[index];
-      if (photo) preloadImage(photo.url);
-    });
-  }, [currentIndex, photos, imageLoaded]);
-
-  useEffect(() => {
-    preloadImages();
-  }, [preloadImages]);
-
   // Mouse drag handling
   const handleMouseDown = () => setIsGrabbing(true);
   const handleMouseUp = () => setIsGrabbing(false);
   const handleMouseLeave = () => setIsGrabbing(false);
-
-  // Keyboard navigation voor de slider met tracking
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isModalOpen) return;
-      
-      switch (e.key) {
-        case 'ArrowLeft':
-          trackEvent('gallery', 'keyboard_navigation', 'left');
-          onPrevious();
-          break;
-        case 'ArrowRight':
-          trackEvent('gallery', 'keyboard_navigation', 'right');
-          onNext();
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onPrevious, onNext, isModalOpen]);
 
   // Track image loading
   const handleImageLoad = (url: string) => {

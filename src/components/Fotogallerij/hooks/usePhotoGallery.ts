@@ -17,13 +17,6 @@ export const usePhotoGallery = (photos: Photo[]) => {
     touchStart: null
   });
 
-  // Performance monitoring
-  const performanceRef = useRef({
-    lastTransitionTime: 0,
-    transitionCount: 0,
-    averageTransitionTime: 0
-  });
-
   // Memoized handlers
   const setCurrentIndex = useCallback((index: number) => {
     setState(prev => ({ ...prev, currentIndex: index }));
@@ -37,7 +30,6 @@ export const usePhotoGallery = (photos: Photo[]) => {
   }, []);
 
   const handleTransition = useCallback((direction: 'next' | 'previous') => {
-    const start = performance.now();
     setState(prev => {
       const newIndex = direction === 'next'
         ? (prev.currentIndex + 1) % photos.length
@@ -51,15 +43,6 @@ export const usePhotoGallery = (photos: Photo[]) => {
         isAnimating: true
       };
     });
-
-    // Track transition performance
-    const duration = performance.now() - start;
-    const { transitionCount, averageTransitionTime } = performanceRef.current;
-    performanceRef.current = {
-      lastTransitionTime: duration,
-      transitionCount: transitionCount + 1,
-      averageTransitionTime: (averageTransitionTime * transitionCount + duration) / (transitionCount + 1)
-    };
 
     // Reset animation state after transition
     setTimeout(() => {
@@ -103,30 +86,16 @@ export const usePhotoGallery = (photos: Photo[]) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrevious, setIsAutoPlaying]);
 
-  // Auto-play with performance monitoring
+  // Auto-play
   useEffect(() => {
     if (!state.isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      const start = performance.now();
       handleNext();
-      const duration = performance.now() - start;
-
-      // Log if transition takes too long
-      if (duration > 16.67) { // More than 1 frame at 60fps
-        console.warn(`Slow transition detected: ${duration.toFixed(2)}ms`);
-      }
     }, 5000);
 
     return () => clearInterval(interval);
   }, [state.isAutoPlaying, handleNext]);
-
-  // Expose performance metrics
-  const getPerformanceMetrics = useCallback(() => ({
-    lastTransitionTime: performanceRef.current.lastTransitionTime,
-    averageTransitionTime: performanceRef.current.averageTransitionTime,
-    transitionCount: performanceRef.current.transitionCount
-  }), []);
 
   return {
     currentIndex: state.currentIndex,
@@ -138,6 +107,5 @@ export const usePhotoGallery = (photos: Photo[]) => {
     handlePrevious,
     handleNext,
     setTouchStart,
-    getPerformanceMetrics
   };
 }; 
