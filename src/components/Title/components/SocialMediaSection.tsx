@@ -1,5 +1,5 @@
 // SocialMediaSection.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { SocialEmbedRow } from '../functions/types';
 import DOMPurify from 'dompurify';
@@ -22,10 +22,9 @@ const EmbedSkeleton: React.FC = () => (
 
 const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [scriptsLoaded, setScriptsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [embedsProcessed, setEmbedsProcessed] = useState(false);
 
-  // Container animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -52,7 +51,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
   };
 
   const renderEmbed = (embed: SocialEmbedRow) => {
-    // Extract the URL from the embed code
     const getEmbedUrl = (code: string) => {
       const urlMatch = code.match(/src="([^"]+)"/);
       return urlMatch ? urlMatch[1] : '';
@@ -61,6 +59,10 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
     switch (embed.platform) {
       case 'facebook':
         const fbUrl = getEmbedUrl(embed.embed_code);
+        if (!fbUrl) {
+          console.warn(`Could not extract Facebook URL for embed ID: ${embed.id}`);
+          return <div className="p-4 text-center text-red-500">Kon Facebook post niet laden (URL niet gevonden).</div>;
+        }
         return (
           <div className="facebook-container relative w-full h-[738px]">
             <iframe
@@ -70,76 +72,91 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
               frameBorder="0"
               allowFullScreen={true}
               allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              title={`Facebook post ${embed.id}`}
+              loading="lazy"
             />
           </div>
         );
       case 'instagram':
-        // Remove script tag from Instagram embed code
-        const instaHtml = embed.embed_code.split('<script')[0];
+        const originalInstaHtml = embed.embed_code.split('<script')[0];
+        if (!originalInstaHtml.trim()) {
+             return <div className="p-4 text-center text-red-500">Kon Instagram post niet laden (Lege code).</div>;
+        }
+        const sanitizedInstaHtml = DOMPurify.sanitize(originalInstaHtml);
         return (
-          <div 
+          <div
             className="instagram-container relative w-full min-h-[680px]"
-            ref={(node) => {
-              if (node && window.instgrm) {
-                window.instgrm.Embeds.process(node);
-              }
-            }}
-            dangerouslySetInnerHTML={{ 
-              __html: DOMPurify.sanitize(instaHtml)
+            dangerouslySetInnerHTML={{
+              __html: sanitizedInstaHtml
             }}
           />
         );
       default:
+        console.warn(`Unsupported social platform: ${embed.platform}`);
         return null;
     }
   };
 
-  useEffect(() => {
-    const loadEmbeds = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  const loadScripts = useCallback(async () => {
+    setIsLoading(true);
+    setScriptsLoaded(false);
+    setError(null);
 
-        // Load both scripts
-        await Promise.all([
-          loadFacebookSDK(),
-          loadInstagramEmbed()
-        ]);
+    try {
+      await Promise.all([
+        loadFacebookSDK(),
+        loadInstagramEmbed()
+      ]);
 
-        // Process embeds
-        if (window.instgrm) {
-          window.instgrm.Embeds.process();
-        }
-        if (window.FB) {
-          window.FB.XFBML.parse();
-        }
+      setScriptsLoaded(true);
+      trackEvent('social_section', 'sdk_loaded', `count:${socialEmbeds.length}`);
 
-        setEmbedsProcessed(true);
-        trackEvent('social_section', 'embeds_loaded', `count:${socialEmbeds.length}`);
-        setTimeout(() => setIsLoading(false), 500);
-
-      } catch (err) {
-        console.error('Error loading social embeds:', err);
-        setError('Er ging iets mis bij het laden van de social media posts.');
-        trackEvent('social_section', 'error', 'embed_loading_failed');
-        setIsLoading(false);
-      }
-    };
-
-    if (socialEmbeds.length > 0) {
-      loadEmbeds();
-    } else {
+    } catch (err) {
+      console.error('Error loading social SDKs:', err);
+      setError('Er ging iets mis bij het laden van de social media scripts.');
+      trackEvent('social_section', 'error', 'sdk_loading_failed');
+      setScriptsLoaded(false);
+    } finally {
       setIsLoading(false);
     }
-  }, [socialEmbeds]);
+  }, [socialEmbeds.length]);
+
+  useEffect(() => {
+    if (socialEmbeds.length > 0) {
+      loadScripts();
+    } else {
+      setIsLoading(false);
+      setScriptsLoaded(false);
+    }
+  }, [socialEmbeds.length, loadScripts]);
+
+  useEffect(() => {
+    if (scriptsLoaded && !isLoading) {
+
+      if (window.instgrm && window.instgrm.Embeds) {
+        try {
+          window.instgrm.Embeds.process();
+          trackEvent('social_section', 'instagram_processed', 'success');
+        } catch (e) {
+          console.error('Error calling instgrm.Embeds.process():', e);
+          setError('Kon Instagram posts niet correct weergeven.');
+          trackEvent('social_section', 'error', 'instagram_process_failed');
+        }
+      } else {
+        console.warn('window.instgrm was not found when trying to process embeds. Instagram embeds might not render.');
+        trackEvent('social_section', 'warning', 'instgrm_object_missing');
+      }
+
+    } else {
+    }
+  }, [scriptsLoaded, isLoading]);
 
   const handleSocialClick = (platform: string) => {
     trackEvent('social_section', 'social_click', platform);
   };
 
   const handleRetry = () => {
-    setEmbedsProcessed(false);
-    window.location.reload();
+    loadScripts();
   };
 
   return (
@@ -167,16 +184,17 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
         </p>
       </motion.div>
 
-      {error && (
+      {error && !isLoading && (
         <motion.div 
           className="max-w-md mx-auto mb-12 p-4 bg-red-50 border border-red-200 rounded-lg text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
         >
           <p className="text-red-600 mb-2">{error}</p>
           <button
             onClick={handleRetry}
-            className="text-sm text-red-500 hover:text-red-600 underline"
+            className="text-sm text-red-500 hover:text-red-600 underline font-semibold"
           >
             Opnieuw proberen
           </button>
@@ -188,28 +206,27 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
         variants={containerVariants}
       >
         {isLoading ? (
-          // Loading skeletons
-          [...Array(2)].map((_, i) => (
+          [...Array(socialEmbeds.length > 0 ? Math.min(socialEmbeds.length, 2) : 2)].map((_, i) => (
             <motion.div 
               key={`skeleton-${i}`}
-              className="w-full min-h-[500px]"
+              className="w-full flex justify-center"
               variants={itemVariants}
             >
               <EmbedSkeleton />
             </motion.div>
           ))
-        ) : (
-          // Social media embeds
+        ) : !error ? (
           socialEmbeds
-            .sort((a, b) => a.order_number - b.order_number) // Sorteer op order_number
+            .sort((a, b) => a.order_number - b.order_number)
             .map((embed) => (
               <motion.div 
                 key={embed.id}
                 className="w-full flex justify-center"
                 variants={itemVariants}
+                onClick={() => handleSocialClick(embed.platform)}
               >
                 <div 
-                  className="w-full bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  className="w-full max-w-[500px] bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   role="article"
                   aria-label={`${embed.platform} post`}
                 >
@@ -217,7 +234,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
                 </div>
               </motion.div>
             ))
-        )}
+        ) : null }
       </motion.div>
 
       <style>
@@ -226,16 +243,21 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
             width: 100% !important;
           }
 
-          .instagram-container blockquote {
-            margin: 0 !important;
-            width: 100% !important;
-            max-width: none !important;
-            background: white !important;
-          }
+          .instagram-media {
+               margin: 0 auto !important;
+               min-width: 326px !important;
+               width: 100% !important;
+               max-width: 500px !important;
+               background: white !important;
+               border-radius: 0.75rem !important;
+               overflow: hidden !important;
+           }
 
           .facebook-container {
             width: 100% !important;
             height: 738px !important;
+            max-width: 500px !important;
+            margin: 0 auto !important;
             background: white !important;
             border-radius: 0.75rem !important;
             overflow: hidden !important;
@@ -251,13 +273,11 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
         `}
       </style>
 
-      {/* Facebook SDK root element */}
       <div id="fb-root"></div>
     </motion.div>
   );
 };
 
-// Add TypeScript declaration for window object
 declare global {
   interface Window {
     instgrm?: {

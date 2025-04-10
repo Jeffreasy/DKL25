@@ -131,7 +131,14 @@ export default function App() {
           } 
         />
       </Route>
-    )
+    ),
+    {
+      future: {
+        // @ts-ignore // Types lijken nog niet up-to-date met runtime flags
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }
+    }
   );
 
   return (

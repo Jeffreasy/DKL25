@@ -21,7 +21,6 @@
     "@mui/material": "^5.15.10",
     "@supabase/supabase-js": "^2.39.7",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/react-router-dom": "^5.x.x",
     "@vercel/analytics": "^1.4.1",
     "canvas-confetti": "^1.9.3",
     "date-fns": "^4.1.0",

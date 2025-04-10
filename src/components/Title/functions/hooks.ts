@@ -16,8 +16,6 @@ export const useInitialData = () => {
           supabase.from('social_embeds').select('*').order('created_at', { ascending: false })
         ]);
 
-        console.log('Social embeds response:', embedsResponse); // Debug log
-
         if (titleResponse.error) {
           throw new Error('Error fetching title section: ' + titleResponse.error.message);
         }
