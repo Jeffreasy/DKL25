@@ -70,6 +70,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
               className="w-full h-[500px] border-0"
               scrolling="no"
               title="Route kaart"
+              loading="lazy"
             />
           </div>
         )}

@@ -28,7 +28,7 @@ const PartnerCarrousel: React.FC = () => {
       <section className="bg-white">
         <div className="max-w-screen-xl mx-auto px-4 py-4">
           {/* Desktop view */}
-          <div className="hidden md:flex md:justify-center md:items-center md:gap-12 flex-wrap">
+          <div className="hidden md:flex md:justify-center md:items-center md:gap-12">
             {partners.map((partner) => (
               <button
                 key={partner.id}

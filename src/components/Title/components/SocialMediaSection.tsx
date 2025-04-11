@@ -1,5 +1,5 @@
 // SocialMediaSection.tsx
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { SocialEmbedRow } from '../functions/types';
 import DOMPurify from 'dompurify';
@@ -24,6 +24,8 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
   const [isLoading, setIsLoading] = useState(true);
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const componentKey = useMemo(() => `${socialEmbeds.length}-${Date.now()}`, []);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -86,6 +88,21 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
         return (
           <div
             className="instagram-container relative w-full min-h-[680px]"
+            ref={(node) => {
+              if (node && window.instgrm?.Embeds?.process) {
+                const timeoutId = setTimeout(() => {
+                  if (window.instgrm?.Embeds?.process) { 
+                    try {
+                      window.instgrm.Embeds.process(node);
+                    } catch (e) {
+                      console.error(`Error processing Instagram embed via ref (delayed) for ${embed.id}:`, e);
+                    }
+                  } else {
+                      console.error(`window.instgrm became undefined before timeout executed for embed ${embed.id}`);
+                  }
+                }, 0);
+              }
+            }}
             dangerouslySetInnerHTML={{
               __html: sanitizedInstaHtml
             }}
@@ -130,27 +147,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
     }
   }, [socialEmbeds.length, loadScripts]);
 
-  useEffect(() => {
-    if (scriptsLoaded && !isLoading) {
-
-      if (window.instgrm && window.instgrm.Embeds) {
-        try {
-          window.instgrm.Embeds.process();
-          trackEvent('social_section', 'instagram_processed', 'success');
-        } catch (e) {
-          console.error('Error calling instgrm.Embeds.process():', e);
-          setError('Kon Instagram posts niet correct weergeven.');
-          trackEvent('social_section', 'error', 'instagram_process_failed');
-        }
-      } else {
-        console.warn('window.instgrm was not found when trying to process embeds. Instagram embeds might not render.');
-        trackEvent('social_section', 'warning', 'instgrm_object_missing');
-      }
-
-    } else {
-    }
-  }, [scriptsLoaded, isLoading]);
-
   const handleSocialClick = (platform: string) => {
     trackEvent('social_section', 'social_click', platform);
   };
@@ -161,6 +157,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
 
   return (
     <motion.div 
+      key={componentKey}
       className="max-w-[1100px] mx-auto px-4 py-12 relative"
       variants={containerVariants}
       initial="hidden"

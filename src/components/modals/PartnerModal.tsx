@@ -29,7 +29,7 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
     <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
         <Dialog.Panel 
-          className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-[calc(100%-0.5rem)] xs:max-w-[calc(100%-1rem)] sm:max-w-xl relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8"
+          className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full sm:w-[28rem] max-w-[calc(100%-0.5rem)] xs:max-w-[calc(100%-1rem)] relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8"
           onClick={(e) => e.stopPropagation()}
         >
           <button
@@ -40,12 +40,12 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
             <CloseIcon />
           </button>
 
-          <div className="relative bg-primary p-6 sm:p-10 flex justify-center items-center">
+          <div className="relative bg-primary p-6 sm:p-10 flex justify-center items-center h-40 sm:h-48">
             <div className="absolute inset-0 opacity-10 bg-pattern"></div>
             <img
               src={partner.logo}
               alt={`${partner.name} Logo`}
-              className="w-32 sm:w-48 h-auto object-contain relative z-1"
+              className="w-32 sm:w-48 max-h-full object-contain relative z-1"
             />
           </div>
 
@@ -58,7 +58,7 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
                 {partner.name}
               </h3>
             </div>
-            <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+            <p className="text-gray-600 text-sm sm:text-base leading-relaxed break-words">
               {partner.description}
             </p>
           </div>
