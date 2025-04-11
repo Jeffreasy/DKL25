@@ -121,10 +121,10 @@ export const loadInstagramEmbed = (): Promise<void> => {
           instagramScriptLoaded = true;
           resolve();
         } else {
-          console.error('window.instgrm still not found after load and short delay.');
+          console.error('window.instgrm still not found after load and increased delay.');
           reject(new Error('Failed to initialize window.instgrm after loading embed.js'));
         }
-      }, 50);
+      }, 300);
     };
     script.onerror = (error) => {
       console.error('Error loading newly added Instagram embed script:', error);
