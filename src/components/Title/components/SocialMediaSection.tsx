@@ -54,7 +54,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
 
   const renderEmbed = (embed: SocialEmbedRow) => {
     const getEmbedUrl = (code: string) => {
-      const urlMatch = code.match(/src="([^"]+)"/);
+      const urlMatch = code.match(/src="([^\"]+)"/);
       return urlMatch ? urlMatch[1] : '';
     };
 
@@ -121,16 +121,15 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
 
     try {
       await Promise.all([
-        loadFacebookSDK(),
+        loadFacebookSDK(), 
         loadInstagramEmbed()
       ]);
-
       setScriptsLoaded(true);
       trackEvent('social_section', 'sdk_loaded', `count:${socialEmbeds.length}`);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error loading social SDKs:', err);
-      setError('Er ging iets mis bij het laden van de social media scripts.');
+      setError(err?.message || 'Er ging iets mis bij het laden van de social media scripts.');
       trackEvent('social_section', 'error', 'sdk_loading_failed');
       setScriptsLoaded(false);
     } finally {
@@ -238,9 +237,10 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
         {`
           .instagram-container {
             width: 100% !important;
+            min-height: 680px;
           }
 
-          .instagram-media {
+          .instagram-media { 
                margin: 0 auto !important;
                min-width: 326px !important;
                width: 100% !important;
@@ -252,7 +252,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
 
           .facebook-container {
             width: 100% !important;
-            height: 738px !important;
+            height: 738px !important; 
             max-width: 500px !important;
             margin: 0 auto !important;
             background: white !important;
@@ -274,28 +274,5 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
     </motion.div>
   );
 };
-
-declare global {
-  interface Window {
-    instgrm?: {
-      Embeds: {
-        process: (element?: HTMLElement) => void;
-      };
-    };
-    FB?: {
-      XFBML: {
-        parse: () => void;
-      };
-      init: (options: {
-        appId?: string;
-        version: string;
-        xfbml?: boolean;
-        status?: boolean;
-        cookie?: boolean;
-        autoLogAppEvents?: boolean;
-      }) => void;
-    };
-  }
-}
 
 export default React.memo(SocialMediaSection);

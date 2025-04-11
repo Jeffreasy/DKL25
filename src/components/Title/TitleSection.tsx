@@ -1,7 +1,6 @@
 // TitleSection.tsx
 import React, { useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { loadInstagramEmbed } from '@/utils/socialScripts';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import InfoIcon from '@mui/icons-material/Info';
 import { useInitialData } from './functions/hooks';
@@ -42,7 +41,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
 
   useEffect(() => {
     if (socialEmbeds.length > 0) {
-      loadInstagramEmbed();
+      // loadInstagramEmbed();
     }
   }, [socialEmbeds]);
 
