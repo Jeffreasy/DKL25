@@ -52,7 +52,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
           if (error) throw error;
           
           recordingsData = data;
-          trackEvent('radio_gallery', 'loaded', `count:${data?.length || 0}`);
+          trackEvent('media_gallery', 'loaded', `count:${data?.length || 0}`);
         } catch (supabaseError) {
           console.error('Supabase error:', supabaseError);
           
@@ -70,7 +70,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
             }
           ];
           
-          trackEvent('radio_gallery', 'fallback_data_used', 'supabase_error');
+          trackEvent('media_gallery', 'fallback_data_used', 'supabase_error');
         }
         
         if (!recordingsData || recordingsData.length === 0) {
@@ -98,7 +98,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
   // Handle retry when error occurs
   const handleRetry = () => {
     setRetryCount(0);
-    trackEvent('radio_gallery', 'retry_clicked', error || 'unknown_error');
+    trackEvent('media_gallery', 'retry_clicked', error || 'unknown_error');
   };
 
   return (

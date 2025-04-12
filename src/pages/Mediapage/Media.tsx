@@ -1,15 +1,20 @@
-import React from 'react';
-import { RadioGallery } from '@/components';
+import React, { useEffect } from 'react';
+import RadioGallery from '@/components/Radiogallerij/RadioGallery';
 import { Helmet } from 'react-helmet-async';
+import { trackEvent } from '@/utils/googleAnalytics';
 
-const RadioPage: React.FC = () => {
+const MediaPage: React.FC = () => {
+  useEffect(() => {
+    trackEvent('media', 'page_view', 'media_page');
+  }, []);
+
   return (
     <>
       <Helmet>
-        <title>Radio Uitzendingen | De Koninklijke Loop</title>
+        <title>Media Archief | De Koninklijke Loop</title>
         <meta
           name="description"
-          content="Luister naar de radio-uitzendingen van De Koninklijke Loop. Herbeleef de sfeer en enthousiasme van voorgaande edities."
+          content="Bekijk en beluister media van De Koninklijke Loop. Herbeleef de sfeer en enthousiasme van voorgaande edities."
         />
       </Helmet>
 
@@ -18,10 +23,10 @@ const RadioPage: React.FC = () => {
         <div className="relative bg-orange-100 py-20 px-5">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-sans" style={{fontFamily: "'Montserrat', sans-serif"}}>
-              Radio Uitzendingen
+              Media Archief
             </h1>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto font-sans" style={{fontFamily: "'Open Sans', sans-serif"}}>
-              Herbeleef de sfeer en enthousiasme van De Koninklijke Loop door onze radio-uitzendingen te beluisteren.
+              Herbeleef de sfeer en enthousiasme van De Koninklijke Loop via onze media fragmenten.
             </p>
           </div>
         </div>
@@ -35,7 +40,7 @@ const RadioPage: React.FC = () => {
         {/* Additional Content */}
         <div className="max-w-4xl mx-auto py-16 px-5">
           <h2 className="text-3xl font-bold text-gray-900 mb-6 font-sans" style={{fontFamily: "'Montserrat', sans-serif"}}>
-            Onze Stem op de Radio
+            Waarom Media?
           </h2>
           <div className="prose prose-lg max-w-none" style={{fontFamily: "'Open Sans', sans-serif"}}>
             <p>
@@ -45,10 +50,10 @@ const RadioPage: React.FC = () => {
               Daarnaast is het een ontzettend toffe ervaring voor de cliënten van 's Heeren Loo. Zij krijgen de kans om live op de radio verslag te doen van hun eigen evenement – een unieke belevenis die perfect past bij de gedachte achter De Koninklijke Loop.
             </p>
             <p>
-              Deze radiogalerij is een plek waar we die mooie herinneringen bewaren. Luister terug naar de fragmenten en herbeleef de energie en het enthousiasme van de uitzendingen.
+              Dit media archief is een plek waar we die mooie herinneringen bewaren. Luister terug naar de fragmenten en herbeleef de energie en het enthousiasme van de uitzendingen.
             </p>
             <p>
-              Heb je vragen over onze radio-uitzendingen of wil je meer weten? Neem dan <a href="/contact" className="text-primary hover:text-primary-dark underline">contact</a> met ons op!
+              Heb je vragen over onze media-uitingen of wil je meer weten? Neem dan <a href="/contact" className="text-primary hover:text-primary-dark underline">contact</a> met ons op!
             </p>
           </div>
         </div>
@@ -57,4 +62,4 @@ const RadioPage: React.FC = () => {
   );
 };
 
-export default RadioPage; 
+export default MediaPage; 

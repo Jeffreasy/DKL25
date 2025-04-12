@@ -17,9 +17,9 @@ export const NAV_ITEMS: Omit<NavItemProps, 'onClick'>[] = [
     children: 'Over Ons'
   },
   {
-    to: '/radio',
+    to: '/media',
     icon: 'radio',
-    children: 'Radio'
+    children: 'Media'
   },
   {
     to: '/faq',

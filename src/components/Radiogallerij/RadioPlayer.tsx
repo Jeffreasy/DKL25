@@ -41,14 +41,14 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
 
     if (isPlaying) {
       audio.pause();
-      trackEvent('radio', 'pause', title);
+      trackEvent('media_player', 'pause', title);
     } else {
       audio.play().catch(error => {
         console.error('Audio playback error:', error);
         setHasError(true);
-        trackEvent('radio', 'error', `${title}: ${error.message}`);
+        trackEvent('media_player', 'error', `${title}: ${error.message}`);
       });
-      trackEvent('radio', 'play', title);
+      trackEvent('media_player', 'play', title);
     }
     
     setIsPlaying(!isPlaying);
@@ -67,13 +67,13 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
     const handleEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
-      trackEvent('radio', 'ended', title);
+      trackEvent('media_player', 'ended', title);
     };
     const handleError = (e: Event) => {
       console.error('Audio error:', e);
       setHasError(true);
       setIsLoading(false);
-      trackEvent('radio', 'error', `${title}: Load error`);
+      trackEvent('media_player', 'error', `${title}: Load error`);
     };
     
     // Add event listeners
@@ -110,7 +110,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
     audio.currentTime = newTime;
     setCurrentTime(newTime);
     
-    trackEvent('radio', 'seek', `${title}: ${formatTime(newTime)}`);
+    trackEvent('media_player', 'seek', `${title}: ${formatTime(newTime)}`);
   };
 
   // Handle volume change
@@ -122,7 +122,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
       audioRef.current.volume = newVolume;
     }
     
-    trackEvent('radio', 'volume_change', `${title}: ${Math.round(newVolume * 100)}%`);
+    trackEvent('media_player', 'volume_change', `${title}: ${Math.round(newVolume * 100)}%`);
   };
   
   // Handle retry when error occurs
@@ -135,7 +135,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
     
     // Force reload of audio source
     audio.load();
-    trackEvent('radio', 'retry', title);
+    trackEvent('media_player', 'retry', title);
   };
 
   return (
