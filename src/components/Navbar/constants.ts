@@ -7,6 +7,16 @@ export const NAV_ITEMS: Omit<NavItemProps, 'onClick'>[] = [
     children: 'Home'
   },
   {
+    to: '/media',
+    icon: 'radio',
+    children: 'Media'
+  },
+  {
+    to: '/wat-is-de-koninklijkeloop',
+    icon: 'info',
+    children: 'DKL'
+  },
+  {
     to: '/aanmelden',
     icon: 'register',
     children: 'Inschrijven'
@@ -17,19 +27,9 @@ export const NAV_ITEMS: Omit<NavItemProps, 'onClick'>[] = [
     children: 'Over Ons'
   },
   {
-    to: '/media',
-    icon: 'radio',
-    children: 'Media'
-  },
-  {
     to: '/faq',
     icon: 'contact',
     children: 'Contact'
-  },
-  {
-    to: '/wat-is-de-koninklijkeloop',
-    icon: 'info',
-    children: 'DKL'
   }
 ];
 
