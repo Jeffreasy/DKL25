@@ -158,7 +158,7 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
           >
             <img
               src={photo.thumbnail_url || photo.url}
-              alt={`Thumbnail ${index + 1}`}
+              alt={photo.alt_text || `Thumbnail ${index + 1}`}
               className="w-full h-full object-cover"
               loading="lazy"
               draggable={false}

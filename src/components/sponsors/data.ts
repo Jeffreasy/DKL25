@@ -4,7 +4,7 @@ export const sponsors: Sponsor[] = [
   {
     id: 'sterk-in-vloeren',
     name: 'Sterk In Vloeren',
-    description: 'De website van Sterk In Vloeren biedt een uitgebreid assortiment aan vloeren, waaronder laminaat, PVC-vloeren en tapijt. Ze benadrukken heldere afspraken en hanteren all-in prijzen.',
+    description: 'Sterk In Vloeren biedt een uitgebreid assortiment vloeren. Als trotse sponsor ondersteunen zij De Koninklijke Loop en de deelnemers.',
     logoUrl: 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733166669/SterkinVloerenLOGO_zrdofb.webp',
     websiteUrl: 'https://sterkinvloeren.nl/',
     order: 1,
@@ -14,7 +14,7 @@ export const sponsors: Sponsor[] = [
   {
     id: 'beeldpakker',
     name: 'Beeldpakker',
-    description: 'Johan Groot Jebbink, een fotograaf met meer dan tien jaar ervaring, gespecialiseerd in portretfotografie. Actief in Ermelo en internationaal.',
+    description: 'Johan Groot Jebbink (Beeldpakker), ervaren fotograaf, legt de mooiste momenten vast. Ook steunt hij als sponsor het wandelevenement De Koninklijke Loop.',
     logoUrl: 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733166670/BeeldpakkerLogo_wijjmq.webp',
     websiteUrl: 'https://beeldpakker.nl/',
     order: 2,
@@ -24,7 +24,7 @@ export const sponsors: Sponsor[] = [
   {
     id: 'mojo-dojo',
     name: 'Mojo Dojo',
-    description: 'Mojo Dojo is een veelzijdige studio in Rotterdam die diensten aanbiedt voor creatieve producties, waaronder muziekopnames, podcasts en livestreams.',
+    description: 'Mojo Dojo is een veelzijdige studio in Rotterdam voor creatieve producties. Zij dragen De Koninklijke Loop een warm hart toe als sponsor van dit unieke evenement.',
     logoUrl: 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733166669/LogoLayout_1_iphclc.webp',
     websiteUrl: 'https://mojodojo.studio/',
     order: 3,
@@ -34,7 +34,7 @@ export const sponsors: Sponsor[] = [
   {
     id: '3x3-anders',
     name: '3x3 Anders',
-    description: '3x3 Anders is een zorgbemiddelingsbureau gespecialiseerd in het matchen van zorgaanbieders met gekwalificeerde zorgprofessionals.',
+    description: '3x3 Anders is gespecialiseerd in zorgbemiddeling. Als sponsor maken zij mede De Koninklijke Loop mogelijk, een sponsorloop voor en door mensen met een beperking.',
     logoUrl: 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733166671/3x3anderslogo_itwm3g.webp',
     websiteUrl: 'https://3x3anders.nl/',
     order: 4,

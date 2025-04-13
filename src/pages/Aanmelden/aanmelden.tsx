@@ -16,6 +16,7 @@ const Aanmelden = () => {
       <SEO 
         title="Aanmelden - De Koninklijke Loop"
         description="Meld je aan voor De Koninklijke Loop 2025. Of je nu wilt deelnemen, vrijwilliger wilt worden of begeleider wilt zijn, hier kun je je registreren."
+        route="/aanmelden"
       />
       
       <div className="bg-gray-50 py-12 sm:py-16">

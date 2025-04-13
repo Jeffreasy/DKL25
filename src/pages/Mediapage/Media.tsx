@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import RadioGallery from '@/components/Radiogallerij/RadioGallery';
 import { Helmet } from 'react-helmet-async';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { SEO } from '../../components/SEO';
 
 const MediaPage: React.FC = () => {
   useEffect(() => {
@@ -10,13 +11,11 @@ const MediaPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Media Archief | De Koninklijke Loop</title>
-        <meta
-          name="description"
-          content="Bekijk en beluister media van De Koninklijke Loop. Herbeleef de sfeer en enthousiasme van voorgaande edities."
-        />
-      </Helmet>
+      <SEO 
+        title="Media Archief | De Koninklijke Loop"
+        description="Bekijk en beluister media van De Koninklijke Loop. Herbeleef de sfeer en enthousiasme van voorgaande edities via radiofragmenten en meer."
+        route="/media"
+      />
 
       <div className="min-h-screen bg-white">
         {/* Hero Section */}

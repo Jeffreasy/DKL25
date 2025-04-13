@@ -3,6 +3,7 @@ import FAQ from './components/FAQ';
 import { ContactModal } from '../../components/modals';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { SEO } from '../../components/SEO';
 
 interface ContactProps {
   onInschrijfClick?: () => void;
@@ -32,17 +33,23 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
   };
 
   return (
-    <div className="min-h-screen pt-20 bg-white">
-      <FAQ 
-        onContactClick={handleContactClick}
-        onInschrijfClick={handleInschrijfClick}
+    <>
+      <SEO 
+        title="Contact & Veelgestelde Vragen (FAQ)"
+        description="Heb je een vraag over De Koninklijke Loop? Vind hier antwoorden op veelgestelde vragen (FAQ) of neem contact met ons op."
       />
-      
-      <ContactModal 
-        isOpen={isContactModalOpen}
-        onClose={handleContactModalClose}
-      />
-    </div>
+      <div className="min-h-screen pt-20 bg-white">
+        <FAQ 
+          onContactClick={handleContactClick}
+          onInschrijfClick={handleInschrijfClick}
+        />
+        
+        <ContactModal 
+          isOpen={isContactModalOpen}
+          onClose={handleContactModalClose}
+        />
+      </div>
+    </>
   );
 };
 

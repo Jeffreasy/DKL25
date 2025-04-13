@@ -151,7 +151,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
           {thumbnailUrl ? (
             <img 
               src={thumbnailUrl} 
-              alt={`Thumbnail voor ${title}`} 
+              alt={`Thumbnail afbeelding voor radio-opname: ${title}`}
               className="w-full h-full object-cover object-center"
               onError={() => console.error('Thumbnail kon niet worden geladen')}
             />

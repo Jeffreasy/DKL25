@@ -124,7 +124,7 @@ const MainSlider: React.FC<MainSliderProps> = ({
 
               <img
                 src={photo.url}
-                alt={photo.alt}
+                alt={photo.alt_text}
                 className={`
                   w-full h-full object-cover 
                   transition-transform duration-300 

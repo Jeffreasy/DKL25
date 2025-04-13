@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { SEO } from '../../components/SEO';
 
 const Privacy: React.FC = () => {
   useEffect(() => {
@@ -9,10 +10,11 @@ const Privacy: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Privacybeleid | De Koninklijke Loop</title>
-        <meta name="description" content="Lees hier hoe De Koninklijke Loop omgaat met uw privacy en persoonsgegevens." />
-      </Helmet>
+      <SEO 
+        title="Privacybeleid | De Koninklijke Loop"
+        description="Lees hier hoe De Koninklijke Loop omgaat met uw privacy en persoonsgegevens."
+        route="/privacy"
+      />
 
       <div className="min-h-screen pt-20 bg-white">
         <div className="max-w-4xl mx-auto p-4 sm:p-6">

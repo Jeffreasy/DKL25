@@ -134,7 +134,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                   className="text-xl sm:text-2xl text-gray-800 font-sans leading-relaxed max-w-2xl mx-auto"
                   style={{fontFamily: "'Open Sans', sans-serif"}}
                 >
-                  Op de koninklijke weg kunnen mensen met een beperking samen wandelen met hun verwanten, vrijwilligers of begeleiders
+                  Op de koninklijke weg in Apeldoorn kunnen mensen met een beperking samen wandelen  tijdens deze unieke sponsorloop, samen met hun verwanten, vrijwilligers of begeleiders.
                 </p>
               </motion.div>
 
@@ -148,7 +148,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 <div className="rounded-xl overflow-hidden shadow-xl">
                   <img
                     src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1740778734/Wij_gaan_17_mei_lopen_voor_hen_3_zllxno.png"
-                    alt="De Koninklijke Loop promotieafbeelding"
+                    alt="Promotiebanner De Koninklijke Loop 2025: Wij gaan 17 mei lopen voor hen"
                     className="w-full h-auto"
                     onError={(e) => {
                       console.error('Cloudinary afbeelding kon niet worden geladen, fallback naar placeholder');
@@ -172,7 +172,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 <EventDetailCard 
                   icon="users"
                   title="Voor iedereen"
-                  description="Alle leeftijden welkom"
+                  description="wandelaars met of zonder beperking."
                   index={1}
                   titleStyle={{fontFamily: "'Montserrat', sans-serif"}}
                   textStyle={{fontFamily: "'Open Sans', sans-serif"}}
@@ -180,7 +180,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 <EventDetailCard 
                   icon="medal"
                   title="Lopen voor een goed doel"
-                  description="Voor verschillende categorieën"
+                  description="Steun het goede doel via deze unieke sponsorloop."
                   index={2}
                   titleStyle={{fontFamily: "'Montserrat', sans-serif"}}
                   textStyle={{fontFamily: "'Open Sans', sans-serif"}}
