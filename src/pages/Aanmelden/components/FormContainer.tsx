@@ -128,19 +128,24 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Optioneel: Voeg X-Test-Mode header toe indien nodig
+          // 'X-Test-Mode': 'true'
         },
         body: JSON.stringify({
-          id: registration.id,
+          // Verwijderd: id: registration.id,
           naam: validatedData.naam,
           email: validatedData.email,
-          telefoon: validatedData.telefoon,
+          telefoon: validatedData.telefoon || '', // Stuur lege string indien null/undefined
           rol: validatedData.rol,
           afstand: validatedData.afstand,
           ondersteuning: validatedData.ondersteuning,
-          bijzonderheden: validatedData.bijzonderheden || '',
+          bijzonderheden: validatedData.bijzonderheden || '', // Stuur lege string indien null/undefined
           terms: validatedData.terms,
-          email_verzonden: false,
-          email_verzonden_op: null
+          // Verwijderd: email_verzonden: false,
+          // Verwijderd: email_verzonden_op: null
+
+          // Toegevoegd: test_mode
+          test_mode: false // of bepaal deze waarde dynamisch
         })
       });
 
