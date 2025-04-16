@@ -160,12 +160,9 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                            <motion.ul
                               key={activeTab}
                               className="relative"
-                              initial="hidden"
-                              animate="visible"
-                              exit="hidden"
                            >
                               {filteredItems.length > 0 ? (
-                                filteredItems.map((item, index) => (
+                                filteredItems.map((item: ProgramItemData, index: number) => (
                                   <ProgramItem
                                     key={item.id}
                                     item={item}
