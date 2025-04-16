@@ -18,9 +18,10 @@ import ProgramModal from '../../components/programma/components/ProgramModal';
 
 interface HomeProps {
   onDonatieClick: () => void;
+  onProgrammaClick: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
+const Home: React.FC<HomeProps> = ({ onDonatieClick, onProgrammaClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
   const [selectedInitialTab, setSelectedInitialTab] = useState<string | undefined>(undefined);
@@ -56,7 +57,7 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
           <h2 className="sr-only">Onze Partners</h2> 
           <PartnerCarrousel />
           <HeroSection />
-          <TitleSection onInschrijfClick={handleInschrijven} />
+          <TitleSection onInschrijfClick={handleInschrijven} onProgrammaClick={onProgrammaClick} />
           <CTACards
             onInschrijfClick={handleInschrijven}
             onDonatieClick={onDonatieClick}

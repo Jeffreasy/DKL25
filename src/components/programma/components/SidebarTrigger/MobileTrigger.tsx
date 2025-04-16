@@ -16,7 +16,7 @@ const MobileTrigger: React.FC<TriggerProps> = ({ onOpenModal }) => {
         fixed left-0 top-1/2 transform -translate-y-1/2 z-40
         flex flex-col items-start justify-center
         bg-primary text-white
-        w-12 h-auto py-2 pl-1 /* Ensure pl-1 is only ONCE */
+        w-12 h-auto py-2 pl-1 /* FINAL FINAL FINAL check: pl-1 only ONCE */
         rounded-r-full
         shadow-lg
         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2

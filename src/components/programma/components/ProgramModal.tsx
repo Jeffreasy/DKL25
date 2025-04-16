@@ -6,6 +6,7 @@ import { useProgramSchedule } from '../hooks/useProgramSchedule';
 import ProgramItem from './ProgramItem';
 import { ProgramItemData } from '../types';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import InfoIcon from '@mui/icons-material/Info';
 
 interface ProgramModalProps {
   isOpen: boolean;
@@ -13,7 +14,8 @@ interface ProgramModalProps {
   initialTab?: string; // De tab die initieel geselecteerd moet zijn
 }
 
-const TABS = ['Alles', '15 km', '10 km', '6 km', '2.5 km', 'Start/Finish/Feest'];
+// Reordered TABS array
+const TABS = ['Start/Finish/Feest', '15 km', '10 km', '6 km', '2.5 km', 'Alles'];
 
 // Update keywords to be regex patterns for more robust matching
 // Using \b for word boundaries and i for case-insensitivity
@@ -113,6 +115,12 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                   <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900 mb-4">
                     Programma DKL 2025
                   </Dialog.Title>
+                  <div className="flex items-start gap-x-2 p-3 mb-4 border-t border-gray-200 bg-orange-50 rounded-md">
+                    <InfoIcon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
+                    <p className="text-base font-medium text-gray-700">
+                      Je kunt vanaf de aangegeven aanvangstijd verzamelen op het startterrein, welke afstand je ook loopt.
+                    </p>
+                  </div>
                   <div className="mt-2">
                     {/* Tabs */}
                     <div className="border-b border-gray-200 mb-4">

@@ -73,6 +73,7 @@ export default function App() {
             <Suspense fallback={<LoadingScreen />}>
               <Home 
                 onDonatieClick={handleDonatieClick}
+                onProgrammaClick={handleOpenProgramModal}
               />
             </Suspense>
           } 
