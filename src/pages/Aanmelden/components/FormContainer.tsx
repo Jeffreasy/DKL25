@@ -95,7 +95,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       const validatedData = validateForm(data);
 
       // 1. Opslaan in Supabase
-      const { data: registration, error: supabaseError } = await supabase
+      const { error: supabaseError } = await supabase
         .from('aanmeldingen')
         .insert([{
           naam: validatedData.naam,
