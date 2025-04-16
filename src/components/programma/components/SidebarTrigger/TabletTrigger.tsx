@@ -16,8 +16,8 @@ const TabletTrigger: React.FC<TriggerProps> = ({ onOpenModal }) => {
         fixed left-0 top-1/2 transform -translate-y-1/2 z-40
         flex flex-col items-start justify-center
         bg-primary text-white
-        w-12 h-auto py-2 pl-1 /* FINAL FINAL check: pl-1 only ONCE */
-        rounded-r-full
+        w-10 h-auto py-2 pl-2 /* Adjusted width and padding */
+        rounded-r-lg
         shadow-lg
         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
         transition-colors duration-300 ease-in-out

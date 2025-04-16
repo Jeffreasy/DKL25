@@ -102,7 +102,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
   };
 
   return (
-    <section className="py-16 px-5 bg-gradient-to-b from-white to-orange-50">
+    <section className="py-12 sm:py-16 px-4 bg-gradient-to-b from-white to-orange-50">
       <div className="max-w-[1280px] mx-auto">
         {/* Section Title */}
         <motion.div 
@@ -112,14 +112,14 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
           transition={{ duration: 0.5 }}
         >
           <h2 
-            className="text-4xl font-bold text-gray-900 mb-4 font-sans"
+            className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-sans"
             style={{fontFamily: "'Montserrat', sans-serif"}}
           >
             {title}
           </h2>
           {subtitle && (
             <p 
-              className="text-xl text-gray-600 max-w-3xl mx-auto font-sans"
+              className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto font-sans"
               style={{fontFamily: "'Open Sans', sans-serif"}}
             >
               {subtitle}

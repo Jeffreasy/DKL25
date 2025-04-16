@@ -106,7 +106,7 @@ const CTACard: React.FC<CTACardProps> = ({
     <motion.div
       id={`cta-card-${index}`}
       className={`
-        bg-white rounded-3xl p-8 font-heading
+        bg-white rounded-3xl p-6 md:p-8 font-heading
         shadow-lg hover:shadow-xl
         transition-shadow duration-300
         focus-within:ring-2 focus-within:ring-primary/40
@@ -127,7 +127,7 @@ const CTACard: React.FC<CTACardProps> = ({
     >
       <div className="flex flex-col items-center text-center space-y-4">
         <motion.div 
-          className="w-20 h-20 mb-2 flex items-center justify-center"
+          className="w-16 h-16 md:w-20 md:h-20 mb-2 flex items-center justify-center"
           animate={{ 
             rotate: state.isHovered ? [0, -5, 5, -5, 0] : 0,
             scale: state.isHovered ? 1.1 : 1
@@ -136,8 +136,8 @@ const CTACard: React.FC<CTACardProps> = ({
         >
           <NavIcon 
             name={icon} 
-            size={48} 
             className={`
+              h-10 w-10 md:h-12 md:w-12
               text-primary transition-transform duration-300
               ${state.isHovered ? 'scale-110' : ''}
             `}
@@ -146,12 +146,12 @@ const CTACard: React.FC<CTACardProps> = ({
         
         <h3 
           id={`cta-title-${index}`}
-          className="text-2xl font-bold text-gray-900"
+          className="text-xl md:text-2xl font-bold text-gray-900"
         >
           {title}
         </h3>
         
-        <p className="text-gray-600 text-lg leading-relaxed">
+        <p className="text-base md:text-lg text-gray-600 leading-relaxed">
           {description}
         </p>
 
@@ -159,8 +159,8 @@ const CTACard: React.FC<CTACardProps> = ({
           onClick={handleClick}
           onKeyDown={handleKeyDown}
           className={`
-            mt-4 px-8 py-3 
-            bg-primary text-white text-lg font-medium 
+            mt-4 px-6 py-2 text-base md:px-8 md:py-3 md:text-lg 
+            bg-primary text-white font-medium 
             rounded-full 
             hover:bg-primary-dark
             focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2

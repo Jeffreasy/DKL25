@@ -145,7 +145,7 @@ const AIChatButton = () => {
   };
 
   return (
-    <div className="fixed bottom-24 right-4 sm:right-8 z-100">
+    <div className="fixed bottom-28 right-4 sm:right-8 z-100">
       {isOpen && (
         <div className="absolute bottom-full right-0 mb-4 bg-white rounded-2xl shadow-2xl w-[320px] sm:w-[380px] animate-fade-in overflow-hidden">
           {/* Header */}
@@ -214,14 +214,16 @@ const AIChatButton = () => {
         </div>
       )}
       
-      {/* Chat button */}
+      {/* Chat button - Adjusted for responsiveness */}
       <button
         onClick={toggleChat}
-        className="group p-4 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-fade-in relative"
+        // Adjusted padding
+        className="group p-3 md:p-4 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-fade-in relative"
         aria-label="Open AI chat"
       >
+        {/* Adjusted icon size */}
         <SmartToyIcon 
-          sx={{ fontSize: 28 }} 
+          sx={{ fontSize: { xs: 24, md: 28 } }} 
           className="transition-transform group-hover:scale-110" 
         />
         <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white" />

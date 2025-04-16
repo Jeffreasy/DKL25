@@ -79,7 +79,7 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick, onDonatieClick })
   };
 
   return (
-    <section className="py-20 px-5 bg-white font-heading relative overflow-hidden">
+    <section className="py-12 sm:py-16 md:py-20 px-4 bg-white font-heading relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white pointer-events-none" />
       
@@ -94,7 +94,7 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick, onDonatieClick })
           <h2 className="text-[clamp(2rem,4vw,2.5rem)] text-gray-900 font-bold mb-4">
             Kom in actie
           </h2>
-          <p className="text-gray-600 text-xl max-w-2xl mx-auto">
+          <p className="text-gray-600 text-lg sm:text-xl max-w-2xl mx-auto">
             Ontdek hoe je kunt deelnemen aan De Koninklijke Loop
           </p>
         </motion.div>
@@ -118,7 +118,7 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick, onDonatieClick })
 
         {/* Cards Grid */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"

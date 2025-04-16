@@ -33,10 +33,10 @@ const ScrollToTopButton = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-4 right-4 z-40 p-3 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-fade-in"
+          className="fixed bottom-16 right-4 z-40 p-2 md:p-3 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-fade-in"
           aria-label="Scroll naar boven"
         >
-          <KeyboardArrowUpIcon sx={{ fontSize: 28 }} />
+          <KeyboardArrowUpIcon sx={{ fontSize: { xs: 24, md: 28 } }} />
         </button>
       )}
     </>
