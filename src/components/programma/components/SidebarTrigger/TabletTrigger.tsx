@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 
 interface TriggerProps {
   onOpenModal: () => void;
@@ -7,16 +8,14 @@ interface TriggerProps {
 
 // Tablet specific trigger component (Corrected Padding)
 const TabletTrigger: React.FC<TriggerProps> = ({ onOpenModal }) => {
-  const text = "Programma";
-
   return (
     <motion.button
       onClick={onOpenModal}
       className={`
         fixed left-0 top-1/2 transform -translate-y-1/2 z-40
-        flex flex-col items-start justify-center
+        flex items-center justify-center
         bg-primary text-white
-        w-10 h-auto py-2 pl-2 /* Adjusted width and padding */
+        w-12 h-12 p-3
         rounded-r-lg
         shadow-lg
         focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
@@ -28,16 +27,7 @@ const TabletTrigger: React.FC<TriggerProps> = ({ onOpenModal }) => {
       transition={{ delay: 0.5, duration: 0.5, type: 'spring', stiffness: 100 }}
       whileTap={{ scale: 0.98 }}
     >
-      <span
-        className="font-medium text-xs leading-none tracking-normal"
-      >
-        {text.split('').map((char, index) => (
-          <React.Fragment key={index}>
-            {char}
-            {index < text.length - 1 && <br />}
-          </React.Fragment>
-        ))}
-      </span>
+      <EventNoteIcon fontSize="medium" />
     </motion.button>
   );
 };

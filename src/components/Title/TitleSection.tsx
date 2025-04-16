@@ -259,10 +259,13 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
               >
                 <div className="flex flex-col items-center gap-2">
                   <PlaceIcon className="text-primary h-8 w-8" />
-                  <h3 className="text-lg font-semibold text-gray-800">Startlocatie</h3>
-                  <p className="text-sm text-gray-600">
-                    Vanaf 10:15 uur (alle afstanden)
-                  </p>
+                  <h3 className="text-lg font-semibold text-gray-800">Verzamelen Startlocatie</h3>
+                  <div className="text-sm text-gray-600 text-left space-y-1">
+                    <p><span className="font-medium">15 KM:</span> 10:15 uur</p>
+                    <p><span className="font-medium">10 KM:</span> 12:00 uur</p>
+                    <p><span className="font-medium">6 KM:</span> 13:15 uur</p>
+                    <p><span className="font-medium">2.5 KM:</span> 14:30 uur</p>
+                  </div>
                   <a
                     href="https://www.google.com/maps/search/?api=1&query=52.220712953847055,5.954903803533486"
                     target="_blank"
