@@ -1,15 +1,16 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
-import { useState } from 'react';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AIChatButton from './components/AIChatButton/AIChatButton';
 import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Toaster } from 'react-hot-toast';
 import { initGA } from './utils/googleAnalytics';
+import ProgramModal from './components/programma/components/ProgramModal';
+import ProgramSidebarTrigger from './components/programma/components/SidebarTrigger';
 
 // Initialize Google Analytics
 initGA(import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX');
@@ -38,9 +39,18 @@ const PageTracker = () => {
 
 export default function App() {
   const [isDonatieModalOpen, setIsDonatieModalOpen] = useState(false);
+  const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
 
   const handleDonatieClick = () => {
     setIsDonatieModalOpen(true);
+  };
+
+  const handleOpenProgramModal = () => {
+    setIsProgramModalOpen(true);
+  };
+
+  const handleCloseProgramModal = () => {
+    setIsProgramModalOpen(false);
   };
 
   const router = createBrowserRouter(
@@ -146,10 +156,16 @@ export default function App() {
       <Toaster />
       <HelmetProvider>
         <RouterProvider router={router} />
+        <ProgramSidebarTrigger onOpenModal={handleOpenProgramModal} />
         <AIChatButton />
         <ScrollToTopButton />
         <Analytics />
       </HelmetProvider>
+
+      <ProgramModal 
+        isOpen={isProgramModalOpen} 
+        onClose={handleCloseProgramModal} 
+      />
     </>
   );
 }

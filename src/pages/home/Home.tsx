@@ -13,6 +13,8 @@ import { VideoGallery } from '../../components/video';
 import { useNavigate } from 'react-router-dom';
 import InschDoneerButton from '../../components/inschrijfdonatebutton/inschdoneerbutton';
 import { SEO } from '../../components/SEO';
+import { ProgramSection } from '../../components/programma';
+import ProgramModal from '../../components/programma/components/ProgramModal';
 
 interface HomeProps {
   onDonatieClick: () => void;
@@ -20,10 +22,21 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
+  const [selectedInitialTab, setSelectedInitialTab] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
 
   const handleInschrijven = () => {
     navigate('/aanmelden');
+  };
+
+  const handleOpenProgramModal = (initialTab: string) => {
+    setSelectedInitialTab(initialTab);
+    setIsProgramModalOpen(true);
+  };
+
+  const handleCloseProgramModal = () => {
+    setIsProgramModalOpen(false);
   };
 
   return (
