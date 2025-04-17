@@ -187,6 +187,42 @@ interface FAQItem {
       ]
     },
     {
+      title: "Praktische Informatie",
+      icon: "ℹ️",
+      questions: [
+        {
+          question: "Waar moet ik me melden als deelnemer?",
+          answer: "Je kunt je melden bij het coördinatiepunt bij de Grote Kerk in Apeldoorn. Het adres is Loolaan 16, 7315 AB Apeldoorn.",
+          icon: "📍"
+        },
+        {
+          question: "Hoe kan ik contact opnemen voor vragen?",
+          answer: "Voor vragen en meer informatie kun je mailen naar: info@dekoninklijkeloop.nl. Je kunt ook altijd terecht bij de routebegeleiders onderweg.",
+          icon: "✉️"
+        },
+        {
+          question: "Krijgen we eten of drinken onderweg?",
+          answer: "Ja, tijdens de loop krijg je een lunchpakketje mee. Bij de rustpunten is er ook fruit & drinken aanwezig. Neem zelf wel voldoende water mee!",
+          icon: "🍎"
+        },
+        {
+          question: "Zijn er toiletten beschikbaar?",
+          answer: "Bij de Grote Kerk (coördinatiepunt/finish) kan gebruik worden gemaakt van de toiletten, inclusief een invalidetoilet. Let op: er zijn op de route zelf GEEN TOILETTEN!",
+          icon: "🚽"
+        },
+        {
+          question: "Is er hulp onderweg?",
+          answer: "Ja, er zijn routebegeleiders en EHBO'ers onderweg. Bij hen kun je altijd terecht voor vragen of hulp.",
+          icon: "🆘"
+        },
+        {
+          question: "Hoe werkt het vervoer naar de startpunten?",
+          answer: "Er zijn pendelbussen (personenvervoer en een rolstoelbus) die je vanaf de Grote Kerk naar de verschillende startpunten brengen. De vertrektijden staan in het programma.",
+          icon: "🚌"
+        }
+      ]
+    },
+    {
       title: "Contact",
       icon: "📞",
       questions: [

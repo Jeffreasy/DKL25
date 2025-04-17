@@ -4,7 +4,6 @@ import { Analytics } from '@vercel/analytics/react';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
 import ScrollToTopButton from './components/ScrollToTopButton';
-import AIChatButton from './components/AIChatButton/AIChatButton';
 import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Toaster } from 'react-hot-toast';
@@ -179,7 +178,6 @@ export default function App() {
       <Toaster />
       <HelmetProvider>
         <RouterProvider router={router} />
-        <AIChatButton />
         <ScrollToTopButton />
         <Analytics />
       </HelmetProvider>

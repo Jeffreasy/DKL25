@@ -6,6 +6,7 @@ import { DonatieModal } from './modals';
 import ProgramModal from './programma/components/ProgramModal';
 import { ContactModal } from './modals/ContactModal';
 import ProgramSidebarTrigger from './programma/components/SidebarTrigger';
+import AIChatButton from './AIChatButton/AIChatButton';
 
 interface LayoutProps {
   isDonatieModalOpen: boolean;
@@ -52,6 +53,7 @@ const Layout: React.FC<LayoutProps> = ({
         onClose={onCloseContactModal}
       />
       <ProgramSidebarTrigger onOpenModal={() => onOpenProgramModal('Start/Finish/Feest')} />
+      <AIChatButton />
     </div>
   );
 };
