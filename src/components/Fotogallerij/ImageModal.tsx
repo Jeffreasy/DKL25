@@ -259,7 +259,7 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        aria-label={photo.alt || `Foto ${currentIndex !== undefined ? currentIndex + 1 : ''}`}
+        aria-label={photo.alt_text || `Foto ${currentIndex !== undefined ? currentIndex + 1 : ''}`}
         className={`
           fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm
           transition-all duration-200
@@ -340,7 +340,7 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
             <img
               ref={imgRef}
               src={photo.url}
-              alt={photo.alt}
+              alt={photo.alt_text}
               onLoad={handleImageLoad}
               onClick={handleImageClick}
               onMouseDown={onMouseDown}
@@ -373,9 +373,9 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
             )}
             
             {/* Caption */}
-            {photo.alt && (
+            {photo.alt_text && (
               <div className="px-4 py-2 bg-black/50 rounded-lg text-center max-w-2xl backdrop-blur-sm">
-                {photo.alt}
+                {photo.alt_text}
               </div>
             )}
 

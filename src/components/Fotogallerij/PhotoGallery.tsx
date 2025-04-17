@@ -8,7 +8,7 @@ import ThumbnailSlider from './ThumbnailSlider';
 import { usePhotoGallery } from './hooks/usePhotoGallery';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect, useCallback } from 'react';
-import type { Photo } from './types';
+import type { Photo, Album } from './types';
 import { trackEvent } from '@/utils/googleAnalytics';
 
 interface PhotoGalleryProps {
@@ -17,10 +17,36 @@ interface PhotoGalleryProps {
 
 const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Haal albums op bij mount
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      const { data, error: albumError } = await supabase
+        .from('albums')
+        .select('*')
+        .eq('visible', true)
+        .order('order_number', { ascending: true });
+
+      if (albumError) {
+        console.error('Albums error:', albumError);
+        setError('Fout bij ophalen van albums.');
+        trackEvent('gallery', 'error', 'albums_fetch_failed');
+      } else if (data && data.length > 0) {
+        setAlbums(data as Album[]);
+        setSelectedAlbumId(data[0].id); // Selecteer eerste album standaard
+      } else {
+        setError('Geen zichtbare albums gevonden.');
+        trackEvent('gallery', 'error', 'no_albums_found');
+      }
+    };
+    fetchAlbums();
+  }, []); // Fetch albums only once
 
   // Notify parent component of modal state changes
   useEffect(() => {
@@ -35,50 +61,47 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
     });
   }, []);
 
-  // Fetch photos with retry mechanism
+  // Aangepaste fetchPhotos functie
   const fetchPhotos = useCallback(async () => {
+    if (!selectedAlbumId) return; // Wacht tot een album geselecteerd is
+
     try {
       setIsLoading(true);
       setError(null);
+      setPhotos([]); // Leeg foto's bij wisselen album
+      setRetryCount(0); // Reset retry count
 
-      // Fetch visible photos ordered by order_number
+      // Fetch visible photos for the selected album
       const { data: photosData, error: photosError } = await supabase
         .from('photos')
         .select('*')
         .eq('visible', true)
+        .eq('album_id', selectedAlbumId) // Filter op geselecteerd album ID
         .order('order_number', { ascending: true });
 
       if (photosError) {
         console.error('Photos error:', photosError);
         trackEvent('gallery', 'error', 'photos_fetch_failed');
-        throw new Error('Fout bij het ophalen van de foto\'s');
+        throw new Error('Fout bij het ophalen van de foto\'s voor dit album');
       }
 
       if (!photosData || photosData.length === 0) {
-        trackEvent('gallery', 'error', 'no_photos_found');
-        throw new Error('Geen foto\'s gevonden');
+        // Geen error, maar toon lege staat (kan gebeuren bij geldig album zonder zichtbare foto's)
+        trackEvent('gallery', 'info', 'no_photos_found_for_album');
+        setPhotos([]); // Zorg dat de lijst leeg is
+      } else {
+        trackEvent('gallery', 'photos_loaded', `album:${selectedAlbumId}, count:${photosData.length}`);
+        const visiblePhotos = photosData as Photo[];
+        setPhotos(visiblePhotos);
+        // Preload first few images of the new album
+        const preloadUrls = visiblePhotos.slice(0, 3).map(photo => photo.url);
+        preloadImages(preloadUrls);
       }
-
-      // Track successful photo load
-      trackEvent('gallery', 'photos_loaded', `count:${photosData.length}`);
-
-      // Use photos as they come from the database (they already have order_number)
-      const visiblePhotos = photosData as Photo[];
-
-      if (visiblePhotos.length === 0) {
-        throw new Error('Geen zichtbare foto\'s gevonden');
-      }
-
-      setPhotos(visiblePhotos);
-
-      // Preload first few images
-      const preloadUrls = visiblePhotos.slice(0, 3).map(photo => photo.url);
-      preloadImages(preloadUrls);
 
     } catch (err) {
       console.error('Error in fetchPhotos:', err);
       setError(err instanceof Error ? err.message : 'Er ging iets mis bij het ophalen van de foto\'s');
-      
+      setPhotos([]); // Maak leeg bij error
       if (retryCount < 3) {
         setTimeout(() => {
           setRetryCount(prev => prev + 1);
@@ -87,19 +110,18 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [retryCount, preloadImages]);
+  }, [selectedAlbumId, retryCount, preloadImages]); // Afhankelijk van geselecteerd album
 
+  // Fetch photos when selected album changes
   useEffect(() => {
     fetchPhotos();
-  }, [fetchPhotos]);
+  }, [fetchPhotos]); // Trigger als fetchPhotos (en dus selectedAlbumId) verandert
 
   const {
     currentIndex,
     isAnimating,
     handlePrevious,
     handleNext,
-    touchStart,
-    setTouchStart,
     setCurrentIndex
   } = usePhotoGallery(photos);
 
@@ -115,6 +137,15 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
     setCurrentIndex(index);
   };
 
+  // Handler voor album selectie
+  const handleAlbumSelect = (albumId: string) => {
+    if (albumId !== selectedAlbumId) {
+      trackEvent('gallery', 'album_select', `album:${albumId}`);
+      setSelectedAlbumId(albumId);
+      setCurrentIndex(0); // Reset naar eerste foto van nieuwe album
+    }
+  };
+
   // Preload next image when current index changes
   useEffect(() => {
     if (!photos.length) return;
@@ -122,67 +153,88 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
     preloadImages([photos[nextIndex].url]);
   }, [currentIndex, photos, preloadImages]);
 
-  if (isLoading) {
-    return (
-      <div className="py-16 px-5 bg-white font-heading">
-        <div className="max-w-[1200px] mx-auto">
-          {/* Skeleton loader */}
-          <div className="animate-pulse">
-            <div className="h-[600px] bg-gray-200 rounded-2xl mb-4" />
-            <div className="flex gap-2 justify-center">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-24 h-16 bg-gray-200 rounded-lg" />
-              ))}
-            </div>
+  const renderContent = () => {
+    if (isLoading && photos.length === 0) { // Toon skeleton alleen bij initiële load of album switch
+      return (
+        <div className="animate-pulse">
+          <div className="h-[600px] bg-gray-200 rounded-2xl mb-4" />
+          <div className="flex gap-2 justify-center">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="w-24 h-16 bg-gray-200 rounded-lg" />
+            ))}
           </div>
         </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="py-16 px-5 bg-white font-heading text-center">
-        <div className="max-w-[600px] mx-auto">
+      );
+    }
+  
+    if (error) {
+      return (
+        <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
           <button
-            onClick={() => {
-              setRetryCount(0);
-              fetchPhotos();
-            }}
+            onClick={fetchPhotos} // Retry fetch for the current album
             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
           >
             Opnieuw proberen
           </button>
         </div>
-      </div>
-    );
-  }
+      );
+    }
+  
+    if (photos.length === 0 && selectedAlbumId) {
+      return <p className="text-gray-600 text-center">Geen foto's gevonden voor dit album.</p>;
+    }
 
-  if (photos.length === 0) {
+    if (photos.length === 0 && !selectedAlbumId) {
+      return <p className="text-gray-600 text-center">Selecteer een album.</p>;
+    }
+
     return (
-      <div className="py-16 px-5 bg-white font-heading text-center">
-        <p className="text-gray-600">Geen foto's beschikbaar</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="py-16 px-5 bg-white font-heading">
-      <div className="max-w-[1200px] mx-auto">
+      <>
         <MainSlider
           photos={photos}
           currentIndex={currentIndex}
           onPrevious={handlePrevious}
           onNext={handleNext}
           isAnimating={isAnimating}
-          onModalChange={onModalChange}
+          onModalChange={setIsModalOpen} // Direct doorgeven
         />
         <ThumbnailSlider
           photos={photos}
           currentIndex={currentIndex}
           onSelect={handleThumbnailSelect}
         />
+      </>
+    );
+  };
+
+  return (
+    <div className="py-16 px-5 bg-white font-heading">
+      <div className="max-w-[1200px] mx-auto">
+        {/* Album Selectie Knoppen */}
+        {albums.length > 1 && (
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {albums.map((album) => (
+              <button
+                key={album.id}
+                onClick={() => handleAlbumSelect(album.id)}
+                className={`
+                  px-4 py-2 rounded-full text-sm font-medium transition-colors
+                  ${selectedAlbumId === album.id
+                    ? 'bg-primary text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }
+                `}
+                aria-current={selectedAlbumId === album.id ? 'page' : undefined}
+              >
+                {album.title}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {renderContent()}
+
       </div>
     </div>
   );
