@@ -4,9 +4,9 @@ export interface Video {
   url: string;
   title: string;
   description: string | null;
-  visible: string;
-  order_number: number;
+  visible: boolean | null;
+  order_number: number | null;
   created_at: string;
   updated_at: string;
-  thumbnail_url?: string;
+  thumbnail_url: string | null;
 } 

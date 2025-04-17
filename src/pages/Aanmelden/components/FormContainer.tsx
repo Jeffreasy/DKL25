@@ -103,7 +103,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             email: validatedData.email,
             telefoon: validatedData.telefoon,
             rol: validatedData.rol,
-            afstand: validatedData.afstand,
+            afstand: validatedData.afstand as "2.5 KM" | "6 KM" | "10 KM" | "15 KM",
             ondersteuning: validatedData.ondersteuning,
             bijzonderheden: validatedData.bijzonderheden,
             terms: validatedData.terms,

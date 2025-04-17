@@ -36,7 +36,7 @@ const PartnerCarrousel: React.FC = () => {
                 className="w-32 h-16 flex items-center justify-center hover:opacity-75 transition-opacity"
               >
                 <img
-                  src={partner.logo}
+                  src={partner.logo ?? undefined}
                   alt={`Logo van ${partner.name}`}
                   className="max-w-full max-h-full object-contain"
                 />
@@ -58,7 +58,7 @@ const PartnerCarrousel: React.FC = () => {
                       className="w-[100px] h-16 flex items-center justify-center"
                     >
                       <img
-                        src={partner.logo}
+                        src={partner.logo ?? undefined}
                         alt={`Logo van ${partner.name}`}
                         className="max-w-[80px] max-h-[40px] object-contain"
                       />

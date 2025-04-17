@@ -43,7 +43,7 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
           <div className="relative bg-primary p-6 sm:p-10 flex justify-center items-center h-40 sm:h-48">
             <div className="absolute inset-0 opacity-10 bg-pattern"></div>
             <img
-              src={partner.logo}
+              src={partner.logo ?? undefined}
               alt={`${partner.name} Logo`}
               className="w-32 sm:w-48 max-h-full object-contain relative z-1"
             />
@@ -73,16 +73,16 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
                 className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
               >
                 <span>Bezoek website</span>
-                <svg 
-                  className="w-5 h-5" 
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth="2" 
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M14 5l7 7m0 0l-7 7m7-7H3"
                   />
                 </svg>
@@ -93,4 +93,4 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
       </div>
     </Dialog>
   );
-}; 
+};

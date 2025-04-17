@@ -41,7 +41,7 @@ export const useVideoGallery = () => {
         const { data, error: supabaseError } = await supabase
           .from('videos')
           .select('*')
-          .eq('visible', 'true')
+          .eq('visible', true)
           .order('order_number', { ascending: true });
 
         if (supabaseError) throw supabaseError;

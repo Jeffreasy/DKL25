@@ -32,14 +32,14 @@ export interface PartnerModalProps extends BaseModalProps {
   partner?: {
     id: string;
     name: string;
-    logo: string;
+    logo: string | null;
     website: string | null;
-    description: string;
-    tier: "gold" | "silver" | "bronze";
+    description: string | null;
+    tier: string;
     since: string;
     created_at: string;
     updated_at: string;
-    visible: string;
+    visible: boolean;
     order_number: number;
   };
 }
