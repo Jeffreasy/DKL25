@@ -19,8 +19,8 @@ interface SEOProps {
 }
 
 export const SEO = ({
-  title = 'De Koninklijke Loop 2025',
-  description = 'De Koninklijke Loop 2025 is een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.',
+  title = 'De Koninklijke Loop (DKL) 2025',
+  description = 'De Koninklijke Loop (DKL) 2025 is een uniek wandelevenement waar mensen met een beperking wandelen voor het goede doel in Apeldoorn.',
   image = 'https://www.koninklijkeloop.nl/images/hero.jpg',
   type = 'website',
   route = '',
@@ -37,7 +37,7 @@ export const SEO = ({
 }: SEOProps) => {
   const siteBaseUrl = 'https://dekoninklijkeloop.nl'; // Define base URL
   const url = `${siteBaseUrl}${route}`;
-  const fullTitle = `${title}${title === 'De Koninklijke Loop 2025' ? '' : ' | De Koninklijke Loop 2025'}`;
+  const fullTitle = `${title}${title === 'De Koninklijke Loop (DKL) 2025' ? '' : ' | De Koninklijke Loop (DKL) 2025'}`;
 
   // --- Generate Event JSON-LD --- 
   let eventJsonLd = null;
@@ -46,6 +46,7 @@ export const SEO = ({
       '@context': 'https://schema.org',
       '@type': 'Event',
       name: eventName,
+      alternateName: `DKL ${eventName.match(/\\d{4}/)?.[0] || ''}`.trim(),
       startDate: eventStartDate,
       endDate: eventEndDate, // Will be undefined if not provided, which is fine
       description: eventDescription || description, // Use specific or default description
@@ -68,6 +69,7 @@ export const SEO = ({
       organizer: {
         '@type': 'Organization',
         name: 'De Koninklijke Loop', // Assuming organization name
+        alternateName: 'DKL',
         url: siteBaseUrl
       },
       url: eventUrl || url // Use specific or default page URL
@@ -86,6 +88,7 @@ export const SEO = ({
       {/* Basis Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
+      <meta name="keywords" content="De Koninklijke Loop, DKL, wandelevenement, Apeldoorn, Paleis Het Loo, goed doel, beperking, wandelen" />
 
       {/* Open Graph */}
       <meta property="og:url" content={url} />

@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import InschDoneerButton from '../../components/inschrijfdonatebutton/inschdoneerbutton';
 import { SEO } from '../../components/SEO';
 import { ProgramSection } from '../../components/programma';
-import ProgramSidebarTrigger from '../../components/programma/components/SidebarTrigger';
 
 interface HomeProps {
   onDonatieClick: () => void;
@@ -34,7 +33,7 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick, onOpenProgramModal }) => {
       <SEO 
         route="/"
         isEventPage={true}
-        eventName="De Koninklijke Loop 2025"
+        eventName="De Koninklijke Loop (DKL) 2025"
         eventStartDate="2025-05-17T10:00:00+02:00"
         eventDescription="Het unieke wandelevenement in Apeldoorn voor en door mensen met een beperking, waarbij gelopen wordt voor het goede doel."
         eventLocationName="Paleis Het Loo, Apeldoorn"
