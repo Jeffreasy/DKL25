@@ -39,18 +39,9 @@ const PageTracker = () => {
 
 export default function App() {
   const [isDonatieModalOpen, setIsDonatieModalOpen] = useState(false);
-  const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
 
   const handleDonatieClick = () => {
     setIsDonatieModalOpen(true);
-  };
-
-  const handleOpenProgramModal = () => {
-    setIsProgramModalOpen(true);
-  };
-
-  const handleCloseProgramModal = () => {
-    setIsProgramModalOpen(false);
   };
 
   const router = createBrowserRouter(
@@ -73,7 +64,6 @@ export default function App() {
             <Suspense fallback={<LoadingScreen />}>
               <Home 
                 onDonatieClick={handleDonatieClick}
-                onProgrammaClick={handleOpenProgramModal}
               />
             </Suspense>
           } 
@@ -157,16 +147,10 @@ export default function App() {
       <Toaster />
       <HelmetProvider>
         <RouterProvider router={router} />
-        <ProgramSidebarTrigger onOpenModal={handleOpenProgramModal} />
         <AIChatButton />
         <ScrollToTopButton />
         <Analytics />
       </HelmetProvider>
-
-      <ProgramModal 
-        isOpen={isProgramModalOpen} 
-        onClose={handleCloseProgramModal} 
-      />
     </>
   );
 }

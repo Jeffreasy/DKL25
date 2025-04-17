@@ -15,15 +15,17 @@ import InschDoneerButton from '../../components/inschrijfdonatebutton/inschdonee
 import { SEO } from '../../components/SEO';
 import { ProgramSection } from '../../components/programma';
 import ProgramModal from '../../components/programma/components/ProgramModal';
+import { ContactModal } from '../../components/modals/ContactModal';
+import ProgramSidebarTrigger from '../../components/programma/components/SidebarTrigger';
 
 interface HomeProps {
   onDonatieClick: () => void;
-  onProgrammaClick: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({ onDonatieClick, onProgrammaClick }) => {
+const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [selectedInitialTab, setSelectedInitialTab] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
 
@@ -38,6 +40,23 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick, onProgrammaClick }) => {
 
   const handleCloseProgramModal = () => {
     setIsProgramModalOpen(false);
+  };
+
+  const handleOpenContactModal = () => {
+    setIsProgramModalOpen(false);
+    setIsContactModalOpen(true);
+  };
+
+  const handleCloseContactModal = () => {
+    setIsContactModalOpen(false);
+  };
+
+  const handleOpenProgramFromTitle = () => {
+    handleOpenProgramModal('Start/Finish/Feest');
+  };
+  
+  const handleOpenProgramFromSidebar = () => {
+    handleOpenProgramModal('Start/Finish/Feest');
   };
 
   return (
@@ -57,11 +76,13 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick, onProgrammaClick }) => {
           <h2 className="sr-only">Onze Partners</h2> 
           <PartnerCarrousel />
           <HeroSection />
-          <TitleSection onInschrijfClick={handleInschrijven} onProgrammaClick={onProgrammaClick} />
+          <TitleSection onInschrijfClick={handleInschrijven} onProgrammaClick={handleOpenProgramFromTitle} />
           <CTACards
             onInschrijfClick={handleInschrijven}
             onDonatieClick={onDonatieClick}
           />
+          {/* Render Program Section */}
+          <ProgramSection onOpenModal={handleOpenProgramModal} />
           <section className="py-12 px-5">
             {/* Visually hidden heading for accessibility and SEO */}
             <h2 className="sr-only">Bekijk de Video's</h2> 
@@ -90,6 +111,19 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick, onProgrammaClick }) => {
             isModalOpen={isModalOpen}
           />
         </main>
+
+        {/* Render Modals */}
+        <ProgramModal 
+          isOpen={isProgramModalOpen} 
+          onClose={handleCloseProgramModal} 
+          initialTab={selectedInitialTab} 
+          onOpenContactModal={handleOpenContactModal}
+        />
+        <ContactModal 
+          isOpen={isContactModalOpen} 
+          onClose={handleCloseContactModal} 
+        />
+        <ProgramSidebarTrigger onOpenModal={handleOpenProgramFromSidebar} />
       </div>
     </>
   );

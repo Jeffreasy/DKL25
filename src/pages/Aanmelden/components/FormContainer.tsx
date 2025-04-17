@@ -94,64 +94,67 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       
       const validatedData = validateForm(data);
 
-      // 1. Opslaan in Supabase
-      const { error: supabaseError } = await supabase
-        .from('aanmeldingen')
-        .insert([{
-          naam: validatedData.naam,
-          email: validatedData.email,
-          telefoon: validatedData.telefoon,
-          rol: validatedData.rol,
-          afstand: validatedData.afstand,
-          ondersteuning: validatedData.ondersteuning,
-          bijzonderheden: validatedData.bijzonderheden,
-          terms: validatedData.terms,
-          email_verzonden: false
-        }])
-        .select()
-        .single();
+      // Stap 1: Opslaan in Supabase (alleen als NIET in development mode)
+      if (!import.meta.env.DEV) {
+        const { error: supabaseError } = await supabase
+          .from('aanmeldingen')
+          .insert([{
+            naam: validatedData.naam,
+            email: validatedData.email,
+            telefoon: validatedData.telefoon,
+            rol: validatedData.rol,
+            afstand: validatedData.afstand,
+            ondersteuning: validatedData.ondersteuning,
+            bijzonderheden: validatedData.bijzonderheden,
+            terms: validatedData.terms,
+            email_verzonden: false
+          }])
+          .select()
+          .single();
 
-      if (supabaseError) {
-        console.error('Database error:', supabaseError);
-        if (supabaseError.code === '23505') {
-          throw new Error('Je bent al ingeschreven met dit e-mailadres.');
-        } else {
-          throw new Error('Er ging iets mis bij je aanmelding. Probeer het later opnieuw.');
+        if (supabaseError) {
+          console.error('Database error:', supabaseError);
+          if (supabaseError.code === '23505') {
+            throw new Error('Je bent al ingeschreven met dit e-mailadres.');
+          } else {
+            throw new Error('Er ging iets mis bij je aanmelding (DB). Probeer het later opnieuw.');
+          }
         }
+        // Track successful database save only in production
+        logEvent('registration', 'database_save_success', `${validatedData.rol}_${validatedData.afstand}`);
+      } else {
+        console.log('DEV MODE: Skipping Supabase insert.');
+        // Optioneel: Log dat de insert is overgeslagen
+        logEvent('registration', 'database_save_skipped_dev', `${validatedData.rol}_${validatedData.afstand}`);
       }
 
-      // Track successful database save
-      logEvent('registration', 'database_save_success', `${validatedData.rol}_${validatedData.afstand}`);
-
-      // 2. Email service aanroepen
+      // Stap 2: Email service aanroepen (met dynamische test_mode)
       const emailResponse = await fetch(`${API_BASE_URL}/api/aanmelding-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           // Optioneel: Voeg X-Test-Mode header toe indien nodig
-          // 'X-Test-Mode': 'true'
+          // 'X-Test-Mode': String(import.meta.env.DEV) // Kan ook in header
         },
         body: JSON.stringify({
-          // Verwijderd: id: registration.id,
           naam: validatedData.naam,
           email: validatedData.email,
-          telefoon: validatedData.telefoon || '', // Stuur lege string indien null/undefined
+          telefoon: validatedData.telefoon || '',
           rol: validatedData.rol,
           afstand: validatedData.afstand,
           ondersteuning: validatedData.ondersteuning,
-          bijzonderheden: validatedData.bijzonderheden || '', // Stuur lege string indien null/undefined
+          bijzonderheden: validatedData.bijzonderheden || '',
           terms: validatedData.terms,
-          // Verwijderd: email_verzonden: false,
-          // Verwijderd: email_verzonden_op: null
-
-          // Toegevoegd: test_mode
-          test_mode: false // of bepaal deze waarde dynamisch
+          test_mode: import.meta.env.DEV // DEV is true in development, false in production
         })
       });
 
       if (!emailResponse.ok) {
+        // Let op: We tonen misschien geen error aan gebruiker in DEV mode voor email fail
         console.error('Email service error:', await emailResponse.text());
-        toast.error('Je aanmelding is verwerkt, maar er was een probleem met de bevestigingsmail.');
+        if (!import.meta.env.DEV) { 
+          toast.error('Je aanmelding is verwerkt, maar er was een probleem met de bevestigingsmail.');
+        }
       }
 
       // Track complete registration success

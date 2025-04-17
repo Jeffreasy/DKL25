@@ -12,6 +12,7 @@ interface ProgramModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialTab?: string; // De tab die initieel geselecteerd moet zijn
+  onOpenContactModal: () => void; // <-- Add prop to open contact modal
 }
 
 // Reordered TABS array
@@ -41,16 +42,9 @@ const filterSchedule = (items: ProgramItemData[], tab: string): ProgramItemData[
   return items.filter(item => regex.test(item.event_description));
 };
 
-const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab }) => {
+const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab, onOpenContactModal }) => {
   const { scheduleItems, isLoading, error, refetch } = useProgramSchedule();
   const [activeTab, setActiveTab] = useState<string>(initialTab || TABS[0]);
-
-  // Zorg dat de data opnieuw wordt opgehaald als de modal opent (optioneel, kan performance kosten)
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     refetch();
-  //   }
-  // }, [isOpen, refetch]);
 
   // Update activeTab als initialTab verandert terwijl modal open is
   useEffect(() => {
@@ -115,11 +109,57 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                   <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900 mb-4">
                     Programma DKL 2025
                   </Dialog.Title>
-                  <div className="flex items-start gap-x-2 p-3 mb-4 border-t border-gray-200 bg-orange-50 rounded-md">
-                    <InfoIcon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
-                    <p className="text-base font-medium text-gray-700">
-                      Je kunt vanaf de aangegeven aanvangstijd verzamelen op het startterrein, welke afstand je ook loopt.
-                    </p>
+                  <div className="flex flex-col gap-y-3 p-4 mb-4 border border-primary/30 bg-orange-50 rounded-md text-gray-700">
+                    <div className="flex items-start gap-x-2">
+                      <InfoIcon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
+                      <p className="text-base font-bold text-primary">
+                        DEELNEMERS OPGELET!
+                      </p>
+                    </div>
+                    <div className="ml-7 flex flex-col gap-y-1 text-sm">
+                      <p>
+                        Hieronder vind je alle informatie en tijden over de Koninklijke Loop. Als je je hebt opgegeven kun je je melden bij het coördinatiepunt bij de Grote Kerk in Apeldoorn.
+                      </p>
+                      <p className="font-medium">
+                        Adres: Loolaan 16, 7315 AB te Apeldoorn.
+                      </p>
+                       <p className="font-medium">
+                         Voor vragen/info: {' '}
+                         <button
+                            type="button"
+                            onClick={onOpenContactModal}
+                            className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                          >
+                           neem contact op
+                         </button>
+                      </p>
+                    </div>
+                    <ul className="list-disc space-y-1.5 pl-12 text-sm">
+                      <li>Tijdens de loop krijg je een lunchpakketje mee, en bij de rustpunten is er fruit & drinken aanwezig. <span className="font-semibold">Neem zelf wel voldoende water mee!</span></li>
+                      <li>Bij de Grote kerk kan gebruik worden gemaakt van de toiletten. Er is een invalidetoilet aanwezig. <span className="font-semibold">Houd er rekening mee dat er op de route GEEN TOILETTEN ZIJN!</span></li>
+                      <li>Er zijn routebegeleiders en EHBO'ers onderweg. Bij hun kun je altijd terecht voor vragen.</li>
+                      <li>We hebben personenvervoer en een rolstoelbus die je naar de startpunten brengt.</li>
+                    </ul>
+                    <div className="ml-7 mt-2 pt-3 border-t border-orange-200/80"> 
+                      <p className="text-sm font-medium mb-2">
+                        Meldtijden bij coördinatiepunt ({''}
+                        <a 
+                          href="https://www.google.com/maps/search/?api=1&query=52.22038,5.95512" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          Grote Kerk
+                        </a>
+                        ): 
+                      </p>
+                      <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm pl-5">
+                        <div className="font-semibold text-right">15 KM:</div> <div>10:15 uur</div>
+                        <div className="font-semibold text-right">10 KM:</div> <div>12:00 uur</div>
+                        <div className="font-semibold text-right">6 KM:</div>  <div>13:15 uur</div>
+                        <div className="font-semibold text-right">2.5 KM:</div> <div>14:30 uur</div>
+                      </div>
+                    </div>
                   </div>
                   <div className="mt-2">
                     {/* Tabs */}

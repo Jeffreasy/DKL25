@@ -9,6 +9,7 @@ import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import GroupIcon from '@mui/icons-material/Group';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // Voor Hervatting
 import PlaceIcon from '@mui/icons-material/Place'; // Voor locaties zoals De Naald
+import LocationOnIcon from '@mui/icons-material/LocationOn'; // Importeer LocationOn icon
 import type { ProgramItemData } from '../types';
 
 // Uitgebreidere iconMap gebaseerd op mogelijke category/icon_name waarden
@@ -81,6 +82,18 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ item, isLast, index }) => {
         <div className="mt-1 text-sm leading-6 text-gray-600">
           {item.event_description}
         </div>
+        {/* Google Maps Link */} 
+        {item.latitude && item.longitude && (
+          <a 
+            href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center text-xs text-blue-600 hover:text-blue-800 hover:underline"
+          >
+             <LocationOnIcon className="h-4 w-4 mr-1" />
+             Bekijk op kaart
+          </a>
+        )}
       </div>
     </motion.li>
   );

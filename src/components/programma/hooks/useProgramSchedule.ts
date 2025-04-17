@@ -15,7 +15,7 @@ export const useProgramSchedule = () => {
       // Haal items op die zichtbaar zijn, gesorteerd op volgorde
       const { data, error: dbError } = await supabase
         .from('program_schedule')
-        .select('id, time, event_description, category, icon_name, order_number')
+        .select('id, time, event_description, category, icon_name, order_number, visible, latitude, longitude')
         .eq('visible', true)
         .order('order_number', { ascending: true });
 
