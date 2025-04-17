@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import { initGA } from './utils/googleAnalytics';
 import ProgramModal from './components/programma/components/ProgramModal';
 import ProgramSidebarTrigger from './components/programma/components/SidebarTrigger';
+import { ContactModal } from './components/modals/ContactModal';
 
 // Initialize Google Analytics
 initGA(import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX');
@@ -39,9 +40,32 @@ const PageTracker = () => {
 
 export default function App() {
   const [isDonatieModalOpen, setIsDonatieModalOpen] = useState(false);
+  const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
+  const [selectedInitialTab, setSelectedInitialTab] = useState<string | undefined>(undefined);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const handleDonatieClick = () => {
     setIsDonatieModalOpen(true);
+  };
+
+  const handleOpenProgramModal = (initialTab: string) => {
+    setSelectedInitialTab(initialTab);
+    setIsProgramModalOpen(true);
+  };
+
+  const handleCloseProgramModal = () => {
+    setIsProgramModalOpen(false);
+  };
+
+  const handleOpenContactModal = () => {
+    if (isProgramModalOpen) {
+      setIsProgramModalOpen(false);
+    }
+    setIsContactModalOpen(true);
+  };
+
+  const handleCloseContactModal = () => {
+    setIsContactModalOpen(false);
   };
 
   const router = createBrowserRouter(
@@ -53,6 +77,13 @@ export default function App() {
             <Layout 
               isDonatieModalOpen={isDonatieModalOpen}
               onDonatieModalClose={() => setIsDonatieModalOpen(false)}
+              isProgramModalOpen={isProgramModalOpen}
+              onCloseProgramModal={handleCloseProgramModal}
+              selectedInitialTab={selectedInitialTab}
+              onOpenContactModal={handleOpenContactModal}
+              isContactModalOpen={isContactModalOpen}
+              onCloseContactModal={handleCloseContactModal}
+              onOpenProgramModal={handleOpenProgramModal}
             />
           </>
         }
@@ -64,6 +95,7 @@ export default function App() {
             <Suspense fallback={<LoadingScreen />}>
               <Home 
                 onDonatieClick={handleDonatieClick}
+                onOpenProgramModal={handleOpenProgramModal}
               />
             </Suspense>
           } 
