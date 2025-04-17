@@ -11,7 +11,7 @@ const Privacy: React.FC = () => {
   return (
     <>
       <SEO 
-        title="Privacybeleid | De Koninklijke Loop"
+        title="Privacybeleid | De Koninklijke Loop (DKL)"
         description="Lees hier hoe De Koninklijke Loop omgaat met uw privacy en persoonsgegevens."
         route="/privacy"
       />

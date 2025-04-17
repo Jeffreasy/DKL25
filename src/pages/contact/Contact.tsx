@@ -35,7 +35,7 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
   return (
     <>
       <SEO 
-        title="Contact & Veelgestelde Vragen (FAQ)"
+        title="Contact & Veelgestelde Vragen (FAQ) | De Koninklijke Loop (DKL)"
         description="Heb je een vraag over De Koninklijke Loop? Vind hier antwoorden op veelgestelde vragen (FAQ) of neem contact met ons op."
       />
       <div className="min-h-screen pt-20 bg-white">

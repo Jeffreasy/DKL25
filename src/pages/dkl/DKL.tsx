@@ -11,8 +11,8 @@ const DKL: React.FC = () => {
   return (
     <>
       <SEO 
-        title="Wat is De Koninklijke Loop?" 
-        description="Ontdek alles over De Koninklijke Loop: een uniek evenement waar mensen met een beperking wandelen en hardlopen voor het goede doel in Apeldoorn."
+        title="Wat is De Koninklijke Loop (DKL)?" 
+        description="Ontdek alles over De Koninklijke Loop (DKL): een uniek, toegankelijk wandelevenement waar mensen met een beperking lopen voor het goede doel in Apeldoorn."
         route="/wat-is-de-koninklijkeloop"
       />
       <div className="min-h-screen pt-20">

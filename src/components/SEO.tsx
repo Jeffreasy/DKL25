@@ -88,7 +88,7 @@ export const SEO = ({
       {/* Basis Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      <meta name="keywords" content="De Koninklijke Loop, DKL, wandelevenement, Apeldoorn, Paleis Het Loo, goed doel, beperking, wandelen" />
+      <meta name="keywords" content="De Koninklijke Loop, DKL, wandelevenement, wandelen, lopen, rolstoel, rolstoelvriendelijk, toegankelijk, beperking, Apeldoorn, Paleis Het Loo, goed doel" />
 
       {/* Open Graph */}
       <meta property="og:url" content={url} />

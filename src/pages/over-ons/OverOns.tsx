@@ -13,8 +13,8 @@ const OverOns: React.FC = () => {
   return (
     <>
       <SEO 
-        title="Over Ons"
-        description="Leer meer over de organisatie achter De Koninklijke Loop en ontdek onze missie om mensen met een beperking een onvergetelijke dag te bezorgen."
+        title="Over Ons | De Koninklijke Loop (DKL)"
+        description="Leer meer over de organisatie achter De Koninklijke Loop (DKL), onze missie voor een toegankelijk wandelevenement en hoe we mensen met een beperking ondersteunen."
         route="/over-ons"
       />
       <div className="min-h-screen pt-20 bg-white">

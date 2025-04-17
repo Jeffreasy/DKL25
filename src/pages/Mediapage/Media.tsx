@@ -12,7 +12,7 @@ const MediaPage: React.FC = () => {
   return (
     <>
       <SEO 
-        title="Media Archief | De Koninklijke Loop"
+        title="Media Archief | De Koninklijke Loop (DKL)"
         description="Bekijk en beluister media van De Koninklijke Loop. Herbeleef de sfeer en enthousiasme van voorgaande edities via radiofragmenten en meer."
         route="/media"
       />

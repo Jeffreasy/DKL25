@@ -14,8 +14,8 @@ const Aanmelden = () => {
   return (
     <>
       <SEO 
-        title="Aanmelden - De Koninklijke Loop"
-        description="Meld je aan voor De Koninklijke Loop 2025. Of je nu wilt deelnemen, vrijwilliger wilt worden of begeleider wilt zijn, hier kun je je registreren."
+        title="Aanmelden - De Koninklijke Loop (DKL)"
+        description="Meld je aan om mee te lopen met De Koninklijke Loop (DKL) 2025. Registreer je als deelnemer, vrijwilliger of begeleider voor dit unieke wandelevenement."
         route="/aanmelden"
       />
       

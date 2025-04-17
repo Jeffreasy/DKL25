@@ -55,16 +55,16 @@ const TitleSkeleton: React.FC = () => (
 
 // Default values for graceful fallback
 const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
-  event_title: 'De Koninklijke Loop 2025',
-  event_subtitle: 'Het unieke wandelevenement in Apeldoorn...',
-  image_url: 'https://placehold.co/600x400/ff9328/white?text=De+Koninklijke+Loop+2025',
-  image_alt: 'De Koninklijke Loop Evenement Banner',
+  event_title: 'De Koninklijke Loop (DKL) 2025',
+  event_subtitle: 'Het unieke, rolstoelvriendelijke wandelevenement (DKL) in Apeldoorn voor en door mensen met een beperking.',
+  image_url: 'https://placehold.co/600x400/ff9328/white?text=De+Koninklijke+Loop+(DKL)+2025',
+  image_alt: 'Banner De Koninklijke Loop (DKL) 2025 wandelevenement',
   detail_1_title: 'Datum',
-  detail_1_description: 'Wordt nog bekend gemaakt',
+  detail_1_description: '17 mei 2025 (starttijden variëren)',
   detail_2_title: 'Voor Wie?',
-  detail_2_description: 'Iedereen is welkom!',
+  detail_2_description: 'Voor alle wandelaars, met of zonder beperking (rolstoelvriendelijk).',
   detail_3_title: 'Doel',
-  detail_3_description: 'Een onvergetelijke dag!',
+  detail_3_description: 'Steun het goede doel via dit unieke wandelevenement.',
 };
 
 const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgrammaClick }) => {
