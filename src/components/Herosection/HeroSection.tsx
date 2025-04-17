@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react'; 
+import { motion } from 'framer-motion';
 import BackgroundVideo from '../video/BackgroundVideo';  
 import { trackEvent } from '@/utils/googleAnalytics';
 
-const HeroSection: React.FC = () => {   
+// Define props interface
+interface HeroSectionProps {
+  onOpenProgramModal: () => void;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ onOpenProgramModal }) => {   
   // Track when the hero section becomes visible
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -54,6 +60,25 @@ const HeroSection: React.FC = () => {
             <p className="text-white/90 text-lg sm:text-xl mt-3 drop-shadow-md">
               Samen maken we het verschil
             </p>
+
+            {/* Orange Banner - Made narrower */}
+            <div className="mt-6 bg-primary px-4 py-3 rounded-md text-center max-w-sm mx-auto">
+              {/* Banner Content */}
+              <div className="mb-2">
+                <span className="block font-bold text-base sm:text-lg text-white">De Koninklijke Loop 2025</span>
+                <span className="block text-xs sm:text-sm text-white/90">Zaterdag 17 mei 2025</span>
+              </div>
+              {/* Button to open Program Modal - Added motion */}
+              <motion.button 
+                onClick={onOpenProgramModal}
+                className="mt-1 px-3 py-1.5 bg-white text-primary text-xs sm:text-sm font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-sm"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                Programma/tijden
+              </motion.button>
+            </div>
           </div>
         </div>
       </div>

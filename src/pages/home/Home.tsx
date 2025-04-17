@@ -75,7 +75,7 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick }) => {
           {/* Visually hidden heading for accessibility and SEO */}
           <h2 className="sr-only">Onze Partners</h2> 
           <PartnerCarrousel />
-          <HeroSection />
+          <HeroSection onOpenProgramModal={() => handleOpenProgramModal('Start/Finish/Feest')} />
           <TitleSection onInschrijfClick={handleInschrijven} onProgrammaClick={handleOpenProgramFromTitle} />
           <CTACards
             onInschrijfClick={handleInschrijven}
