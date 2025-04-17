@@ -172,7 +172,7 @@ export const faqData: FAQCategory[] = [
       },
       {
         question: "Zijn er toiletten beschikbaar?",
-        answer: "Bij de Grote Kerk (coördinatiepunt/finish) kan gebruik worden gemaakt van de toiletten, inclusief een invalidetoilet. Let op: er zijn op de route zelf GEEN TOILETTEN!",
+        answer: "Bij de Grote Kerk (coördinatiepunt/finish) kan gebruik worden gemaakt van de toiletten, inclusief een invalidetoilet. Let op: Toiletten zijn wel onderweg beschikbaar bij nabij gelegen restaurants etc. Maar houd er rekening mee dat het geen invalide toiletten kunnen zijn. Vanuit de organisatie zijn er geen toiletten geplaatst op de route",
         icon: "🚽"
       },
       {
