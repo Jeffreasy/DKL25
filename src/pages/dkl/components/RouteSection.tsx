@@ -31,9 +31,8 @@ const RouteSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <p className="text-lg md:text-xl text-center text-gray-600 font-light leading-relaxed mb-16 max-w-4xl mx-auto">
-          Met Koninklijke Loop wandelen we over een speciaal wandelpad. Het is namelijk het laatste stukje van de Koninklijke Weg. 
-          Deze route loopt van Paleis Noordeinde naar Paleis Het Loo, en is bij elkaar 170 kilometer lang. 
-          Natuurlijk gaan we dat hele stuk niet op zaterdag 17 mei lopen. Met de Koninklijke Loop wandelen we van Kootwijk naar Paleis Het Loo.
+          Op zaterdag 17 mei 2025, tijdens de Koninklijke Loop (DKL), wandelen we over een speciaal, toegankelijk wandelpad: het laatste stukje van de historische Koninklijke Weg.
+          Hoewel de volledige Koninklijke Weg 170 km lang is (van Paleis Noordeinde naar Paleis Het Loo), focust de DKL zich op het prachtige deel van Kootwijk naar Apeldoorn, met afstanden van 2.5, 6, 10 en 15 km. We finishen feestelijk bij de Grote Kerk in Apeldoorn.
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
