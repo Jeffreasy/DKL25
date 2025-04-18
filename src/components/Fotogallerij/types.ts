@@ -9,13 +9,11 @@ export interface Photo {
   thumbnail_url: string | null;
   alt_text: string;
   visible: boolean;
-  order_number: number;
   created_at: string;
   updated_at: string;
   title: string | null;
   description: string | null;
   year: number | null;
-  album_id: string | null;
 }
 
 export interface Album {

@@ -71,30 +71,72 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
       setPhotos([]); // Leeg foto's bij wisselen album
       setRetryCount(0); // Reset retry count
 
-      // Fetch visible photos for the selected album
+      // Stap 1: Haal photo_id's en order_number op uit album_photos voor het geselecteerde album
+      const { data: albumPhotosData, error: albumPhotosError } = await supabase
+        .from('album_photos')
+        .select('photo_id, order_number')
+        .eq('album_id', selectedAlbumId)
+        .order('order_number', { ascending: true }); // Sorteer hier alvast voor consistentie
+
+      if (albumPhotosError) {
+        console.error('Album photos error:', albumPhotosError);
+        trackEvent('gallery', 'error', 'album_photos_fetch_failed');
+        throw new Error('Fout bij het ophalen van de foto-koppelingen voor dit album');
+      }
+
+      if (!albumPhotosData || albumPhotosData.length === 0) {
+        trackEvent('gallery', 'info', 'no_photos_found_for_album');
+        setPhotos([]); // Geen foto's gekoppeld aan dit album
+        return; // Stop hier
+      }
+
+      // Maak een mapping van photo_id naar order_number en verzamel photo_ids
+      const photoOrderMap = new Map<string, number>();
+      const validAlbumPhotos = albumPhotosData.filter(ap => ap.photo_id !== null);
+      const photoIds: string[] = validAlbumPhotos.map(ap => {
+        // We weten nu dat ap.photo_id niet null is door de filter hierboven
+        photoOrderMap.set(ap.photo_id!, ap.order_number ?? 0); // Gebruik 0 als fallback voor order_number indien null
+        return ap.photo_id!;
+      });
+
+      // Voorkom een lege 'in' query als er geen geldige photoIds zijn
+      if (photoIds.length === 0) {
+        setPhotos([]);
+        trackEvent('gallery', 'info', 'no_valid_photo_ids_for_album');
+        return;
+      }
+
+      // Stap 2: Haal de daadwerkelijke foto data op voor de gevonden photo_ids
       const { data: photosData, error: photosError } = await supabase
         .from('photos')
         .select('*')
-        .eq('visible', true)
-        .eq('album_id', selectedAlbumId) // Filter op geselecteerd album ID
-        .order('order_number', { ascending: true });
+        .in('id', photoIds)
+        .eq('visible', true); // Extra check of de foto zelf zichtbaar is
 
       if (photosError) {
-        console.error('Photos error:', photosError);
+        console.error('Photos fetch error:', photosError);
         trackEvent('gallery', 'error', 'photos_fetch_failed');
-        throw new Error('Fout bij het ophalen van de foto\'s voor dit album');
+        throw new Error('Fout bij het ophalen van de foto details');
       }
 
       if (!photosData || photosData.length === 0) {
-        // Geen error, maar toon lege staat (kan gebeuren bij geldig album zonder zichtbare foto's)
-        trackEvent('gallery', 'info', 'no_photos_found_for_album');
-        setPhotos([]); // Zorg dat de lijst leeg is
+        // Dit zou niet vaak moeten gebeuren als albumPhotosData wel resultaten gaf,
+        // maar het kan als foto's onzichtbaar zijn gemaakt na koppelen.
+        trackEvent('gallery', 'info', 'no_visible_photos_found_for_album');
+        setPhotos([]);
       } else {
-        trackEvent('gallery', 'photos_loaded', `album:${selectedAlbumId}, count:${photosData.length}`);
-        const visiblePhotos = photosData as Photo[];
-        setPhotos(visiblePhotos);
+        // Stap 3: Sorteer de opgehaalde photosData op basis van de order_number uit albumPhotosData
+        const sortedVisiblePhotos = (photosData as Photo[])
+          .sort((a, b) => {
+            const orderA = photoOrderMap.get(a.id) ?? Infinity; // Geef een hoge waarde als de order onbekend is
+            const orderB = photoOrderMap.get(b.id) ?? Infinity;
+            return orderA - orderB;
+          });
+        trackEvent('gallery', 'photos_loaded', `album:${selectedAlbumId}, count:${sortedVisiblePhotos.length}`);
+        setPhotos(sortedVisiblePhotos);
+
         // Preload first few images of the new album
-        const preloadUrls = visiblePhotos.slice(0, 3).map(photo => photo.url);
+        const preloadUrls = sortedVisiblePhotos.slice(0, 3).map(photo => photo.url);
         preloadImages(preloadUrls);
       }
 
