@@ -33,8 +33,8 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
         />
       </div>
 
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-full max-w-md rounded-xl bg-white shadow-xl overflow-hidden animate-slideIn z-50">
+      <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto">
+        <Dialog.Panel className="w-full max-w-md rounded-xl bg-white shadow-xl overflow-hidden animate-slideIn z-50 my-8">
           <div className="bg-primary p-4 flex items-center justify-between">
             <Dialog.Title className="text-white font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Doneren aan het Liliane Fonds
@@ -48,7 +48,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
             </button>
           </div>
 
-          <div className="px-6 pt-6 pb-4 space-y-4">
+          <div className="px-6 pt-6 pb-4 space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
             <p className="text-center text-gray-700 font-medium text-base" style={{ fontFamily: "'Open Sans', sans-serif" }}>
               Bekijk hier live hoeveel er al is ingezameld voor het Liliane Fonds.
             </p>
@@ -69,7 +69,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                 href="https://www.gofundme.com/f/samen-op-weg-voor-het-liliane-fonds-met-de-koninklijke-loop"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-medium transition"
+                className="inline-block bg-primary hover:bg-primary-dark text-white px-4 py-2 text-sm md:px-6 md:py-3 md:text-base rounded-full font-medium transition"
               >
                 Doneer via GoFundMe
               </a>
