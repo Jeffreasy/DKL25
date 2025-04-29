@@ -68,7 +68,7 @@ const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
 };
 
 const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgrammaClick }) => {
-  const { titleData, isLoading, error, refetch } = useTitleSectionData();
+  const { titleData, isLoading: isTitleLoading, error: titleError, refetch } = useTitleSectionData();
   const { scrollYProgress } = useScroll();
   
   // Re-added Parallax effects (ensure they are defined before use)
@@ -88,8 +88,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
   }, []); // Empty dependency array: run only on mount and unmount
-  // --- End Countdown State and Effect ---
-  
+
   useEffect(() => {
     // Font loading effect...
   }, []);
@@ -111,7 +110,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
   // Use loaded data or defaults
   const displayData = titleData || DEFAULT_TITLE_DATA;
 
-  if (error && !titleData) {
+  if (titleError && !titleData) {
     return (
       <div className="py-16 px-5 bg-white font-heading text-center">
         <motion.div
@@ -119,7 +118,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md mx-auto"
         >
-          <p className="text-red-600 mb-4">{error}</p>
+          <p className="text-red-600 mb-4">{titleError}</p>
           <button
             onClick={handleRetry}
             className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
@@ -137,7 +136,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
       role="region"
       aria-label="Evenement details"
     >
-      {isLoading && !titleData ? (
+      {isTitleLoading && !titleData ? (
         <div className="max-w-[1100px] mx-auto px-4 sm:px-8 py-8 sm:py-12">
           <TitleSkeleton />
         </div>
@@ -195,6 +194,30 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
                   />
                 </div>
               </motion.div>
+
+              {/* === Participant Counter === */}
+              <motion.div
+                className="mt-8 mb-4 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.45 }}
+              >
+                <h3 
+                  className="text-lg font-semibold text-gray-800 mb-2"
+                  style={{fontFamily: "'Montserrat', sans-serif"}}
+                >
+                  Aantal Huidige Deelnemers:
+                </h3>
+                <p 
+                  className={`text-4xl font-bold ${(!displayData?.participant_count && displayData?.participant_count !== 0) ? 'text-gray-400' : 'text-primary'}`}
+                >
+                  {(displayData?.participant_count !== null && displayData?.participant_count !== undefined)
+                    ? displayData.participant_count 
+                    : '--' // Fallback if null/undefined or not loaded
+                  }
+                </p>
+              </motion.div>
+              {/* ========================= */}
 
               {/* === Countdown Timer === */}
               <motion.div 

@@ -45,6 +45,7 @@ export interface TitleSectionData {
   detail_2_description: string | null;
   detail_3_title: string | null;
   detail_3_description: string | null;
+  participant_count: number | null;
   created_at: string;
   updated_at: string;
 }

@@ -58,7 +58,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
                 src={streamWidgetUrl}
                 title="GofundMe doelbalk"
                 width="100%"
-                height="150"
+                height="200"
                 style={{ border: 'none' }}
                 loading="lazy"
               />
