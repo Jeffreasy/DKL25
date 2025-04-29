@@ -12,19 +12,40 @@ export const useTitleSectionData = () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Fetch the first (and likely only) row from the table
       const { data, error: dbError } = await supabase
         .from('title_section_content')
-        .select('*')
+        .select(`
+          id,
+          event_title,
+          event_subtitle,
+          image_url,
+          image_alt,
+          detail_1_title,
+          detail_1_description,
+          detail_2_title,
+          detail_2_description,
+          detail_3_title,
+          detail_3_description,
+          participant_count,
+          created_at,
+          updated_at
+        `)
         .limit(1)
-        .single(); // .single() returns one object or null
+        .single();
 
       if (dbError && dbError.code !== 'PGRST116') { // PGRST116 = row not found, not necessarily an error here
         console.error("Supabase error fetching title section content:", dbError);
         throw new Error('Fout bij ophalen titel sectie data.');
       }
 
-      setTitleData(data); // Set data (can be null if no row found)
+      if (data && typeof data.participant_count !== 'undefined') {
+         setTitleData(data as TitleSectionData); // Cast needed if select isn't perfectly typed
+      } else if (data === null) {
+        setTitleData(null); // Handle case where no row is found
+      } else {
+        console.error("Fetched data is missing participant_count property.", data);
+        throw new Error('Ontbrekende data voor titel sectie.');
+      }
 
     } catch (err) {
       console.error("Error fetching title section content:", err);
