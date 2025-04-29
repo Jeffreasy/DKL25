@@ -33,8 +33,8 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
         />
       </div>
 
-      <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto">
-        <Dialog.Panel className="w-full max-w-md rounded-xl bg-white shadow-xl overflow-hidden animate-slideIn z-50 my-8">
+      <div className="fixed inset-0 z-50 flex items-start justify-center p-0 md:p-4 overflow-y-auto">
+        <Dialog.Panel className="w-full min-h-screen bg-white shadow-xl overflow-hidden animate-slideIn z-50 md:max-w-md md:rounded-xl md:min-h-0 md:my-8">
           <div className="bg-primary p-4 flex items-center justify-between">
             <Dialog.Title className="text-white font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Doneren aan het Liliane Fonds
