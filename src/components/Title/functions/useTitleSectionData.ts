@@ -1,7 +1,7 @@
 // src/components/Title/functions/useTitleSectionData.ts
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import { TitleSectionData } from './types'; // Assuming type is defined in types.ts
+import { TitleSectionData } from './types';
 
 export const useTitleSectionData = () => {
   const [titleData, setTitleData] = useState<TitleSectionData | null>(null);
@@ -33,25 +33,22 @@ export const useTitleSectionData = () => {
         .limit(1)
         .single();
 
-      if (dbError && dbError.code !== 'PGRST116') { // PGRST116 = row not found, not necessarily an error here
+      if (dbError && dbError.code !== 'PGRST116') {
         console.error("Supabase error fetching title section content:", dbError);
         throw new Error('Fout bij ophalen titel sectie data.');
       }
 
-      if (data && typeof data.participant_count !== 'undefined') {
-         setTitleData(data as TitleSectionData); // Cast needed if select isn't perfectly typed
-      } else if (data === null) {
-        setTitleData(null); // Handle case where no row is found
+      if (data) {
+        setTitleData(data as TitleSectionData);
       } else {
-        console.error("Fetched data is missing participant_count property.", data);
-        throw new Error('Ontbrekende data voor titel sectie.');
+        setTitleData(null);
       }
 
     } catch (err) {
       console.error("Error fetching title section content:", err);
       const message = err instanceof Error ? err.message : 'Kon titel sectie data niet laden.';
       setError(message);
-      setTitleData(null); // Ensure null on error
+      setTitleData(null);
     } finally {
       setIsLoading(false);
     }
@@ -61,6 +58,5 @@ export const useTitleSectionData = () => {
     fetchTitleData();
   }, [fetchTitleData]);
 
-  // Allow refetching if needed
   return { titleData, isLoading, error, refetch: fetchTitleData };
-}; 
+};

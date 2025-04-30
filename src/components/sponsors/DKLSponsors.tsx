@@ -1,8 +1,11 @@
 import React from 'react';
-import { sponsors } from './data';
+import { useSponsors } from '@/hooks/useSponsors';
 import { trackEvent } from '@/utils/googleAnalytics';
+import LoadingSpinner from '../LoadingSpinner';
 
 const DKLSponsors: React.FC = () => {
+  const { sponsors, isLoading, error } = useSponsors();
+
   const handleSponsorClick = (sponsorName: string) => {
     trackEvent('sponsors', 'sponsor_click', sponsorName);
   };
@@ -10,6 +13,34 @@ const DKLSponsors: React.FC = () => {
   const handleImageError = (sponsorName: string) => {
     trackEvent('sponsors', 'image_error', sponsorName);
   };
+
+  if (isLoading) {
+    return (
+      <section className="py-20 px-5 bg-gradient-to-b from-white to-gray-50 font-heading relative overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-center items-center h-64">
+            <LoadingSpinner className="w-12 h-12 text-primary" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 px-5 bg-gradient-to-b from-white to-gray-50 font-heading relative overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center text-red-500">
+            {error}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (sponsors.length === 0) {
+    return null;
+  }
 
   return (
     <section 
@@ -42,50 +73,48 @@ const DKLSponsors: React.FC = () => {
 
         {/* Sponsors Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 max-w-5xl mx-auto">
-          {sponsors
-            .sort((a, b) => a.order - b.order)
-            .map((sponsor, index) => (
-              <a
-                key={sponsor.id}
-                href={sponsor.websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-slideIn"
-                style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => handleSponsorClick(sponsor.name)}
-              >
-                {/* Logo Container */}
-                <div className="aspect-[3/2] p-8 flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 transition-colors rounded-t-2xl">
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <img
-                      src={sponsor.logoUrl}
-                      alt={`${sponsor.name} logo`}
-                      className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                      onError={(e) => {
-                        handleImageError(sponsor.name);
-                        e.currentTarget.src = '/fallback-logo.png'
-                      }}
-                    />
-                    {/* Shine Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-                  </div>
+          {sponsors.map((sponsor, index) => (
+            <a
+              key={sponsor.id}
+              href={sponsor.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-slideIn"
+              style={{ animationDelay: `${index * 100}ms` }}
+              onClick={() => handleSponsorClick(sponsor.name)}
+            >
+              {/* Logo Container */}
+              <div className="aspect-[3/2] p-8 flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 transition-colors rounded-t-2xl">
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <img
+                    src={sponsor.logoUrl}
+                    alt={`${sponsor.name} logo`}
+                    className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                    onError={(e) => {
+                      handleImageError(sponsor.name);
+                      e.currentTarget.src = '/fallback-logo.png'
+                    }}
+                  />
+                  {/* Shine Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
                 </div>
+              </div>
 
-                {/* Content */}
-                <div className="p-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
-                    {sponsor.name}
-                  </h3>
-                  <p className="text-gray-600 text-base leading-relaxed line-clamp-3">
-                    {sponsor.description}
-                  </p>
-                </div>
+              {/* Content */}
+              <div className="p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                  {sponsor.name}
+                </h3>
+                <p className="text-gray-600 text-base leading-relaxed line-clamp-3">
+                  {sponsor.description}
+                </p>
+              </div>
 
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-black/5 group-hover:ring-primary/20 transition-colors" />
-              </a>
-            ))}
+              {/* Hover Overlay */}
+              <div className="absolute inset-0 rounded-2xl ring-1 ring-black/5 group-hover:ring-primary/20 transition-colors" />
+            </a>
+          ))}
         </div>
       </div>
     </section>
