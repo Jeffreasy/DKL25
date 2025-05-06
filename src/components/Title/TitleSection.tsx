@@ -1,6 +1,6 @@
 // TitleSection.tsx
 import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, MotionStyle } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import InfoIcon from '@mui/icons-material/Info';
@@ -149,7 +149,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
         >
           <motion.div 
             className="relative rounded-2xl p-4 sm:p-8 backdrop-blur-none bg-white shadow-lg"
-            style={{ y: titleY, opacity, scale }}
+            style={{ y: titleY, opacity, scale } as MotionStyle}
           >
             {/* Main Content */}
             <div className="space-y-12">
@@ -162,13 +162,13 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
               >
                 <h1 
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#ff9328] font-sans leading-tight"
-                  style={{fontFamily: "'Montserrat', sans-serif"}}
+                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                 >
                   {displayData.event_title}
                 </h1>
                 <p 
                   className="text-lg sm:text-xl md:text-2xl text-gray-800 font-sans leading-relaxed max-w-2xl mx-auto"
-                  style={{fontFamily: "'Open Sans', sans-serif"}}
+                  style={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
                 >
                   {displayData.event_subtitle}
                 </p>
@@ -204,7 +204,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
               >
                 <h3 
                   className="text-lg font-semibold text-gray-800 mb-2"
-                  style={{fontFamily: "'Montserrat', sans-serif"}}
+                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                 >
                   Aantal Huidige Deelnemers:
                 </h3>
@@ -265,24 +265,24 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
                   title={displayData.detail_1_title ?? DEFAULT_TITLE_DATA.detail_1_title ?? ''}
                   description={displayData.detail_1_description ?? DEFAULT_TITLE_DATA.detail_1_description ?? ''}
                   index={0}
-                  titleStyle={{fontFamily: "'Montserrat', sans-serif"}}
-                  textStyle={{fontFamily: "'Open Sans', sans-serif"}}
+                  titleStyle={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
+                  textStyle={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
                 />
                 <EventDetailCard 
                   icon="users"
                   title={displayData.detail_2_title ?? DEFAULT_TITLE_DATA.detail_2_title ?? ''}
                   description={displayData.detail_2_description ?? DEFAULT_TITLE_DATA.detail_2_description ?? ''}
                   index={1}
-                  titleStyle={{fontFamily: "'Montserrat', sans-serif"}}
-                  textStyle={{fontFamily: "'Open Sans', sans-serif"}}
+                  titleStyle={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
+                  textStyle={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
                 />
                 <EventDetailCard 
                   icon="medal"
                   title={displayData.detail_3_title ?? DEFAULT_TITLE_DATA.detail_3_title ?? ''}
                   description={displayData.detail_3_description ?? DEFAULT_TITLE_DATA.detail_3_description ?? ''}
                   index={2}
-                  titleStyle={{fontFamily: "'Montserrat', sans-serif"}}
-                  textStyle={{fontFamily: "'Open Sans', sans-serif"}}
+                  titleStyle={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
+                  textStyle={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
                 />
               </div>
 
@@ -326,7 +326,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
                 <motion.button
                   onClick={handleRegisterClick}
                   className="bg-[#ff9328] hover:bg-[#e87f1c] text-white px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl rounded-full font-bold tracking-wide transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-4 w-full sm:w-auto"
-                  style={{fontFamily: "'Montserrat', sans-serif"}}
+                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                   aria-label="Schrijf je nu in voor De Koninklijke Loop"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -339,7 +339,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
                 <motion.button
                   onClick={handleProgrammaClick}
                   className="bg-white text-primary border border-primary hover:bg-orange-50 px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl rounded-full font-bold tracking-wide transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-4 w-full sm:w-auto"
-                  style={{fontFamily: "'Montserrat', sans-serif"}}
+                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                   aria-label="Bekijk het programma"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

@@ -73,7 +73,6 @@
     "@typescript-eslint/parser": "^8.18.0",
     "@vercel/node": "^5.1.15",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitejs/plugin-react-swc": "^3.7.2",
     "autoprefixer": "^10.4.17",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
@@ -85,6 +84,7 @@
     "globby": "^14.1.0",
     "postcss": "^8.4.35",
     "prettier": "^3.5.3",
+    "rollup-plugin-visualizer": "^5.14.0",
     "supabase": "^2.22.6",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.1",
@@ -98,5 +98,10 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
+  },
+  "overrides": {
+    "esbuild": "^0.25.4",
+    "path-to-regexp": "^8.2.0",
+    "undici": "^7.8.0"
   }
 }
