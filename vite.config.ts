@@ -12,24 +12,24 @@ export default defineConfig({
   build: {
     sourcemap: true,
     chunkSizeWarningLimit: 700, // verhoog indien nodig
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'vendor-react';
-            }
-            if (id.includes('jspdf') || id.includes('html2canvas')) {
-              return 'pdf-tools';
-            }
-            return 'vendor';
-          }
-        },
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
-      },
-    },
+    // rollupOptions: {
+    //   output: {
+    //     manualChunks(id) {
+    //       if (id.includes('node_modules')) {
+    //         if (id.includes('react') || id.includes('react-dom')) {
+    //           return 'vendor-react';
+    //         }
+    //         if (id.includes('jspdf') || id.includes('html2canvas')) {
+    //           return 'pdf-tools';
+    //         }
+    //         return 'vendor';
+    //       }
+    //     },
+    //     assetFileNames: 'assets/[name]-[hash][extname]',
+    //     chunkFileNames: 'assets/[name]-[hash].js',
+    //     entryFileNames: 'assets/[name]-[hash].js',
+    //   },
+    // },
   },
   server: {
     proxy: {
