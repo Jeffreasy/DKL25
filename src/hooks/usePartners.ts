@@ -13,7 +13,7 @@ export const usePartners = () => {
         const { data, error } = await supabase
           .from('partners')
           .select('*')
-          .eq('visible', 'true')
+          .eq('visible', true)
           .order('order_number', { ascending: true });
 
         if (error) throw error;
