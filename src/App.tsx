@@ -8,9 +8,6 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Toaster } from 'react-hot-toast';
 import { initGA } from './utils/googleAnalytics';
-import ProgramModal from './components/programma/components/ProgramModal';
-import ProgramSidebarTrigger from './components/programma/components/SidebarTrigger';
-import { ContactModal } from './components/modals/ContactModal';
 
 // Initialize Google Analytics
 initGA(import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX');

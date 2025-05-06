@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Sponsor } from '../sponsors/types';
 
 // Base modal props
 interface BaseModalProps {
@@ -52,4 +53,10 @@ export interface DonatieModalProps extends BaseModalProps {
 // Inschrijf modal props
 export interface InschrijfModalProps extends BaseModalProps {
   // Voeg hier eventuele extra props toe die je nodig hebt
+}
+
+export interface SponsorModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  sponsor: Sponsor | null;
 } 

@@ -245,6 +245,19 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
               </motion.div>
               {/* ====================== */}
 
+              {/* === Weather Forecast === REMOVED */}
+              {/* 
+              <motion.div
+                className="mt-6 mb-10 max-w-xs mx-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <WeatherForecast />
+              </motion.div>
+              */}
+              {/* ======================== */}
+
               {/* Event Details Grid - Adjusted column layout */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10 max-w-5xl mx-auto">
                 <EventDetailCard 

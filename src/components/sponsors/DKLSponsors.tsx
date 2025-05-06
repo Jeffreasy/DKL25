@@ -1,17 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSponsors } from '@/hooks/useSponsors';
 import { trackEvent } from '@/utils/googleAnalytics';
 import LoadingSpinner from '../LoadingSpinner';
+import { SponsorModal } from '../modals';
+import { Sponsor } from './types';
 
 const DKLSponsors: React.FC = () => {
   const { sponsors, isLoading, error } = useSponsors();
+  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
+  const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
 
-  const handleSponsorClick = (sponsorName: string) => {
-    trackEvent('sponsors', 'sponsor_click', sponsorName);
+  const handleSponsorAnalytics = (sponsorName: string) => {
+    trackEvent('sponsors', 'sponsor_card_click', sponsorName);
   };
 
   const handleImageError = (sponsorName: string) => {
     trackEvent('sponsors', 'image_error', sponsorName);
+  };
+
+  const handleOpenSponsorModal = (sponsor: Sponsor) => {
+    setSelectedSponsor(sponsor);
+    setIsSponsorModalOpen(true);
+    handleSponsorAnalytics(sponsor.name);
+  };
+
+  const handleCloseSponsorModal = () => {
+    setIsSponsorModalOpen(false);
+    setSelectedSponsor(null);
   };
 
   if (isLoading) {
@@ -74,14 +89,18 @@ const DKLSponsors: React.FC = () => {
         {/* Sponsors Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 max-w-5xl mx-auto">
           {sponsors.map((sponsor, index) => (
-            <a
+            <div
               key={sponsor.id}
-              href={sponsor.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-slideIn"
+              className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-slideIn cursor-pointer"
               style={{ animationDelay: `${index * 100}ms` }}
-              onClick={() => handleSponsorClick(sponsor.name)}
+              onClick={() => handleOpenSponsorModal(sponsor)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleOpenSponsorModal(sponsor);
+                }
+              }}
             >
               {/* Logo Container */}
               <div className="aspect-[3/2] p-8 flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 transition-colors rounded-t-2xl">
@@ -113,10 +132,15 @@ const DKLSponsors: React.FC = () => {
 
               {/* Hover Overlay */}
               <div className="absolute inset-0 rounded-2xl ring-1 ring-black/5 group-hover:ring-primary/20 transition-colors" />
-            </a>
+            </div>
           ))}
         </div>
       </div>
+      <SponsorModal 
+        isOpen={isSponsorModalOpen} 
+        onClose={handleCloseSponsorModal} 
+        sponsor={selectedSponsor} 
+      />
     </section>
   );
 };
