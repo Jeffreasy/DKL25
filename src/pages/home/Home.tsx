@@ -13,14 +13,8 @@ import { VideoGallery } from '../../components/video';
 import { useNavigate } from 'react-router-dom';
 import InschDoneerButton from '../../components/inschrijfdonatebutton/inschdoneerbutton';
 import { SEO } from '../../components/SEO';
-import { ProgramSection } from '../../components/programma';
 
-interface HomeProps {
-  onDonatieClick: () => void;
-  onOpenProgramModal: (initialTab: string) => void;
-}
-
-const Home: React.FC<HomeProps> = ({ onDonatieClick, onOpenProgramModal }) => {
+const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -44,13 +38,11 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick, onOpenProgramModal }) => {
           {/* Visually hidden heading for accessibility and SEO */}
           <h2 className="sr-only">Onze Partners</h2> 
           <PartnerCarrousel />
-          <HeroSection onOpenProgramModal={() => onOpenProgramModal('Start/Finish/Feest')} />
-          <TitleSection onInschrijfClick={handleInschrijven} onProgrammaClick={() => onOpenProgramModal('Start/Finish/Feest')} />
+          <HeroSection />
+          <TitleSection onInschrijfClick={handleInschrijven} />
           <CTACards
             onInschrijfClick={handleInschrijven}
-            onDonatieClick={onDonatieClick}
           />
-          <ProgramSection onOpenModal={onOpenProgramModal} />
           <section className="py-12 px-5">
             {/* Visually hidden heading for accessibility and SEO */}
             <h2 className="sr-only">Bekijk de Video's</h2> 
@@ -75,7 +67,6 @@ const Home: React.FC<HomeProps> = ({ onDonatieClick, onOpenProgramModal }) => {
           </section>
           <InschDoneerButton
             onInschrijfClick={handleInschrijven}
-            onDonatieClick={onDonatieClick}
             isModalOpen={isModalOpen}
           />
         </main>

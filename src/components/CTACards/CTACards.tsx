@@ -5,10 +5,10 @@ import CTACard from './CTACard';
 import { ctaCardsData } from './data';
 import type { CTACardData } from './types';
 import { logEvent } from '../../utils/googleAnalytics'; // Importeer analytics functie
+import { useModal } from '@/context/ModalContext'; // Import useModal
 
 interface CTACardsProps {
   onInschrijfClick: () => void;
-  onDonatieClick: () => void;
 }
 
 const CardSkeleton: React.FC = () => (
@@ -23,10 +23,11 @@ const CardSkeleton: React.FC = () => (
   </div>
 );
 
-const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick, onDonatieClick }) => {
+const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { openDonatieModal } = useModal(); // Get handler from context
 
   // Container animation variants
   const containerVariants = {
@@ -60,7 +61,8 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick, onDonatieClick })
           await onInschrijfClick();
           break;
         case 'doneren':
-          await onDonatieClick();
+          console.log("CTACards: Triggering openDonatieModal from context");
+          openDonatieModal();
           break;
         case 'navigate':
           if (card.path) navigate(card.path);

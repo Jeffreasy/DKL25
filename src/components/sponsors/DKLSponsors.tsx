@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { useSponsors } from '@/hooks/useSponsors';
 import { trackEvent } from '@/utils/googleAnalytics';
 import LoadingSpinner from '../LoadingSpinner';
-import { SponsorModal } from '../modals';
 import { Sponsor } from './types';
+import { useModal } from '@/context/ModalContext';
 
 const DKLSponsors: React.FC = () => {
   const { sponsors, isLoading, error } = useSponsors();
-  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
-  const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
+  const { openSponsorModal } = useModal();
 
   const handleSponsorAnalytics = (sponsorName: string) => {
     trackEvent('sponsors', 'sponsor_card_click', sponsorName);
@@ -19,14 +18,9 @@ const DKLSponsors: React.FC = () => {
   };
 
   const handleOpenSponsorModal = (sponsor: Sponsor) => {
-    setSelectedSponsor(sponsor);
-    setIsSponsorModalOpen(true);
+    console.log(`DKLSponsors: Triggering openSponsorModal(${sponsor.name}) from context`);
     handleSponsorAnalytics(sponsor.name);
-  };
-
-  const handleCloseSponsorModal = () => {
-    setIsSponsorModalOpen(false);
-    setSelectedSponsor(null);
+    openSponsorModal(sponsor);
   };
 
   if (isLoading) {
@@ -136,11 +130,6 @@ const DKLSponsors: React.FC = () => {
           ))}
         </div>
       </div>
-      <SponsorModal 
-        isOpen={isSponsorModalOpen} 
-        onClose={handleCloseSponsorModal} 
-        sponsor={selectedSponsor} 
-      />
     </section>
   );
 };

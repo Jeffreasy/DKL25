@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import BackgroundVideo from '../video/BackgroundVideo';  
 import { trackEvent } from '@/utils/googleAnalytics';
+import { useModal } from '@/context/ModalContext';
 
-// Define props interface
-interface HeroSectionProps {
-  onOpenProgramModal: () => void;
-}
+// Remove HeroSectionProps if no props are needed
+// interface HeroSectionProps {}
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onOpenProgramModal }) => {   
+const HeroSection: React.FC = () => { // No props expected
+  const { openProgramModal } = useModal(); // Get handler from context
+  
   // Track when the hero section becomes visible
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -31,6 +32,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onOpenProgramModal }) => {
     return () => observer.disconnect();
   }, []);
 
+  const handleProgrammaClick = () => {
+    console.log("HeroSection: Triggering openProgramModal from context");
+    trackEvent('hero', 'program_click', 'programma_tijden_button');
+    openProgramModal('Start/Finish/Feest'); // Call context function
+  };
+
   return (     
     <section
       className="relative h-[calc(100vh-5rem)] font-heading"
@@ -47,30 +54,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onOpenProgramModal }) => {
         onEnded={() => trackEvent('hero', 'video_end', 'background_video')}
         onError={(error: Error) => trackEvent('hero', 'video_error', error.message)}
       />
-       
-      {/* Content */}
       <div className="relative z-10 flex flex-col h-full px-4">
-        {/* Title Container with subtle background - centered */}
         <div className="w-full max-w-5xl mx-auto pt-16 sm:pt-20 md:pt-24 lg:pt-28 flex justify-center">
           <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-lg">
               De sponsorloop van mensen met een beperking voor een goed doel!
             </h1>
-            {/* Optional subtitle */}
             <p className="text-white/90 text-lg sm:text-xl mt-3 drop-shadow-md">
               Samen maken we het verschil
             </p>
-
-            {/* Orange Banner - Made narrower */}
             <div className="mt-6 bg-primary px-4 py-3 rounded-md text-center max-w-sm mx-auto">
-              {/* Banner Content */}
               <div className="mb-2">
                 <span className="block font-bold text-base sm:text-lg text-white">De Koninklijke Loop 2025</span>
                 <span className="block text-xs sm:text-sm text-white/90">Zaterdag 17 mei 2025</span>
               </div>
-              {/* Button to open Program Modal - Added motion */}
               <motion.button 
-                onClick={onOpenProgramModal}
+                onClick={handleProgrammaClick}
                 className="mt-1 px-3 py-1.5 bg-white text-primary text-xs sm:text-sm font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-sm"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -86,4 +85,4 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onOpenProgramModal }) => {
   ); 
 };  
 
-export default HeroSection;
+export default React.memo(HeroSection);

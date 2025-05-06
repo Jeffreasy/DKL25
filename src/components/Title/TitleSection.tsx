@@ -10,10 +10,10 @@ import { TitleSectionData } from './functions/types';
 import EventDetailCard from './components/EventDetailCard';
 import SocialMediaSection from './components/SocialMediaSection';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { useModal } from '@/context/ModalContext';
 
 interface TitleSectionProps {
   onInschrijfClick: () => void;
-  onProgrammaClick: () => void;
 }
 
 // --- Countdown Timer Logic ---
@@ -67,9 +67,10 @@ const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
   detail_3_description: 'Steun het goede doel via dit unieke wandelevenement.',
 };
 
-const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgrammaClick }) => {
+const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
   const { titleData, isLoading: isTitleLoading, error: titleError, refetch } = useTitleSectionData();
   const { scrollYProgress } = useScroll();
+  const { openProgramModal } = useModal();
   
   // Re-added Parallax effects (ensure they are defined before use)
   const titleY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
@@ -99,8 +100,9 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick, onProgram
   };
 
   const handleProgrammaClick = () => {
+    console.log("TitleSection: Triggering openProgramModal from context");
     trackEvent('title_section', 'program_click', 'program_button'); 
-    onProgrammaClick();
+    openProgramModal('Start/Finish/Feest');
   };
 
   const handleRetry = () => {

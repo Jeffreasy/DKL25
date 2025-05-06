@@ -2,35 +2,28 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar/Navbar';
 import { Footer } from './footer';
-import { DonatieModal } from './modals';
+import { DonatieModal, ContactModal, SponsorModal } from './modals';
 import ProgramModal from './programma/components/ProgramModal';
-import { ContactModal } from './modals/ContactModal';
+import { useModal } from '../context/ModalContext';
 import ProgramSidebarTrigger from './programma/components/SidebarTrigger';
 import AIChatButton from './AIChatButton/AIChatButton';
 
-interface LayoutProps {
-  isDonatieModalOpen: boolean;
-  onDonatieModalClose: () => void;
-  isProgramModalOpen: boolean;
-  onCloseProgramModal: () => void;
-  selectedInitialTab?: string;
-  onOpenContactModal: () => void;
-  isContactModalOpen: boolean;
-  onCloseContactModal: () => void;
-  onOpenProgramModal: (initialTab: string) => void;
-}
+const Layout: React.FC = () => {
+  const {
+    isDonatieOpen,
+    closeDonatieModal,
+    isProgramOpen,
+    closeProgramModal,
+    openProgramModal,
+    selectedInitialTab,
+    isContactOpen,
+    closeContactModal,
+    openContactModal,
+    isSponsorModalOpen,
+    closeSponsorModal,
+    selectedSponsor
+  } = useModal();
 
-const Layout: React.FC<LayoutProps> = ({
-  isDonatieModalOpen,
-  onDonatieModalClose,
-  isProgramModalOpen,
-  onCloseProgramModal,
-  selectedInitialTab,
-  onOpenContactModal,
-  isContactModalOpen,
-  onCloseContactModal,
-  onOpenProgramModal
-}) => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
@@ -39,20 +32,25 @@ const Layout: React.FC<LayoutProps> = ({
       </main>
       <Footer />
       <DonatieModal 
-        isOpen={isDonatieModalOpen}
-        onClose={onDonatieModalClose}
+        isOpen={isDonatieOpen}
+        onClose={closeDonatieModal}
       />
       <ProgramModal 
-        isOpen={isProgramModalOpen} 
-        onClose={onCloseProgramModal} 
+        isOpen={isProgramOpen} 
+        onClose={closeProgramModal} 
         initialTab={selectedInitialTab}
-        onOpenContactModal={onOpenContactModal}
+        onOpenContactModal={openContactModal}
       />
       <ContactModal
-        isOpen={isContactModalOpen}
-        onClose={onCloseContactModal}
+        isOpen={isContactOpen}
+        onClose={closeContactModal}
       />
-      <ProgramSidebarTrigger onOpenModal={() => onOpenProgramModal('Start/Finish/Feest')} />
+       <SponsorModal 
+        isOpen={isSponsorModalOpen} 
+        onClose={closeSponsorModal} 
+        sponsor={selectedSponsor} 
+      />
+      <ProgramSidebarTrigger onOpenModal={() => openProgramModal('Start/Finish/Feest')} />
       <AIChatButton />
     </div>
   );
