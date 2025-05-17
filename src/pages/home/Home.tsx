@@ -49,14 +49,14 @@ const Home: React.FC = () => {
             <VideoGallery />
           </section>
           <section className="py-12 px-5">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Foto Impressie 2024</h2>
+            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Foto Impressie</h2>
             <PhotoGallery onModalChange={setIsModalOpen} />
           </section>
           <section className="py-12 px-5">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Luister Terug</h2>
             <RadioGallery 
-              title="Radio Fragmenten 2024"
-              subtitle="Luister naar onze live radio uitzending tijdens De Koninklijke Loop 2024"
+              title="Radio Fragmenten"
+              subtitle="Luister naar onze Radio Fragmenten"
               maxItems={1}
             />
           </section>
