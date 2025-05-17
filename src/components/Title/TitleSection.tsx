@@ -240,8 +240,8 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center text-xl font-semibold text-green-600">
-                    Het evenement is begonnen!
+                  <div className="text-center text-xl font-semibold text-primary">
+                    Het evenement is succesvol afgelopen, bedankt en tot volgend jaar!
                   </div>
                 )}
               </motion.div>
