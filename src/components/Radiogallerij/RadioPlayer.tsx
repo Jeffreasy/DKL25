@@ -140,25 +140,25 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
 
   return (
     <motion.div 
-      className="bg-white rounded-2xl shadow-lg overflow-hidden w-full max-w-4xl mx-auto border border-orange-200"
+      className="bg-white rounded-2xl shadow-lg overflow-hidden w-full h-full border border-orange-200"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col h-full">
         {/* Thumbnail/Waveform side - Adjusted height */}
-        <div className="w-full md:w-2/5 bg-gray-100 relative h-[200px] md:h-full overflow-hidden">
+        <div className="w-full bg-gray-100 relative h-[180px] overflow-hidden">
           {thumbnailUrl ? (
             <img 
               src={thumbnailUrl} 
               alt={`Thumbnail afbeelding voor radio-opname: ${title}`}
-              className="w-full h-full object-contain object-center"
+              className="w-full h-full object-cover object-center"
               onError={() => console.error('Thumbnail kon niet worden geladen')}
             />
           ) : (
-            <div className="w-full h-full min-h-[250px] flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-200">
-              <div className="w-4/5 h-32 relative">
-                {/* Audio visualization (static for now, could be dynamic) */}
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-200">
+              <div className="w-4/5 h-24 relative">
+                {/* Audio visualization */}
                 <div className="absolute inset-0 flex items-center">
                   {[...Array(50)].map((_, i) => {
                     const height = 30 + Math.random() * 70;
@@ -187,22 +187,20 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
         </div>
         
         {/* Player controls side - Adjusted padding and text sizes */}
-        <div className="w-full md:w-3/5 p-4 md:p-6 flex flex-col justify-between">
+        <div className="flex-1 p-4 flex flex-col justify-between">
           <div>
-            {/* Adjusted title size */}
-            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 font-sans" style={{fontFamily: "'Montserrat', sans-serif"}}>
+            <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans line-clamp-2" style={{fontFamily: "'Montserrat', sans-serif"}}>
               {title}
             </h3>
             {description && (
-              /* Adjusted description size and margin */
-              <p className="text-sm md:text-base text-gray-600 mb-4 md:mb-6 font-sans" style={{fontFamily: "'Open Sans', sans-serif"}}>
+              <p className="text-sm text-gray-600 mb-4 font-sans line-clamp-2" style={{fontFamily: "'Open Sans', sans-serif"}}>
                 {description}
               </p>
             )}
           </div>
           
           {/* Audio player controls */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Progress bar */}
             <div 
               ref={progressBarRef}
@@ -215,20 +213,20 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
               />
             </div>
             
-            {/* Time display - Adjusted text size */}
-            <div className="flex justify-between text-xs md:text-sm text-gray-500">
+            {/* Time display */}
+            <div className="flex justify-between text-xs text-gray-500">
               <span>{formatTime(currentTime)}</span>
               <span>{isLoading ? '--:--' : formatTime(duration)}</span>
             </div>
             
             {/* Play controls and volume */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                {/* Play/Pause button - Adjusted size */}
+              <div className="flex items-center space-x-3">
+                {/* Play/Pause button */}
                 <button
                   onClick={togglePlayPause}
                   disabled={isLoading || hasError}
-                  className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-[#ff9328] hover:bg-[#e87f1c] transition-colors text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff9328] hover:bg-[#e87f1c] transition-colors text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
                   aria-label={isPlaying ? 'Pauzeren' : 'Afspelen'}
                 >
                   {isLoading ? (
@@ -247,33 +245,18 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
                   )}
                 </button>
                 
-                {/* Error state with retry button */}
-                {hasError && (
-                  <button
-                    onClick={handleRetry}
-                    className="text-[#ff9328] hover:text-[#e87f1c] transition-colors text-sm font-medium"
-                  >
-                    Opnieuw proberen
-                  </button>
-                )}
-              </div>
-              
-              {/* Volume control - Adjusted slider width */}
-              <div className="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" />
-                </svg>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  className="w-16 md:w-20 h-2 rounded-full cursor-pointer"
-                  style={{ accentColor: '#ff9328' }}
-                  aria-label="Volume instellen"
-                />
+                {/* Volume control */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                    className="w-20 h-1 bg-gray-200 rounded-full appearance-none cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -51,6 +51,9 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
             
           if (error) throw error;
           
+          console.log('Fetched recordings:', data); // Debug log
+          console.log('Number of recordings:', data?.length); // Debug log
+          
           recordingsData = data;
           trackEvent('media_gallery', 'loaded', `count:${data?.length || 0}`);
         } catch (supabaseError) {
@@ -170,23 +173,39 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
 
         {/* Radio Recordings */}
         {!isLoading && !error && (
-          <div className="space-y-12">
-            {recordings.map((recording, index) => (
-              <motion.div 
-                key={recording.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <RadioPlayer
-                  audioUrl={recording.audio_url}
-                  title={recording.title}
-                  description={recording.description}
-                  thumbnailUrl={recording.thumbnail_url}
-                  date={recording.date}
-                />
-              </motion.div>
-            ))}
+          <div className="relative">
+            {/* Horizontal scroll container */}
+            <div className="flex overflow-x-auto pb-6 gap-6 snap-x snap-mandatory scrollbar-hide">
+              {recordings.map((recording, index) => (
+                <motion.div 
+                  key={recording.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="flex-none w-full sm:w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] lg:w-[calc(33.333%-1.5rem)] snap-center"
+                >
+                  <RadioPlayer
+                    audioUrl={recording.audio_url}
+                    title={recording.title}
+                    description={recording.description}
+                    thumbnailUrl={recording.thumbnail_url}
+                    date={recording.date}
+                  />
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Scroll indicator dots */}
+            {recordings.length > 1 && (
+              <div className="flex justify-center gap-2 mt-6">
+                {recordings.map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-2 h-2 rounded-full bg-gray-300"
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 

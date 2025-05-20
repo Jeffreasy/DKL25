@@ -57,7 +57,7 @@ const Home: React.FC = () => {
             <RadioGallery 
               title="Radio Fragmenten"
               subtitle="Luister naar onze Radio Fragmenten"
-              maxItems={1}
+              maxItems={2}
             />
           </section>
           <DKLSocials />
