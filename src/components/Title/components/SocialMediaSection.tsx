@@ -24,6 +24,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
   const [isLoading, setIsLoading] = useState(true);
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [instagramEmbeds, setInstagramEmbeds] = useState<{ [key: string]: boolean }>({});
 
   const componentKey = useMemo(() => `${socialEmbeds.length}-${Date.now()}`, []);
 
@@ -51,6 +52,17 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
       }
     }
   };
+
+  const processInstagramEmbed = useCallback((node: HTMLElement, embedId: string) => {
+    if (node && window.instgrm?.Embeds?.process) {
+      try {
+        window.instgrm.Embeds.process(node);
+        setInstagramEmbeds(prev => ({ ...prev, [embedId]: true }));
+      } catch (e) {
+        console.error(`Error processing Instagram embed for ${embedId}:`, e);
+      }
+    }
+  }, []);
 
   const renderEmbed = (embed: SocialEmbedRow) => {
     const getEmbedUrl = (code: string) => {
@@ -82,25 +94,18 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
       case 'instagram':
         const originalInstaHtml = embed.embed_code.split('<script')[0];
         if (!originalInstaHtml.trim()) {
-             return <div className="p-4 text-center text-red-500">Kon Instagram post niet laden (Lege code).</div>;
+          return <div className="p-4 text-center text-red-500">Kon Instagram post niet laden (Lege code).</div>;
         }
         const sanitizedInstaHtml = DOMPurify.sanitize(originalInstaHtml);
         return (
           <div
             className="instagram-container relative w-full min-h-[680px]"
             ref={(node) => {
-              if (node && window.instgrm?.Embeds?.process) {
+              if (node && !instagramEmbeds[embed.id]) {
                 const timeoutId = setTimeout(() => {
-                  if (window.instgrm?.Embeds?.process) { 
-                    try {
-                      window.instgrm.Embeds.process(node);
-                    } catch (e) {
-                      console.error(`Error processing Instagram embed via ref (delayed) for ${embed.id}:`, e);
-                    }
-                  } else {
-                      console.error(`window.instgrm became undefined before timeout executed for embed ${embed.id}`);
-                  }
-                }, 0);
+                  processInstagramEmbed(node, embed.id);
+                }, 1000); // Increased timeout to ensure script is loaded
+                return () => clearTimeout(timeoutId);
               }
             }}
             dangerouslySetInnerHTML={{
@@ -120,10 +125,12 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
     setError(null);
 
     try {
-      await Promise.all([
-        loadFacebookSDK(), 
-        loadInstagramEmbed()
-      ]);
+      // Load Instagram script first
+      await loadInstagramEmbed();
+      
+      // Then load Facebook SDK
+      await loadFacebookSDK();
+      
       setScriptsLoaded(true);
       trackEvent('social_section', 'sdk_loaded', `count:${socialEmbeds.length}`);
 
@@ -241,14 +248,14 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
           }
 
           .instagram-media { 
-               margin: 0 auto !important;
-               min-width: 326px !important;
-               width: 100% !important;
-               max-width: 500px !important;
-               background: white !important;
-               border-radius: 0.75rem !important;
-               overflow: hidden !important;
-           }
+            margin: 0 auto !important;
+            min-width: 326px !important;
+            width: 100% !important;
+            max-width: 500px !important;
+            background: white !important;
+            border-radius: 0.75rem !important;
+            overflow: hidden !important;
+          }
 
           .facebook-container {
             width: 100% !important;
