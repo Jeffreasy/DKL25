@@ -2,15 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, MotionStyle } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import InfoIcon from '@mui/icons-material/Info';
 import PlaceIcon from '@mui/icons-material/Place';
 import { useTitleSectionData } from './functions/useTitleSectionData';
 import { TitleSectionData } from './functions/types';
 import EventDetailCard from './components/EventDetailCard';
 import SocialMediaSection from './components/SocialMediaSection';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { useModal } from '@/context/ModalContext';
+import { useSocialMediaData } from './functions/useSocialMediaData';
 
 interface TitleSectionProps {
   onInschrijfClick: () => void;
@@ -69,8 +67,8 @@ const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
 
 const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
   const { titleData, isLoading: isTitleLoading, error: titleError, refetch } = useTitleSectionData();
+  const { socialEmbeds, isLoading: isSocialLoading, error: socialError } = useSocialMediaData();
   const { scrollYProgress } = useScroll();
-  const { openProgramModal } = useModal();
   
   // Re-added Parallax effects (ensure they are defined before use)
   const titleY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
@@ -97,12 +95,6 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
   const handleRegisterClick = () => {
     trackEvent('title_section', 'register_click', 'register_button');
     onInschrijfClick();
-  };
-
-  const handleProgrammaClick = () => {
-    console.log("TitleSection: Triggering openProgramModal from context");
-    trackEvent('title_section', 'program_click', 'program_button'); 
-    openProgramModal('Start/Finish/Feest');
   };
 
   const handleRetry = () => {
@@ -247,19 +239,6 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
               </motion.div>
               {/* ====================== */}
 
-              {/* === Weather Forecast === REMOVED */}
-              {/* 
-              <motion.div
-                className="mt-6 mb-10 max-w-xs mx-auto"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-              >
-                <WeatherForecast />
-              </motion.div>
-              */}
-              {/* ======================== */}
-
               {/* Event Details Grid - Adjusted column layout */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10 max-w-5xl mx-auto">
                 <EventDetailCard 
@@ -288,36 +267,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 />
               </div>
 
-              {/* === ADDED: Start Location Section === */}
-              <motion.div
-                className="mt-10 mb-8 max-w-md mx-auto p-4 border border-orange-200 rounded-lg bg-white shadow-sm text-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-              >
-                <div className="flex flex-col items-center gap-2">
-                  <PlaceIcon className="text-primary h-8 w-8" />
-                  <h3 className="text-lg font-semibold text-gray-800">Verzamelen Startlocatie</h3>
-                  <div className="text-sm text-gray-600 text-left space-y-1">
-                    <p><span className="font-medium">15 KM:</span> 10:15 uur</p>
-                    <p><span className="font-medium">10 KM:</span> 12:00 uur</p>
-                    <p><span className="font-medium">6 KM:</span> 13:15 uur</p>
-                    <p><span className="font-medium">2.5 KM:</span> 14:30 uur</p>
-                  </div>
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=52.220712953847055,5.954903803533486"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark transition-colors underline"
-                  >
-                    Bekijk op Google Maps
-                    <ArrowForwardIcon sx={{ fontSize: 16 }} />
-                  </a>
-                </div>
-              </motion.div>
-              {/* ==================================== */}
-
-              {/* CTA Buttons Container */}
+              {/* CTA Button Container */}
               <motion.div 
                 className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-center gap-4" 
                 initial={{ opacity: 0, y: 20 }}
@@ -336,19 +286,6 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                   <span>Schrijf je nu in</span>
                   <ArrowForwardIcon sx={{ fontSize: { xs: 20, sm: 24 } }} /> {/* Adjusted icon size */}
                 </motion.button>
-
-                {/* Programma Button - Adjusted for mobile */}
-                <motion.button
-                  onClick={handleProgrammaClick}
-                  className="bg-white text-primary border border-primary hover:bg-orange-50 px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl rounded-full font-bold tracking-wide transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-4 w-full sm:w-auto"
-                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
-                  aria-label="Bekijk het programma"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span>Bekijk Programma</span>
-                  <EventNoteIcon sx={{ fontSize: { xs: 20, sm: 24 } }} /> {/* Adjusted icon size */}
-                </motion.button>
               </motion.div>
             </div>
           </motion.div>
@@ -366,9 +303,16 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
       </motion.div>
 
       {/* Social Media Section */}
-      {/* {!isLoadingSocial && socialEmbeds && socialEmbeds.length > 0 && (
-        <SocialMediaSection socialEmbeds={socialEmbeds} />
-      )} */}
+      <div className="bg-white py-12">
+        {!isSocialLoading && socialEmbeds.length > 0 && (
+          <SocialMediaSection socialEmbeds={socialEmbeds} />
+        )}
+        {socialError && (
+          <div className="max-w-md mx-auto p-4 bg-red-50 border border-red-200 rounded-lg text-center">
+            <p className="text-red-600">{socialError}</p>
+          </div>
+        )}
+      </div>
     </section>
   );
 };
