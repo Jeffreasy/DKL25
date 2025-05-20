@@ -23,7 +23,15 @@ export const useSocialMediaData = () => {
           throw new Error(supabaseError.message);
         }
 
-        setSocialEmbeds(data || []);
+        // Type assertion to ensure data matches SocialEmbedRow type
+        const typedData = (data || []).map(item => ({
+          ...item,
+          platform: item.platform as 'facebook' | 'instagram',
+          order_number: item.order_number || 0,
+          visible: item.visible || false
+        })) as SocialEmbedRow[];
+
+        setSocialEmbeds(typedData);
       } catch (err) {
         console.error('Error fetching social embeds:', err);
         setError(err instanceof Error ? err.message : 'Er ging iets mis bij het ophalen van de social media berichten');
