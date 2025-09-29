@@ -2,7 +2,7 @@ import React from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import EmailIcon from '@mui/icons-material/Email';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { useModal } from '@/context/ModalContext';
+import { useModal } from '@/contexts/ModalContext';
 
 interface InschDoneerButtonProps {
   onInschrijfClick: () => void;
@@ -15,7 +15,7 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = ({
   className = '',
   isModalOpen = false
 }) => {
-  const { openDonatieModal } = useModal();
+  const { handleDonatieClick } = useModal();
 
   if (isModalOpen) {
     return null;
@@ -29,7 +29,7 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = ({
   const handleDonatieClickInternal = () => {
     console.log("InschDoneerButton: Triggering openDonatieModal from context");
     trackEvent('cta', 'button_click', 'doneren');
-    openDonatieModal();
+    handleDonatieClick();
   };
 
   return (

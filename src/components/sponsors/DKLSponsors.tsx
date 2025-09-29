@@ -3,11 +3,11 @@ import { useSponsors } from '@/hooks/useSponsors';
 import { trackEvent } from '@/utils/googleAnalytics';
 import LoadingSpinner from '../LoadingSpinner';
 import { Sponsor } from './types';
-import { useModal } from '@/context/ModalContext';
+import { useModal } from '@/contexts/ModalContext';
 
 const DKLSponsors: React.FC = () => {
   const { sponsors, isLoading, error } = useSponsors();
-  const { openSponsorModal } = useModal();
+  const { handleOpenSponsorModal } = useModal();
 
   const handleSponsorAnalytics = (sponsorName: string) => {
     trackEvent('sponsors', 'sponsor_card_click', sponsorName);
@@ -17,10 +17,10 @@ const DKLSponsors: React.FC = () => {
     trackEvent('sponsors', 'image_error', sponsorName);
   };
 
-  const handleOpenSponsorModal = (sponsor: Sponsor) => {
-    console.log(`DKLSponsors: Triggering openSponsorModal(${sponsor.name}) from context`);
+  const handleOpenSponsorModalLocal = (sponsor: Sponsor) => {
+    console.log(`DKLSponsors: Triggering handleOpenSponsorModal(${sponsor.name}) from context`);
     handleSponsorAnalytics(sponsor.name);
-    openSponsorModal(sponsor);
+    handleOpenSponsorModal(sponsor);
   };
 
   if (isLoading) {
@@ -87,12 +87,12 @@ const DKLSponsors: React.FC = () => {
               key={sponsor.id}
               className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-slideIn cursor-pointer"
               style={{ animationDelay: `${index * 100}ms` }}
-              onClick={() => handleOpenSponsorModal(sponsor)}
+              onClick={() => handleOpenSponsorModalLocal(sponsor)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  handleOpenSponsorModal(sponsor);
+                  handleOpenSponsorModalLocal(sponsor);
                 }
               }}
             >

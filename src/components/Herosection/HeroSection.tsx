@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import BackgroundVideo from '../video/BackgroundVideo';  
 import { trackEvent } from '@/utils/googleAnalytics';
-import { useModal } from '@/context/ModalContext';
+import { useModal } from '@/contexts/ModalContext';
 
 // Remove HeroSectionProps if no props are needed
 // interface HeroSectionProps {}
 
 const HeroSection: React.FC = () => { // No props expected
-  const { openProgramModal } = useModal(); // Get handler from context
+  const { handleOpenProgramModal } = useModal(); // Get handler from context
   
   // Track when the hero section becomes visible
   useEffect(() => {
@@ -35,7 +35,7 @@ const HeroSection: React.FC = () => { // No props expected
   const handleProgrammaClick = () => {
     console.log("HeroSection: Triggering openProgramModal from context");
     trackEvent('hero', 'program_click', 'programma_tijden_button');
-    openProgramModal('Start/Finish/Feest'); // Call context function
+    handleOpenProgramModal('Start/Finish/Feest'); // Call context function
   };
 
   return (     

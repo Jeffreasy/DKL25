@@ -14,10 +14,13 @@ const Layout: React.FC = () => {
     isProgramModalOpen,
     selectedInitialTab,
     isContactModalOpen,
+    isSponsorModalOpen,
+    selectedSponsor,
     handleCloseProgramModal,
     handleOpenContactModal,
     handleCloseContactModal,
     handleOpenProgramModal,
+    handleCloseSponsorModal,
   } = useModal();
 
   return (
@@ -40,6 +43,11 @@ const Layout: React.FC = () => {
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={handleCloseContactModal}
+      />
+      <SponsorModal
+        isOpen={isSponsorModalOpen}
+        onClose={handleCloseSponsorModal}
+        sponsor={selectedSponsor}
       />
       <ProgramSidebarTrigger onOpenModal={() => handleOpenProgramModal('Start/Finish/Feest')} />
       <AIChatButton />

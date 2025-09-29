@@ -5,7 +5,7 @@ import CTACard from './CTACard';
 import { ctaCardsData } from './data';
 import type { CTACardData } from './types';
 import { logEvent } from '../../utils/googleAnalytics'; // Importeer analytics functie
-import { useModal } from '@/context/ModalContext'; // Import useModal
+import { useModal } from '@/contexts/ModalContext'; // Import useModal
 
 interface CTACardsProps {
   onInschrijfClick: () => void;
@@ -27,7 +27,7 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { openDonatieModal } = useModal(); // Get handler from context
+  const { handleDonatieClick } = useModal(); // Get handler from context
 
   // Container animation variants
   const containerVariants = {
@@ -62,7 +62,7 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
           break;
         case 'doneren':
           console.log("CTACards: Triggering openDonatieModal from context");
-          openDonatieModal();
+          handleDonatieClick();
           break;
         case 'navigate':
           if (card.path) navigate(card.path);

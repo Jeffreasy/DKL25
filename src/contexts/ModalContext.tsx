@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Sponsor } from '../components/sponsors/types';
 
 interface ModalContextType {
   isDonatieModalOpen: boolean;
@@ -9,11 +10,15 @@ interface ModalContextType {
   setSelectedInitialTab: (tab: string | undefined) => void;
   isContactModalOpen: boolean;
   setIsContactModalOpen: (open: boolean) => void;
+  isSponsorModalOpen: boolean;
+  selectedSponsor: Sponsor | null;
   handleDonatieClick: () => void;
   handleOpenProgramModal: (initialTab: string) => void;
   handleCloseProgramModal: () => void;
   handleOpenContactModal: () => void;
   handleCloseContactModal: () => void;
+  handleOpenSponsorModal: (sponsor: Sponsor) => void;
+  handleCloseSponsorModal: () => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -35,6 +40,8 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
   const [selectedInitialTab, setSelectedInitialTab] = useState<string | undefined>(undefined);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
+  const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
 
   const handleDonatieClick = () => {
     setIsDonatieModalOpen(true);
@@ -60,6 +67,16 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     setIsContactModalOpen(false);
   };
 
+  const handleOpenSponsorModal = (sponsor: Sponsor) => {
+    setSelectedSponsor(sponsor);
+    setIsSponsorModalOpen(true);
+  };
+
+  const handleCloseSponsorModal = () => {
+    setIsSponsorModalOpen(false);
+    setSelectedSponsor(null);
+  };
+
   const value = {
     isDonatieModalOpen,
     setIsDonatieModalOpen,
@@ -69,11 +86,15 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     setSelectedInitialTab,
     isContactModalOpen,
     setIsContactModalOpen,
+    isSponsorModalOpen,
+    selectedSponsor,
     handleDonatieClick,
     handleOpenProgramModal,
     handleCloseProgramModal,
     handleOpenContactModal,
     handleCloseContactModal,
+    handleOpenSponsorModal,
+    handleCloseSponsorModal,
   };
 
   return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;

@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import CelebrationIcon from '@mui/icons-material/Celebration';
-import { useModal } from '@/context/ModalContext';
+import { useModal } from '@/contexts/ModalContext';
 
 const ROUTE_TABS = ['15 km', '10 km', '6 km', '2.5 km'];
 
 const ProgramSection: React.FC = () => {
-  const { openProgramModal } = useModal();
+  const { handleOpenProgramModal } = useModal();
 
   return (
     <section id="programma-sectie" className="py-16 sm:py-20 px-4 bg-white overflow-hidden" aria-labelledby="programma-title">
@@ -36,7 +36,7 @@ const ProgramSection: React.FC = () => {
                key={route}
                onClick={() => {
                  console.log(`ProgramSection: Triggering openProgramModal(${route}) from context`);
-                 openProgramModal(route);
+                 handleOpenProgramModal(route);
                }}
                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 shadow-sm bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                aria-label={`Bekijk programma voor ${route}`}
@@ -49,7 +49,7 @@ const ProgramSection: React.FC = () => {
             <button
                onClick={() => {
                  console.log(`ProgramSection: Triggering openProgramModal(Start/Finish/Feest) from context`);
-                 openProgramModal('Start/Finish/Feest');
+                 handleOpenProgramModal('Start/Finish/Feest');
                }}
                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 shadow-sm bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                aria-label="Bekijk start, finish en feest programma"
