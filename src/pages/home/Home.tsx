@@ -41,13 +41,12 @@ const Home: React.FC = () => {
           {/* Visually hidden heading for accessibility and SEO */}
           <h2 className="sr-only">Onze Partners</h2>
           <PartnerCarrousel />
-          <HeroSection onOpenProgramModal={() => handleOpenProgramModal('Start/Finish/Feest')} />
-          <TitleSection onInschrijfClick={handleInschrijven} onProgrammaClick={() => handleOpenProgramModal('Start/Finish/Feest')} />
+          <HeroSection />
+          <TitleSection onInschrijfClick={handleInschrijven} />
           <CTACards
             onInschrijfClick={handleInschrijven}
-            onDonatieClick={handleDonatieClick}
           />
-          <ProgramSection onOpenModal={handleOpenProgramModal} />
+          <ProgramSection />
           <section className="py-12 px-5">
             {/* Visually hidden heading for accessibility and SEO */}
             <h2 className="sr-only">Bekijk de Video's</h2>
@@ -72,7 +71,6 @@ const Home: React.FC = () => {
           </section>
           <InschDoneerButton
             onInschrijfClick={handleInschrijven}
-            onDonatieClick={handleDonatieClick}
             isModalOpen={isModalOpen}
           />
         </main>

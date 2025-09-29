@@ -106,30 +106,7 @@ const NormalApp: React.FC = () => {
 
 // Layout wrapper component that uses modal context
 const LayoutWrapper: React.FC = () => {
-  const {
-    isDonatieModalOpen,
-    isProgramModalOpen,
-    selectedInitialTab,
-    isContactModalOpen,
-    handleCloseProgramModal,
-    handleOpenContactModal,
-    handleCloseContactModal,
-    handleOpenProgramModal,
-  } = useModal();
-
-  return (
-    <Layout
-      isDonatieModalOpen={isDonatieModalOpen}
-      onDonatieModalClose={() => {}} // Donatie modal is handled differently
-      isProgramModalOpen={isProgramModalOpen}
-      onCloseProgramModal={handleCloseProgramModal}
-      selectedInitialTab={selectedInitialTab}
-      onOpenContactModal={handleOpenContactModal}
-      isContactModalOpen={isContactModalOpen}
-      onCloseContactModal={handleCloseContactModal}
-      onOpenProgramModal={handleOpenProgramModal}
-    />
-  );
+  return <Layout />;
 };
 
 export default NormalApp;
