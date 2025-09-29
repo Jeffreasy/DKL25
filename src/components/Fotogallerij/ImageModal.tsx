@@ -3,6 +3,7 @@ import FocusTrap from 'focus-trap-react';
 import type { Photo } from './types';
 import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
 
 interface ImageModalProps {
   photo: Photo | null;
@@ -88,10 +89,15 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
     }, 200);
   }, [onClose, currentIndex, resetZoomAndPan]);
 
-  // Keyboard navigatie (reset zoom bij navigeren)
+  // Keyboard navigatie (reset zoom bij navigeren) - alleen actief wanneer modal open is EN geen input actief
   useEffect(() => {
     if (!isOpen) return;
+    
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!shouldHandleKeyboardEvent()) {
+        return;
+      }
+
       switch (e.key) {
         case 'Escape':
           trackEvent('gallery', 'modal_keyboard', 'escape');
@@ -124,6 +130,7 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
           break;
       }
     };
+    
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, handleClose, onNext, onPrevious, isZoomed, resetZoomAndPan]);

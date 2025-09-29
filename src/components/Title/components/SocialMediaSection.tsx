@@ -65,6 +65,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
   }, []);
 
   const renderEmbed = (embed: SocialEmbedRow) => {
+    console.log(`[DEBUG] SocialMediaSection: Rendering embed for ${embed.platform} ID: ${embed.id}`);
     const getEmbedUrl = (code: string) => {
       const urlMatch = code.match(/src="([^\"]+)"/);
       return urlMatch ? urlMatch[1] : '';
@@ -77,6 +78,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
           console.warn(`Could not extract Facebook URL for embed ID: ${embed.id}`);
           return <div className="p-4 text-center text-red-500">Kon Facebook post niet laden (URL niet gevonden).</div>;
         }
+        console.log(`[DEBUG] SocialMediaSection: Facebook URL extracted: ${fbUrl}`);
         return (
           <div className="facebook-container relative w-full h-[738px]">
             <iframe
@@ -97,15 +99,25 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
           return <div className="p-4 text-center text-red-500">Kon Instagram post niet laden (Lege code).</div>;
         }
         const sanitizedInstaHtml = DOMPurify.sanitize(originalInstaHtml);
+        console.log(`[DEBUG] SocialMediaSection: Instagram HTML sanitized, length: ${sanitizedInstaHtml.length}`);
         return (
           <div
             className="instagram-container relative w-full min-h-[680px]"
             ref={(node) => {
-              if (node && !instagramEmbeds[embed.id]) {
+              console.log(`[DEBUG] SocialMediaSection: Instagram ref callback for ID: ${embed.id}`, { node, instgrm: !!window.instgrm });
+              if (node && window.instgrm?.Embeds?.process) {
                 const timeoutId = setTimeout(() => {
-                  processInstagramEmbed(node, embed.id);
-                }, 1000); // Increased timeout to ensure script is loaded
-                return () => clearTimeout(timeoutId);
+                  if (window.instgrm?.Embeds?.process) {
+                    try {
+                      console.log(`[DEBUG] SocialMediaSection: Processing Instagram embed for ID: ${embed.id}`);
+                      window.instgrm.Embeds.process(node);
+                    } catch (e) {
+                      console.error(`Error processing Instagram embed via ref (delayed) for ${embed.id}:`, e);
+                    }
+                  } else {
+                      console.error(`window.instgrm became undefined before timeout executed for embed ${embed.id}`);
+                  }
+                }, 0);
               }
             }}
             dangerouslySetInnerHTML={{
@@ -120,26 +132,29 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
   };
 
   const loadScripts = useCallback(async () => {
+    console.log('[DEBUG] SocialMediaSection: Starting loadScripts');
     setIsLoading(true);
     setScriptsLoaded(false);
     setError(null);
 
     try {
-      // Load Instagram script first
-      await loadInstagramEmbed();
-      
-      // Then load Facebook SDK
-      await loadFacebookSDK();
-      
+      console.log('[DEBUG] SocialMediaSection: Loading Facebook and Instagram SDKs');
+      await Promise.all([
+        loadFacebookSDK(),
+        loadInstagramEmbed()
+      ]);
+      console.log('[DEBUG] SocialMediaSection: SDKs loaded successfully');
       setScriptsLoaded(true);
       trackEvent('social_section', 'sdk_loaded', `count:${socialEmbeds.length}`);
 
     } catch (err: any) {
       console.error('Error loading social SDKs:', err);
+      console.log('[DEBUG] SocialMediaSection: SDK loading failed', err);
       setError(err?.message || 'Er ging iets mis bij het laden van de social media scripts.');
       trackEvent('social_section', 'error', 'sdk_loading_failed');
       setScriptsLoaded(false);
     } finally {
+      console.log('[DEBUG] SocialMediaSection: loadScripts complete, isLoading=false');
       setIsLoading(false);
     }
   }, [socialEmbeds.length]);
@@ -162,24 +177,24 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
   };
 
   return (
-    <motion.div 
+    <motion.div
       key={componentKey}
       className="max-w-[1100px] mx-auto px-4 py-12 relative"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.div 
+      <motion.div
         className="mb-12 text-center"
         variants={itemVariants}
       >
-        <h2 
+        <h2
           className="text-[clamp(1.75rem,4vw,2.5rem)] leading-tight text-gray-900 font-bold tracking-tight mb-4"
           style={{fontFamily: "'Montserrat', sans-serif"}}
         >
           Laatste Nieuws
         </h2>
-        <p 
+        <p
           className="text-[clamp(1.25rem,3vw,1.5rem)] text-gray-600"
           style={{fontFamily: "'Open Sans', sans-serif"}}
         >
@@ -188,7 +203,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
       </motion.div>
 
       {error && !isLoading && (
-        <motion.div 
+        <motion.div
           className="max-w-md mx-auto mb-12 p-4 bg-red-50 border border-red-200 rounded-lg text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -204,13 +219,13 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
         </motion.div>
       )}
 
-      <motion.div 
+      <motion.div
         className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12"
         variants={containerVariants}
       >
         {isLoading ? (
           [...Array(socialEmbeds.length > 0 ? Math.min(socialEmbeds.length, 2) : 2)].map((_, i) => (
-            <motion.div 
+            <motion.div
               key={`skeleton-${i}`}
               className="w-full flex justify-center"
               variants={itemVariants}
@@ -222,13 +237,13 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
           socialEmbeds
             .sort((a, b) => a.order_number - b.order_number)
             .map((embed) => (
-              <motion.div 
+              <motion.div
                 key={embed.id}
                 className="w-full flex justify-center"
                 variants={itemVariants}
                 onClick={() => handleSocialClick(embed.platform)}
               >
-                <div 
+                <div
                   className="w-full max-w-[500px] bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
                   role="article"
                   aria-label={`${embed.platform} post`}
@@ -247,7 +262,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
             min-height: 680px;
           }
 
-          .instagram-media { 
+          .instagram-media {
             margin: 0 auto !important;
             min-width: 326px !important;
             width: 100% !important;
@@ -259,7 +274,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
 
           .facebook-container {
             width: 100% !important;
-            height: 738px !important; 
+            height: 738px !important;
             max-width: 500px !important;
             margin: 0 auto !important;
             background: white !important;

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { Photo } from '../types';
+import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
 
 interface GalleryState {
   currentIndex: number;
@@ -63,9 +64,13 @@ export const usePhotoGallery = (photos: Photo[]) => {
     setState(prev => ({ ...prev, touchStart: value }));
   }, []);
 
-  // Keyboard navigation
+  // Keyboard navigation - alleen actief wanneer geen input element actief is
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!shouldHandleKeyboardEvent()) {
+        return;
+      }
+
       switch (e.key) {
         case 'ArrowLeft':
           e.preventDefault();

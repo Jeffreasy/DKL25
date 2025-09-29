@@ -7,6 +7,7 @@ import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { PRELOAD_CLEANUP_TIMEOUT } from './constants';
+import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
 
 const VideoGallery: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -30,9 +31,13 @@ const VideoGallery: React.FC = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
   }, [videos.length]);
 
-  // Keyboard navigatie
+  // Keyboard navigatie - alleen actief wanneer geen input element actief is
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!shouldHandleKeyboardEvent()) {
+        return;
+      }
+      
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         handlePrevious();

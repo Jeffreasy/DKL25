@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { 
-  PartnerCarrousel, 
-  HeroSection, 
-  TitleSection, 
+import {
+  PartnerCarrousel,
+  HeroSection,
+  TitleSection,
   CTACards,
   PhotoGallery,
   DKLSocials,
@@ -13,8 +13,11 @@ import { VideoGallery } from '../../components/video';
 import { useNavigate } from 'react-router-dom';
 import InschDoneerButton from '../../components/inschrijfdonatebutton/inschdoneerbutton';
 import { SEO } from '../../components/SEO';
+import { ProgramSection } from '../../components/programma';
+import { useModal } from '../../contexts/ModalContext';
 
 const Home: React.FC = () => {
+  const { handleDonatieClick, handleOpenProgramModal } = useModal();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -24,7 +27,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <SEO 
+      <SEO
         route="/"
         isEventPage={true}
         eventName="De Koninklijke Loop (DKL) 2025"
@@ -36,16 +39,18 @@ const Home: React.FC = () => {
       <div className="bg-white">
         <main>
           {/* Visually hidden heading for accessibility and SEO */}
-          <h2 className="sr-only">Onze Partners</h2> 
+          <h2 className="sr-only">Onze Partners</h2>
           <PartnerCarrousel />
-          <HeroSection />
-          <TitleSection onInschrijfClick={handleInschrijven} />
+          <HeroSection onOpenProgramModal={() => handleOpenProgramModal('Start/Finish/Feest')} />
+          <TitleSection onInschrijfClick={handleInschrijven} onProgrammaClick={() => handleOpenProgramModal('Start/Finish/Feest')} />
           <CTACards
             onInschrijfClick={handleInschrijven}
+            onDonatieClick={handleDonatieClick}
           />
+          <ProgramSection onOpenModal={handleOpenProgramModal} />
           <section className="py-12 px-5">
             {/* Visually hidden heading for accessibility and SEO */}
-            <h2 className="sr-only">Bekijk de Video's</h2> 
+            <h2 className="sr-only">Bekijk de Video's</h2>
             <VideoGallery />
           </section>
           <section className="py-12 px-5">
@@ -54,7 +59,7 @@ const Home: React.FC = () => {
           </section>
           <section className="py-12 px-5">
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Luister Terug</h2>
-            <RadioGallery 
+            <RadioGallery
               title="Radio Fragmenten"
               subtitle="Luister naar onze Radio Fragmenten"
               maxItems={2}
@@ -67,6 +72,7 @@ const Home: React.FC = () => {
           </section>
           <InschDoneerButton
             onInschrijfClick={handleInschrijven}
+            onDonatieClick={handleDonatieClick}
             isModalOpen={isModalOpen}
           />
         </main>
@@ -75,4 +81,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home; 
+export default Home;

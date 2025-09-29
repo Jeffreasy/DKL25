@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
+import AppWrapper from './App'
 import './index.css'
 import { initGA } from './utils/googleAnalytics.js'
 import { ModalProvider } from './context/ModalContext'
@@ -10,7 +10,7 @@ import { ModalProvider } from './context/ModalContext'
 initGA('G-7NPD3N2N8Q')
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ModalProvider>
-    <App />
-  </ModalProvider>
+  <React.StrictMode>
+    <AppWrapper />
+  </React.StrictMode>
 )

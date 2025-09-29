@@ -28,13 +28,16 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
     <div className="p-4 border-t border-gray-100">
       <div className="flex items-center gap-2">
         <input
+          id="chat-input"
+          name="chat-message"
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={disabled}
           placeholder={disabled ? "Even geduld..." : "Typ je bericht..."}
-          className="flex-1 bg-gray-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
+          className="flex-1 bg-gray-100 text-gray-900 placeholder-gray-500 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
+          autoComplete="off"
         />
         <button
           onClick={handleSend}

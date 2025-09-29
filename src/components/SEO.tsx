@@ -6,6 +6,7 @@ interface SEOProps {
   image?: string;
   type?: 'website' | 'article';
   route?: string;
+  noIndex?: boolean;
   // Props for Event Schema.org
   isEventPage?: boolean;
   eventName?: string;
@@ -24,6 +25,7 @@ export const SEO = ({
   image = 'https://www.koninklijkeloop.nl/images/hero.jpg',
   type = 'website',
   route = '',
+  noIndex = false,
   // Event props destructuring
   isEventPage = false,
   eventName,
@@ -88,6 +90,7 @@ export const SEO = ({
       {/* Basis Meta Tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
+      {noIndex && <meta name="robots" content="noindex" />}
       <meta name="keywords" content="De Koninklijke Loop, DKL, wandelevenement, wandelen, lopen, rolstoel, rolstoelvriendelijk, toegankelijk, beperking, Apeldoorn, Paleis Het Loo, goed doel" />
 
       {/* Open Graph */}

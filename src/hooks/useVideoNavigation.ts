@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { shouldHandleKeyboardEvent } from '@/utils/eventUtils'
 
 export const useVideoNavigation = (totalVideos: number) => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -13,6 +14,10 @@ export const useVideoNavigation = (totalVideos: number) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!shouldHandleKeyboardEvent()) {
+        return;
+      }
+
       if (e.key === 'ArrowLeft') handlePrevious()
       if (e.key === 'ArrowRight') handleNext()
     }
