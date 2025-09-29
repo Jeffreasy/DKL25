@@ -4,24 +4,20 @@ import Navbar from './Navbar/Navbar';
 import { Footer } from './footer';
 import { DonatieModal, ContactModal, SponsorModal } from './modals';
 import ProgramModal from './programma/components/ProgramModal';
-import { useModal } from '../context/ModalContext';
+import { useModal } from '../contexts/ModalContext';
 import ProgramSidebarTrigger from './programma/components/SidebarTrigger';
 import AIChatButton from './AIChatButton/AIChatButton';
 
 const Layout: React.FC = () => {
   const {
-    isDonatieOpen,
-    closeDonatieModal,
-    isProgramOpen,
-    closeProgramModal,
-    openProgramModal,
+    isDonatieModalOpen,
+    isProgramModalOpen,
     selectedInitialTab,
-    isContactOpen,
-    closeContactModal,
-    openContactModal,
-    isSponsorModalOpen,
-    closeSponsorModal,
-    selectedSponsor
+    isContactModalOpen,
+    handleCloseProgramModal,
+    handleOpenContactModal,
+    handleCloseContactModal,
+    handleOpenProgramModal,
   } = useModal();
 
   return (
@@ -31,26 +27,21 @@ const Layout: React.FC = () => {
         <Outlet />
       </main>
       <Footer />
-      <DonatieModal 
-        isOpen={isDonatieOpen}
-        onClose={closeDonatieModal}
+      <DonatieModal
+        isOpen={isDonatieModalOpen}
+        onClose={() => {}}
       />
-      <ProgramModal 
-        isOpen={isProgramOpen} 
-        onClose={closeProgramModal} 
+      <ProgramModal
+        isOpen={isProgramModalOpen}
+        onClose={handleCloseProgramModal}
         initialTab={selectedInitialTab}
-        onOpenContactModal={openContactModal}
+        onOpenContactModal={handleOpenContactModal}
       />
       <ContactModal
-        isOpen={isContactOpen}
-        onClose={closeContactModal}
+        isOpen={isContactModalOpen}
+        onClose={handleCloseContactModal}
       />
-       <SponsorModal 
-        isOpen={isSponsorModalOpen} 
-        onClose={closeSponsorModal} 
-        sponsor={selectedSponsor} 
-      />
-      <ProgramSidebarTrigger onOpenModal={() => openProgramModal('Start/Finish/Feest')} />
+      <ProgramSidebarTrigger onOpenModal={() => handleOpenProgramModal('Start/Finish/Feest')} />
       <AIChatButton />
     </div>
   );
