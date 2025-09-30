@@ -61,29 +61,27 @@ const OnderConstructie: React.FC = () => {
         title={`${data.title} - De Koninklijke Loop`}
         description={data.message}
       />
-      <div className="min-h-screen pt-20 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-        <div className="w-full max-w-[1400px] mx-auto px-6 py-12 font-roboto antialiased">
-          <div className="flex items-center justify-center min-h-[50vh]">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden max-w-md w-full"
-            >
-              <div className="bg-primary p-4 sm:p-6">
-                <FaTools className="w-8 h-8 mx-auto mb-2 text-white" />
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight font-heading">
-                  {data.title}
-                </h1>
-              </div>
-              <div className="p-4 sm:p-6 text-center">
-                <p className="text-gray-600 mb-4 font-body">
-                  {data.message}
-                </p>
-                <p className="text-primary font-semibold font-body">{data.footer_text}</p>
-              </div>
-            </motion.div>
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 font-roboto antialiased">
+        <div className="w-full max-w-4xl mx-auto px-6 py-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="space-y-8"
+          >
+            <div className="flex justify-center mb-6">
+              <FaTools className="w-16 h-16 text-primary" aria-label="Onder constructie" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight font-heading leading-tight">
+              {data.title}
+            </h1>
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 font-body max-w-2xl mx-auto leading-relaxed">
+              {data.message}
+            </p>
+            <p className="text-lg sm:text-xl text-primary font-semibold font-body">
+              {data.footer_text}
+            </p>
+          </motion.div>
         </div>
       </div>
     </>
