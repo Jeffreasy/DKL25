@@ -42,17 +42,17 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
 
   // Animation variants
   const cardVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       y: 20,
       scale: 0.95
     },
-    visible: { 
+    visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 15,
         delay: index * 0.1
@@ -62,7 +62,7 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
       y: -5,
       scale: 1.02,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 400,
         damping: 10
       }
