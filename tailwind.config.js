@@ -21,30 +21,6 @@ export default {
           youtube: '#FF0000',
           linkedin: '#0A66C2',
         },
-        social: {
-          facebook: '#1877F2',
-          instagram: '#E4405F',
-          youtube: '#FF0000',
-          linkedin: '#0A66C2',
-        },
-        social: {
-          facebook: '#1877F2',
-          instagram: '#E4405F',
-          youtube: '#FF0000',
-          linkedin: '#0A66C2',
-        },
-        social: {
-          facebook: '#1877F2',
-          instagram: '#E4405F',
-          youtube: '#FF0000',
-          linkedin: '#0A66C2',
-        },
-        social: {
-          facebook: '#1877F2',
-          instagram: '#E4405F',
-          youtube: '#FF0000',
-          linkedin: '#0A66C2',
-        },
       },
       animation: {
         'slideIn': 'slideIn 0.3s ease-out',
@@ -127,4 +103,4 @@ export default {
     typography,
     scrollbarHide
   ],
-} 
+}
