@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { SEO } from '../../components/SEO';
+import { SEO } from '../../components/common/SEO';
 
 const Privacy: React.FC = () => {
   useEffect(() => {

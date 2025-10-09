@@ -3,9 +3,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProgramSchedule } from '../hooks/useProgramSchedule';
-import ProgramItem from './ProgramItem';
-import { ProgramItemData } from '../types';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import ProgramItemComponent from './ProgramItem';
+import { ProgramItem as ProgramItemType } from '../types';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import InfoIcon from '@mui/icons-material/Info';
 
 interface ProgramModalProps {
@@ -28,7 +28,7 @@ const KEYWORDS_REGEX_BY_TAB: { [key: string]: RegExp } = {
   'Start/Finish/Feest': /\b(start|finish|feest|aanvang|vertrek|aankomst|inhuldiging)\b/i
 };
 
-const filterSchedule = (items: ProgramItemData[], tab: string): ProgramItemData[] => {
+const filterSchedule = (items: ProgramItemType[], tab: string): ProgramItemType[] => {
   if (tab === 'Alles') {
     return items;
   }
@@ -210,8 +210,8 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                               className="relative"
                            >
                               {filteredItems.length > 0 ? (
-                                filteredItems.map((item: ProgramItemData, index: number) => (
-                                  <ProgramItem
+                                filteredItems.map((item: ProgramItemType, index: number) => (
+                                  <ProgramItemComponent
                                     key={item.id}
                                     item={item}
                                     isLast={index === filteredItems.length - 1}

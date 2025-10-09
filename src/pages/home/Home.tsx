@@ -9,11 +9,11 @@ import {
   DKLSponsors,
   RadioGallery,
 } from '../../components';
-import { VideoGallery } from '../../components/video';
+import { VideoGallery } from '../../features/video/components';
 import { useNavigate } from 'react-router-dom';
-import InschDoneerButton from '../../components/inschrijfdonatebutton/inschdoneerbutton';
-import { SEO } from '../../components/SEO';
-import { ProgramSection } from '../../components/programma';
+import InschDoneerButton from '../../components/ui/buttons/RegisterDonateButton';
+import { SEO } from '../../components/common/SEO';
+import { ProgramSection } from '../../features/program/components';
 import { useModal } from '../../contexts/ModalContext';
 
 const Home: React.FC = () => {

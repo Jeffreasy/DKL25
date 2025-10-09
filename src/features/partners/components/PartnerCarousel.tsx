@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePartners } from '@/hooks/usePartners';
-import { PartnerModal } from '@/components/modals/PartnerModal';
+import { PartnerModal } from '@/components/ui/modals/PartnerModal';
 import { trackEvent } from '@/utils/googleAnalytics';
 
 const PartnerCarrousel: React.FC = () => {

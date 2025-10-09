@@ -1,8 +1,8 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Layout from './Layout';
-import LoadingScreen from './LoadingScreen';
-import { ErrorBoundary } from './ErrorBoundary';
+import Layout from './layout/Layout';
+import LoadingScreen from './common/LoadingScreen';
+import { ErrorBoundary } from './common/ErrorBoundary';
 import { ModalProvider, useModal } from '../contexts/ModalContext';
 
 // Lazy load pages

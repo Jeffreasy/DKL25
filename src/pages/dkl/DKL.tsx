@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import RouteSection from './components/RouteSection';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { SEO } from '../../components/SEO'; // Import SEO
+import { SEO } from '../../components/common/SEO'; // Import SEO
 
 const DKL: React.FC = () => {
   useEffect(() => {

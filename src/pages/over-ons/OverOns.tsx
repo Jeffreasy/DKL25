@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import AboutHeader from './components/AboutHeader';
 import AboutImage from './components/AboutImage';
 import ContentGrid from './components/ContentGrid';
-import { SEO } from '../../components/SEO';
+import { SEO } from '../../components/common/SEO';
 import { trackEvent } from '@/utils/googleAnalytics';
 
 const OverOns: React.FC = () => {

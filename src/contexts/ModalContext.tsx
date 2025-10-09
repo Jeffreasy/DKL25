@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Sponsor } from '../components/sponsors/types';
+import { Sponsor } from '../features/sponsors/types';
 
 interface ModalContextType {
   isDonatieModalOpen: boolean;

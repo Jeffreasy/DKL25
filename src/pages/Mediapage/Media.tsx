@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import RadioGallery from '@/components/Radiogallerij/RadioGallery';
+import RadioGallery from '@/components/sections/Radio/RadioGallery';
 import { Helmet } from 'react-helmet-async';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { SEO } from '../../components/SEO';
+import { SEO } from '../../components/common/SEO';
 
 const MediaPage: React.FC = () => {
   useEffect(() => {

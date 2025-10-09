@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaTools } from 'react-icons/fa';
-import { SEO } from '../../components/SEO';
+import { SEO } from '../../components/common/SEO';
 import { useUnderConstruction } from '../../hooks/useUnderConstruction';
 
 const OnderConstructie: React.FC = () => {

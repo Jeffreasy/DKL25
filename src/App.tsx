@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
-import ScrollToTopButton from './components/ScrollToTopButton';
+import ScrollToTopButton from './components/common/ScrollToTopButton';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { initGA } from './utils/googleAnalytics';
 import { useUnderConstruction } from './hooks/useUnderConstruction';
-import OnderConstructie from './components/OnderConstructie';
+import OnderConstructie from './components/common/OnderConstructie';
 import NormalApp from './components/NormalApp';
-import LoadingScreen from './components/LoadingScreen';
+import LoadingScreen from './components/common/LoadingScreen';
 
 // Initialize Google Analytics
 initGA(import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX');

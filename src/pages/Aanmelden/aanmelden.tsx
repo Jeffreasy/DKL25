@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FormContainer } from './components/FormContainer';
 import { SuccessMessage } from './components/SuccessMessage';
 import { RegistrationFormData } from './types/schema';
-import { SEO } from '../../components/SEO';
+import { SEO } from '../../components/common/SEO';
 
 const Aanmelden = () => {
   const [registrationData, setRegistrationData] = useState<RegistrationFormData | null>(null);

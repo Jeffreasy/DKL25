@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import FAQ from './components/FAQ';
-import { ContactModal } from '../../components/modals';
+import { ContactModal } from '../../components/ui/modals';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { SEO } from '../../components/SEO';
+import { SEO } from '../../components/common/SEO';
 
 interface ContactProps {
   onInschrijfClick?: () => void;
