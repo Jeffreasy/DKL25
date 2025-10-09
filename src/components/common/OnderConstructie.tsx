@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FaTools, FaEnvelope, FaClock } from 'react-icons/fa';
 import { SEO } from './SEO';
-import { useUnderConstruction } from '../hooks/useUnderConstruction';
+import { useUnderConstruction } from '../../hooks/useUnderConstruction';
 import Countdown from 'react-countdown'; // Voor countdown timer
 
 const OnderConstructie: React.FC = () => {

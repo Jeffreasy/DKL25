@@ -1,8 +1,8 @@
 import React, { useState, useCallback, memo } from 'react';
 import { Link } from 'react-router-dom';
-import SocialIcon from '../Socials/SocialIcon';
+import SocialIcon from '../../sections/Socials/SocialIcon';
 import { socialLinks, createQuickLinks } from './data';
-import { PrivacyModal } from '../modals';
+import { PrivacyModal } from '../../ui/modals';
 import type { FooterProps, QuickLinkType } from './types';
 import { trackEvent } from '@/utils/googleAnalytics';
 

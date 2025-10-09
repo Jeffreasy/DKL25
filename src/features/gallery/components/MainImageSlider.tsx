@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import type { Photo } from './types';
-import NavigationButton from './NavigationButton';
+import type { Photo } from '../types';
+import NavigationButton from './GalleryNavButton';
 import { useSwipe } from '@/hooks/useSwipe';
-import ImageModal from './ImageModal';
+import ImageModal from './ImageLightbox';
 import { trackEvent } from '@/utils/googleAnalytics';
 
 interface MainSliderProps {

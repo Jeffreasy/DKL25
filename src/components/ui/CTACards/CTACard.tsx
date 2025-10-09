@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import NavIcon from '../Navbar/NavIcon';
+import NavIcon from '../../layout/Navbar/NavIcon';
 import type { CTACardData } from './types';
 import { logEvent } from '@/utils/googleAnalytics';
 

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import CTACard from './CTACard';
 import { ctaCardsData } from './data';
 import type { CTACardData } from './types';
-import { logEvent } from '../../utils/googleAnalytics'; // Importeer analytics functie
+import { logEvent } from '@/utils/googleAnalytics'; // Importeer analytics functie
 import { useModal } from '@/contexts/ModalContext'; // Import useModal
 
 interface CTACardsProps {

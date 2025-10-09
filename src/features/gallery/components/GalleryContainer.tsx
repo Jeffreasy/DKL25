@@ -3,12 +3,12 @@
 // voor de beste laadprestaties.
 
 import React from 'react';
-import MainSlider from './MainSlider';
-import ThumbnailSlider from './ThumbnailSlider';
-import { usePhotoGallery } from './hooks/usePhotoGallery';
+import MainSlider from './MainImageSlider';
+import ThumbnailSlider from './ThumbnailGrid';
+import { usePhotoGallery } from '../hooks/usePhotoGallery';
 import { supabase } from '@/lib/supabase';
 import { useState, useEffect, useCallback } from 'react';
-import type { Photo, Album } from './types';
+import type { Photo, Album } from '../types';
 import { trackEvent } from '@/utils/googleAnalytics';
 
 interface PhotoGalleryProps {

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import VideoSlide from './VideoSlide';
-import NavigationButton from './NavigationButton';
-import DotIndicator from './DotIndicator';
+import VideoSlide from './VideoPlayer';
+import NavigationButton from './VideoNavButton';
+import DotIndicator from './VideoIndicator';
 import { useVideoGallery } from '@/hooks/useVideoGallery';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { PRELOAD_CLEANUP_TIMEOUT } from './constants';
+import { PRELOAD_CLEANUP_TIMEOUT } from '../constants';
 import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
 
 const VideoGallery: React.FC = () => {

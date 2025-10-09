@@ -7,7 +7,7 @@ import type { ContactModalProps } from './types';
 import { contactSchema, type ContactFormData } from '@/types/contact';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import LoadingSpinner from '../LoadingSpinner';
+import LoadingSpinner from '../../common/LoadingSpinner';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useNavigate } from 'react-router-dom';
 

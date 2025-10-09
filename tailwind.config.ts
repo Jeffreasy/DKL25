@@ -1,7 +1,7 @@
-import typography from '@tailwindcss/typography';
-import scrollbarHide from 'tailwind-scrollbar-hide';
+import type { Config } from 'tailwindcss'
+import typography from '@tailwindcss/typography'
+import scrollbarHide from 'tailwind-scrollbar-hide'
 
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
@@ -103,4 +103,4 @@ export default {
     typography,
     scrollbarHide
   ],
-}
+} satisfies Config

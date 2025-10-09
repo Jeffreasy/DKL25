@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSponsors } from '@/hooks/useSponsors';
 import { trackEvent } from '@/utils/googleAnalytics';
-import LoadingSpinner from '../LoadingSpinner';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import type { SponsorRow } from '@/features/sponsors';
 import { useModal } from '@/contexts/ModalContext';
 

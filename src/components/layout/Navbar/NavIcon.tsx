@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { ICONS } from '../../icons';
+import { ICONS } from '../../../icons';
 import type { NavIconProps } from './types';
 
 const NavIcon = memo(({ name, size = 20, className }: NavIconProps) => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { STREAMABLE_THUMB_BASE_URL } from './constants';
+import { STREAMABLE_THUMB_BASE_URL } from '../constants';
 
 interface VideoSlideProps {
   videoId: string;

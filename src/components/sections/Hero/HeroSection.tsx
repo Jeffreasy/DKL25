@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'; 
 import { motion } from 'framer-motion';
-import BackgroundVideo from '../video/BackgroundVideo';  
+import BackgroundVideo from '../../../features/video/components/BackgroundVideo';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useModal } from '@/contexts/ModalContext';
 
