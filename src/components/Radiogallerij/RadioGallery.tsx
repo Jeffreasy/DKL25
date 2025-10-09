@@ -164,7 +164,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
             <p className="text-red-600 mb-4">{error}</p>
             <button
               onClick={handleRetry}
-              className="px-6 py-2 bg-[#ff9328] hover:bg-[#e87f1c] text-white rounded-lg transition-colors"
+              className="px-6 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors"
             >
               Opnieuw proberen
             </button>

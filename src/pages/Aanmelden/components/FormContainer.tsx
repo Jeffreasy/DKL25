@@ -191,7 +191,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       >
         {/* Contactgegevens */}
         <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
             Je contactgegevens
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -202,9 +202,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               <input
                 type="text"
                 id="naam"
-                className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 
                   text-gray-900 placeholder-gray-400 bg-white
-                  ${errors.naam ? 'border-red-500' : 'border-gray-200 focus:border-[#ff9328]'}`}
+                  ${errors.naam ? 'border-red-500' : 'border-gray-200 focus:border-primary'}`}
                 placeholder="Vul je naam in"
                 {...register('naam')}
                 onChange={(e) => {
@@ -226,9 +226,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 type="email"
                 id="email"
                 className={`w-full px-4 py-3 rounded-xl border-2 transition-colors 
-                  focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                  focus:outline-none focus:ring-2 focus:ring-primary/20 
                   text-gray-900 placeholder-gray-400 bg-white
-                  ${errors.email ? 'border-red-500' : 'border-gray-200 focus:border-[#ff9328]'}`}
+                  ${errors.email ? 'border-red-500' : 'border-gray-200 focus:border-primary'}`}
                 placeholder="Vul je e-mailadres in"
                 {...register('email')}
                 onChange={(e) => {
@@ -247,7 +247,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
         {/* Rol sectie */}
         <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
             Kies je rol
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -261,7 +261,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 />
                 <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200 
                   bg-white transition-all hover:shadow-md 
-                  peer-checked:border-[#ff9328] peer-checked:bg-[#ff9328] 
+                  peer-checked:border-primary peer-checked:bg-primary 
                   peer-checked:text-white text-gray-900
                   min-h-[140px] group">
                   <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
@@ -280,7 +280,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
         {/* Telefoonnummer sectie - alleen voor Begeleider/Vrijwilliger */}
         {(selectedRole === 'Begeleider' || selectedRole === 'Vrijwilliger') && (
           <div className="space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
               Contactgegevens voor tijdens het evenement
             </h2>
             <div className="space-y-4">
@@ -290,15 +290,15 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 </h3>
                 <ul className="text-sm text-blue-800 space-y-2">
                   <li className="flex items-start">
-                    <span className="text-[#ff9328] mr-2">•</span>
+                    <span className="text-primary mr-2">•</span>
                     Voor snelle communicatie tijdens het evenement
                   </li>
                   <li className="flex items-start">
-                    <span className="text-[#ff9328] mr-2">•</span>
+                    <span className="text-primary mr-2">•</span>
                     Om je te kunnen bereiken bij last-minute wijzigingen
                   </li>
                   <li className="flex items-start">
-                    <span className="text-[#ff9328] mr-2">•</span>
+                    <span className="text-primary mr-2">•</span>
                     Voor coördinatie met andere vrijwilligers/begeleiders
                   </li>
                 </ul>
@@ -321,9 +321,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                   type="tel"
                   id="telefoon"
                   className="w-full px-4 py-3 rounded-xl border-2 transition-colors 
-                    focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                    focus:outline-none focus:ring-2 focus:ring-primary/20 
                     text-gray-900 placeholder-gray-400 bg-white
-                    border-gray-200 focus:border-[#ff9328]"
+                    border-gray-200 focus:border-primary"
                   placeholder="06 - "
                   {...register('telefoon')}
                   onChange={(e) => {
@@ -345,9 +345,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 <textarea
                   id="bijzonderheden"
                   className="w-full px-4 py-3 rounded-xl border-2 transition-colors 
-                    focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                    focus:outline-none focus:ring-2 focus:ring-primary/20 
                     text-gray-900 placeholder-gray-400 bg-white
-                    border-gray-200 focus:border-[#ff9328]
+                    border-gray-200 focus:border-primary
                     min-h-[100px] resize-y"
                   placeholder={selectedOndersteuning === 'Ja' 
                     ? "Beschrijf hier welke ondersteuning je nodig hebt..." 
@@ -373,7 +373,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
         {/* Afstand sectie - voor iedereen */}
         <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
             Kies je afstand
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -387,7 +387,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 />
                 <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200 
                   bg-white transition-all hover:shadow-md 
-                  peer-checked:border-[#ff9328] peer-checked:bg-[#ff9328] 
+                  peer-checked:border-primary peer-checked:bg-primary 
                   peer-checked:text-white text-gray-900
                   min-h-[140px] group">
                   <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
@@ -405,7 +405,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
         {/* Ondersteuning sectie */}
         <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-[#ff9328] after:rounded">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
             Heb je ondersteuning nodig?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -424,7 +424,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 />
                 <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 
                   border-gray-200 bg-white transition-all hover:shadow-md 
-                  peer-checked:border-[#ff9328] peer-checked:bg-[#ff9328] 
+                  peer-checked:border-primary peer-checked:bg-primary 
                   peer-checked:text-white text-gray-900
                   min-h-[140px] group">
                   <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
@@ -459,9 +459,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             <textarea
               id="bijzonderheden"
               className="w-full px-4 py-3 rounded-xl border-2 transition-colors 
-                focus:outline-none focus:ring-2 focus:ring-[#ff9328]/20 
+                focus:outline-none focus:ring-2 focus:ring-primary/20 
                 text-gray-900 placeholder-gray-400 bg-white
-                border-gray-200 focus:border-[#ff9328]
+                border-gray-200 focus:border-primary
                 min-h-[100px] resize-y"
               placeholder={selectedOndersteuning === 'Ja' 
                 ? "Beschrijf hier welke ondersteuning je nodig hebt..." 
@@ -489,7 +489,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               Je moet eerst de algemene voorwaarden lezen voordat je je kunt inschrijven.{' '}
               <button
                 type="button"
-                className="text-[#ff9328] underline hover:text-[#e67f1c] font-medium"
+                className="text-primary underline hover:text-primary-dark font-medium"
                 onClick={openTermsModal}
               >
                 Lees de Algemene Voorwaarden
@@ -502,7 +502,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               disabled={!hasReadTerms}
               className={`w-5 h-5 rounded border-gray-300 
                 ${hasReadTerms 
-                  ? 'text-[#ff9328] focus:ring-[#ff9328] cursor-pointer' 
+                  ? 'text-primary focus:ring-primary cursor-pointer' 
                   : 'text-gray-300 cursor-not-allowed'
                 }`}
               {...register('terms')}
@@ -537,12 +537,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             type="submit"
             disabled={isSubmitting}
             className="w-full max-w-md mx-auto flex justify-center items-center px-8 py-4 
-              text-lg font-semibold text-white bg-[#ff9328] rounded-full 
-              hover:bg-[#e67f1c] transition-all duration-300 
+              text-lg font-semibold text-white bg-primary rounded-full 
+              hover:bg-primary-dark transition-all duration-300 
               hover:-translate-y-0.5 hover:shadow-lg
               disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
-              active:bg-[#d97919]
-              focus:outline-none focus:ring-2 focus:ring-[#ff9328] focus:ring-offset-2"
+              active:bg-primary-dark
+              focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             onClick={() => {
               if (!isSubmitting) {
                 logEvent('registration', 'submit_button_click', 'form_submit_attempt');

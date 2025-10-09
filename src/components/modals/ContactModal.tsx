@@ -156,7 +156,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                       <button
                         type="button"
                         onClick={handlePrivacyClick}
-                        className="text-[#ff9328] underline hover:text-[#e67f1c] transition-colors"
+                        className="text-primary underline hover:text-primary-dark transition-colors"
                       >
                         privacybeleid
                       </button>

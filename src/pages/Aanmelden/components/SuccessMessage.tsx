@@ -45,7 +45,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
       width: 128,
       margin: 2,
       color: {
-        dark: '#ff9328',
+        dark: '#ff9328', // Keep as hex for QR code library compatibility
         light: '#FFFFFF'
       }
     }).then(setQrCodeUrl);
@@ -104,7 +104,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               }
               .header h1 {
                 font-size: 24px;
-                color: #ff9328;
+                color: #ff9328; /* Keep for print compatibility */
                 margin-bottom: 10px;
               }
               .registration-id {
@@ -141,7 +141,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
                 margin-top: 30px;
               }
               .info-box h3 {
-                color: #ff9328;
+                color: #ff9328; /* Keep for print compatibility */
                 margin-top: 0;
               }
               .qr-section {
@@ -194,7 +194,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
                 width: 24px;
                 height: 24px;
                 margin-right: 12px;
-                color: #ff9328;
+                color: #ff9328; /* Keep for print compatibility */
               }
               .map-image {
                 width: 100%;
@@ -317,7 +317,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
     <div className="container mx-auto px-4 py-12 sm:py-16">
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         {/* Header sectie */}
-        <div className="bg-[#ff9328] p-8 text-center">
+        <div className="bg-primary p-8 text-center">
           <div className="mb-4">
             <img 
               src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
@@ -367,15 +367,15 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
             </h3>
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start">
-                <span className="text-[#ff9328] mr-2">•</span>
+                <span className="text-primary mr-2">•</span>
                 Het evenement vindt plaats op 17 mei 2025
               </li>
               <li className="flex items-start">
-                <span className="text-[#ff9328] mr-2">•</span>
+                <span className="text-primary mr-2">•</span>
                 Zorg dat je op tijd aanwezig bent voor je start
               </li>
               <li className="flex items-start">
-                <span className="text-[#ff9328] mr-2">•</span>
+                <span className="text-primary mr-2">•</span>
                 Houd onze website in de gaten voor het laatste nieuws
               </li>
             </ul>
@@ -385,7 +385,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
         {/* Locatie sectie */}
         <div className="p-8 border-t border-gray-100">
           <div className="flex items-center mb-6">
-            <FaMapMarkerAlt className="text-[#ff9328] text-xl mr-3" />
+            <FaMapMarkerAlt className="text-primary text-xl mr-3" />
             <h2 className="text-xl font-bold text-gray-900 font-heading">
               Startlocatie
             </h2>
@@ -403,7 +403,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg 
-                text-[#ff9328] hover:bg-orange-50 transition-all"
+                text-primary hover:bg-orange-50 transition-all"
             >
               <FaExternalLinkAlt className="text-sm" />
               <span>Bekijk op Google Maps</span>
@@ -417,8 +417,8 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
             <a
               href="/"
               className="inline-flex items-center px-6 py-3 rounded-full 
-                text-white bg-[#ff9328] font-semibold transition-all
-                hover:bg-[#e67f1c] hover:-translate-y-0.5 hover:shadow-lg"
+                text-white bg-primary font-semibold transition-all
+                hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-lg"
             >
               Terug naar home
             </a>
@@ -427,7 +427,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
           onClick={handlePrint}
                 disabled={isPrinting}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full 
-                  text-[#ff9328] bg-white border-2 border-[#ff9328] font-semibold
+                  text-primary bg-white border-2 border-primary font-semibold
                   hover:bg-orange-50 transition-all disabled:opacity-50 
                   disabled:cursor-not-allowed"
                 aria-label="Print bevestiging"
@@ -439,7 +439,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
                 onClick={generatePDF}
                 disabled={isPrinting}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full 
-                  text-[#ff9328] bg-white border-2 border-[#ff9328] font-semibold
+                  text-primary bg-white border-2 border-primary font-semibold
                   hover:bg-orange-50 transition-all disabled:opacity-50 
                   disabled:cursor-not-allowed"
                 aria-label="Download PDF"
@@ -456,7 +456,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://facebook.com/dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#ff9328] hover:text-[#e67f1c] transition-colors"
+              className="text-primary hover:text-primary-dark transition-colors"
               aria-label="Volg ons op Facebook"
             >
               <FaFacebook size={24} />
@@ -465,7 +465,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://instagram.com/dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#ff9328] hover:text-[#e67f1c] transition-colors"
+              className="text-primary hover:text-primary-dark transition-colors"
               aria-label="Volg ons op Instagram"
             >
               <FaInstagram size={24} />
@@ -474,7 +474,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://youtube.com/@dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#ff9328] hover:text-[#e67f1c] transition-colors"
+              className="text-primary hover:text-primary-dark transition-colors"
               aria-label="Volg ons op YouTube"
             >
               <FaYoutube size={24} />
@@ -483,7 +483,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://linkedin.com/company/dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#ff9328] hover:text-[#e67f1c] transition-colors"
+              className="text-primary hover:text-primary-dark transition-colors"
               aria-label="Volg ons op LinkedIn"
             >
               <FaLinkedin size={24} />

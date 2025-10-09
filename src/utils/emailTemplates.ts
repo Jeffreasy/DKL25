@@ -55,7 +55,7 @@ export function getContactEmailHtml({
                     ${
                       isConfirmation
                         ? `
-                        <h1 style="color:#ff9328; font-size:24px; font-weight:bold; margin:0 0 16px; text-align:center;">
+                        <h1 style="color:${colorTokens.primary.base}; font-size:24px; font-weight:bold; margin:0 0 16px; text-align:center;">
                           <span style="font-size:24px; margin-right:8px;">👋</span>
                           Bedankt voor je bericht, ${naam}!
                         </h1>
@@ -64,7 +64,7 @@ export function getContactEmailHtml({
                         </p>
                         `
                         : `
-                        <h1 style="color:#ff9328; font-size:24px; font-weight:bold; margin:0 0 16px; text-align:center;">
+                        <h1 style="color:${colorTokens.primary.base}; font-size:24px; font-weight:bold; margin:0 0 16px; text-align:center;">
                           <span style="font-size:24px; margin-right:8px;">📬</span>
                           Nieuw bericht ontvangen
                         </h1>
@@ -76,18 +76,18 @@ export function getContactEmailHtml({
                           ${
                             !isConfirmation
                               ? `
-                              <div style="color:#ff9328; font-weight:600; font-size:14px; margin-bottom:8px;">
+                              <div style="color:${colorTokens.primary.base}; font-weight:600; font-size:14px; margin-bottom:8px;">
                                 <span style="margin-right:8px;">👤</span> Van
                               </div>
                               <p style="color:#2d3748; margin:0 0 16px;">${naam}</p>
-                              <div style="color:#ff9328; font-weight:600; font-size:14px; margin-bottom:8px;">
+                              <div style="color:${colorTokens.primary.base}; font-weight:600; font-size:14px; margin-bottom:8px;">
                                 <span style="margin-right:8px;">📧</span> Email
                               </div>
                               <p style="color:#2d3748; margin:0 0 16px;">${email}</p>
                               `
                               : ''
                           }
-                          <div style="color:#ff9328; font-weight:600; font-size:14px; margin-bottom:8px;">
+                          <div style="color:${colorTokens.primary.base}; font-weight:600; font-size:14px; margin-bottom:8px;">
                             <span style="margin-right:8px;">💭</span> Bericht
                           </div>
                           <p style="color:#2d3748; margin:0;">${safeMessage}</p>

@@ -6,25 +6,25 @@ export const socialLinks: SocialLinkType[] = [
   {
     platform: 'facebook' as SocialPlatform,
     url: 'https://www.facebook.com/p/De-Koninklijke-Loop-61556315443279/',
-    hoverColor: 'hover:bg-[#1877F2]',
+    hoverColor: 'hover:bg-social-facebook',
     label: 'Volg ons op Facebook'
   },
   {
     platform: 'instagram' as SocialPlatform,
     url: 'https://www.instagram.com/koninklijkeloop/',
-    hoverColor: 'hover:bg-[#E4405F]',
+    hoverColor: 'hover:bg-social-instagram',
     label: 'Volg ons op Instagram'
   },
   {
     platform: 'youtube' as SocialPlatform,
     url: 'https://www.youtube.com/@DeKoninklijkeLoop',
-    hoverColor: 'hover:bg-[#FF0000]',
+    hoverColor: 'hover:bg-social-youtube',
     label: 'Bekijk onze YouTube kanaal'
   },
   {
     platform: 'linkedin' as SocialPlatform,
     url: 'https://www.linkedin.com/company/dekoninklijkeloop',
-    hoverColor: 'hover:bg-[#0A66C2]',
+    hoverColor: 'hover:bg-social-linkedin',
     label: 'Volg ons op LinkedIn'
   }
 ];

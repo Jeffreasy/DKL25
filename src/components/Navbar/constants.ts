@@ -38,19 +38,19 @@ export const SOCIAL_LINKS: Omit<SocialLinkProps, 'onClick'>[] = [
     href: 'https://www.facebook.com/p/De-Koninklijke-Loop-61556315443279/',
     icon: 'facebook',
     label: 'Volg ons op Facebook',
-    hoverColor: 'hover:bg-[#1877F2]'
+    hoverColor: 'hover:bg-social-facebook'
   },
   {
     href: 'https://www.instagram.com/koninklijkeloop/',
     icon: 'instagram',
     label: 'Volg ons op Instagram',
-    hoverColor: 'hover:bg-[#E4405F]'
+    hoverColor: 'hover:bg-social-instagram'
   },
   {
     href: 'https://www.youtube.com/@DeKoninklijkeLoop',
     icon: 'youtube',
     label: 'Bekijk ons YouTube kanaal',
-    hoverColor: 'hover:bg-[#FF0000]'
+    hoverColor: 'hover:bg-social-youtube'
   }
 ];
 

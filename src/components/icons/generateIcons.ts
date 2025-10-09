@@ -5,7 +5,7 @@ canvas.width = 512
 canvas.height = 512
 const ctx = canvas.getContext('2d')
 if (ctx) {
-  ctx.fillStyle = '#ff9328'
+  ctx.fillStyle = '#ff9328' // Keep hex for Canvas API compatibility
   ctx.fillRect(0, 0, 512, 512)
   ctx.fillStyle = 'white'
   ctx.font = 'bold 200px Arial'

@@ -5,10 +5,10 @@ import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/utils/googleAnalytics';
 
 const socialColors = {
-  facebook: '#4267B2',
-  instagram: '#E1306C',
-  youtube: '#FF0000',
-  linkedin: '#0A66C2'
+  facebook: '#4267B2', // Official Facebook brand color
+  instagram: '#E1306C', // Official Instagram brand color
+  youtube: '#FF0000',   // Official YouTube brand color
+  linkedin: '#0A66C2'   // Official LinkedIn brand color
 } as const;
 
 const DKLSocials: React.FC = () => {

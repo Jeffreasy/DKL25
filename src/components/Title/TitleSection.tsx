@@ -155,7 +155,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 transition={{ delay: 0.2 }}
               >
                 <h1 
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#ff9328] font-sans leading-tight"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary font-sans leading-tight"
                   style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                 >
                   {displayData.event_title}
@@ -277,7 +277,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 {/* Inschrijven Button - Adjusted for mobile */}
                 <motion.button
                   onClick={handleRegisterClick}
-                  className="bg-[#ff9328] hover:bg-[#e87f1c] text-white px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl rounded-full font-bold tracking-wide transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-4 w-full sm:w-auto"
+                  className="bg-primary hover:bg-primary-dark text-white px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl rounded-full font-bold tracking-wide transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-4 w-full sm:w-auto"
                   style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                   aria-label="Schrijf je nu in voor De Koninklijke Loop"
                   whileHover={{ scale: 1.05 }}
@@ -299,7 +299,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
         animate={{ scaleX: 1 }}
         transition={{ delay: 1, duration: 0.8 }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#ff9328] to-[#ffb56e]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary to-orange-200" />
       </motion.div>
 
       {/* Social Media Section */}

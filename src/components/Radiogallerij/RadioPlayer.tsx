@@ -208,7 +208,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
               onClick={handleProgressBarClick}
             >
               <div 
-                className="absolute h-full bg-[#ff9328] rounded-full"
+                className="absolute h-full bg-primary rounded-full"
                 style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
               />
             </div>
@@ -226,7 +226,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
                 <button
                   onClick={togglePlayPause}
                   disabled={isLoading || hasError}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-[#ff9328] hover:bg-[#e87f1c] transition-colors text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-primary hover:bg-primary-dark transition-colors text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
                   aria-label={isPlaying ? 'Pauzeren' : 'Afspelen'}
                 >
                   {isLoading ? (
