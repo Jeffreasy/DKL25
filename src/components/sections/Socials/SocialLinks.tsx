@@ -3,6 +3,7 @@ import type { SocialLink } from './types';
 import SocialIcon from './SocialIcon';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 const socialColors = {
   facebook: '#4267B2', // Official Facebook brand color
@@ -58,28 +59,32 @@ const DKLSocials: React.FC = () => {
   };
 
   return (
-    <section className="bg-gray-900 py-20 px-5 font-heading relative overflow-hidden">
+    <section className={cn('bg-gray-900 py-20 px-5 relative overflow-hidden', cc.typography.heading)}>
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-gray-900 pointer-events-none" />
       
       <div className="max-w-7xl mx-auto relative">
         {/* Title with animated underline */}
         <div className="text-center mb-16 relative">
-          <h2 className="text-[clamp(1.75rem,4vw,2rem)] text-white font-semibold mb-5 relative">
+          <h2 className={cn(cc.text.h2, 'text-white font-semibold mb-5 relative')}>
             Volg ons op sociale media
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-primary rounded-full 
-              after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-full 
-              after:bg-white/30 after:rounded-full after:animate-pulse" />
+            <span className={cn(
+              'absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full',
+              colors.primary.bg,
+              'after:content-[\'\'] after:absolute after:top-0 after:left-0 after:w-full after:h-full',
+              'after:bg-white/30 after:rounded-full',
+              animations.pulse
+            )} />
           </h2>
         </div>
 
         {/* Error state */}
         {error && (
-          <div className="text-red-400 text-center mb-8 px-4 py-3 rounded-lg bg-red-900/20 backdrop-blur-sm max-w-md mx-auto">
+          <div className={cn('text-red-400 text-center mb-8 px-4 py-3', cc.border.rounded, 'bg-red-900/20 backdrop-blur-sm max-w-md mx-auto')}>
             <p>{error}</p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
-              className="mt-2 text-sm text-white/70 hover:text-white transition-colors"
+              className={cn('mt-2', cc.text.small, 'text-white/70 hover:text-white', cc.transition.colors)}
             >
               Opnieuw proberen
             </button>
@@ -93,7 +98,7 @@ const DKLSocials: React.FC = () => {
             [...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="aspect-square rounded-2xl bg-gray-800/30 animate-pulse"
+                className={cn('aspect-square rounded-2xl bg-gray-800/30', animations.pulse)}
               />
             ))
           ) : (
@@ -105,19 +110,18 @@ const DKLSocials: React.FC = () => {
                 style={{
                   '--social-color': socialColors[social.platform]
                 } as React.CSSProperties}
-                className={`
-                  aspect-square flex items-center justify-center
-                  rounded-2xl transition-all duration-500
-                  group relative
-                  hover:-translate-y-2 hover:scale-105
-                  focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900
-                  bg-gray-800/50
-                  hover:bg-[var(--social-color)]
-                  backdrop-blur-sm
-                  overflow-hidden
-                  shadow-lg shadow-black/5
-                  hover:shadow-xl hover:shadow-[var(--social-color)]/20
-                `}
+                className={cn(
+                  'aspect-square',
+                  cc.flex.center,
+                  'rounded-2xl group relative overflow-hidden backdrop-blur-sm',
+                  cc.transition.slow,
+                  'hover:-translate-y-2 hover:scale-105',
+                  colors.primary.focusRing,
+                  'focus:ring-offset-gray-900',
+                  'bg-gray-800/50 hover:bg-[var(--social-color)]',
+                  cc.shadow.lg,
+                  'shadow-black/5 hover:shadow-xl hover:shadow-[var(--social-color)]/20'
+                )}
                 aria-label={`Volg ons op ${social.platform}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -130,14 +134,14 @@ const DKLSocials: React.FC = () => {
                 {/* Icon */}
                 <SocialIcon
                   platform={social.platform}
-                  className={`
-                    w-10 h-10 md:w-12 md:h-12 
-                    transition-all duration-500 ease-out
-                    group-hover:scale-110 group-hover:rotate-3
-                    text-white/60 group-hover:text-white
-                    relative z-10
-                    drop-shadow-lg
-                  `}
+                  className={cn(
+                    'w-10 h-10 md:w-12 md:h-12',
+                    cc.transition.slow,
+                    'ease-out group-hover:scale-110 group-hover:rotate-3',
+                    'text-white/60 group-hover:text-white',
+                    'relative', cc.zIndex.dropdown,
+                    'drop-shadow-lg'
+                  )}
                 />
 
                 {/* Shine effect on hover */}

@@ -8,6 +8,7 @@ import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { PRELOAD_CLEANUP_TIMEOUT } from '../constants';
 import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
+import { cc, cn, colors } from '@/styles/shared';
 
 const VideoGallery: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -127,17 +128,17 @@ const VideoGallery: React.FC = () => {
   };
 
   if (isLoading) return (
-    <div className="flex items-center justify-center min-h-[300px]">
-      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+    <div className={cn(cc.flex.center, 'min-h-[300px]')}>
+      <div className={cn('w-12 h-12 border-4 border-t-transparent', colors.primary.border, cc.border.circle, 'animate-spin')} />
     </div>
   );
   
   if (error) return (
-    <div className="text-center p-4 text-red-600">
+    <div className={cn('text-center p-4', cc.text.error)}>
       <p>Er is een fout opgetreden: {error}</p>
       <button 
         onClick={() => window.location.reload()} 
-        className="mt-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+        className={cn(cc.button.primary, 'mt-2')}
       >
         Probeer opnieuw
       </button>
@@ -155,7 +156,7 @@ const VideoGallery: React.FC = () => {
   return (
     <section 
       ref={galleryRef}
-      className="py-8 md:py-16 px-4 md:px-5 bg-gray-50 font-heading"
+      className={cn('py-8 md:py-16 px-4 md:px-5 bg-gray-50', cc.typography.heading)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -163,10 +164,10 @@ const VideoGallery: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center mb-6 md:mb-12">
-          <h2 className="text-2xl md:text-[clamp(2rem,4vw,2.75rem)] text-gray-900 font-bold mb-2 md:mb-3">
+          <h2 className={cn(cc.text.h2, 'text-gray-900 font-bold mb-2 md:mb-3')}>
             Onze Video's
           </h2>
-          <p className="text-base md:text-[clamp(1rem,2.5vw,1.25rem)] text-gray-600 px-4">
+          <p className={cn(cc.text.h5, cc.text.muted, 'px-4')}>
             {currentVideo.description}
           </p>
         </div>
@@ -206,9 +207,12 @@ const VideoGallery: React.FC = () => {
               {videos.map((_, index) => (
                 <button
                   key={index}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentIndex ? 'bg-primary w-4' : 'bg-gray-300'
-                  }`}
+                  className={cn(
+                    'w-2 h-2',
+                    cc.border.circle,
+                    cc.transition.base,
+                    index === currentIndex ? cn(colors.primary.bg, 'w-4') : 'bg-gray-300'
+                  )}
                   onClick={() => !isLoading && setCurrentIndex(index)}
                   aria-label={`Ga naar video ${index + 1}`}
                   disabled={isLoading}

@@ -5,7 +5,8 @@ import { RegistrationSchema, type RegistrationFormData, validateForm } from '../
 import { TermsModal } from './TermsModal';
 import { supabase } from '../../../lib/supabase';
 import { toast } from 'react-hot-toast';
-import { logEvent } from '../../../utils/googleAnalytics'; // Importeer analytics functie
+import { logEvent } from '../../../utils/googleAnalytics';
+import { cc, cn, colors } from '@/styles/shared';
 
 // In development, de API calls gaan via de Vite proxy
 const API_BASE_URL = import.meta.env.VITE_EMAIL_SERVICE_URL || 'https://dklemailservice.onrender.com';
@@ -191,20 +192,23 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       >
         {/* Contactgegevens */}
         <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
+          <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
             Je contactgegevens
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label htmlFor="naam" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="naam" className={cc.form.label}>
                 Naam
               </label>
               <input
                 type="text"
                 id="naam"
-                className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 
-                  text-gray-900 placeholder-gray-400 bg-white
-                  ${errors.naam ? 'border-red-500' : 'border-gray-200 focus:border-primary'}`}
+                className={cn(
+                  'w-full px-4 py-3 rounded-xl border-2 text-gray-900 placeholder-gray-400 bg-white',
+                  cc.transition.colors,
+                  'focus:outline-none focus:ring-2 focus:ring-primary/20',
+                  errors.naam ? 'border-red-500' : 'border-gray-200 focus:border-primary'
+                )}
                 placeholder="Vul je naam in"
                 {...register('naam')}
                 onChange={(e) => {
@@ -215,20 +219,22 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 }}
               />
               {errors.naam && (
-                <p className="text-sm text-red-500 mt-1 font-medium">{errors.naam.message}</p>
+                <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.naam.message}</p>
               )}
             </div>
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className={cc.form.label}>
                 E-mailadres
               </label>
               <input
                 type="email"
                 id="email"
-                className={`w-full px-4 py-3 rounded-xl border-2 transition-colors 
-                  focus:outline-none focus:ring-2 focus:ring-primary/20 
-                  text-gray-900 placeholder-gray-400 bg-white
-                  ${errors.email ? 'border-red-500' : 'border-gray-200 focus:border-primary'}`}
+                className={cn(
+                  'w-full px-4 py-3 rounded-xl border-2 text-gray-900 placeholder-gray-400 bg-white',
+                  cc.transition.colors,
+                  'focus:outline-none focus:ring-2 focus:ring-primary/20',
+                  errors.email ? 'border-red-500' : 'border-gray-200 focus:border-primary'
+                )}
                 placeholder="Vul je e-mailadres in"
                 {...register('email')}
                 onChange={(e) => {
@@ -239,7 +245,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 }}
               />
               {errors.email && (
-                <p className="text-sm text-red-500 mt-1 font-medium">{errors.email.message}</p>
+                <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.email.message}</p>
               )}
             </div>
           </div>
@@ -247,24 +253,25 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
         {/* Rol sectie */}
         <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
+          <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
             Kies je rol
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {['Deelnemer', 'Begeleider', 'Vrijwilliger'].map((role) => (
-              <label key={role} className="relative cursor-pointer">
+              <label key={role} className={cn('relative cursor-pointer')}>
                 <input
                   type="radio"
                   value={role}
-                  className="peer sr-only"
+                  className={cn('peer', cc.a11y.srOnly)}
                   {...register('rol')}
                 />
-                <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200 
-                  bg-white transition-all hover:shadow-md 
-                  peer-checked:border-primary peer-checked:bg-primary 
-                  peer-checked:text-white text-gray-900
-                  min-h-[140px] group">
-                  <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
+                <div className={cn(
+                  cc.flex.colCenter,
+                  'justify-center p-6 rounded-xl border-2 border-gray-200 bg-white text-gray-900 min-h-[140px] group',
+                  cc.transition.base,
+                  'hover:shadow-md peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white'
+                )}>
+                  <span className={cn('text-4xl mb-3', cc.transition.transform, 'group-hover:scale-110')}>
                     {role === 'Deelnemer' ? '👥' : role === 'Begeleider' ? '🤝' : '💪'}
                   </span>
                   <span className="font-semibold text-center text-base">{role}</span>
@@ -273,14 +280,14 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             ))}
           </div>
           {errors.rol && (
-            <p className="text-sm text-red-500 mt-1 font-medium">{errors.rol.message}</p>
+            <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.rol.message}</p>
           )}
         </div>
 
         {/* Telefoonnummer sectie - alleen voor Begeleider/Vrijwilliger */}
         {(selectedRole === 'Begeleider' || selectedRole === 'Vrijwilliger') && (
           <div className="space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
+            <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
               Contactgegevens voor tijdens het evenement
             </h2>
             <div className="space-y-4">
@@ -489,7 +496,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               Je moet eerst de algemene voorwaarden lezen voordat je je kunt inschrijven.{' '}
               <button
                 type="button"
-                className="text-primary underline hover:text-primary-dark font-medium"
+                className={cn(colors.primary.text, 'underline hover:text-primary-dark font-medium', cc.transition.colors)}
                 onClick={openTermsModal}
               >
                 Lees de Algemene Voorwaarden
@@ -500,11 +507,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             <input
               type="checkbox"
               disabled={!hasReadTerms}
-              className={`w-5 h-5 rounded border-gray-300 
-                ${hasReadTerms 
-                  ? 'text-primary focus:ring-primary cursor-pointer' 
+              className={cn(
+                'w-5 h-5 rounded border-gray-300',
+                hasReadTerms
+                  ? cn(colors.primary.text, 'focus:ring-primary cursor-pointer')
                   : 'text-gray-300 cursor-not-allowed'
-                }`}
+              )}
               {...register('terms')}
               onChange={(e) => {
                 register('terms').onChange(e);
@@ -518,7 +526,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
             </span>
           </label>
           {errors.terms && (
-            <p className="text-sm text-red-500 text-center mt-1 font-medium">
+            <p className={cn(cc.form.errorMessage, 'text-center font-medium')}>
               {errors.terms.message}
             </p>
           )}
@@ -526,7 +534,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
 
         {/* Error message */}
         {submitError && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+          <div className={cn('p-4 bg-red-50 border border-red-200 rounded-lg', cc.text.error)}>
             {submitError}
           </div>
         )}
@@ -536,13 +544,20 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full max-w-md mx-auto flex justify-center items-center px-8 py-4 
-              text-lg font-semibold text-white bg-primary rounded-full 
-              hover:bg-primary-dark transition-all duration-300 
-              hover:-translate-y-0.5 hover:shadow-lg
-              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
-              active:bg-primary-dark
-              focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className={cn(
+              'w-full max-w-md mx-auto px-8 py-4 font-semibold text-white',
+              cc.flex.center,
+              cc.text.h5,
+              colors.primary.bg,
+              cc.border.circle,
+              colors.primary.hover,
+              cc.transition.base,
+              'hover:-translate-y-0.5',
+              cc.shadow.lg,
+              'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0',
+              'active:bg-primary-dark',
+              colors.primary.focusRing
+            )}
             onClick={() => {
               if (!isSubmitting) {
                 logEvent('registration', 'submit_button_click', 'form_submit_attempt');
@@ -551,9 +566,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           >
             {isSubmitting ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg className={cn('animate-spin -ml-1 mr-3 h-5 w-5 text-white')} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className={cn('opacity-25')} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className={cn('opacity-75')} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
                 Bezig met inschrijven...
               </>

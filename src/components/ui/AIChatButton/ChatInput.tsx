@@ -1,6 +1,7 @@
 // src/components/AIChatButton/ChatInput.tsx
 import React, { useState, KeyboardEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -25,8 +26,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
   };
 
   return (
-    <div className="p-4 border-t border-gray-100">
-      <div className="flex items-center gap-2">
+    <div className={cn('p-4', cc.divider.horizontal, 'border-gray-100')}>
+      <div className={cn(cc.flex.start, 'gap-2')}>
         <input
           id="chat-input"
           name="chat-message"
@@ -36,13 +37,23 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
           onKeyPress={handleKeyPress}
           disabled={disabled}
           placeholder={disabled ? "Even geduld..." : "Typ je bericht..."}
-          className="flex-1 bg-gray-100 text-gray-900 placeholder-gray-500 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
+          className={cn(
+            'flex-1 bg-gray-100 text-gray-900 placeholder-gray-500 px-4 py-2 disabled:opacity-50',
+            cc.border.circle,
+            colors.primary.focus,
+            'focus:ring-2 focus:ring-primary/50'
+          )}
           autoComplete="off"
         />
         <button
           onClick={handleSend}
           disabled={disabled || !message.trim()}
-          className="p-2 text-primary hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50"
+          className={cn(
+            'p-2 hover:bg-gray-100 disabled:opacity-50',
+            colors.primary.text,
+            cc.border.circle,
+            cc.transition.colors
+          )}
         >
           <SendIcon />
         </button>

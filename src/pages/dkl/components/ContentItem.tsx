@@ -1,5 +1,6 @@
 import React from 'react';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface ContentItemProps {
   icon: string;
@@ -28,26 +29,31 @@ export const ContentItem: React.FC<ContentItemProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
+    <div className={cn(
+      'bg-white rounded-xl p-6 border border-gray-100 relative overflow-hidden group',
+      cc.shadow.lg,
+      cc.transition.base,
+      'hover:shadow-xl hover:-translate-y-1'
+    )}>
       {/* Decorative circle */}
-      <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full transition-transform duration-300 group-hover:scale-110" />
+      <div className={cn('absolute -top-20 -right-20 w-40 h-40 bg-primary/10', cc.border.circle, cc.transition.base, 'group-hover:scale-110')} />
       
       {/* Content */}
       <div className="relative z-10">
-        <span className="material-icons-round text-4xl text-primary mb-4 block">
+        <span className={cn('material-icons-round text-4xl mb-4 block', colors.primary.text)}>
           {icon}
         </span>
-        <h2 className="text-2xl font-heading font-semibold text-gray-900 mb-4">
+        <h2 className={cn(cc.text.h3, cc.typography.heading, 'font-semibold text-gray-900 mb-4')}>
           {title}
         </h2>
-        <p className="text-gray-600 leading-relaxed mb-6">
+        <p className={cn(cc.text.body, cc.text.muted, 'leading-relaxed mb-6')}>
           {text}
         </p>
         
         {illustration && (
           <div className="text-center my-8">
             <div 
-              className="relative overflow-hidden rounded-xl transition-transform duration-300 hover:scale-[1.02]"
+              className={cn('relative overflow-hidden rounded-xl', cc.transition.base, 'hover:scale-[1.02]')}
               onClick={handleIllustrationView}
             >
               <img
@@ -57,14 +63,14 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                 loading="eager"
               />
             </div>
-            <p className="mt-2 text-sm text-gray-500 italic">
+            <p className={cn('mt-2 italic', cc.text.small, 'text-gray-500')}>
               Tekening: {illustration.caption}
             </p>
           </div>
         )}
         
         {mapUrl && (
-          <div className="mt-6 rounded-xl overflow-hidden shadow-lg" onClick={handleMapClick}>
+          <div className={cn('mt-6 rounded-xl overflow-hidden', cc.shadow.lg)} onClick={handleMapClick}>
             <iframe 
               src={mapUrl}
               className="w-full h-[500px] border-0"

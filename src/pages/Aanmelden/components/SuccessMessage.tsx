@@ -6,6 +6,7 @@ import QRCode from 'qrcode';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { toast } from 'react-hot-toast';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface SuccessMessageProps {
   data: RegistrationFormData;
@@ -314,10 +315,10 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 sm:py-16">
-      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className={cn(cc.container.base, 'py-12 sm:py-16')}>
+      <div className={cn('max-w-2xl mx-auto bg-white rounded-xl overflow-hidden', cc.shadow.lg)}>
         {/* Header sectie */}
-        <div className="bg-primary p-8 text-center">
+        <div className={cn(colors.primary.bg, 'p-8 text-center')}>
           <div className="mb-4">
             <img 
               src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
@@ -325,22 +326,22 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               className="h-24 mx-auto"
             />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-heading">
+          <h1 className={cn(cc.text.h2, 'font-bold text-white mb-2', cc.typography.heading)}>
             Bedankt voor je aanmelding!
         </h1>
-          <p className="text-white/90 text-lg">
+          <p className={cn(cc.text.h5, 'text-white/90')}>
             We hebben je aanmelding ontvangen en een bevestigingsmail gestuurd naar{' '}
-            <span className="font-medium">{data.email}</span>
+            <span className={cn('font-medium')}>{data.email}</span>
         </p>
       </div>
 
         {/* Aanmeldgegevens sectie */}
         <div className="p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 font-heading">
+          <h2 className={cn(cc.text.h4, 'font-bold text-gray-900 mb-6', cc.typography.heading)}>
             Je aanmeldgegevens
           </h2>
           <div className="space-y-4">
-            <div className="flex justify-between items-center py-3 border-b border-gray-200">
+            <div className={cn(cc.flex.between, 'py-3', cc.divider.horizontal, 'border-gray-200')}>
               <dt className="text-gray-600 font-medium">Naam</dt>
               <dd className="text-gray-900 font-semibold">{data.naam}</dd>
             </div>
@@ -361,21 +362,21 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
           </div>
 
           {/* Belangrijke informatie */}
-          <div className="mt-8 bg-orange-50 border border-orange-200 rounded-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
+          <div className={cn('mt-8 bg-orange-50 border border-orange-200 rounded-lg p-6')}>
+            <h3 className={cn(cc.text.h5, 'font-bold text-gray-900 mb-4')}>
               Belangrijke informatie
             </h3>
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start">
-                <span className="text-primary mr-2">•</span>
+                <span className={cn(colors.primary.text, 'mr-2')}>•</span>
                 Het evenement vindt plaats op 17 mei 2025
               </li>
               <li className="flex items-start">
-                <span className="text-primary mr-2">•</span>
+                <span className={cn(colors.primary.text, 'mr-2')}>•</span>
                 Zorg dat je op tijd aanwezig bent voor je start
               </li>
               <li className="flex items-start">
-                <span className="text-primary mr-2">•</span>
+                <span className={cn(colors.primary.text, 'mr-2')}>•</span>
                 Houd onze website in de gaten voor het laatste nieuws
               </li>
             </ul>
@@ -385,8 +386,8 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
         {/* Locatie sectie */}
         <div className="p-8 border-t border-gray-100">
           <div className="flex items-center mb-6">
-            <FaMapMarkerAlt className="text-primary text-xl mr-3" />
-            <h2 className="text-xl font-bold text-gray-900 font-heading">
+            <FaMapMarkerAlt className={cn(colors.primary.text, 'text-xl mr-3')} />
+            <h2 className={cn(cc.text.h4, 'font-bold text-gray-900', cc.typography.heading)}>
               Startlocatie
             </h2>
           </div>
@@ -402,8 +403,11 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href={getMapsUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg 
-                text-primary hover:bg-orange-50 transition-all"
+              className={cn(
+                'inline-flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-orange-50',
+                colors.primary.text,
+                cc.transition.base
+              )}
             >
               <FaExternalLinkAlt className="text-sm" />
               <span>Bekijk op Google Maps</span>
@@ -416,9 +420,15 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
             <a
               href="/"
-              className="inline-flex items-center px-6 py-3 rounded-full 
-                text-white bg-primary font-semibold transition-all
-                hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-lg"
+              className={cn(
+                'inline-flex items-center px-6 py-3 text-white font-semibold',
+                cc.border.circle,
+                colors.primary.bg,
+                colors.primary.hover,
+                cc.transition.base,
+                'hover:-translate-y-0.5',
+                cc.shadow.lg
+              )}
             >
               Terug naar home
             </a>
@@ -426,10 +436,15 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
         <button
           onClick={handlePrint}
                 disabled={isPrinting}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full 
-                  text-primary bg-white border-2 border-primary font-semibold
-                  hover:bg-orange-50 transition-all disabled:opacity-50 
-                  disabled:cursor-not-allowed"
+                className={cn(
+                  'inline-flex items-center gap-2 px-6 py-3 bg-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed',
+                  cc.border.circle,
+                  colors.primary.text,
+                  'border-2',
+                  colors.primary.border,
+                  'hover:bg-orange-50',
+                  cc.transition.base
+                )}
                 aria-label="Print bevestiging"
               >
                 <FaPrint />
@@ -438,10 +453,15 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               <button
                 onClick={generatePDF}
                 disabled={isPrinting}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full 
-                  text-primary bg-white border-2 border-primary font-semibold
-                  hover:bg-orange-50 transition-all disabled:opacity-50 
-                  disabled:cursor-not-allowed"
+                className={cn(
+                  'inline-flex items-center gap-2 px-6 py-3 bg-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed',
+                  cc.border.circle,
+                  colors.primary.text,
+                  'border-2',
+                  colors.primary.border,
+                  'hover:bg-orange-50',
+                  cc.transition.base
+                )}
                 aria-label="Download PDF"
               >
                 <FaDownload />
@@ -456,7 +476,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://facebook.com/dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary-dark transition-colors"
+              className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op Facebook"
             >
               <FaFacebook size={24} />
@@ -465,7 +485,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://instagram.com/dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary-dark transition-colors"
+              className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op Instagram"
             >
               <FaInstagram size={24} />
@@ -474,7 +494,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://youtube.com/@dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary-dark transition-colors"
+              className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op YouTube"
             >
               <FaYoutube size={24} />
@@ -483,7 +503,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
               href="https://linkedin.com/company/dekoninklijkeloop"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary-dark transition-colors"
+              className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op LinkedIn"
             >
               <FaLinkedin size={24} />

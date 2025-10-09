@@ -9,6 +9,7 @@ import EventDetailCard from './components/EventDetailCard';
 import SocialMediaSection from './components/SocialMediaSection';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useSocialMediaData } from './functions/useSocialMediaData';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface TitleSectionProps {
   onInschrijfClick: () => void;
@@ -35,10 +36,10 @@ const targetEventDate = new Date('2025-05-17T09:00:00'); // Set target date and 
 // --- End Countdown Timer Logic ---
 
 const TitleSkeleton: React.FC = () => (
-  <div className="animate-pulse space-y-8">
+  <div className={cn(animations.pulse, 'space-y-8')}>
     <div className="space-y-4 max-w-3xl mx-auto">
-      <div className="h-12 bg-gray-200 rounded-lg w-3/4 mx-auto" />
-      <div className="h-6 bg-gray-200 rounded-lg w-full" />
+      <div className={cn('h-12 bg-gray-200', cc.border.rounded, 'w-3/4 mx-auto')} />
+      <div className={cn('h-6 bg-gray-200', cc.border.rounded, 'w-full')} />
     </div>
     <div className="max-w-[800px] mx-auto">
       <div className="aspect-video bg-gray-200 rounded-xl" />
@@ -106,7 +107,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
 
   if (titleError && !titleData) {
     return (
-      <div className="py-16 px-5 bg-white font-heading text-center">
+      <div className={cn('py-16 px-5 bg-white text-center', cc.typography.heading)}>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -115,7 +116,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
           <p className="text-red-600 mb-4">{titleError}</p>
           <button
             onClick={handleRetry}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+            className={cn(cc.button.primary, colors.primary.focusRing)}
           >
             Opnieuw proberen
           </button>
@@ -125,8 +126,8 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
   }
 
   return (
-    <section 
-      className="relative w-full bg-gradient-to-b from-orange-50 to-orange-100 py-12 text-center font-heading overflow-hidden isolate"
+    <section
+      className={cn('relative w-full bg-gradient-to-b from-orange-50 to-orange-100 py-12 text-center overflow-hidden isolate', cc.typography.heading)}
       role="region"
       aria-label="Evenement details"
     >
@@ -154,14 +155,14 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h1 
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary font-sans leading-tight"
+                <h1
+                  className={cn(cc.text.h1, 'font-bold font-sans leading-tight', colors.primary.text)}
                   style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                 >
                   {displayData.event_title}
                 </h1>
-                <p 
-                  className="text-lg sm:text-xl md:text-2xl text-gray-800 font-sans leading-relaxed max-w-2xl mx-auto"
+                <p
+                  className={cn(cc.text.h4, 'text-gray-800 font-sans leading-relaxed max-w-2xl mx-auto')}
                   style={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
                 >
                   {displayData.event_subtitle}
@@ -175,7 +176,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <div className="rounded-xl overflow-hidden shadow-xl">
+                <div className={cn('rounded-xl overflow-hidden', cc.shadow.xl)}>
                   <img
                     src={displayData.image_url ?? DEFAULT_TITLE_DATA.image_url ?? ''}
                     alt={displayData.image_alt ?? DEFAULT_TITLE_DATA.image_alt ?? 'Event Banner'}
@@ -196,14 +197,17 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.45 }}
               >
-                <h3 
-                  className="text-lg font-semibold text-gray-800 mb-2"
+                <h3
+                  className={cn(cc.text.h5, 'font-semibold text-gray-800 mb-2')}
                   style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                 >
                   Aantal Huidige Deelnemers:
                 </h3>
-                <p 
-                  className={`text-4xl font-bold ${(!displayData?.participant_count && displayData?.participant_count !== 0) ? 'text-gray-400' : 'text-primary'}`}
+                <p
+                  className={cn(
+                    'text-4xl font-bold',
+                    (!displayData?.participant_count && displayData?.participant_count !== 0) ? 'text-gray-400' : colors.primary.text
+                  )}
                 >
                   {(displayData?.participant_count !== null && displayData?.participant_count !== undefined)
                     ? displayData.participant_count 
@@ -224,15 +228,15 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                   <div className="flex justify-center items-center space-x-2 sm:space-x-6 text-center">
                     {Object.entries(timeLeft).map(([unit, value]) => (
                       <div key={unit} className="p-2">
-                        <div className="text-3xl sm:text-4xl font-bold text-primary">{String(value).padStart(2, '0')}</div>
-                        <div className="text-xs sm:text-sm uppercase text-gray-600 tracking-wider">
+                        <div className={cn('text-3xl sm:text-4xl font-bold', colors.primary.text)}>{String(value).padStart(2, '0')}</div>
+                        <div className={cn(cc.text.small, cc.typography.uppercase, cc.text.muted)}>
                           {unit === 'days' ? 'Dagen' : unit === 'hours' ? 'Uren' : unit === 'minutes' ? 'Minuten' : 'Seconden'}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center text-xl font-semibold text-primary">
+                  <div className={cn('text-center', cc.text.h4, 'font-semibold', colors.primary.text)}>
                     Het evenement is succesvol afgelopen, bedankt en tot volgend jaar!
                   </div>
                 )}
@@ -277,7 +281,17 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
                 {/* Inschrijven Button - Adjusted for mobile */}
                 <motion.button
                   onClick={handleRegisterClick}
-                  className="bg-primary hover:bg-primary-dark text-white px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl rounded-full font-bold tracking-wide transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-4 w-full sm:w-auto"
+                  className={cn(
+                    'text-white px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl font-bold tracking-wide w-full sm:w-auto',
+                    colors.primary.bg,
+                    colors.primary.hover,
+                    cc.border.circle,
+                    cc.transition.base,
+                    'hover:-translate-y-1',
+                    cc.shadow.xl,
+                    cc.flex.center,
+                    'gap-4'
+                  )}
                   style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
                   aria-label="Schrijf je nu in voor De Koninklijke Loop"
                   whileHover={{ scale: 1.05 }}
@@ -308,8 +322,8 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
           <SocialMediaSection socialEmbeds={socialEmbeds} />
         )}
         {socialError && (
-          <div className="max-w-md mx-auto p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-            <p className="text-red-600">{socialError}</p>
+          <div className={cn('max-w-md mx-auto p-4 bg-red-50 border border-red-200', cc.border.rounded, 'text-center')}>
+            <p className={cn(cc.text.error)}>{socialError}</p>
           </div>
         )}
       </div>

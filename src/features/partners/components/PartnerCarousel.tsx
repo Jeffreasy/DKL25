@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { usePartners } from '@/hooks/usePartners';
 import { PartnerModal } from '@/components/ui/modals/PartnerModal';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, animations } from '@/styles/shared';
 
 const PartnerCarrousel: React.FC = () => {
   const { partners, isLoading, error } = usePartners();
@@ -28,12 +29,12 @@ const PartnerCarrousel: React.FC = () => {
       <section className="bg-white">
         <div className="max-w-screen-xl mx-auto px-4 py-4">
           {/* Desktop view */}
-          <div className="hidden md:flex md:justify-center md:items-center md:gap-12">
+          <div className={cn('hidden md:flex md:justify-center md:items-center md:gap-12')}>
             {partners.map((partner) => (
               <button
                 key={partner.id}
                 onClick={() => handlePartnerClick(partner.id, partner.name)}
-                className="w-32 h-16 flex items-center justify-center hover:opacity-75 transition-opacity"
+                className={cn('w-32 h-16', cc.flex.center, 'hover:opacity-75', cc.transition.base)}
               >
                 <img
                   src={partner.logo ?? undefined}
@@ -47,7 +48,7 @@ const PartnerCarrousel: React.FC = () => {
           {/* Mobiele carousel */}
           <div className="md:hidden relative overflow-hidden mx-auto">
             <div className="relative h-16 flex justify-center">
-              <div className="absolute flex gap-8 animate-partnerSlide">
+              <div className={cn('absolute flex gap-8', animations.partnerSlide)}>
                 {[...partners, ...partners].map((partner, index) => (
                   <div
                     key={`${partner.id}-${index}`}
@@ -55,7 +56,7 @@ const PartnerCarrousel: React.FC = () => {
                   >
                     <button
                       onClick={() => handlePartnerClick(partner.id, partner.name)}
-                      className="w-[100px] h-16 flex items-center justify-center"
+                      className={cn('w-[100px] h-16', cc.flex.center)}
                     >
                       <img
                         src={partner.logo ?? undefined}

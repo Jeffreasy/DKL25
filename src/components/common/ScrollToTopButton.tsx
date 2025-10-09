@@ -1,31 +1,41 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { throttle } from 'lodash';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
-const ScrollToTopButton = () => {
+interface ScrollToTopButtonProps {
+  scrollThreshold?: number;
+  size?: 'small' | 'medium' | 'large';
+  position?: { bottom: string; right: string };
+}
+
+const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({
+  scrollThreshold = 300,
+  size = 'medium',
+  position = { bottom: '4rem', right: '1rem' },
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Controleer scroll positie
   useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
+    const toggleVisibility = throttle(() => {
+      setIsVisible(window.scrollY > scrollThreshold);
+    }, 100);
 
     window.addEventListener('scroll', toggleVisibility);
-
-    return () => {
-      window.removeEventListener('scroll', toggleVisibility);
-    };
-  }, []);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, [scrollThreshold]);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const animationClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : animations.fadeIn;
+  const hoverStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'hover:-translate-y-1 hover:shadow-xl';
+
+  const sizeStyles = {
+    small: { padding: 'p-2', fontSize: { xs: 20, sm: 24 } },
+    medium: { padding: 'p-3', fontSize: { xs: 24, sm: 28 } },
+    large: { padding: 'p-4', fontSize: { xs: 28, sm: 32 } },
   };
 
   return (
@@ -33,14 +43,33 @@ const ScrollToTopButton = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-16 right-4 z-40 p-2 md:p-3 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-fade-in"
+          role="button"
+          title="Terug naar boven"
           aria-label="Scroll naar boven"
+          style={{
+            bottom: position.bottom,
+            right: position.right,
+          }}
+          className={cn(
+            'fixed',
+            sizeStyles[size].padding,
+            cc.zIndex.fixed,
+            colors.primary.bg,
+            colors.primary.hover,
+            'text-white',
+            cc.border.circle,
+            cc.shadow.lg,
+            cc.transition.base,
+            hoverStyles,
+            animationClass,
+            colors.primary.focusRing
+          )}
         >
-          <KeyboardArrowUpIcon sx={{ fontSize: { xs: 24, md: 28 } }} />
+          <KeyboardArrowUpIcon sx={{ fontSize: sizeStyles[size].fontSize }} />
         </button>
       )}
     </>
   );
 };
 
-export default ScrollToTopButton; 
+export default React.memo(ScrollToTopButton);

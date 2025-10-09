@@ -1,9 +1,10 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
-import type { Photo } from './types';
+import type { Photo } from '../types';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { trackEvent } from '@/utils/googleAnalytics';
 import debounce from 'lodash.debounce';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface ThumbnailSliderProps {
   photos: Photo[];
@@ -114,7 +115,13 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
       {showLeftArrow && (
         <button
           onClick={() => handleScroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 p-2 rounded-full shadow-lg hover:bg-white transition-all z-10"
+          className={cn(
+            'absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 p-2 hover:bg-white',
+            cc.border.circle,
+            cc.shadow.lg,
+            cc.transition.base,
+            cc.zIndex.dropdown
+          )}
           aria-label="Scroll thumbnails left"
         >
           <ChevronLeftIcon className="text-gray-700" />
@@ -144,15 +151,13 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
               onSelect(index);
               scrollToThumbnail(index);
             }}
-            className={`
-              flex-none w-24 h-16 rounded-lg overflow-hidden
-              transition-all duration-300
-              ${index === currentIndex 
-                ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100 animate-pulse-slow' 
+            className={cn(
+              'flex-none w-24 h-16 rounded-lg overflow-hidden snap-center',
+              cc.transition.base,
+              index === currentIndex
+                ? cn('ring-2 scale-105 opacity-100', colors.primary.border, cc.shadow.lg, animations.pulseSlow)
                 : 'ring-1 ring-gray-200 opacity-60 hover:opacity-80'
-              }
-              snap-center
-            `}
+            )}
             aria-label={`Selecteer foto ${index + 1}`}
             aria-current={index === currentIndex}
           >
@@ -171,7 +176,13 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
       {showRightArrow && (
         <button
           onClick={() => handleScroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 p-2 rounded-full shadow-lg hover:bg-white transition-all z-10"
+          className={cn(
+            'absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 p-2 hover:bg-white',
+            cc.border.circle,
+            cc.shadow.lg,
+            cc.transition.base,
+            cc.zIndex.dropdown
+          )}
           aria-label="Scroll thumbnails right"
         >
           <ChevronRightIcon className="text-gray-700" />

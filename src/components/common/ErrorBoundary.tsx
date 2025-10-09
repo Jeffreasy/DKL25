@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface Props {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ interface State {
   error?: Error;
 }
 
-export class ErrorBoundary extends React.Component<Props, State> {
+export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
@@ -20,19 +21,50 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true, error };
   }
 
-  override render() {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Log fout naar een externe service (bijv. Sentry)
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
+  }
+
+  resetError = () => {
+    this.setState({ hasError: false, error: undefined });
+  };
+
+  render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="container mx-auto px-4 py-16 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        <div
+          className={cn(cc.container.base, cc.spacing.section, 'text-center')}
+          role="alert"
+        >
+          <h2 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>
             Er is iets misgegaan
           </h2>
-          <p className="text-gray-600 mb-8">
-            Probeer de pagina te verversen of neem contact met ons op als het probleem aanhoudt.
+          {process.env.NODE_ENV === 'development' && this.state.error && (
+            <p className={cn(cc.text.body, cc.text.muted, 'mb-4')}>
+              Foutmelding: {this.state.error.message}
+            </p>
+          )}
+          <p className={cn(cc.text.body, cc.text.muted, 'mb-8')}>
+            Probeer opnieuw of ververs de pagina.
           </p>
           <button
+            onClick={this.resetError}
+            className={cn(
+              cc.button.primary,
+              colors.primary.focusRing,
+              'rounded-full mr-4'
+            )}
+          >
+            Opnieuw proberen
+          </button>
+          <button
             onClick={() => window.location.reload()}
-            className="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary-dark transition-colors"
+            className={cn(
+              cc.button.secondary,
+              colors.secondary.focusRing,
+              'rounded-full'
+            )}
           >
             Pagina verversen
           </button>
@@ -42,4 +74,4 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
     return this.props.children;
   }
-} 
+}

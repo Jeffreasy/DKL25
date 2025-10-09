@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-hot-toast';
 import { contactSchema, type ContactFormData } from '@/types/contact';
+import { cc, cn, colors } from '@/styles/shared';
 
 const API_BASE_URL = import.meta.env.DEV ? '/api' : import.meta.env.VITE_EMAIL_SERVICE_URL;
 
@@ -60,13 +61,14 @@ export const ContactForm = () => {
           <input
             type="text"
             id="naam"
-            className={`mt-1 block w-full rounded-md shadow-sm
-              ${errors.naam ? 'border-red-300' : 'border-gray-300'}
-              focus:border-[#ff9328] focus:ring focus:ring-[#ff9328] focus:ring-opacity-50`}
+            className={cn(
+              'mt-1 block',
+              errors.naam ? cc.input.error : cc.input.base
+            )}
             {...register('naam')}
           />
           {errors.naam && (
-            <p className="mt-1 text-sm text-red-600">{errors.naam.message}</p>
+            <p className={cn(cc.text.error, 'mt-1')}>{errors.naam.message}</p>
           )}
         </div>
 
@@ -77,13 +79,14 @@ export const ContactForm = () => {
           <input
             type="email"
             id="email"
-            className={`mt-1 block w-full rounded-md shadow-sm
-              ${errors.email ? 'border-red-300' : 'border-gray-300'}
-              focus:border-[#ff9328] focus:ring focus:ring-[#ff9328] focus:ring-opacity-50`}
+            className={cn(
+              'mt-1 block',
+              errors.email ? cc.input.error : cc.input.base
+            )}
             {...register('email')}
           />
           {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+            <p className={cn(cc.text.error, 'mt-1')}>{errors.email.message}</p>
           )}
         </div>
 
@@ -94,13 +97,14 @@ export const ContactForm = () => {
           <textarea
             id="bericht"
             rows={4}
-            className={`mt-1 block w-full rounded-md shadow-sm
-              ${errors.bericht ? 'border-red-300' : 'border-gray-300'}
-              focus:border-[#ff9328] focus:ring focus:ring-[#ff9328] focus:ring-opacity-50`}
+            className={cn(
+              'mt-1 block',
+              errors.bericht ? cc.input.error : cc.input.base
+            )}
             {...register('bericht')}
           />
           {errors.bericht && (
-            <p className="mt-1 text-sm text-red-600">{errors.bericht.message}</p>
+            <p className={cn(cc.text.error, 'mt-1')}>{errors.bericht.message}</p>
           )}
         </div>
 
@@ -109,7 +113,11 @@ export const ContactForm = () => {
             <input
               type="checkbox"
               id="privacy_akkoord"
-              className="focus:ring-[#ff9328] h-4 w-4 text-[#ff9328] border-gray-300 rounded"
+              className={cn(
+                'h-4 w-4 border-gray-300 rounded',
+                colors.primary.text,
+                colors.primary.focus
+              )}
               {...register('privacy_akkoord')}
             />
           </div>
@@ -118,7 +126,7 @@ export const ContactForm = () => {
               Ik ga akkoord met de privacy voorwaarden
             </label>
             {errors.privacy_akkoord && (
-              <p className="mt-1 text-sm text-red-600">{errors.privacy_akkoord.message}</p>
+              <p className={cn(cc.text.error, 'mt-1')}>{errors.privacy_akkoord.message}</p>
             )}
           </div>
         </div>
@@ -128,9 +136,14 @@ export const ContactForm = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white
-            ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#ff9328] hover:bg-[#e67f1c]'}
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff9328]`}
+          className={cn(
+            'w-full',
+            cc.flex.center,
+            'py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white',
+            isSubmitting ? cc.button.disabled : `${colors.primary.bg} ${colors.primary.hover}`,
+            'focus:outline-none',
+            colors.primary.focusRing
+          )}
         >
           {isSubmitting ? 'Bericht versturen...' : 'Verstuur bericht'}
         </button>

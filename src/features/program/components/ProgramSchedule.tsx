@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import { useModal } from '@/contexts/ModalContext';
+import { cc, cn, colors } from '@/styles/shared';
 
 const ROUTE_TABS = ['15 km', '10 km', '6 km', '2.5 km'];
 
@@ -14,13 +15,13 @@ const ProgramSection: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <motion.h2
           id="programma-title"
-          className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-6 font-heading"
+          className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-6', cc.typography.heading)}
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6 }}
         >
-          Bekijk het Programma <span className="text-primary">per Afstand</span>
+          Bekijk het Programma <span className={colors.primary.text}>per Afstand</span>
         </motion.h2>
 
         {/* --- Route Keuze Knoppen (nu om modal te openen) --- */}
@@ -38,7 +39,14 @@ const ProgramSection: React.FC = () => {
                  console.log(`ProgramSection: Triggering openProgramModal(${route}) from context`);
                  handleOpenProgramModal(route);
                }}
-               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 shadow-sm bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+               className={cn(
+                 'inline-flex items-center gap-2 px-4 py-2 font-medium bg-gray-100 text-gray-700 hover:bg-gray-200',
+                 cc.text.small,
+                 cc.border.circle,
+                 cc.transition.fast,
+                 cc.shadow.sm,
+                 colors.primary.focusRing
+               )}
                aria-label={`Bekijk programma voor ${route}`}
              >
                <DirectionsWalkIcon fontSize="small" />
@@ -51,7 +59,14 @@ const ProgramSection: React.FC = () => {
                  console.log(`ProgramSection: Triggering openProgramModal(Start/Finish/Feest) from context`);
                  handleOpenProgramModal('Start/Finish/Feest');
                }}
-               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 shadow-sm bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+               className={cn(
+                 'inline-flex items-center gap-2 px-4 py-2 font-medium bg-gray-100 text-gray-700 hover:bg-gray-200',
+                 cc.text.small,
+                 cc.border.circle,
+                 cc.transition.fast,
+                 cc.shadow.sm,
+                 colors.primary.focusRing
+               )}
                aria-label="Bekijk start, finish en feest programma"
              >
                <CelebrationIcon fontSize="small" />
@@ -60,7 +75,7 @@ const ProgramSection: React.FC = () => {
         </motion.div>
 
          {/* Korte uitleg of link naar volledige schema */}
-         <p className="text-center text-gray-500 text-sm">
+         <p className={cn('text-center', cc.text.muted, cc.text.small)}>
             Klik op een afstand om het gedetailleerde tijdschema te zien.
          </p>
 

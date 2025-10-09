@@ -1,3 +1,5 @@
+import { cc, cn, colors } from '@/styles/shared';
+
 interface TermsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -8,18 +10,21 @@ export const TermsModal = ({ isOpen, onClose, onAccept }: TermsModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-xl">
+    <div className={cn('fixed inset-0 overflow-y-auto bg-black/50 backdrop-blur-sm', cc.zIndex.modal)}>
+      <div className={cn(cc.flex.center, 'min-h-full p-4')}>
+        <div className={cn('relative w-full max-w-2xl bg-white rounded-xl', cc.shadow.xl)}>
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-gray-200 bg-white rounded-t-xl">
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className={cn(cc.text.h4, 'font-bold text-gray-900')}>
               Algemene Voorwaarden
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-500 transition-colors
-                focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-lg p-1"
+              className={cn(
+                'text-gray-400 hover:text-gray-500 rounded-lg p-1',
+                cc.transition.colors,
+                'focus:outline-none focus:ring-2 focus:ring-primary/20'
+              )}
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -81,9 +86,11 @@ export const TermsModal = ({ isOpen, onClose, onAccept }: TermsModalProps) => {
             border-t border-gray-200 bg-gray-50 rounded-b-xl">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 hover:text-gray-900 
-                font-medium transition-colors focus:outline-none 
-                focus:ring-2 focus:ring-primary/20 rounded-lg"
+              className={cn(
+                'px-4 py-2 text-gray-700 hover:text-gray-900 font-medium rounded-lg',
+                cc.transition.colors,
+                'focus:outline-none focus:ring-2 focus:ring-primary/20'
+              )}
             >
               Sluiten
             </button>
@@ -92,9 +99,13 @@ export const TermsModal = ({ isOpen, onClose, onAccept }: TermsModalProps) => {
                 onAccept();
                 onClose();
               }}
-              className="px-4 py-2 bg-primary text-white font-medium rounded-lg
-                hover:bg-primary-dark transition-all focus:outline-none 
-                focus:ring-2 focus:ring-primary/20"
+              className={cn(
+                'px-4 py-2 text-white font-medium rounded-lg',
+                colors.primary.bg,
+                colors.primary.hover,
+                cc.transition.base,
+                'focus:outline-none focus:ring-2 focus:ring-primary/20'
+              )}
             >
               Ik ga akkoord
             </button>

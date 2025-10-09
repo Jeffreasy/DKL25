@@ -6,13 +6,14 @@ interface ModalContextType {
   setIsDonatieModalOpen: (open: boolean) => void;
   isProgramModalOpen: boolean;
   setIsProgramModalOpen: (open: boolean) => void;
-  selectedInitialTab: string | undefined;
-  setSelectedInitialTab: (tab: string | undefined) => void;
+  selectedInitialTab: string | null;
+  setSelectedInitialTab: (tab: string | null) => void;
   isContactModalOpen: boolean;
   setIsContactModalOpen: (open: boolean) => void;
   isSponsorModalOpen: boolean;
   selectedSponsor: Sponsor | null;
   handleDonatieClick: () => void;
+  handleCloseDonatieModal: () => void;
   handleOpenProgramModal: (initialTab: string) => void;
   handleCloseProgramModal: () => void;
   handleOpenContactModal: () => void;
@@ -38,13 +39,17 @@ interface ModalProviderProps {
 export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
   const [isDonatieModalOpen, setIsDonatieModalOpen] = useState(false);
   const [isProgramModalOpen, setIsProgramModalOpen] = useState(false);
-  const [selectedInitialTab, setSelectedInitialTab] = useState<string | undefined>(undefined);
+  const [selectedInitialTab, setSelectedInitialTab] = useState<string | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
   const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
 
   const handleDonatieClick = () => {
     setIsDonatieModalOpen(true);
+  };
+
+  const handleCloseDonatieModal = () => {
+    setIsDonatieModalOpen(false);
   };
 
   const handleOpenProgramModal = (initialTab: string) => {
@@ -89,6 +94,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
     isSponsorModalOpen,
     selectedSponsor,
     handleDonatieClick,
+    handleCloseDonatieModal,
     handleOpenProgramModal,
     handleCloseProgramModal,
     handleOpenContactModal,

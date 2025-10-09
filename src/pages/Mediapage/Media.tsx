@@ -3,6 +3,7 @@ import RadioGallery from '@/components/sections/Radio/RadioGallery';
 import { Helmet } from 'react-helmet-async';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { SEO } from '../../components/common/SEO';
+import { cc, cn, colors } from '@/styles/shared';
 
 const MediaPage: React.FC = () => {
   useEffect(() => {
@@ -21,10 +22,10 @@ const MediaPage: React.FC = () => {
         {/* Hero Section */}
         <div className="relative bg-orange-100 py-20 px-5">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 font-sans" style={{fontFamily: "'Montserrat', sans-serif"}}>
+            <h1 className={cn(cc.text.h1, 'font-bold text-gray-900 mb-4 font-sans')} style={{fontFamily: "'Montserrat', sans-serif"}}>
               Media Archief
             </h1>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-sans" style={{fontFamily: "'Open Sans', sans-serif"}}>
+            <p className={cn(cc.text.h4, 'text-gray-700 max-w-3xl mx-auto font-sans')} style={{fontFamily: "'Open Sans', sans-serif"}}>
               Herbeleef de sfeer en enthousiasme van De Koninklijke Loop via onze media fragmenten.
             </p>
           </div>
@@ -38,7 +39,7 @@ const MediaPage: React.FC = () => {
 
         {/* Additional Content */}
         <div className="max-w-4xl mx-auto py-16 px-5">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6 font-sans" style={{fontFamily: "'Montserrat', sans-serif"}}>
+          <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 mb-6 font-sans')} style={{fontFamily: "'Montserrat', sans-serif"}}>
             Waarom Media?
           </h2>
           <div className="prose prose-lg max-w-none" style={{fontFamily: "'Open Sans', sans-serif"}}>
@@ -52,7 +53,7 @@ const MediaPage: React.FC = () => {
               Dit media archief is een plek waar we die mooie herinneringen bewaren. Luister terug naar de fragmenten en herbeleef de energie en het enthousiasme van de uitzendingen.
             </p>
             <p>
-              Heb je vragen over onze media-uitingen of wil je meer weten? Neem dan <a href="/contact" className="text-primary hover:text-primary-dark underline">contact</a> met ons op!
+              Heb je vragen over onze media-uitingen of wil je meer weten? Neem dan <a href="/contact" className={cn(colors.primary.text, 'hover:text-primary-dark underline', cc.transition.colors)}>contact</a> met ons op!
             </p>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import { motion } from 'framer-motion';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface TriggerProps {
   onOpenModal: () => void;
@@ -16,7 +17,7 @@ const buttonVariants = {
     width: '130px',
     scale: 1.02,
     transition: { 
-      type: 'spring', 
+      type: 'spring' as const,
       stiffness: 300, 
       damping: 20,
       // When button variant changes to hover, stagger children
@@ -43,16 +44,17 @@ const DesktopTrigger: React.FC<TriggerProps> = ({ onOpenModal }) => {
   return (
     <motion.button
       onClick={onOpenModal}
-      className={`
-        fixed left-0 top-1/2 transform -translate-y-1/2 z-40 
-        flex flex-row items-center 
-        bg-primary hover:bg-primary-dark 
-        h-12 px-3 rounded-r-full 
-        shadow-lg 
-        focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 
-        transition-colors duration-300 ease-in-out /* Cleaned up potential duplicates */
-        /* Removed w-12, hover:w-[...], group. Width controlled by variants */
-      `}
+      className={cn(
+        'fixed left-0 top-1/2 transform -translate-y-1/2',
+        cc.zIndex.fixed,
+        'flex flex-row items-center',
+        colors.primary.bg,
+        colors.primary.hover,
+        'h-12 px-3 rounded-r-full',
+        cc.shadow.lg,
+        colors.primary.focusRing,
+        cc.transition.colors
+      )}
       aria-label="Open Programma"
       variants={buttonVariants}
       initial="rest"
@@ -63,7 +65,7 @@ const DesktopTrigger: React.FC<TriggerProps> = ({ onOpenModal }) => {
       <EventNoteIcon fontSize="medium" className="text-white flex-shrink-0" />
       <motion.span 
         variants={spanVariants}
-        className="ml-2 whitespace-nowrap font-medium text-sm text-white"
+        className={cn('ml-2 whitespace-nowrap font-medium text-white', cc.text.small)}
         // Removed opacity/group-hover classes. Controlled by variants.
       >
         Programma

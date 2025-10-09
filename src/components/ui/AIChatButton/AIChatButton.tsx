@@ -10,6 +10,7 @@ import SuggestionChips from './SuggestionChips';
 import { Message } from './types';
 import { getIntroMessage, processMessage } from './aiChatService';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 // Suggestion mapping based on context hints from aiChatService
 const suggestionMap: Record<string, string[]> = {
@@ -193,18 +194,18 @@ const AIChatButton = () => {
   };
 
   return (
-    <div className="fixed bottom-28 right-4 sm:right-8 z-100">
+    <div className={cn('fixed bottom-28 right-4 sm:right-8', cc.zIndex.max)}>
       {isOpen && (
-        <div className="absolute bottom-full right-0 mb-4 bg-white rounded-2xl shadow-2xl w-[320px] sm:w-[380px] animate-fade-in overflow-hidden">
+        <div className={cn('absolute bottom-full right-0 mb-4 bg-white rounded-2xl w-[320px] sm:w-[380px] overflow-hidden', cc.shadow.xl, animations.fadeIn)}>
           {/* Header */}
-          <div className="bg-primary p-4 flex items-center justify-between border-b border-primary-dark/10">
-            <div className="flex items-center gap-2">
+          <div className={cn(colors.primary.bg, 'p-4 border-b border-primary-dark/10', cc.flex.between)}>
+            <div className={cn(cc.flex.start, 'gap-2')}>
               <SmartToyIcon className="text-white" />
-              <span className="text-white font-heading font-semibold text-lg">DKL Assistant</span>
+              <span className={cn('text-white font-semibold', cc.text.h5, cc.typography.heading)}>DKL Assistant</span>
             </div>
             <button
               onClick={toggleChat}
-              className="text-white hover:bg-white/10 p-1.5 rounded-full transition-colors"
+              className={cn('text-white hover:bg-white/10 p-1.5', cc.border.circle, cc.transition.colors)}
               aria-label="Sluit chat"
             >
               <CloseIcon fontSize="small" />
@@ -212,7 +213,7 @@ const AIChatButton = () => {
           </div>
 
           {/* Chat container */}
-          <div className="h-[450px] flex flex-col">
+          <div className={cn('h-[450px]', cc.flex.col)}>
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map(message => (
                 <ChatMessage 
@@ -223,12 +224,12 @@ const AIChatButton = () => {
               ))}
               
               {isTyping && (
-                <div className="flex justify-start">
+                <div className={cc.flex.start}>
                   <div className="bg-gray-100 rounded-2xl p-4 max-w-[80%]">
-                    <div className="flex space-x-2">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                    <div className={cn(cc.flex.start, 'space-x-2')}>
+                      <div className={cn('w-2 h-2 bg-gray-400', cc.border.circle, 'animate-bounce')} style={{ animationDelay: '0s' }}></div>
+                      <div className={cn('w-2 h-2 bg-gray-400', cc.border.circle, 'animate-bounce')} style={{ animationDelay: '0.2s' }}></div>
+                      <div className={cn('w-2 h-2 bg-gray-400', cc.border.circle, 'animate-bounce')} style={{ animationDelay: '0.4s' }}></div>
                     </div>
                   </div>
                 </div>
@@ -254,9 +255,9 @@ const AIChatButton = () => {
                 disabled={isTyping} 
               />
             ) : (
-              <div className="p-4 border-t border-gray-100">
-                <div className="bg-gray-100 rounded-full p-3 text-center">
-                  <p className="text-sm text-gray-500 font-medium">
+              <div className={cn('p-4', cc.divider.horizontal, 'border-gray-100')}>
+                <div className={cn('bg-gray-100 p-3 text-center', cc.border.circle)}>
+                  <p className={cn(cc.text.small, 'text-gray-500 font-medium')}>
                     Chat functionaliteit komt binnenkort beschikbaar!
                   </p>
                 </div>
@@ -269,8 +270,17 @@ const AIChatButton = () => {
       {/* Chat button - Adjusted for responsiveness */}
       <button
         onClick={toggleChat}
-        // Adjusted padding
-        className="group p-3 md:p-4 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl animate-fade-in relative"
+        className={cn(
+          'group p-3 md:p-4 text-white relative',
+          colors.primary.bg,
+          colors.primary.hover,
+          cc.border.circle,
+          cc.shadow.lg,
+          cc.transition.base,
+          'hover:-translate-y-1',
+          cc.shadow.xl,
+          animations.fadeIn
+        )}
         aria-label="Open AI chat"
       >
         {/* Adjusted icon size */}

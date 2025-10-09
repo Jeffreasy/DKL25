@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useNavigate } from 'react-router-dom';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   const { submitContactForm, isSubmitting } = useContactForm();
@@ -57,19 +58,19 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 overflow-y-auto">
-        <Dialog.Panel className="bg-white rounded-lg xs:rounded-xl sm:rounded-2xl w-full max-w-lg relative shadow-2xl overflow-hidden animate-slideIn mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8">
+    <Dialog open={isOpen} onClose={handleClose} className={cn('relative', cc.zIndex.modal)}>
+      <div className={cn(cc.modal.overlay, 'bg-black/70 backdrop-blur-sm items-start overflow-y-auto')}>
+        <Dialog.Panel className={cn(cc.modal.content, 'rounded-lg xs:rounded-xl sm:rounded-2xl', cc.shadow.xl, animations.slideIn, 'mx-1 xs:mx-2 sm:mx-auto my-1 xs:my-2 sm:my-8')}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="relative">
               {/* Header */}
-              <div className="bg-primary p-6 flex items-center justify-between">
-                <Dialog.Title className="text-2xl font-bold text-white tracking-tight font-heading">
+              <div className={cn(colors.primary.bg, 'p-6', cc.flex.between)}>
+                <Dialog.Title className={cn(cc.text.h3, 'text-white tracking-tight', cc.typography.heading)}>
                   Contact
                 </Dialog.Title>
                 <button 
                   onClick={handleClose}
-                  className="text-white hover:bg-white/10 p-2 rounded-full transition-colors"
+                  className={cn('text-white hover:bg-white/10 p-2', cc.border.circle, cc.transition.colors)}
                   aria-label="Sluiten"
                 >
                   <CloseIcon />
@@ -85,61 +86,62 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 <div className="space-y-4">
                   {/* Naam */}
                   <div>
-                    <label htmlFor="naam" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="naam" className={cc.form.label}>
                       Naam
                     </label>
                     <input
                       type="text"
                       id="naam"
-                      className={`w-full px-4 py-2 border rounded-lg transition-colors
-                        focus:ring-2 focus:ring-primary focus:border-primary 
-                        ${errors.naam ? 'border-red-500' : 'border-gray-300'}
-                        text-gray-900 placeholder-gray-400 bg-white`}
+                      className={cn(
+                        cc.input.base,
+                        errors.naam && cc.input.error
+                      )}
                       placeholder="Uw naam"
                       {...register('naam')}
                     />
                     {errors.naam && (
-                      <p className="text-sm text-red-500 mt-1">{errors.naam.message}</p>
+                      <p className={cn(cc.text.error, 'mt-1')}>{errors.naam.message}</p>
                     )}
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="email" className={cc.form.label}>
                       E-mailadres
                     </label>
                     <input
                       type="email"
                       id="email"
-                      className={`w-full px-4 py-2 border rounded-lg transition-colors
-                        focus:ring-2 focus:ring-primary focus:border-primary 
-                        ${errors.email ? 'border-red-500' : 'border-gray-300'}
-                        text-gray-900 placeholder-gray-400 bg-white`}
+                      className={cn(
+                        cc.input.base,
+                        errors.email && cc.input.error
+                      )}
                       placeholder="uw@email.nl"
                       {...register('email')}
                     />
                     {errors.email && (
-                      <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+                      <p className={cn(cc.text.error, 'mt-1')}>{errors.email.message}</p>
                     )}
                   </div>
 
                   {/* Bericht */}
                   <div>
-                    <label htmlFor="bericht" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="bericht" className={cc.form.label}>
                       Bericht
                     </label>
                     <textarea
                       id="bericht"
-                      className={`w-full px-4 py-2 border rounded-lg transition-colors resize-none
-                        focus:ring-2 focus:ring-primary focus:border-primary 
-                        ${errors.bericht ? 'border-red-500' : 'border-gray-300'}
-                        text-gray-900 placeholder-gray-400 bg-white`}
+                      className={cn(
+                        cc.input.base,
+                        'resize-none',
+                        errors.bericht && cc.input.error
+                      )}
                       rows={4}
                       placeholder="Uw bericht..."
                       {...register('bericht')}
                     />
                     {errors.bericht && (
-                      <p className="text-sm text-red-500 mt-1">{errors.bericht.message}</p>
+                      <p className={cn(cc.text.error, 'mt-1')}>{errors.bericht.message}</p>
                     )}
                   </div>
 
@@ -151,19 +153,19 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                       className="mt-1"
                       {...register('privacy_akkoord')}
                     />
-                    <label htmlFor="privacy_akkoord" className="text-sm text-gray-600">
+                    <label htmlFor="privacy_akkoord" className={cn(cc.text.small, cc.text.muted)}>
                       Ik ga akkoord met het{' '}
                       <button
                         type="button"
                         onClick={handlePrivacyClick}
-                        className="text-primary underline hover:text-primary-dark transition-colors"
+                        className={cn(colors.primary.text, 'underline hover:text-primary-dark', cc.transition.colors)}
                       >
                         privacybeleid
                       </button>
                     </label>
                   </div>
                   {errors.privacy_akkoord && (
-                    <p className="text-sm text-red-500">{errors.privacy_akkoord.message}</p>
+                    <p className={cc.text.error}>{errors.privacy_akkoord.message}</p>
                   )}
                 </div>
               </div>
@@ -173,7 +175,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50"
+                  className={cn(
+                    cc.button.primary,
+                    'w-full py-3',
+                    isSubmitting && 'opacity-50 cursor-not-allowed'
+                  )}
                 >
                   {isSubmitting ? (
                     <>

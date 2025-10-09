@@ -3,7 +3,7 @@ import type { SponsorModalProps } from './types';
 import { Dialog } from '@headlessui/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { Sponsor } from '../sponsors/types'; // Ensure Sponsor type is available
+import { Sponsor } from '@/features/sponsors/types';
 
 export const SponsorModal: React.FC<SponsorModalProps> = ({ isOpen, onClose, sponsor }) => {
   // Track modal open/close

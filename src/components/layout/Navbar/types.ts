@@ -1,4 +1,4 @@
-import { IconName } from '../../icons';
+import { IconName } from '@/icons';
 
 export interface NavItemProps {
   to?: string;
@@ -7,6 +7,7 @@ export interface NavItemProps {
   onClick?: () => void;
   className?: string;
   isActive?: boolean;
+  'aria-current'?: 'page' | undefined; // Toegevoegd voor toegankelijkheid
 }
 
 export interface SocialLinkProps {
@@ -14,6 +15,7 @@ export interface SocialLinkProps {
   icon: IconName;
   label: string;
   hoverColor?: string;
+  onClick?: () => void;
 }
 
 export interface NavIconProps {
@@ -32,4 +34,4 @@ export interface NavbarProps {
   showSocials?: boolean;
   customLogo?: string;
   onNavigate?: (path: string) => void;
-} 
+}

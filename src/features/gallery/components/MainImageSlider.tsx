@@ -4,6 +4,7 @@ import NavigationButton from './GalleryNavButton';
 import { useSwipe } from '@/hooks/useSwipe';
 import ImageModal from './ImageLightbox';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, animations } from '@/styles/shared';
 
 interface MainSliderProps {
   photos: Photo[];
@@ -67,11 +68,13 @@ const MainSlider: React.FC<MainSliderProps> = ({
     <>
       <div 
         ref={containerRef}
-        className={`
-          relative aspect-[16/9] mb-4 rounded-2xl overflow-hidden bg-gray-100 
-          group shadow-xl ${isGrabbing ? 'cursor-grabbing' : 'cursor-pointer'}
-          hover:shadow-2xl transition-shadow duration-300
-        `}
+        className={cn(
+          'relative aspect-[16/9] mb-4 rounded-2xl overflow-hidden bg-gray-100 group',
+          cc.shadow.xl,
+          isGrabbing ? 'cursor-grabbing' : 'cursor-pointer',
+          'hover:shadow-2xl',
+          cc.transition.base
+        )}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -101,17 +104,17 @@ const MainSlider: React.FC<MainSliderProps> = ({
           return (
             <div
               key={photo.id}
-              className={`
-                absolute inset-0 
-                transition-all duration-500 ease-out
-                ${isAnimating ? 'scale-[1.02]' : 'scale-100'}
-                ${index === currentIndex 
-                  ? 'opacity-100 visible transform-none' 
-                  : index < currentIndex 
-                    ? 'opacity-0 invisible -translate-x-full' 
+              className={cn(
+                'absolute inset-0',
+                cc.transition.slow,
+                'ease-out',
+                isAnimating ? 'scale-[1.02]' : 'scale-100',
+                index === currentIndex
+                  ? 'opacity-100 visible transform-none'
+                  : index < currentIndex
+                    ? 'opacity-0 invisible -translate-x-full'
                     : 'opacity-0 invisible translate-x-full'
-                }
-              `}
+              )}
               style={{
                 willChange: 'transform, opacity',
                 backfaceVisibility: 'hidden'
@@ -119,7 +122,7 @@ const MainSlider: React.FC<MainSliderProps> = ({
             >
               {/* Loading placeholder */}
               {!imageLoaded[photo.url] && (
-                <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+                <div className={cn('absolute inset-0 bg-gray-200', animations.pulse)} />
               )}
 
               <img
@@ -167,7 +170,7 @@ const MainSlider: React.FC<MainSliderProps> = ({
 
         {/* Slide counter */}
         <div 
-          className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm"
+          className={cn('absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1', cc.border.circle, cc.text.small)}
           onClick={(e) => e.stopPropagation()}
         >
           {currentIndex + 1} / {photos.length}

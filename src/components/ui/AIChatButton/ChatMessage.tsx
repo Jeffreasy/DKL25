@@ -1,6 +1,7 @@
 // ChatMessage.tsx
 import React from 'react';
 import { Message } from './types';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface ChatMessageProps {
   message: Message;
@@ -42,11 +43,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick }) => 
   };
   
   return (
-    <div className={`flex ${isAssistant ? 'justify-start' : 'justify-end'}`}>
-      <div className={`
-        rounded-2xl p-4 max-w-[80%]
-        ${isAssistant ? 'bg-gray-100' : 'bg-primary text-white'}
-      `}>
+    <div className={cn(cc.flex.start, isAssistant ? 'justify-start' : 'justify-end')}>
+      <div className={cn(
+        'rounded-2xl p-4 max-w-[80%]',
+        isAssistant ? 'bg-gray-100' : cn(colors.primary.bg, 'text-white')
+      )}>
         <p className={isAssistant ? 'text-gray-800' : 'text-white'}>
           {formatContent(contentParts.mainContent)}
         </p>
@@ -54,13 +55,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick }) => 
         {contentParts.hasActionLink && contentParts.actionText && (
           <button 
             onClick={() => onActionClick(contentParts.actionText!)}
-            className="mt-3 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors text-sm font-medium cursor-pointer"
+            className={cn(
+              'mt-3 px-4 py-2 text-white font-medium cursor-pointer',
+              colors.primary.bg,
+              colors.primary.hover,
+              cc.border.rounded,
+              cc.transition.colors,
+              cc.text.small
+            )}
           >
             {contentParts.actionText}
           </button>
         )}
         
-        <span className="text-xs opacity-70 mt-2 block">
+        <span className={cn('opacity-70 mt-2 block', cc.text.small)}>
           {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>

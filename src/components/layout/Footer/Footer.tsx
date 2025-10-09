@@ -1,29 +1,32 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import SocialIcon from '../../sections/Socials/SocialIcon';
 import { socialLinks, createQuickLinks } from './data';
 import { PrivacyModal } from '../../ui/modals';
-import type { FooterProps, QuickLinkType } from './types';
+import type { FooterProps, QuickLinkType, SocialLink } from './types';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, colors } from '@/styles/shared';
 
+const DEFAULT_LOGO = 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png';
 const MemoizedSocialIcon = memo(SocialIcon);
 
-const Footer: React.FC<FooterProps> = ({ 
-  className = '', 
-  showSocials = true, 
+const Footer: React.FC<FooterProps> = ({
+  className = '',
+  showSocials = true,
   showQuickLinks = true,
-  customLogo
+  customLogo,
 }) => {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
   const currentYear = new Date().getFullYear();
-  
+
   const handlePrivacyClick = useCallback(() => {
     try {
       setIsPrivacyModalOpen(true);
       trackEvent('footer', 'privacy_policy_click');
     } catch (error) {
       console.error('Error handling privacy click:', error);
+      // Sentry.captureException(error);
     }
   }, []);
 
@@ -32,6 +35,7 @@ const Footer: React.FC<FooterProps> = ({
       trackEvent('footer', 'social_media_click', platform);
     } catch (error) {
       console.error('Error tracking social click:', error);
+      // Sentry.captureException(error);
     }
   }, []);
 
@@ -40,62 +44,78 @@ const Footer: React.FC<FooterProps> = ({
       trackEvent('footer', 'quick_link_click', linkText);
     } catch (error) {
       console.error('Error tracking quick link click:', error);
+      // Sentry.captureException(error);
     }
   }, []);
 
-  const quickLinks = createQuickLinks(handlePrivacyClick);
-  
+  const quickLinks = useMemo(() => createQuickLinks(handlePrivacyClick), [handlePrivacyClick]);
+  const showDecorativeElements = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hoverStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'hover:-translate-y-1 hover:shadow-lg';
+  const transformStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'group-hover:scale-110';
+
   return (
     <>
-      <footer className={`bg-gradient-to-br from-primary to-primary-dark py-12 px-4 font-heading text-white mt-auto relative overflow-hidden ${className}`}>
-        {/* Decorative Background Elements */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2" />
-        </div>
+      <footer
+        role="contentinfo"
+        className={cn(
+          colors.gradient.footer,
+          'py-12 px-4 text-white mt-auto relative overflow-hidden',
+          cc.typography.heading,
+          className
+        )}
+      >
+        {showDecorativeElements && (
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2" />
+          </div>
+        )}
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 relative">
-          {/* Left Column */}
-          <div className="flex flex-col items-center md:items-start space-y-6">
+        <div className={cn(cc.container.wide, 'grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 relative')}>
+          <div className={cn(cc.flex.col, 'items-center md:items-start space-y-6')}>
             <div className="relative">
               <img
-                src={customLogo || "https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png"}
+                src={customLogo || DEFAULT_LOGO}
                 alt="De Koninklijke Loop logo"
-                className={`w-[120px] transition-all duration-500 ${logoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                className={cn('w-[100px] sm:w-[120px]', cc.transition.slow, logoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95')}
                 onLoad={() => setLogoLoaded(true)}
               />
               {!logoLoaded && (
-                <div className="absolute inset-0 bg-white/10 animate-pulse rounded-lg" />
+                <div className={cn('absolute inset-0 bg-white/10 rounded-lg', cc.loading.skeleton)} />
               )}
             </div>
 
             <div className="text-center md:text-left space-y-2">
-              <h2 className="text-xl font-bold tracking-tight">Doe je met ons mee?</h2>
-              <p className="text-sm text-white/90">Samen op weg voor een goed doel.</p>
-              <p className="text-lg font-semibold bg-gradient-to-r from-yellow-200 to-yellow-500 text-transparent bg-clip-text">
+              <h2 className={cn(cc.text.h4, 'tracking-tight')}>Doe je met ons mee?</h2>
+              <p className={cn(cc.text.small, 'text-white/90')}>Samen op weg voor een goed doel.</p>
+              <p className={cn(cc.text.h5, 'font-semibold bg-gradient-to-r from-yellow-200 to-yellow-500 text-transparent bg-clip-text')}>
                 Loop mee met de Koninklijke Loop!
               </p>
             </div>
 
-            {/* Social Links */}
             {showSocials && (
-              <nav 
-                className="flex gap-4" 
-                aria-label="Social media links"
-              >
+              <nav className="flex gap-4" aria-label="Social media links">
                 {socialLinks.map(({ platform, url, hoverColor, label }) => (
                   <a
                     key={platform}
                     href={url}
-                    className={`social-link w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm ${hoverColor} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group`}
+                    className={cn(
+                      'social-link w-10 h-10',
+                      cc.flex.center,
+                      'rounded-lg bg-white/10 backdrop-blur-sm',
+                      hoverColor,
+                      cc.transition.base,
+                      hoverStyles,
+                      'group'
+                    )}
                     aria-label={label}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => handleSocialClick(platform)}
                   >
-                    <MemoizedSocialIcon 
-                      platform={platform} 
-                      className="w-5 h-5 fill-white transition-transform group-hover:scale-110" 
+                    <MemoizedSocialIcon
+                      platform={platform}
+                      className={cn('w-5 h-5 fill-white', cc.transition.transform, transformStyles)}
                     />
                   </a>
                 ))}
@@ -103,22 +123,27 @@ const Footer: React.FC<FooterProps> = ({
             )}
           </div>
 
-          {/* Right Column */}
           {showQuickLinks && (
-            <div className="flex flex-col items-center md:items-start space-y-6">
-              <h3 className="text-lg font-bold tracking-tight">Snelle Links</h3>
-              <nav aria-label="Quick links">
+            <div className={cn(cc.flex.col, 'items-center md:items-start space-y-6')}>
+              <h3 className={cn(cc.text.h5, 'font-bold tracking-tight')}>Snelle Links</h3>
+              <nav aria-label="Footer snelle links">
                 <ul className="grid grid-cols-2 gap-x-12 gap-y-3">
                   {quickLinks.map((link: QuickLinkType) => (
                     <li key={link.text} className="relative group">
                       {link.to ? (
                         <Link
                           to={link.to}
-                          className="flex items-center space-x-2 text-white/90 hover:text-white transition-colors group-hover:translate-x-1 duration-300"
+                          className={cn(
+                            cc.flex.start,
+                            'space-x-2 text-white/90 hover:text-white',
+                            cc.transition.colors,
+                            window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'group-hover:translate-x-1 duration-300'
+                          )}
+                          aria-current={window.location.pathname === link.to ? 'page' : undefined}
                           onClick={() => handleQuickLinkClick(link.text)}
                         >
-                          <span className="text-lg">{link.icon}</span>
-                          <span className="text-sm font-medium">{link.text}</span>
+                          <span className={cc.text.h5}>{link.icon}</span>
+                          <span className={cn(cc.text.small, 'font-medium')}>{link.text}</span>
                         </Link>
                       ) : (
                         <button
@@ -126,10 +151,15 @@ const Footer: React.FC<FooterProps> = ({
                             link.action?.();
                             handleQuickLinkClick(link.text);
                           }}
-                          className="flex items-center space-x-2 text-white/90 hover:text-white transition-colors group-hover:translate-x-1 duration-300"
+                          className={cn(
+                            cc.flex.start,
+                            'space-x-2 text-white/90 hover:text-white',
+                            cc.transition.colors,
+                            window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'group-hover:translate-x-1 duration-300'
+                          )}
                         >
-                          <span className="text-lg">{link.icon}</span>
-                          <span className="text-sm font-medium">{link.text}</span>
+                          <span className={cc.text.h5}>{link.icon}</span>
+                          <span className={cn(cc.text.small, 'font-medium')}>{link.text}</span>
                         </button>
                       )}
                     </li>
@@ -140,25 +170,21 @@ const Footer: React.FC<FooterProps> = ({
           )}
         </div>
 
-        {/* Bottom Copyright */}
-        <div className="relative mt-12 pt-6 border-t border-white/10">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-            <p className="text-sm text-white/80">
+        <div className={cn('relative mt-12 pt-6', cc.divider.horizontal, 'border-white/10')}>
+          <div className={cn(cc.container.wide, cc.flex.between, 'flex-col md:flex-row gap-4 text-center md:text-left')}>
+            <p className={cn(cc.text.small, 'text-white/80')}>
               &copy; {currentYear} De Koninklijke Loop. Alle rechten voorbehouden.
             </p>
-            <p className="text-xs text-white/60">
+            <p className={cn('text-xs text-white/60')}>
               Met ❤️ gemaakt voor een betere wereld
             </p>
           </div>
         </div>
       </footer>
 
-      <PrivacyModal
-        isOpen={isPrivacyModalOpen}
-        onClose={() => setIsPrivacyModalOpen(false)}
-      />
+      <PrivacyModal isOpen={isPrivacyModalOpen} onClose={() => setIsPrivacyModalOpen(false)} />
     </>
   );
 };
 
-export default memo(Footer); 
+export default memo(Footer);

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import RadioPlayer from './RadioPlayer';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface RadioRecording {
   id: string;
@@ -105,8 +106,8 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
   };
 
   return (
-    <section className="py-12 sm:py-16 px-4 bg-gradient-to-b from-white to-orange-50">
-      <div className="max-w-[1280px] mx-auto">
+    <section className={cn(cc.spacing.section, 'px-4 bg-gradient-to-b from-white to-orange-50')}>
+      <div className={cn(cc.container.wide)}>
         {/* Section Title */}
         <motion.div 
           className="text-center mb-12"
@@ -114,15 +115,15 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 
-            className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-sans"
+          <h2
+            className={cn(cc.text.h2, 'font-bold text-gray-900 mb-4 font-sans')}
             style={{fontFamily: "'Montserrat', sans-serif"}}
           >
             {title}
           </h2>
           {subtitle && (
-            <p 
-              className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto font-sans"
+            <p
+              className={cn(cc.text.h5, cc.text.muted, 'max-w-3xl mx-auto font-sans')}
               style={{fontFamily: "'Open Sans', sans-serif"}}
             >
               {subtitle}
@@ -134,7 +135,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
         {isLoading && (
           <div className="space-y-8">
             {[...Array(2)].map((_, index) => (
-              <div key={index} className="animate-pulse bg-white rounded-2xl shadow-lg overflow-hidden w-full max-w-4xl mx-auto">
+              <div key={index} className={cn(animations.pulse, 'bg-white rounded-2xl', cc.shadow.lg, 'overflow-hidden w-full max-w-4xl mx-auto')}>
                 <div className="flex flex-col md:flex-row">
                   <div className="w-full md:w-2/5 bg-gray-200 h-[250px]"></div>
                   <div className="w-full md:w-3/5 p-6">
@@ -160,11 +161,14 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
 
         {/* Error State */}
         {!isLoading && error && (
-          <div className="text-center py-10">
-            <p className="text-red-600 mb-4">{error}</p>
+          <div className={cn('text-center py-10')}>
+            <p className={cn(cc.text.error, 'mb-4')}>{error}</p>
             <button
               onClick={handleRetry}
-              className="px-6 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors"
+              className={cn(
+                cc.button.primary,
+                colors.primary.focusRing
+              )}
             >
               Opnieuw proberen
             </button>
@@ -211,8 +215,8 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
 
         {/* Empty State */}
         {!isLoading && !error && recordings.length === 0 && (
-          <div className="text-center py-10">
-            <p className="text-gray-600">
+          <div className={cn('text-center py-10')}>
+            <p className={cc.text.muted}>
               Geen radio uitzendingen beschikbaar
             </p>
           </div>

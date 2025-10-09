@@ -8,7 +8,7 @@ import InstagramIcon from '@mui/icons-material/Instagram'
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import RadioIcon from '@mui/icons-material/Radio'
 
-export const ICONS = {
+export const ICONS: Record<string, typeof HomeIcon> = {
   home: HomeIcon,
   register: HowToRegIcon,
   info: InfoIcon,
@@ -18,6 +18,6 @@ export const ICONS = {
   instagram: InstagramIcon,
   youtube: YouTubeIcon,
   radio: RadioIcon,
-} as const
+}
 
-export type IconName = keyof typeof ICONS 
+export type IconName = keyof typeof ICONS

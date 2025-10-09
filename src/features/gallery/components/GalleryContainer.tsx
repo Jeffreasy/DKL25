@@ -1,4 +1,4 @@
-// BELANGRIJK: Zorg ervoor dat de afbeeldingen (photos.url en photos.thumbnail_url) 
+// BELANGRIJK: Zorg ervoor dat de afbeeldingen (photos.url en photos.thumbnail_url)
 // geoptimaliseerd zijn qua grootte en formaat (bv. WebP/AVIF) via de image provider (bv. Cloudinary/Supabase Storage)
 // voor de beste laadprestaties.
 
@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase';
 import { useState, useEffect, useCallback } from 'react';
 import type { Photo, Album } from '../types';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface PhotoGalleryProps {
   onModalChange?: (isOpen: boolean) => void;
@@ -198,11 +199,11 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
   const renderContent = () => {
     if (isLoading && photos.length === 0) { // Toon skeleton alleen bij initiële load of album switch
       return (
-        <div className="animate-pulse">
-          <div className="h-[600px] bg-gray-200 rounded-2xl mb-4" />
-          <div className="flex gap-2 justify-center">
+        <div className={cc.loading.skeleton}>
+          <div className={cn(cc.loading.skeleton, 'h-[600px] rounded-2xl mb-4')} />
+          <div className={cn(cc.flex.center, 'gap-2')}>
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="w-24 h-16 bg-gray-200 rounded-lg" />
+              <div key={i} className={cn(cc.loading.skeleton, 'w-24 h-16 rounded-lg')} />
             ))}
           </div>
         </div>
@@ -212,10 +213,10 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
     if (error) {
       return (
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
+          <p className={cn(cc.text.error, 'mb-4')}>{error}</p>
           <button
-            onClick={fetchPhotos} // Retry fetch for the current album
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+            onClick={fetchPhotos}
+            className={cn(cc.button.primary, 'px-4 py-2')}
           >
             Opnieuw proberen
           </button>
@@ -224,11 +225,11 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
     }
   
     if (photos.length === 0 && selectedAlbumId) {
-      return <p className="text-gray-600 text-center">Geen foto's gevonden voor dit album.</p>;
+      return <p className={cn(cc.text.muted, 'text-center')}>Geen foto's gevonden voor dit album.</p>;
     }
 
     if (photos.length === 0 && !selectedAlbumId) {
-      return <p className="text-gray-600 text-center">Selecteer een album.</p>;
+      return <p className={cn(cc.text.muted, 'text-center')}>Selecteer een album.</p>;
     }
 
     return (
@@ -251,22 +252,24 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
   };
 
   return (
-    <div className="py-16 px-5 bg-white font-heading">
-      <div className="max-w-[1200px] mx-auto">
+    <div className={cn('py-16 px-5 bg-white', cc.typography.heading)}>
+      <div className={cn(cc.container.wide, 'max-w-[1200px]')}>
         {/* Album Selectie Knoppen */}
         {albums.length > 1 && (
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className={cn(cc.flex.center, 'flex-wrap gap-2 mb-8')}>
             {albums.map((album) => (
               <button
                 key={album.id}
                 onClick={() => handleAlbumSelect(album.id)}
-                className={`
-                  px-4 py-2 rounded-full text-sm font-medium transition-colors
-                  ${selectedAlbumId === album.id
-                    ? 'bg-primary text-white shadow-md'
+                className={cn(
+                  'px-4 py-2 font-medium',
+                  cc.border.circle,
+                  cc.text.small,
+                  cc.transition.colors,
+                  selectedAlbumId === album.id
+                    ? cn(colors.primary.bg, 'text-white', cc.shadow.md)
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }
-                `}
+                )}
                 aria-current={selectedAlbumId === album.id ? 'page' : undefined}
               >
                 {album.title}

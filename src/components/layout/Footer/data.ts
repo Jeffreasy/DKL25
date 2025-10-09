@@ -1,6 +1,4 @@
-import type { QuickLinkType } from './types';
-import type { SocialLinkType } from './types';
-import type { SocialPlatform } from '../Socials/types';
+import type { QuickLinkType, SocialLinkType, SocialPlatform } from './types';
 
 export const socialLinks: SocialLinkType[] = [
   {

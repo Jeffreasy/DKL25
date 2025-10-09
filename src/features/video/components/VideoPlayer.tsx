@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { STREAMABLE_THUMB_BASE_URL } from '../constants';
+import { cc, cn } from '@/styles/shared';
 
 interface VideoSlideProps {
   videoId: string;
@@ -115,22 +116,22 @@ const VideoSlide: React.FC<VideoSlideProps> = memo(({
   if (isThumbnail) {
     // Toon alleen de thumbnail als deze in beeld is
     if (!isInView) {
-        return <div ref={slideRef} className="flex-none w-32 md:w-40 h-20 md:h-24 bg-gray-200 rounded-lg animate-pulse" aria-hidden="true"></div>;
+        return <div ref={slideRef} className={cn('flex-none w-32 md:w-40 h-20 md:h-24 rounded-lg', cc.loading.skeleton)} aria-hidden="true"></div>;
     }
     return (
       <div ref={slideRef}>
         {isInView && (
           <button
             onClick={onClick}
-            className={`
-              flex-none w-32 md:w-40 h-20 md:h-24 rounded-lg overflow-hidden
-              transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary
-              ${isSelected 
-                ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100' 
-                : 'ring-1 ring-gray-200 opacity-60 hover:opacity-80'
-              }
-              relative touch-manipulation
-            `}
+            className={cn(
+              'flex-none w-32 md:w-40 h-20 md:h-24 rounded-lg overflow-hidden',
+              cc.transition.base,
+              'focus:outline-none focus:ring-2 focus:ring-primary',
+              isSelected
+                ? 'ring-2 ring-primary scale-105 shadow-lg opacity-100'
+                : 'ring-1 ring-gray-200 opacity-60 hover:opacity-80',
+              'relative touch-manipulation'
+            )}
             aria-label={`Selecteer video: ${title}`}
           >
             <img
@@ -141,7 +142,7 @@ const VideoSlide: React.FC<VideoSlideProps> = memo(({
               onError={() => setHasError(true)}
             />
             {!hasError && (
-              <div className="absolute inset-0 bg-black/20 hover:bg-black/0 transition-colors" />
+              <div className={cn('absolute inset-0 bg-black/20 hover:bg-black/0', cc.transition.colors)} />
             )}
             {hasError && (
               <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
@@ -187,25 +188,23 @@ const VideoSlide: React.FC<VideoSlideProps> = memo(({
 
           {/* Loading indicator (zichtbaar als NOG NIET gespeeld heeft of laadt) */}
           {isLoading && (
-             <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
-               <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+             <div className={cn(cc.loading.overlay, 'bg-black/50 z-30')}>
+               <div className={cn(cc.loading.spinner, 'w-12 h-12')} />
              </div>
           )}
 
           {/* Error state */}
           {hasError && (
-             <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-30">
+             <div className={cn(cc.loading.overlay, 'bg-black/50 z-30')}>
                <div className="text-center text-white">
                  <p className="mb-2">Video kon niet worden geladen</p>
                  <button
                    onClick={() => {
-                     // Simpelweg resetten van de state; 
-                     // de key op het parent component zorgt voor de re-mount.
                      setIsLoading(true);
                      setHasError(false);
-                     setHasPlayed(false); // Zorg dat hasPlayed ook reset wordt
+                     setHasPlayed(false);
                    }}
-                   className="px-4 py-2 bg-primary rounded-lg hover:bg-primary-dark transition-colors"
+                   className={cn(cc.button.primary, 'px-4 py-2')}
                  >
                    Opnieuw proberen
                  </button>
@@ -218,7 +217,7 @@ const VideoSlide: React.FC<VideoSlideProps> = memo(({
             <iframe
               ref={iframeRef}
               src={safeVideoUrl}
-              className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${hasPlayed ? 'opacity-100' : 'opacity-0'}`}
+              className={cn('absolute inset-0 w-full h-full', cc.transition.slow, hasPlayed ? 'opacity-100' : 'opacity-0')}
               title={title}
               allow="autoplay; fullscreen"
               frameBorder="0"

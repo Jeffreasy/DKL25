@@ -3,6 +3,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import EmailIcon from '@mui/icons-material/Email';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useModal } from '@/contexts/ModalContext';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface InschDoneerButtonProps {
   onInschrijfClick: () => void;
@@ -33,11 +34,23 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = ({
   };
 
   return (
-    <div className="sticky bottom-4 sm:bottom-6 md:bottom-8 w-full mx-auto px-4 z-50">
-      <div className={`flex justify-center gap-2 sm:gap-4 ${className}`}>
+    <div className={cn('sticky bottom-4 sm:bottom-6 md:bottom-8 w-full mx-auto px-4', cc.zIndex.modal)}>
+      <div className={cn(cc.flex.center, 'gap-2 sm:gap-4', className)}>
         <button
           onClick={handleInschrijfClick}
-          className="flex items-center justify-center gap-1 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm sm:text-base"
+          className={cn(
+            cc.flex.center,
+            'gap-1 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4',
+            colors.primary.bg,
+            colors.primary.hover,
+            'text-white font-semibold',
+            cc.border.circle,
+            cc.transition.base,
+            'hover:-translate-y-0.5',
+            cc.shadow.lg,
+            colors.primary.focusRing,
+            'text-sm sm:text-base'
+          )}
           aria-label="Aanmelden voor het evenement"
         >
           <EmailIcon sx={{ fontSize: { xs: 14, sm: 16 } }} />
@@ -45,7 +58,19 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = ({
         </button>
         <button
           onClick={handleDonatieClickInternal}
-          className="flex items-center justify-center gap-1 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm sm:text-base"
+          className={cn(
+            cc.flex.center,
+            'gap-1 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4',
+            colors.primary.bg,
+            colors.primary.hover,
+            'text-white font-semibold',
+            cc.border.circle,
+            cc.transition.base,
+            'hover:-translate-y-0.5',
+            cc.shadow.lg,
+            colors.primary.focusRing,
+            'text-sm sm:text-base'
+          )}
           aria-label="Doneren aan het goede doel"
         >
           <FavoriteIcon sx={{ fontSize: { xs: 14, sm: 16 } }} />

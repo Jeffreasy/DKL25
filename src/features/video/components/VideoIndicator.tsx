@@ -1,4 +1,5 @@
 import React, { memo } from 'react'
+import { cc, cn, colors } from '@/styles/shared'
 
 interface DotIndicatorProps {
   total: number;
@@ -18,14 +19,17 @@ const DotIndicator: React.FC<DotIndicatorProps> = memo(({
   };
 
   return (
-    <div className={`flex justify-center gap-2 ${className}`}>
+    <div className={cn(cc.flex.center, 'gap-2', className)}>
       {Array.from({ length: total }).map((_, index) => (
         <button
           key={index}
           onClick={() => handleClick(index)}
-          className={`w-2 h-2 rounded-full transition-all duration-300 ${
-            index === current ? 'bg-primary w-4' : 'bg-gray-300'
-          }`}
+          className={cn(
+            'w-2 h-2',
+            cc.border.circle,
+            cc.transition.base,
+            index === current ? cn(colors.primary.bg, 'w-4') : 'bg-gray-300'
+          )}
           aria-label={`Ga naar slide ${index + 1}`}
         />
       ))}

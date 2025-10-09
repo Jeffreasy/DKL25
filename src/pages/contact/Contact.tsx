@@ -4,6 +4,7 @@ import { ContactModal } from '../../components/ui/modals';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { SEO } from '../../components/common/SEO';
+import { cn, colors } from '@/styles/shared';
 
 interface ContactProps {
   onInschrijfClick?: () => void;
@@ -38,7 +39,7 @@ const Contact: React.FC<ContactProps> = ({ onInschrijfClick }) => {
         title="Contact & Veelgestelde Vragen (FAQ) | De Koninklijke Loop (DKL)"
         description="Heb je een vraag over De Koninklijke Loop? Vind hier antwoorden op veelgestelde vragen (FAQ) of neem contact met ons op."
       />
-      <div className="min-h-screen pt-20 bg-white">
+      <div className={cn('min-h-screen pt-20', colors.neutral.white)}>
         <FAQ 
           onContactClick={handleContactClick}
           onInschrijfClick={handleInschrijfClick}

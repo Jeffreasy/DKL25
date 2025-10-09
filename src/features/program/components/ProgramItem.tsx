@@ -7,25 +7,26 @@ import CoffeeIcon from '@mui/icons-material/Coffee';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import GroupIcon from '@mui/icons-material/Group';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // Voor Hervatting
-import PlaceIcon from '@mui/icons-material/Place'; // Voor locaties zoals De Naald
-import LocationOnIcon from '@mui/icons-material/LocationOn'; // Importeer LocationOn icon
-import type { ProgramItemData } from '../types';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PlaceIcon from '@mui/icons-material/Place';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import type { ProgramItem as ProgramItemData } from '../types';
+import { cc, cn, colors } from '@/styles/shared';
 
 // Uitgebreidere iconMap gebaseerd op mogelijke category/icon_name waarden
 const iconMap: { [key: string]: React.ReactNode } = {
-  aanvang: <GroupIcon className="h-5 w-5 text-primary" />,
-  vertrek: <DirectionsBusIcon className="h-5 w-5 text-primary" />,
-  aanwezig: <GroupIcon className="h-5 w-5 text-primary" />,
-  start: <FlagIcon className="h-5 w-5 text-primary" />,
-  rustpunt: <CoffeeIcon className="h-5 w-5 text-primary" />,
-  hervatting: <PlayArrowIcon className="h-5 w-5 text-primary" />,
-  aankomst: <PlaceIcon className="h-5 w-5 text-primary" />,
-  finish: <SportsScoreIcon className="h-5 w-5 text-primary" />,
-  inhuldiging: <CelebrationIcon className="h-5 w-5 text-primary" />,
-  feest: <CelebrationIcon className="h-5 w-5 text-primary" />,
-  bus: <DirectionsBusIcon className="h-5 w-5 text-primary" />, // Extra alias
-  default: <AccessTimeIcon className="h-5 w-5 text-primary" />,
+  aanvang: <GroupIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  vertrek: <DirectionsBusIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  aanwezig: <GroupIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  start: <FlagIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  rustpunt: <CoffeeIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  hervatting: <PlayArrowIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  aankomst: <PlaceIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  finish: <SportsScoreIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  inhuldiging: <CelebrationIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  feest: <CelebrationIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  bus: <DirectionsBusIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  default: <AccessTimeIcon className={cn('h-5 w-5', colors.primary.text)} />,
 };
 
 interface ProgramItemProps {
@@ -46,7 +47,7 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ item, isLast, index }) => {
       transition: {
         delay: index * 0.07,
         duration: 0.5,
-        ease: "easeOut"
+        ease: [0.4, 0, 0.2, 1] as const
       }
     }
   };
@@ -69,17 +70,25 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ item, isLast, index }) => {
       )}
 
       {/* Tijdlijn Cirkel met Icoon */}
-      <div className={`absolute left-0 top-[0.625rem] flex h-11 w-11 items-center justify-center rounded-full ${isKeyMoment ? 'bg-primary ring-primary/30' : 'bg-gray-200 ring-gray-100'} ring-4 shadow-md`}>
+      <div className={cn(
+        'absolute left-0 top-[0.625rem] h-11 w-11 ring-4',
+        cc.flex.center,
+        cc.border.circle,
+        cc.shadow.md,
+        isKeyMoment ? cn(colors.primary.bg, 'ring-primary/30') : 'bg-gray-200 ring-gray-100'
+      )}>
         {/* Pas icon kleur aan op basis van key moment */}
-        {React.cloneElement(icon as React.ReactElement, { className: `h-6 w-6 ${isKeyMoment ? 'text-white' : 'text-gray-600'}` })}
+        {React.cloneElement(icon as React.ReactElement<{ className?: string }>, {
+          className: cn('h-6 w-6', isKeyMoment ? 'text-white' : 'text-gray-600')
+        })}
       </div>
 
       {/* Content */}
       <div className="pb-8">
-        <div className={`text-base font-semibold leading-7 ${isKeyMoment ? 'text-primary' : 'text-gray-900'}`}>
+        <div className={cn(cc.text.body, 'font-semibold leading-7', isKeyMoment ? colors.primary.text : 'text-gray-900')}>
           {item.time}
         </div>
-        <div className="mt-1 text-sm leading-6 text-gray-600">
+        <div className={cn('mt-1 leading-6', cc.text.small, cc.text.muted)}>
           {item.event_description}
         </div>
         {/* Google Maps Link */} 
@@ -88,7 +97,7 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ item, isLast, index }) => {
             href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center text-xs text-blue-600 hover:text-blue-800 hover:underline"
+            className={cn('mt-2 inline-flex items-center text-xs text-blue-600 hover:text-blue-800 hover:underline', cc.transition.colors)}
           >
              <LocationOnIcon className="h-4 w-4 mr-1" />
              Bekijk op kaart

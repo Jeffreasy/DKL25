@@ -7,6 +7,7 @@ import ProgramModal from '../../features/program/components/ProgramModal';
 import { useModal } from '../../contexts/ModalContext';
 import ProgramSidebarTrigger from '../../features/program/components/SidebarTrigger';
 import AIChatButton from '../ui/AIChatButton/AIChatButton';
+import { cn, colors } from '@/styles/shared';
 
 const Layout: React.FC = () => {
   const {
@@ -16,6 +17,7 @@ const Layout: React.FC = () => {
     isContactModalOpen,
     isSponsorModalOpen,
     selectedSponsor,
+    handleCloseDonatieModal,
     handleCloseProgramModal,
     handleOpenContactModal,
     handleCloseContactModal,
@@ -24,7 +26,7 @@ const Layout: React.FC = () => {
   } = useModal();
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className={cn('min-h-screen flex flex-col', colors.neutral.white)}>
       <Navbar />
       <main className="flex-grow relative">
         <Outlet />
@@ -32,12 +34,12 @@ const Layout: React.FC = () => {
       <Footer />
       <DonatieModal
         isOpen={isDonatieModalOpen}
-        onClose={() => {}}
+        onClose={handleCloseDonatieModal}
       />
       <ProgramModal
         isOpen={isProgramModalOpen}
         onClose={handleCloseProgramModal}
-        initialTab={selectedInitialTab}
+        initialTab={selectedInitialTab || undefined}
         onOpenContactModal={handleOpenContactModal}
       />
       <ContactModal

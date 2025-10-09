@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback, memo, useRef } from 'react';
 import FocusTrap from 'focus-trap-react';
-import type { Photo } from './types';
+import type { Photo } from '../types';
 import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface ImageModalProps {
   photo: Photo | null;
@@ -267,11 +268,13 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
         role="dialog"
         aria-modal="true"
         aria-label={photo.alt_text || `Foto ${currentIndex !== undefined ? currentIndex + 1 : ''}`}
-        className={`
-          fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm
-          transition-all duration-200
-          ${isOpen && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}
-        `}
+        className={cn(
+          'fixed inset-0 bg-black/90 backdrop-blur-sm',
+          cc.zIndex.modal,
+          cc.flex.center,
+          cc.transition.fast,
+          isOpen && !isClosing ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+        )}
         onClick={handleClose}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -297,12 +300,19 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
                 }
             }}
             onClick={handleClose}
-            className="absolute top-6 right-6 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 group"
+            className={cn(
+              'absolute top-6 right-6 p-3 text-white group',
+              cc.zIndex.dropdown,
+              cc.border.circle,
+              'bg-black/50 hover:bg-black/70',
+              cc.transition.fast,
+              'hover:scale-110'
+            )}
             aria-label="Sluit afbeelding"
           >
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
-              className="h-6 w-6 transform transition-transform duration-200 group-hover:rotate-90" 
+              className={cn('h-6 w-6 transform', cc.transition.fast, 'group-hover:rotate-90')}
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
@@ -315,7 +325,13 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
           {onPrevious && (
             <button
               onClick={(e) => { e.stopPropagation(); onPrevious(); }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 hover:translate-x-[-4px]"
+              className={cn(
+                'absolute left-4 top-1/2 -translate-y-1/2 p-3 text-white',
+                cc.border.circle,
+                'bg-black/50 hover:bg-black/70',
+                cc.transition.fast,
+                'hover:scale-110 hover:translate-x-[-4px]'
+              )}
               aria-label="Vorige foto"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -326,7 +342,13 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
           {onNext && (
             <button
               onClick={(e) => { e.stopPropagation(); onNext(); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all duration-200 hover:scale-110 hover:translate-x-[4px]"
+              className={cn(
+                'absolute right-4 top-1/2 -translate-y-1/2 p-3 text-white',
+                cc.border.circle,
+                'bg-black/50 hover:bg-black/70',
+                cc.transition.fast,
+                'hover:scale-110 hover:translate-x-[4px]'
+              )}
               aria-label="Volgende foto"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -340,8 +362,8 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
             className="flex-1 flex items-center justify-center overflow-hidden"
           >
             {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+              <div className={cn('absolute inset-0', cc.flex.center)}>
+                <div className={cn('w-12 h-12 border-4 border-white/20 border-t-white', cc.border.circle, 'animate-spin')} />
               </div>
             )}
             <img
@@ -374,20 +396,20 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
           <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-4 text-white">
             {/* Counter */}
             {totalPhotos && currentIndex !== undefined && (
-              <div className="px-4 py-2 bg-black/50 rounded-full text-sm backdrop-blur-sm">
+              <div className={cn('px-4 py-2 bg-black/50 backdrop-blur-sm', cc.border.circle, cc.text.small)}>
                 {currentIndex + 1} / {totalPhotos}
               </div>
             )}
             
             {/* Caption */}
             {photo.alt_text && (
-              <div className="px-4 py-2 bg-black/50 rounded-lg text-center max-w-2xl backdrop-blur-sm">
+              <div className={cn('px-4 py-2 bg-black/50 text-center max-w-2xl backdrop-blur-sm', cc.border.rounded)}>
                 {photo.alt_text}
               </div>
             )}
 
             {/* Controls info */}
-            <div className="px-4 py-2 bg-black/50 rounded-full text-sm hidden md:block backdrop-blur-sm">
+            <div className={cn('px-4 py-2 bg-black/50 hidden md:block backdrop-blur-sm', cc.border.circle, cc.text.small)}>
               ← → navigatie | spatie voor zoom | esc of klik buiten om te sluiten
             </div>
           </div>

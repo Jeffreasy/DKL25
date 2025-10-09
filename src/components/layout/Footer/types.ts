@@ -1,5 +1,3 @@
-import type { SocialPlatform } from '../Socials/types';
-
 export interface FooterProps {
   className?: string;
   showSocials?: boolean;
@@ -15,9 +13,13 @@ export interface QuickLinkType {
   isExternal?: boolean;
 }
 
+export type SocialPlatform = 'facebook' | 'instagram' | 'youtube' | 'linkedin';
+
 export interface SocialLinkType {
   platform: SocialPlatform;
   url: string;
   hoverColor: string;
   label: string;
-} 
+}
+
+export type SocialLink = SocialLinkType;

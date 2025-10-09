@@ -1,5 +1,6 @@
 import React from 'react';
 import type { SocialLink } from './types';
+import { cn, cc } from '@/styles/shared';
 
 interface SocialIconProps {
   platform: SocialLink['platform'];
@@ -46,17 +47,16 @@ export const SocialIcon: React.FC<SocialIconProps> = ({
       </svg>
       
       {showTooltip && (
-        <div className="
-          absolute -bottom-8 left-1/2 -translate-x-1/2
-          px-2 py-1 rounded bg-gray-900/90 text-white text-xs
-          opacity-0 group-hover:opacity-100
-          transition-opacity duration-200
-          pointer-events-none
-          whitespace-nowrap
-          backdrop-blur-sm
-          shadow-lg
-          z-50
-        ">
+        <div className={cn(
+          'absolute -bottom-8 left-1/2 -translate-x-1/2',
+          'px-2 py-1 rounded bg-gray-900/90 text-white',
+          cc.text.small,
+          'opacity-0 group-hover:opacity-100',
+          cc.transition.base,
+          'pointer-events-none whitespace-nowrap backdrop-blur-sm',
+          cc.shadow.lg,
+          cc.zIndex.tooltip
+        )}>
           {platformNames[platform]}
           <div className="absolute -top-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-900/90" />
         </div>

@@ -7,6 +7,7 @@ import ProgramItemComponent from './ProgramItem';
 import { ProgramItem as ProgramItemType } from '../types';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import InfoIcon from '@mui/icons-material/Info';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface ProgramModalProps {
   isOpen: boolean;
@@ -70,7 +71,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
 
   return (
     <Transition show={isOpen} as={React.Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
+      <Dialog as="div" className={cn('relative', cc.zIndex.modal)} onClose={onClose}>
         <Transition.Child
           as={React.Fragment}
           enter="ease-out duration-300"
@@ -98,25 +99,25 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
-                    className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    className={cn('rounded-md bg-white text-gray-400 hover:text-gray-500', colors.primary.focusRing)}
                     onClick={onClose}
                   >
-                    <span className="sr-only">Sluiten</span>
+                    <span className={cc.a11y.srOnly}>Sluiten</span>
                     <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                 </div>
                 <div>
-                  <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900 mb-4">
+                  <Dialog.Title as="h3" className={cn(cc.text.h5, 'font-semibold leading-6 text-gray-900 mb-4')}>
                     Programma DKL 2025
                   </Dialog.Title>
-                  <div className="flex flex-col gap-y-3 p-4 mb-4 border border-primary/30 bg-orange-50 rounded-md text-gray-700">
-                    <div className="flex items-start gap-x-2">
-                      <InfoIcon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" aria-hidden="true" />
-                      <p className="text-base font-bold text-primary">
+                  <div className={cn('flex flex-col gap-y-3 p-4 mb-4 border bg-orange-50 text-gray-700', colors.primary.border, 'border-primary/30', cc.border.rounded)}>
+                    <div className={cn(cc.flex.start, 'gap-x-2')}>
+                      <InfoIcon className={cn('h-5 w-5 mt-0.5 flex-shrink-0', colors.primary.text)} aria-hidden="true" />
+                      <p className={cn(cc.text.body, 'font-bold', colors.primary.text)}>
                         DEELNEMERS OPGELET!
                       </p>
                     </div>
-                    <div className="ml-7 flex flex-col gap-y-1 text-sm">
+                    <div className={cn('ml-7 flex flex-col gap-y-1', cc.text.small)}>
                       <p>
                         Hieronder vind je alle informatie en tijden over de Koninklijke Loop. Als je je hebt opgegeven kun je je melden bij het coördinatiepunt bij de Grote Kerk in Apeldoorn.
                       </p>
@@ -128,32 +129,32 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                          <button
                             type="button"
                             onClick={onOpenContactModal}
-                            className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                            className={cn('text-blue-600 hover:text-blue-800 hover:underline font-medium', cc.transition.colors)}
                           >
                            neem contact op
                          </button>
                       </p>
                     </div>
-                    <ul className="list-disc space-y-1.5 pl-12 text-sm">
+                    <ul className={cn(cc.list.ul, 'space-y-1.5 pl-12', cc.text.small)}>
                       <li>Tijdens de loop krijg je een lunchpakketje mee, en bij de rustpunten is er fruit & drinken aanwezig. <span className="font-semibold">Neem zelf wel voldoende water mee!</span></li>
                       <li>Bij de Grote kerk kan gebruik worden gemaakt van de toiletten. Er is een invalidetoilet aanwezig. <span className="font-semibold">Houd er rekening mee dat er op de route GEEN TOILETTEN ZIJN!</span></li>
                       <li>Er zijn routebegeleiders en EHBO'ers onderweg. Bij hun kun je altijd terecht voor vragen.</li>
                       <li>We hebben personenvervoer en een rolstoelbus die je naar de startpunten brengt.</li>
                     </ul>
-                    <div className="ml-7 mt-2 pt-3 border-t border-orange-200/80"> 
-                      <p className="text-sm font-medium mb-2">
+                    <div className={cn('ml-7 mt-2 pt-3', cc.divider.horizontal, 'border-orange-200/80')}>
+                      <p className={cn(cc.text.small, 'font-medium mb-2')}>
                         Meldtijden bij coördinatiepunt ({''}
                         <a 
                           href="https://www.google.com/maps/search/?api=1&query=52.22038,5.95512" 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                          className={cn('text-blue-600 hover:text-blue-800 hover:underline', cc.transition.colors)}
                         >
                           Grote Kerk
                         </a>
                         ): 
                       </p>
-                      <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm pl-5">
+                      <div className={cn('grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 pl-5', cc.text.small)}>
                         <div className="font-semibold text-right">15 KM:</div> <div>10:15 uur</div>
                         <div className="font-semibold text-right">10 KM:</div> <div>12:00 uur</div>
                         <div className="font-semibold text-right">6 KM:</div>  <div>13:15 uur</div>
@@ -169,11 +170,13 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                           <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`whitespace-nowrap border-b-2 px-1 py-3 text-sm font-medium focus:outline-none ${
+                            className={cn(
+                              'whitespace-nowrap border-b-2 px-1 py-3 font-medium',
+                              cc.text.small,
                               activeTab === tab
-                                ? 'border-primary text-primary'
+                                ? cn(colors.primary.border, colors.primary.text)
                                 : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                            }`}
+                            )}
                           >
                             {tab}
                           </button>
@@ -189,18 +192,18 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                           </div>
                       )}
                       {error && (
-                          <div className="text-center p-10 text-red-600">
+                          <div className={cn('text-center p-10', cc.text.error)}>
                               <p className="mb-4">{error}</p>
                               <button
-                                  onClick={() => refetch()} // Add button to trigger refetch
-                                  className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                  onClick={() => refetch()}
+                                  className={cn(cc.button.primary, colors.primary.focusRing)}
                               >
                                   Probeer opnieuw
                               </button>
                           </div>
                       )}
                       {!isLoading && !error && scheduleItems.length === 0 && (
-                          <div className="text-center p-10 text-gray-500">Geen programma items gevonden in de database.</div>
+                          <div className={cn('text-center p-10', cc.text.muted)}>Geen programma items gevonden in de database.</div>
                       )}
 
                       {!isLoading && !error && scheduleItems.length > 0 && (
@@ -239,7 +242,14 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                 <div className="mt-5 sm:mt-6 sm:hidden">
                     <button
                       type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                      className={cn(
+                        'inline-flex w-full justify-center rounded-md px-3 py-2 font-semibold text-white',
+                        cc.text.small,
+                        colors.primary.bg,
+                        cc.shadow.sm,
+                        colors.primary.hover,
+                        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+                      )}
                       onClick={onClose}
                     >
                       Sluiten

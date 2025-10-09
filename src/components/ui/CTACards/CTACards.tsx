@@ -4,21 +4,22 @@ import { motion } from 'framer-motion';
 import CTACard from './CTACard';
 import { ctaCardsData } from './data';
 import type { CTACardData } from './types';
-import { logEvent } from '@/utils/googleAnalytics'; // Importeer analytics functie
-import { useModal } from '@/contexts/ModalContext'; // Import useModal
+import { logEvent } from '@/utils/googleAnalytics';
+import { useModal } from '@/contexts/ModalContext';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface CTACardsProps {
   onInschrijfClick: () => void;
 }
 
 const CardSkeleton: React.FC = () => (
-  <div className="bg-white rounded-3xl p-8 shadow-lg animate-pulse">
-    <div className="flex flex-col items-center text-center space-y-4">
-      <div className="w-20 h-20 bg-gray-200 rounded-full mb-2" />
-      <div className="h-8 bg-gray-200 rounded w-3/4" />
-      <div className="h-4 bg-gray-200 rounded w-full" />
-      <div className="h-4 bg-gray-200 rounded w-4/5" />
-      <div className="h-12 bg-gray-200 rounded-full w-2/3 mt-4" />
+  <div className={cn('bg-white rounded-3xl p-8', cc.shadow.lg, animations.pulse)}>
+    <div className={cn(cc.flex.colCenter, 'text-center space-y-4')}>
+      <div className={cn('w-20 h-20 bg-gray-200', cc.border.circle, 'mb-2')} />
+      <div className={cn('h-8 bg-gray-200', cc.border.rounded, 'w-3/4')} />
+      <div className={cn('h-4 bg-gray-200', cc.border.rounded, 'w-full')} />
+      <div className={cn('h-4 bg-gray-200', cc.border.rounded, 'w-4/5')} />
+      <div className={cn('h-12 bg-gray-200', cc.border.circle, 'w-2/3 mt-4')} />
     </div>
   </div>
 );
@@ -81,7 +82,7 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
   };
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 px-4 bg-white font-heading relative overflow-hidden">
+    <section className={cn(cc.spacing.section, 'px-4 bg-white relative overflow-hidden', cc.typography.heading)}>
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white pointer-events-none" />
       
@@ -93,10 +94,10 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-[clamp(2rem,4vw,2.5rem)] text-gray-900 font-bold mb-4">
+          <h2 className={cn(cc.text.h2, 'text-gray-900 font-bold mb-4')}>
             Kom in actie
           </h2>
-          <p className="text-gray-600 text-lg sm:text-xl max-w-2xl mx-auto">
+          <p className={cn(cc.text.h5, cc.text.muted, 'max-w-2xl mx-auto')}>
             Ontdek hoe je kunt deelnemen aan De Koninklijke Loop
           </p>
         </motion.div>
@@ -104,14 +105,14 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
         {/* Error message */}
         {error && (
           <motion.div 
-            className="max-w-md mx-auto mb-8 px-4 py-3 bg-red-50 border border-red-200 rounded-lg"
+            className={cn('max-w-md mx-auto mb-8 px-4 py-3 bg-red-50 border border-red-200', cc.border.rounded)}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <p className="text-red-600 text-center">{error}</p>
+            <p className={cn(cc.text.error, 'text-center')}>{error}</p>
             <button
               onClick={handleRetry}
-              className="mt-2 text-sm text-red-500 hover:text-red-600 underline block mx-auto"
+              className={cn('mt-2', cc.text.small, 'text-red-500 hover:text-red-600 underline block mx-auto')}
             >
               Opnieuw proberen
             </button>

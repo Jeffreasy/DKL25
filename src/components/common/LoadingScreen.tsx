@@ -1,27 +1,47 @@
+import React from 'react';
 import { CircularProgress } from '@mui/material';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
-const LoadingScreen = () => {
+interface LoadingScreenProps {
+  title?: string;
+  message?: string;
+  color?: string;
+  size?: number;
+}
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({
+  title = 'De Koninklijke Loop',
+  message = 'Laden...',
+  color = colors.primary.bg,
+  size = 60,
+}) => {
+  const pulseClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? ''
+    : animations.pulse;
+
   return (
-    <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
-      <div className="text-center">
+    <div
+      className={cn('fixed inset-0 bg-white', cc.zIndex.modal, cc.flex.center)}
+      role="status"
+      aria-live="polite"
+    >
+      <section className="text-center">
         <CircularProgress
-          sx={{
-            color: '#ff9328', // Keep hex for Material-UI compatibility
-            width: '60px !important',
-            height: '60px !important'
-          }}
+          className={cn(cc.loading.spinner)}
+          sx={{ color, width: `${size}px !important`, height: `${size}px !important` }}
+          aria-label={message}
         />
-        <div className="mt-4 font-heading">
-          <h2 className="text-2xl font-bold text-primary animate-pulse">
-            De Koninklijke Loop
+        <div className={cn('mt-4', cc.typography.heading)}>
+          <h2 className={cn(cc.text.h3, colors.primary.text, pulseClass)}>
+            {title}
           </h2>
-          <p className="text-gray-600 mt-2">
-            Laden...
+          <p className={cn(cc.text.body, cc.text.muted, 'mt-2')}>
+            {message}
           </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
 
-export default LoadingScreen; 
+export default React.memo(LoadingScreen);

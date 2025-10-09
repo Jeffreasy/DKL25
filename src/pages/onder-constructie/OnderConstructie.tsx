@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { FaTools } from 'react-icons/fa';
 import { SEO } from '../../components/common/SEO';
 import { useUnderConstruction } from '../../hooks/useUnderConstruction';
+import { cc, cn, colors } from '@/styles/shared';
 
 const OnderConstructie: React.FC = () => {
   const { data, loading, error } = useUnderConstruction();
@@ -61,24 +62,24 @@ const OnderConstructie: React.FC = () => {
         title={`${data.title} - De Koninklijke Loop`}
         description={data.message}
       />
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 font-roboto antialiased">
-        <div className="w-full max-w-4xl mx-auto px-6 py-12 text-center">
+      <div className={cn('min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50', cc.flex.center, cc.typography.body)}>
+        <div className={cn(cc.container.narrow, 'px-6 py-12 text-center')}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <div className="flex justify-center mb-6">
-              <FaTools className="w-16 h-16 text-primary" aria-label="Onder constructie" />
+            <div className={cn(cc.flex.center, 'mb-6')}>
+              <FaTools className={cn('w-16 h-16', colors.primary.text)} aria-label="Onder constructie" />
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight font-heading leading-tight">
+            <h1 className={cn(cc.text.h1, 'font-bold text-gray-900 tracking-tight leading-tight', cc.typography.heading)}>
               {data.title}
             </h1>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 font-body max-w-2xl mx-auto leading-relaxed">
+            <p className={cn(cc.text.h4, cc.text.muted, cc.typography.body, 'max-w-2xl mx-auto leading-relaxed')}>
               {data.message}
             </p>
-            <p className="text-lg sm:text-xl text-primary font-semibold font-body">
+            <p className={cn(cc.text.h5, 'font-semibold', colors.primary.text, cc.typography.body)}>
               {data.footer_text}
             </p>
           </motion.div>

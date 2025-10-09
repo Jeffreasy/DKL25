@@ -15,6 +15,7 @@ import InschDoneerButton from '../../components/ui/buttons/RegisterDonateButton'
 import { SEO } from '../../components/common/SEO';
 import { ProgramSection } from '../../features/program/components';
 import { useModal } from '../../contexts/ModalContext';
+import { cc, cn } from '@/styles/shared';
 
 const Home: React.FC = () => {
   const { handleDonatieClick, handleOpenProgramModal } = useModal();
@@ -39,7 +40,7 @@ const Home: React.FC = () => {
       <div className="bg-white">
         <main>
           {/* Visually hidden heading for accessibility and SEO */}
-          <h2 className="sr-only">Onze Partners</h2>
+          <h2 className={cc.a11y.srOnly}>Onze Partners</h2>
           <PartnerCarrousel />
           <HeroSection />
           <TitleSection onInschrijfClick={handleInschrijven} />
@@ -49,15 +50,15 @@ const Home: React.FC = () => {
           <ProgramSection />
           <section className="py-12 px-5">
             {/* Visually hidden heading for accessibility and SEO */}
-            <h2 className="sr-only">Bekijk de Video's</h2>
+            <h2 className={cc.a11y.srOnly}>Bekijk de Video's</h2>
             <VideoGallery />
           </section>
           <section className="py-12 px-5">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Foto Impressie</h2>
+            <h2 className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-8')}>Foto Impressie</h2>
             <PhotoGallery onModalChange={setIsModalOpen} />
           </section>
           <section className="py-12 px-5">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Luister Terug</h2>
+            <h2 className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-8')}>Luister Terug</h2>
             <RadioGallery
               title="Radio Fragmenten"
               subtitle="Luister naar onze Radio Fragmenten"
@@ -66,7 +67,7 @@ const Home: React.FC = () => {
           </section>
           <DKLSocials />
           <section className="py-12 px-5">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Met Dank Aan Onze Sponsors</h2>
+            <h2 className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-8')}>Met Dank Aan Onze Sponsors</h2>
             <DKLSponsors />
           </section>
           <InschDoneerButton
