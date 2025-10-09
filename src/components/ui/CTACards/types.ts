@@ -1,4 +1,4 @@
-import { IconName } from '../../icons';
+import { IconName } from '@/icons';
 
 export type ActionType = 'inschrijven' | 'doneren' | 'navigate';
 

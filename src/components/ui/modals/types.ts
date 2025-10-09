@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Sponsor } from '../sponsors/types';
+import { Sponsor } from '@/features/sponsors/types';
 
 // Base modal props
 interface BaseModalProps {
