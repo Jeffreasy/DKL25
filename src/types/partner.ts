@@ -1,3 +1,6 @@
-import type { Database } from './supabase'
+/**
+ * @deprecated Use types from '@/features/partners' instead
+ * This file is kept for backward compatibility
+ */
 
-export type Partner = Database['public']['Tables']['partners']['Row'] 
+export type { Partner } from '@/features/partners'

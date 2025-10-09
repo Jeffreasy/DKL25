@@ -3,15 +3,13 @@ import { z } from 'zod';
 const baseSchema = z.object({
   naam: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
   email: z.string().email('Ongeldig email adres'),
-  rol: z.enum(['Deelnemer', 'Begeleider', 'Vrijwilliger'], {
-    required_error: 'Selecteer een rol'
+  rol: z.enum(['Deelnemer', 'Begeleider', 'Vrijwilliger']).refine(val => val !== undefined, {
+    message: 'Selecteer een rol'
   }),
-  afstand: z.string({
-    required_error: 'Selecteer een afstand'
-  }),
+  afstand: z.string().min(1, 'Selecteer een afstand'),
   telefoon: z.string().optional(),
-  ondersteuning: z.enum(['Ja', 'Nee', 'Anders'], {
-    required_error: 'Geef aan of je ondersteuning nodig hebt'
+  ondersteuning: z.enum(['Ja', 'Nee', 'Anders']).refine(val => val !== undefined, {
+    message: 'Geef aan of je ondersteuning nodig hebt'
   }),
   bijzonderheden: z.string().optional(),
   terms: z.boolean().refine((val) => val === true, 'Je moet akkoord gaan met de algemene voorwaarden')

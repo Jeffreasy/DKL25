@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import AppWrapper from './App'
 import './index.css'
 import { initGA } from './utils/googleAnalytics.js'
-import { ModalProvider } from './context/ModalContext'
+import { ModalProvider } from './contexts/ModalContext'
 
 // Initialiseer Google Analytics
 // Vervang 'G-XXXXXXXXXX' met je eigen Google Analytics measurement ID

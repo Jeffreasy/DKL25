@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSponsors } from '@/hooks/useSponsors';
 import { trackEvent } from '@/utils/googleAnalytics';
 import LoadingSpinner from '../LoadingSpinner';
-import { Sponsor } from './types';
+import type { SponsorRow } from '@/features/sponsors';
 import { useModal } from '@/contexts/ModalContext';
 
 const DKLSponsors: React.FC = () => {
@@ -17,7 +17,7 @@ const DKLSponsors: React.FC = () => {
     trackEvent('sponsors', 'image_error', sponsorName);
   };
 
-  const handleOpenSponsorModalLocal = (sponsor: Sponsor) => {
+  const handleOpenSponsorModalLocal = (sponsor: SponsorRow) => {
     console.log(`DKLSponsors: Triggering handleOpenSponsorModal(${sponsor.name}) from context`);
     handleSponsorAnalytics(sponsor.name);
     handleOpenSponsorModal(sponsor);
@@ -100,7 +100,7 @@ const DKLSponsors: React.FC = () => {
               <div className="aspect-[3/2] p-8 flex items-center justify-center bg-gray-50 group-hover:bg-gray-100 transition-colors rounded-t-2xl">
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img
-                    src={sponsor.logoUrl}
+                    src={sponsor.logo_url}
                     alt={`${sponsor.name} logo`}
                     className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"

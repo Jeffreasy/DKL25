@@ -7,7 +7,7 @@ interface IntersectionObserverOptions {
 }
 
 const useIntersectionObserver = (
-  ref: RefObject<Element>,
+  ref: RefObject<Element | HTMLElement | null>,
   callback: (entries: IntersectionObserverEntry[]) => void,
   options: IntersectionObserverOptions = {}
 ): void => {

@@ -19,7 +19,7 @@ export const SponsorModal: React.FC<SponsorModalProps> = ({ isOpen, onClose, spo
   };
 
   const handleWebsiteClick = () => {
-    if (sponsor?.websiteUrl) {
+    if (sponsor?.website_url) {
       trackEvent('sponsors', 'website_click', sponsor.name);
     }
   };
@@ -45,7 +45,7 @@ export const SponsorModal: React.FC<SponsorModalProps> = ({ isOpen, onClose, spo
           <div className="relative bg-primary p-6 sm:p-10 flex justify-center items-center h-40 sm:h-48">
             <div className="absolute inset-0 opacity-10 bg-pattern"></div> {/* Assuming bg-pattern class exists */}
             <img
-              src={sponsor.logoUrl ?? '/fallback-logo.png'} // Use fallback if logoUrl is null/undefined
+              src={sponsor.logo_url ?? '/fallback-logo.png'} // Use fallback if logo_url is null/undefined
               alt={`${sponsor.name} Logo`}
               className="w-32 sm:w-48 max-h-full object-contain relative z-1"
               onError={(e) => {
@@ -70,9 +70,9 @@ export const SponsorModal: React.FC<SponsorModalProps> = ({ isOpen, onClose, spo
 
           {/* Footer with Website Button */}
           <div className="p-6 bg-gray-50 border-t border-gray-100">
-            {sponsor.websiteUrl && (
+            {sponsor.website_url && (
               <a
-                href={sponsor.websiteUrl}
+                href={sponsor.website_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleWebsiteClick}

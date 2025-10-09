@@ -1,28 +1,6 @@
-import type { Database } from '@/types/supabase';
+/**
+ * @deprecated Use types from '@/features/gallery' instead
+ * This file is kept for backward compatibility
+ */
 
-type PhotoRow = Database['public']['Tables']['photos']['Row'];
-type AlbumRow = Database['public']['Tables']['albums']['Row'];
-
-export interface Photo {
-  id: string;
-  url: string;
-  thumbnail_url: string | null;
-  alt_text: string;
-  visible: boolean;
-  created_at: string;
-  updated_at: string;
-  title: string | null;
-  description: string | null;
-  year: number | null;
-}
-
-export interface Album {
-  id: string;
-  title: string;
-  description: string | null;
-  cover_photo_id: string | null;
-  visible: boolean | null;
-  order_number: number | null;
-  created_at: string | null;
-  updated_at: string | null;
-} 
+export type { Photo, Album, AlbumPhoto } from '@/features/gallery'

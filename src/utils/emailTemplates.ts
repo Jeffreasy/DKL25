@@ -1,3 +1,5 @@
+import { colorTokens } from '../styles/colors'
+
 interface EmailTemplateProps {
   naam: string;
   email: string;
