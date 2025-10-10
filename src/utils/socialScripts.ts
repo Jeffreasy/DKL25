@@ -111,7 +111,7 @@ export const loadFacebookSDK = (): Promise<void> => {
       }
     };
 
-    document.body.appendChild(script);
+    document.head.appendChild(script);
   });
 
   return facebookScriptLoadingPromise;
@@ -149,7 +149,7 @@ export const loadInstagramEmbed = (): Promise<void> => {
     console.log('[DEBUG] Creating new Instagram script');
     const script = document.createElement('script');
     script.src = 'https://www.instagram.com/embed.js';
-    script.async = true;
+    script.async = false; // Load synchronously to ensure proper initialization
 
     let timeoutId: NodeJS.Timeout | null = null;
     let resolved = false;
@@ -164,11 +164,11 @@ export const loadInstagramEmbed = (): Promise<void> => {
     script.onload = () => {
       console.log('[DEBUG] Instagram script loaded, checking for instgrm object');
       let attempts = 0;
-      const maxAttempts = 20;
-      
+      const maxAttempts = 50; // Increased from 20
+
       const checkInstagram = () => {
         console.log(`[DEBUG] Checking Instagram (attempt ${attempts + 1}/${maxAttempts})`, { hasInstgrm: !!window.instgrm, hasEmbeds: !!window.instgrm?.Embeds });
-        
+
         if (window.instgrm?.Embeds?.process) {
           console.log('[DEBUG] Instagram SDK ready!');
           instagramScriptLoaded = true;
@@ -180,7 +180,7 @@ export const loadInstagramEmbed = (): Promise<void> => {
           }
         } else if (attempts < maxAttempts) {
           attempts++;
-          const delay = 100 + (attempts * 50);
+          const delay = 200 + (attempts * 100); // Increased delay: 200ms + 100ms per attempt
           timeoutId = setTimeout(checkInstagram, delay);
         } else {
           console.error('[DEBUG] Instagram SDK timeout');
@@ -206,7 +206,7 @@ export const loadInstagramEmbed = (): Promise<void> => {
       }
     };
 
-    document.body.appendChild(script);
+    document.head.appendChild(script);
   });
 
   return instagramScriptLoadingPromise;
