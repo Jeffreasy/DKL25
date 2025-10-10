@@ -100,10 +100,10 @@ const CTACards: React.FC<CTACardsProps> = memo(({ onInschrijfClick }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className={cn(cc.text.h2, 'text-gray-900 font-bold mb-4')}>
+          <h2 className={cn(cc.text.h2, 'text-gray-900 mb-4')}>
             Kom in actie
           </h2>
-          <p className={cn(cc.text.h5, cc.text.muted, 'max-w-2xl mx-auto')}>
+          <p className={cn(cc.typography.lead, 'text-gray-600 max-w-2xl mx-auto')}>
             Ontdek hoe je kunt deelnemen aan De Koninklijke Loop
           </p>
         </motion.div>

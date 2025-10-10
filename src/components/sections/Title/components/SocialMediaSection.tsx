@@ -6,6 +6,7 @@ import { SocialEmbedRow } from '../functions/types';
 import DOMPurify from 'dompurify';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { loadFacebookSDK, loadInstagramEmbed } from '@/utils/socialScripts';
+import { cc, cn } from '@/styles/shared';
 
 interface SocialMediaSectionProps {
   socialEmbeds: SocialEmbedRow[];
@@ -271,14 +272,12 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
         variants={itemVariants}
       >
         <h2
-          className="text-[clamp(1.75rem,4vw,2.5rem)] leading-tight text-gray-900 font-bold tracking-tight mb-4"
-          style={{fontFamily: "'Montserrat', sans-serif"}}
+          className={cn(cc.text.h2, 'text-gray-900 mb-4')}
         >
           Laatste Nieuws
         </h2>
         <p
-          className="text-[clamp(1.25rem,3vw,1.5rem)] text-gray-600"
-          style={{fontFamily: "'Open Sans', sans-serif"}}
+          className={cn(cc.typography.lead, 'text-gray-600')}
         >
           Volg ons op social media
         </p>

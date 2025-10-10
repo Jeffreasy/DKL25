@@ -27,8 +27,7 @@ const CTAButton: React.FC<CTAButtonProps> = memo(({ onClick }) => {
     >
       <motion.button
         onClick={handleClick}
-        className={`text-white px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl font-bold tracking-wide w-full sm:w-auto ${colors.primary.bg} ${colors.primary.hover} ${cc.border.circle} ${cc.transition.base} hover:-translate-y-1 ${cc.shadow.xl} ${cc.flex.center} gap-4`}
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
+        className={`text-white px-6 py-3 sm:px-12 sm:py-5 w-full sm:w-auto ${cc.text.bodyLarge} font-bold tracking-wide ${colors.primary.bg} ${colors.primary.hover} ${cc.border.circle} ${cc.transition.base} hover:-translate-y-1 ${cc.shadow.xl} ${cc.flex.center} gap-4`}
         aria-label="Schrijf je nu in voor De Koninklijke Loop"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}

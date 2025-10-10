@@ -87,7 +87,7 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ item, isLast, index }) => {
 
       {/* Content */}
       <div className="pb-8">
-        <div className={cn(cc.text.body, 'font-semibold leading-7', isKeyMoment ? colors.primary.text : 'text-gray-900')}>
+        <div className={cn(cc.text.body, 'leading-7', isKeyMoment ? colors.primary.text : 'text-gray-900')}>
           {item.time}
         </div>
         <div className={cn('mt-1 leading-6', cc.text.small, cc.text.muted)}>
@@ -99,7 +99,7 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ item, isLast, index }) => {
             href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`} 
             target="_blank" 
             rel="noopener noreferrer"
-            className={cn('mt-2 inline-flex items-center text-xs text-blue-600 hover:text-blue-800 hover:underline', cc.transition.colors)}
+            className={cn('mt-2 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline', cc.text.small, cc.transition.colors)}
           >
             <LocationOn className="h-4 w-4 mr-1" />
             Bekijk op kaart

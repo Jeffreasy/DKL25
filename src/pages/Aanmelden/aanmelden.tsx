@@ -43,7 +43,7 @@ const Aanmelden = memo(() => {
       <div className={cn('bg-gray-50 py-12 sm:py-16')}>
         <div className={cn(cc.container.base)}>
           <div className={cn(cc.container.narrow)}>
-            <h1 className={cn(cc.text.h1, 'font-bold text-gray-900 mb-8 text-center', cc.typography.heading)}>
+            <h1 className={cn(cc.text.h1, 'text-gray-900 mb-8 text-center', cc.typography.heading)}>
               Aanmelden
             </h1>
 

@@ -117,15 +117,13 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
           transition={{ duration: 0.5 }}
         >
           <h2
-            className={cn(cc.text.h2, 'font-bold text-gray-900 mb-4 font-sans')}
-            style={{fontFamily: "'Montserrat', sans-serif"}}
+            className={cn(cc.text.h2, 'text-gray-900 mb-4')}
           >
             {title}
           </h2>
           {subtitle && (
             <p
-              className={cn(cc.text.h5, cc.text.muted, 'max-w-3xl mx-auto font-sans')}
-              style={{fontFamily: "'Open Sans', sans-serif"}}
+              className={cn(cc.typography.lead, 'text-gray-600 max-w-3xl mx-auto')}
             >
               {subtitle}
             </p>

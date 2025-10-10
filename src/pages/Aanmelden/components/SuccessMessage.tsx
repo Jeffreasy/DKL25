@@ -310,44 +310,44 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               className="h-24 mx-auto"
             />
           </div>
-          <h1 className={cn(cc.text.h2, 'font-bold text-white mb-2', cc.typography.heading)}>
+          <h1 className={cn(cc.text.h2, 'text-white mb-2', cc.typography.heading)}>
             Bedankt voor je aanmelding!
         </h1>
           <p className={cn(cc.text.h5, 'text-white/90')}>
             We hebben je aanmelding ontvangen en een bevestigingsmail gestuurd naar{' '}
-            <span className={cn('font-medium')}>{data.email}</span>
+            <span className={cn(cc.text.body)}>{data.email}</span>
         </p>
       </div>
 
         {/* Aanmeldgegevens sectie */}
         <div className="p-8">
-          <h2 className={cn(cc.text.h4, 'font-bold text-gray-900 mb-6', cc.typography.heading)}>
+          <h2 className={cn(cc.text.h4, 'text-gray-900 mb-6', cc.typography.heading)}>
             Je aanmeldgegevens
           </h2>
           <div className="space-y-4">
             <div className={cn(cc.flex.between, 'py-3', cc.divider.horizontal, 'border-gray-200')}>
-              <dt className="text-gray-600 font-medium">Naam</dt>
-              <dd className="text-gray-900 font-semibold">{data.naam}</dd>
+              <dt className={cn(cc.text.body, 'text-gray-600')}>Naam</dt>
+              <dd className={cn(cc.text.body, 'text-gray-900')}>{data.naam}</dd>
             </div>
             <div className="flex justify-between items-center py-3 border-b border-gray-200">
-              <dt className="text-gray-600 font-medium">Rol</dt>
-              <dd className="text-gray-900 font-semibold">{data.rol}</dd>
+              <dt className={cn(cc.text.body, 'text-gray-600')}>Rol</dt>
+              <dd className={cn(cc.text.body, 'text-gray-900')}>{data.rol}</dd>
             </div>
             <div className="flex justify-between items-center py-3 border-b border-gray-200">
-              <dt className="text-gray-600 font-medium">Afstand</dt>
-              <dd className="text-gray-900 font-semibold">{data.afstand}</dd>
+              <dt className={cn(cc.text.body, 'text-gray-600')}>Afstand</dt>
+              <dd className={cn(cc.text.body, 'text-gray-900')}>{data.afstand}</dd>
       </div>
             {data.telefoon && (
               <div className="flex justify-between items-center py-3 border-b border-gray-200">
-                <dt className="text-gray-600 font-medium">Telefoon</dt>
-                <dd className="text-gray-900 font-semibold">{data.telefoon}</dd>
+                <dt className={cn(cc.text.body, 'text-gray-600')}>Telefoon</dt>
+                <dd className={cn(cc.text.body, 'text-gray-900')}>{data.telefoon}</dd>
               </div>
             )}
           </div>
 
           {/* Belangrijke informatie */}
           <div className={cn('mt-8 bg-orange-50 border border-orange-200 rounded-lg p-6')}>
-            <h3 className={cn(cc.text.h5, 'font-bold text-gray-900 mb-4')}>
+            <h3 className={cn(cc.text.h5, 'text-gray-900 mb-4')}>
               Belangrijke informatie
             </h3>
             <ul className="space-y-2 text-gray-700">
@@ -371,16 +371,16 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
         <div className="p-8 border-t border-gray-100">
           <div className="flex items-center mb-6">
             <FaMapMarkerAlt className={cn(colors.primary.text, 'text-xl mr-3')} />
-            <h2 className={cn(cc.text.h4, 'font-bold text-gray-900', cc.typography.heading)}>
+            <h2 className={cn(cc.text.h4, 'text-gray-900', cc.typography.heading)}>
               Startlocatie
             </h2>
           </div>
 
           <div className="bg-gray-50 rounded-xl p-6">
             <div className="space-y-2 mb-4">
-              <h3 className="font-semibold text-gray-900">{VENUE.name}</h3>
-              <p className="text-gray-600">{VENUE.address}</p>
-              <p className="text-gray-600">{VENUE.postalCode} {VENUE.city}</p>
+              <h3 className={cn(cc.text.body, 'text-gray-900')}>{VENUE.name}</h3>
+              <p className={cn(cc.text.body, 'text-gray-600')}>{VENUE.address}</p>
+              <p className={cn(cc.text.body, 'text-gray-600')}>{VENUE.postalCode} {VENUE.city}</p>
             </div>
 
             <a
@@ -405,7 +405,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             <a
               href="/"
               className={cn(
-                'inline-flex items-center px-6 py-3 text-white font-semibold',
+                'inline-flex items-center px-6 py-3 text-white',
                 cc.border.circle,
                 colors.primary.bg,
                 colors.primary.hover,
@@ -420,7 +420,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               onClick={handlePrint}
               disabled={isPrinting}
               className={cn(
-                'inline-flex items-center gap-2 px-6 py-3 bg-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed',
+                'inline-flex items-center gap-2 px-6 py-3 bg-white disabled:opacity-50 disabled:cursor-not-allowed',
                 cc.border.circle,
                 colors.primary.text,
                 'border-2',

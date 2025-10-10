@@ -53,7 +53,8 @@ const PartnerImage: React.FC<{
       {hasError ? (
         <div className={cn(
           cc.flex.center,
-          'bg-gray-100 text-gray-400 text-xs rounded',
+          'bg-gray-100 text-gray-400 rounded',
+          cc.text.small,
           sizeClasses[size]
         )}>
           Logo
@@ -163,7 +164,7 @@ const PartnerCarrousel: React.FC = memo(() => {
       <section className="bg-white">
         <div className="max-w-screen-xl mx-auto px-4 py-4">
           <div className={cn('text-center p-8', cc.text.error)}>
-            <p className="mb-4">{error}</p>
+            <p className={cn(cc.text.body, 'mb-4')}>{error}</p>
             <button
               onClick={() => window.location.reload()}
               className={cn(cc.button.primary, 'px-4 py-2')}

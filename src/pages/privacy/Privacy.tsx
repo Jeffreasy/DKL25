@@ -64,7 +64,7 @@ const Privacy: React.FC = memo(() => {
         <div className={cn(cc.container.narrow, 'p-4 sm:p-6')}>
           <div className={cn('bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden', cc.shadow.xl)}>
             <div className={cn(colors.primary.bg, 'p-4 sm:p-6')}>
-              <h1 className={cn(cc.text.h3, 'font-bold text-white tracking-tight', cc.typography.heading)}>
+              <h1 className={cn(cc.text.h3, 'text-white tracking-tight', cc.typography.heading)}>
                 Privacybeleid
               </h1>
             </div>
@@ -74,7 +74,7 @@ const Privacy: React.FC = memo(() => {
                 <section key={section.title}>
                   {section.isIntro ? (
                     <>
-                      <h2 className={cn(cc.text.h5, 'font-semibold text-gray-900 mb-3')}>
+                      <h2 className={cn(cc.text.h5, 'text-gray-900 mb-3', cc.typography.heading)}>
                         {section.title}
                       </h2>
                       <p className={cn(cc.text.body, cc.text.muted, 'mb-4')}>
@@ -83,7 +83,7 @@ const Privacy: React.FC = memo(() => {
                     </>
                   ) : (
                     <>
-                      <h3 className={cn('text-md font-semibold text-gray-900 mb-2')}>
+                      <h3 className={cn('text-md text-gray-900 mb-2', cc.typography.heading)}>
                         {section.title}
                       </h3>
                       <div className={cn('space-y-3', cc.text.muted)}>

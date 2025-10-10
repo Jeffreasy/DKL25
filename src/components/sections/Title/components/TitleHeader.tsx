@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
+import { cc, cn } from '@/styles/shared';
 
 interface TitleHeaderProps {
   title: string;
@@ -15,14 +16,12 @@ const TitleHeader: React.FC<TitleHeaderProps> = memo(({ title, subtitle }) => {
       transition={{ delay: 0.2 }}
     >
       <h1
-        className="font-bold font-sans leading-tight text-primary"
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
+        className={cn(cc.typography.display, 'text-primary')}
       >
         {title}
       </h1>
       <p
-        className="text-gray-800 font-sans leading-relaxed max-w-2xl mx-auto"
-        style={{ fontFamily: "'Open Sans', sans-serif" }}
+        className={cn(cc.typography.lead, 'text-gray-800 max-w-2xl mx-auto')}
       >
         {subtitle}
       </p>

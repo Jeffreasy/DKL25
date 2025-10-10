@@ -261,7 +261,7 @@ const AIChatButton = memo(() => {
             ) : (
               <div className={cn('p-4', cc.divider.horizontal, 'border-gray-100')}>
                 <div className={cn('bg-gray-100 p-3 text-center', cc.border.circle)}>
-                  <p className={cn(cc.text.small, 'text-gray-500 font-medium')}>
+                  <p className={cn(cc.text.small, 'text-gray-500')}>
                     Chat functionaliteit komt binnenkort beschikbaar!
                   </p>
                 </div>

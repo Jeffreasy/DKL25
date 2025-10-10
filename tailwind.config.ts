@@ -98,6 +98,27 @@ export default {
         'heading': ['Roboto Slab', 'serif'],
         'body': ['Roboto', 'sans-serif'],
       },
+      fontSize: {
+        'fluid-sm': 'clamp(0.875rem, 2.5vw, 1rem)',
+        'fluid-md': 'clamp(1rem, 3vw, 1.25rem)',
+        'fluid-lg': 'clamp(1.25rem, 4vw, 1.5rem)',
+        'fluid-xl': 'clamp(1.5rem, 5vw, 2rem)',
+        'fluid-2xl': 'clamp(2rem, 6vw, 3rem)',
+        'fluid-3xl': 'clamp(2.5rem, 7vw, 4rem)',
+        'fluid-4xl': 'clamp(3rem, 8vw, 5rem)',
+        'clamp-sm': 'clamp(0.75rem, 1.5vw, 0.875rem)',
+        'clamp-md': 'clamp(0.875rem, 2vw, 1rem)',
+        'clamp-lg': 'clamp(1rem, 2.5vw, 1.125rem)',
+        'clamp-xl': 'clamp(1.125rem, 3vw, 1.25rem)',
+      },
+      textShadow: {
+        'sm': '0 1px 2px rgba(0, 0, 0, 0.05)',
+        'md': '0 2px 4px rgba(0, 0, 0, 0.1)',
+        'lg': '0 4px 8px rgba(0, 0, 0, 0.15)',
+        'xl': '0 8px 16px rgba(0, 0, 0, 0.2)',
+        '2xl': '0 16px 32px rgba(0, 0, 0, 0.25)',
+        'none': 'none',
+      },
       zIndex: {
         '60': '60',
         '100': '100',
@@ -106,6 +127,16 @@ export default {
   },
   plugins: [
     typography,
-    scrollbarHide
+    scrollbarHide,
+    function({ addUtilities, theme }) {
+      const textShadows = theme('textShadow');
+      const utilities = {};
+      for (const [key, value] of Object.entries(textShadows)) {
+        utilities[`.text-shadow-${key}`] = {
+          textShadow: value,
+        };
+      }
+      addUtilities(utilities);
+    },
   ],
 } satisfies Config

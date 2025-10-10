@@ -3,6 +3,7 @@ import { motion, Variants } from 'framer-motion';
 import { CalendarToday, People, EmojiEvents } from '@mui/icons-material';
 import { EventDetail } from '../functions/types';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn } from '@/styles/shared';
 
 // Icon components map - using component references instead of JSX
 const IconComponents = {
@@ -14,8 +15,6 @@ const IconComponents = {
 const iconSxProps = { fontSize: 40 };
 
 interface EventDetailCardProps extends EventDetail {
-  titleStyle?: React.CSSProperties;
-  textStyle?: React.CSSProperties;
   onClick?: () => void;
   isClickable?: boolean;
   index?: number;
@@ -30,8 +29,6 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
   icon,
   title,
   description,
-  titleStyle,
-  textStyle,
   onClick,
   isClickable = false,
   index = 0
@@ -155,15 +152,13 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
         </motion.div>
         
         <h3
-          className="text-gray-900 font-semibold text-xl"
-          style={titleStyle}
+          className={cn(cc.text.h4, 'text-gray-900')}
         >
           {title}
         </h3>
-        
+
         <p
-          className="text-gray-600"
-          style={textStyle}
+          className={cn(cc.typography.caption, 'text-gray-600')}
         >
           {description}
         </p>

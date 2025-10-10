@@ -23,7 +23,7 @@ const RouteSection: React.FC = memo(() => {
           )}>
             directions_walk
           </span>
-          <h1 className={cn(cc.text.h1, 'font-bold text-gray-900 leading-tight', cc.typography.heading)}>
+          <h1 className={cn(cc.text.h1, 'text-gray-900 leading-tight', cc.typography.heading)}>
             De Loop over
             <br />
             De Koninklijke Weg
@@ -36,7 +36,7 @@ const RouteSection: React.FC = memo(() => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <p className={cn(cc.text.h5, 'text-center font-light leading-relaxed mb-16 max-w-4xl mx-auto', cc.text.muted)}>
+        <p className={cn(cc.typography.lead, 'text-center leading-relaxed mb-16 max-w-4xl mx-auto', cc.text.muted)}>
           Op zaterdag 17 mei 2025, tijdens de Koninklijke Loop (DKL), wandelen we over een speciaal, toegankelijk wandelpad: het laatste stukje van de historische Koninklijke Weg.
           Hoewel de volledige Koninklijke Weg 170 km lang is (van Paleis Noordeinde naar Paleis Het Loo), focust de DKL zich op het prachtige deel van Kootwijk naar Apeldoorn, met afstanden van 2.5, 6, 10 en 15 km. We finishen feestelijk bij de Grote Kerk in Apeldoorn.
         </p>

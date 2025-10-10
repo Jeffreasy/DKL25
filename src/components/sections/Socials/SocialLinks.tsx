@@ -84,7 +84,7 @@ const DKLSocials: React.FC = memo(() => {
       <div className="max-w-7xl mx-auto relative">
         {/* Title with animated underline */}
         <div className="text-center mb-16 relative">
-          <h2 className={cn(cc.text.h2, 'text-white font-semibold mb-5 relative')}>
+          <h2 className={cn(cc.text.h2, 'text-white mb-5 relative')}>
             Volg ons op sociale media
             <span className={cn(
               'absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full',
@@ -99,7 +99,7 @@ const DKLSocials: React.FC = memo(() => {
         {/* Error state */}
         {error && (
           <div className={cn('text-red-400 text-center mb-8 px-4 py-3', cc.border.rounded, 'bg-red-900/20 backdrop-blur-sm max-w-md mx-auto')}>
-            <p>{error}</p>
+            <p className={cc.text.body}>{error}</p>
             <button
               onClick={() => window.location.reload()}
               className={cn('mt-2', cc.text.small, 'text-white/70 hover:text-white', cc.transition.colors)}

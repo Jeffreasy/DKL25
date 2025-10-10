@@ -2,7 +2,7 @@ import React, { memo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
-import { cc } from '@/styles/shared';
+import { cc, cn } from '@/styles/shared';
 
 interface EventImageProps {
   src: string;
@@ -35,8 +35,8 @@ const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
         {imageError ? (
           <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
             <div className="text-center text-gray-500">
-              <p className="mb-2">Afbeelding kon niet worden geladen</p>
-              <p className="text-sm">Gebruik standaard afbeelding</p>
+              <p className={cn(cc.text.body, 'mb-2')}>Afbeelding kon niet worden geladen</p>
+              <p className={cc.text.small}>Gebruik standaard afbeelding</p>
             </div>
           </div>
         ) : (

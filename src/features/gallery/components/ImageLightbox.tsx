@@ -407,7 +407,7 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
             
             {/* Caption */}
             {photo.alt_text && (
-              <div className={cn('px-4 py-2 bg-black/50 text-center max-w-2xl backdrop-blur-sm', cc.border.rounded)}>
+              <div className={cn('px-4 py-2 bg-black/50 text-center max-w-2xl backdrop-blur-sm', cc.border.rounded, cc.text.body)}>
                 {photo.alt_text}
               </div>
             )}

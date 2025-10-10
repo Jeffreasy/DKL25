@@ -66,7 +66,7 @@ const OverOns: React.FC = memo(() => {
         route="/over-ons"
       />
       <div className="min-h-screen pt-20 bg-white">
-        <div className="w-full max-w-[1400px] mx-auto px-6 py-12 font-roboto antialiased">
+        <div className="w-full max-w-[1400px] mx-auto px-6 py-12 antialiased">
           {/* High priority sections - load immediately */}
           <LazySection priority="high">
             <AboutHeader />

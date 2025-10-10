@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { cc, colors } from '@/styles/shared';
+import { cc, cn, colors } from '@/styles/shared';
 
 const TARGET_EVENT_DATE = new Date('2025-05-17T09:00:00');
 
@@ -33,7 +33,7 @@ const CountdownTimer: React.FC = memo(() => {
   const countdownDisplay = useMemo(() => {
     if (!timeLeft) {
       return (
-        <div className={`text-center ${cc.text.h4} font-semibold ${colors.primary.text}`}>
+        <div className={`text-center ${cc.text.h4} ${colors.primary.text}`}>
           Het evenement is succesvol afgelopen, bedankt en tot volgend jaar!
         </div>
       );
@@ -43,7 +43,7 @@ const CountdownTimer: React.FC = memo(() => {
       <div className="flex justify-center items-center space-x-2 sm:space-x-6 text-center">
         {Object.entries(timeLeft).map(([unit, value]) => (
           <div key={unit} className="p-2">
-            <div className={`text-3xl sm:text-4xl font-bold ${colors.primary.text}`}>
+            <div className={cn(cc.typography.display, colors.primary.text)}>
               {String(value).padStart(2, '0')}
             </div>
             <div className={`${cc.text.small} ${cc.typography.uppercase} ${cc.text.muted}`}>

@@ -4,6 +4,7 @@ import { Dialog } from '@headlessui/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
+import { cc, cn } from '@/styles/shared';
 
 export const PartnerModal: React.FC<PartnerModalProps> = memo(({ isOpen, onClose, partner }) => {
   // Performance tracking
@@ -55,14 +56,14 @@ export const PartnerModal: React.FC<PartnerModalProps> = memo(({ isOpen, onClose
 
           <div className="p-6">
             <div className="text-center mb-6">
-              <span className="inline-block bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium mb-2">
+              <span className={cn('inline-block bg-primary/10 text-primary px-3 py-1.5 rounded-full mb-2', cc.text.small)}>
                 Partner sinds {partner.since}
               </span>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <h3 className={cn(cc.text.h3, 'text-gray-900')}>
                 {partner.name}
               </h3>
             </div>
-            <p className="text-gray-600 text-sm sm:text-base leading-relaxed break-words">
+            <p className={cn(cc.text.body, 'text-gray-600 leading-relaxed break-words')}>
               {partner.description}
             </p>
           </div>
@@ -74,7 +75,7 @@ export const PartnerModal: React.FC<PartnerModalProps> = memo(({ isOpen, onClose
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleWebsiteClick}
-                className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                className={cn('flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg', cc.text.body)}
               >
                 <span>Bezoek website</span>
                 <svg

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo, memo } from '
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { motion } from 'framer-motion';
+import { cc, cn } from '@/styles/shared';
 
 interface RadioPlayerProps {
   audioUrl: string;
@@ -187,7 +188,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
           
           {/* Date badge if provided */}
           {date && (
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-gray-800 shadow">
+            <div className={cn('absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow', cc.text.small, 'font-medium text-gray-800')}>
               {date}
             </div>
           )}
@@ -196,11 +197,11 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
         {/* Player controls side - Adjusted padding and text sizes */}
         <div className="flex-1 p-4 flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans line-clamp-2" style={{fontFamily: "'Montserrat', sans-serif"}}>
+            <h3 className={cn(cc.text.bodyLarge, 'text-gray-900 mb-2 line-clamp-2')}>
               {title}
             </h3>
             {description && (
-              <p className="text-sm text-gray-600 mb-4 font-sans line-clamp-2" style={{fontFamily: "'Open Sans', sans-serif"}}>
+              <p className={cn(cc.text.body, 'text-gray-600 mb-4 line-clamp-2')}>
                 {description}
               </p>
             )}
@@ -221,7 +222,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
             </div>
             
             {/* Time display */}
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className={cn('flex justify-between', cc.text.small, 'text-gray-500')}>
               <span>{formatTime(currentTime)}</span>
               <span>{isLoading ? '--:--' : formatTime(duration)}</span>
             </div>

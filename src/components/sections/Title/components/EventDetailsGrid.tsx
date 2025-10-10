@@ -24,8 +24,6 @@ const EventDetailsGrid: React.FC<EventDetailsGridProps> = memo(({ details }) => 
           title={card.title}
           description={card.description}
           index={index}
-          titleStyle={{ fontFamily: "'Montserrat', sans-serif" }}
-          textStyle={{ fontFamily: "'Open Sans', sans-serif" }}
         />
       ))}
     </div>

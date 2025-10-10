@@ -69,10 +69,10 @@ const MediaPage: React.FC = memo(() => {
         <LazySection priority="high">
           <div className="relative bg-orange-100 py-20 px-5">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className={cn(cc.text.h1, 'font-bold text-gray-900 mb-4')} style={{fontFamily: "'Montserrat', sans-serif"}}>
+              <h1 className={cn(cc.text.h1, 'text-gray-900 mb-4', cc.typography.heading)}>
                 Media Archief
               </h1>
-              <p className={cn(cc.text.h4, 'text-gray-700 max-w-3xl mx-auto')} style={{fontFamily: "'Open Sans', sans-serif"}}>
+              <p className={cn(cc.typography.lead, 'text-gray-700 max-w-3xl mx-auto')}>
                 Herbeleef de sfeer en enthousiasme van De Koninklijke Loop via onze media fragmenten.
               </p>
             </div>
@@ -117,10 +117,10 @@ const MediaPage: React.FC = memo(() => {
           }
         >
           <div className="max-w-4xl mx-auto py-16 px-5">
-            <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 mb-6')} style={{fontFamily: "'Montserrat', sans-serif"}}>
+            <h2 className={cn(cc.text.h2, 'text-gray-900 mb-6', cc.typography.heading)}>
               Waarom Media?
             </h2>
-            <div className="prose prose-lg max-w-none" style={{fontFamily: "'Open Sans', sans-serif"}}>
+            <div className={cn('prose prose-lg max-w-none', cc.typography.body)}>
               <p>
                 Waarom hoor je De Koninklijke Loop op de radio? We gebruiken de ether om iedereen te laten weten waarom we dit bijzondere evenement organiseren: een sponsorloop vóór en dóór mensen met een beperking. We hopen hiermee natuurlijk ook jou enthousiast te maken om volgend jaar mee te lopen!
               </p>

@@ -48,15 +48,15 @@ const ChatMessage: React.FC<ChatMessageProps> = memo(({ message, onActionClick }
         'rounded-2xl p-4 max-w-[80%]',
         isAssistant ? 'bg-gray-100' : cn(colors.primary.bg, 'text-white')
       )}>
-        <p className={isAssistant ? 'text-gray-800' : 'text-white'}>
+        <p className={cn(cc.text.body, isAssistant ? 'text-gray-800' : 'text-white')}>
           {formatContent(contentParts.mainContent)}
         </p>
         
         {contentParts.hasActionLink && contentParts.actionText && (
-          <button 
+          <button
             onClick={() => onActionClick(contentParts.actionText!)}
             className={cn(
-              'mt-3 px-4 py-2 text-white font-medium cursor-pointer',
+              'mt-3 px-4 py-2 text-white cursor-pointer',
               colors.primary.bg,
               colors.primary.hover,
               cc.border.rounded,

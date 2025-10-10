@@ -124,7 +124,7 @@ const SponsorCard: React.FC<SponsorCardProps> = memo(({ sponsor, index, onClick,
 
       {/* Content */}
       <div className="p-8">
-        <h3 className={cn(cc.text.h4, 'font-bold text-gray-900 mb-3', 'group-hover:text-primary', cc.transition.colors)}>
+        <h3 className={cn(cc.text.h4, 'text-gray-900 mb-3', 'group-hover:text-primary', cc.transition.colors)}>
           {sponsor.name}
         </h3>
         <p className={cn(cc.text.body, cc.text.muted, 'leading-relaxed line-clamp-3')}>
@@ -225,9 +225,9 @@ const DKLSponsors: React.FC = () => {
       <div className="max-w-6xl mx-auto relative">
         {/* Title Section */}
         <div className="text-center mb-16 relative">
-          <h2 
+          <h2
             id="sponsors-title"
-            className={cn(cc.text.h2, 'text-gray-900 font-bold mb-4 tracking-tight')}
+            className={cn(cc.text.h2, 'text-gray-900 mb-4 tracking-tight')}
           >
             Onze Sponsors
           </h2>

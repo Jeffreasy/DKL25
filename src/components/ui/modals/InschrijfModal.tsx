@@ -10,6 +10,7 @@ import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import type { InschrijfModalProps } from './types';
 import { modalBaseStyles } from './styles';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
+import { cc, cn } from '@/styles/shared';
 
 export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onClose }) => {
   // Performance tracking
@@ -33,7 +34,7 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
         >
           <div className="relative">
             <div className="bg-primary p-4 sm:p-6 flex items-center justify-between">
-              <Dialog.Title className="text-xl sm:text-2xl font-bold text-white tracking-tight font-heading">
+              <Dialog.Title className={cn(cc.text.h2, 'text-white tracking-tight')}>
                 Inschrijving 2025
               </Dialog.Title>
               <button
@@ -49,13 +50,13 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
               <div className="flex justify-center mb-6 sm:mb-8">
                 <InfoIcon className="text-primary" sx={{ fontSize: { xs: 56, sm: 72 } }} />
               </div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 text-center mb-4 font-heading">
+              <h2 className={cn(cc.text.h4, 'text-gray-900 text-center mb-4')}>
                 Inschrijvingen openen binnenkort
               </h2>
-              <p className="text-base sm:text-lg text-gray-600 mb-4 text-center leading-relaxed">
+              <p className={cn(cc.text.body, 'text-gray-600 mb-4 text-center leading-relaxed')}>
                 De inschrijvingen voor De Koninklijke Loop 2025 starten vanaf 15 januari 2025.
               </p>
-              <p className="text-base sm:text-lg text-gray-600 text-center leading-relaxed">
+              <p className={cn(cc.text.body, 'text-gray-600 text-center leading-relaxed')}>
                 Wil je op de hoogte blijven? Volg ons dan op social media of neem contact met ons op.
               </p>
             </div>
@@ -64,7 +65,7 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
               <Link
                 to="/faq"
                 onClick={() => handleLinkClick('contact_faq')}
-                className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-semibold text-base sm:text-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                className={cn('flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg', cc.text.body)}
               >
                 <span>Contact opnemen</span>
                 <ArrowForwardIcon />
@@ -80,10 +81,10 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
                 <div className="flex items-center gap-3">
                   <HelpIcon className="text-primary text-2xl" />
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors font-heading">
+                    <h3 className={cn(cc.text.bodyLarge, 'mb-2 group-hover:text-primary transition-colors')}>
                       Wat is De Koninklijke Loop?
                     </h3>
-                    <p className="text-gray-600 group-hover:translate-x-2 transition-transform duration-300">
+                    <p className={cn(cc.text.body, 'text-gray-600 group-hover:translate-x-2 transition-transform duration-300')}>
                       Lees meer over het evenement en onze missie.
                     </p>
                   </div>
@@ -99,10 +100,10 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
                 <div className="flex items-center gap-3">
                   <GroupsIcon className="text-primary text-2xl" />
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors font-heading">
+                    <h3 className={cn(cc.text.bodyLarge, 'mb-2 group-hover:text-primary transition-colors')}>
                       Over Ons
                     </h3>
-                    <p className="text-gray-600 group-hover:translate-x-2 transition-transform duration-300">
+                    <p className={cn(cc.text.body, 'text-gray-600 group-hover:translate-x-2 transition-transform duration-300')}>
                       Leer meer over onze organisatie en team.
                     </p>
                   </div>
@@ -118,10 +119,10 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
                 <div className="flex items-center gap-3">
                   <ContactSupportIcon className="text-primary text-2xl" />
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors font-heading">
+                    <h3 className={cn(cc.text.bodyLarge, 'mb-2 group-hover:text-primary transition-colors')}>
                       Contact & FAQ
                     </h3>
-                    <p className="text-gray-600 group-hover:translate-x-2 transition-transform duration-300">
+                    <p className={cn(cc.text.body, 'text-gray-600 group-hover:translate-x-2 transition-transform duration-300')}>
                       Heb je vragen? Bekijk onze FAQ of neem contact op.
                     </p>
                   </div>

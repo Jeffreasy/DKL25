@@ -116,12 +116,12 @@ const Home: React.FC = memo(() => {
 
           {/* Low priority sections - load when scrolled into view */}
           <LazySection priority="low" className="py-12 px-5">
-            <h2 className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-8')}>Foto Impressie</h2>
+            <h2 className={cn(cc.text.h2, 'text-center text-gray-900 mb-8')}>Foto Impressie</h2>
             <PhotoGallery onModalChange={setIsModalOpen} />
           </LazySection>
 
           <LazySection priority="low" className="py-12 px-5">
-            <h2 className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-8')}>Luister Terug</h2>
+            <h2 className={cn(cc.text.h2, 'text-center text-gray-900 mb-8')}>Luister Terug</h2>
             <RadioGallery
               title="Radio Fragmenten"
               subtitle="Luister naar onze Radio Fragmenten"
@@ -134,7 +134,7 @@ const Home: React.FC = memo(() => {
           </LazySection>
 
           <LazySection priority="low" className="py-12 px-5">
-            <h2 className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-8')}>Met Dank Aan Onze Sponsors</h2>
+            <h2 className={cn(cc.text.h2, 'text-center text-gray-900 mb-8')}>Met Dank Aan Onze Sponsors</h2>
             <DKLSponsors />
           </LazySection>
 

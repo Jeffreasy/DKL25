@@ -127,13 +127,13 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                   </button>
                 </div>
                 <div>
-                  <Dialog.Title as="h3" className={cn(cc.text.h5, 'font-semibold leading-6 text-gray-900 mb-4')}>
+                  <Dialog.Title as="h3" className={cn(cc.text.h5, 'leading-6 text-gray-900 mb-4')}>
                     Programma DKL 2025
                   </Dialog.Title>
                   <div className={cn('flex flex-col gap-y-3 p-4 mb-4 border bg-orange-50 text-gray-700', colors.primary.border, 'border-primary/30', cc.border.rounded)}>
                     <div className={cn(cc.flex.start, 'gap-x-2')}>
                       <Info className={cn('h-5 w-5 mt-0.5 flex-shrink-0', colors.primary.text)} aria-hidden="true" />
-                      <p className={cn(cc.text.body, 'font-bold', colors.primary.text)}>
+                      <p className={cn(cc.text.body, colors.primary.text)}>
                         DEELNEMERS OPGELET!
                       </p>
                     </div>
@@ -141,18 +141,18 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                       <p>
                         Hieronder vind je alle informatie en tijden over de Koninklijke Loop. Als je je hebt opgegeven kun je je melden bij het coördinatiepunt bij de Grote Kerk in Apeldoorn.
                       </p>
-                      <p className="font-medium">
+                      <p className={cn(cc.text.body)}>
                         Adres: Loolaan 16, 7315 AB te Apeldoorn.
                       </p>
-                       <p className="font-medium">
-                         Voor vragen/info: {' '}
-                         <button
-                            type="button"
-                            onClick={onOpenContactModal}
-                            className={cn('text-blue-600 hover:text-blue-800 hover:underline font-medium', cc.transition.colors)}
-                          >
-                           neem contact op
-                         </button>
+                      <p className={cn(cc.text.body)}>
+                        Voor vragen/info: {' '}
+                        <button
+                           type="button"
+                           onClick={onOpenContactModal}
+                           className={cn('text-blue-600 hover:text-blue-800 hover:underline', cc.text.body, cc.transition.colors)}
+                         >
+                          neem contact op
+                        </button>
                       </p>
                     </div>
                     <ul className={cn(cc.list.ul, 'space-y-1.5 pl-12', cc.text.small)}>
@@ -162,17 +162,17 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                       <li>We hebben personenvervoer en een rolstoelbus die je naar de startpunten brengt.</li>
                     </ul>
                     <div className={cn('ml-7 mt-2 pt-3', cc.divider.horizontal, 'border-orange-200/80')}>
-                      <p className={cn(cc.text.small, 'font-medium mb-2')}>
+                      <p className={cn(cc.text.small, 'mb-2')}>
                         Meldtijden bij coördinatiepunt ({''}
-                        <a 
-                          href="https://www.google.com/maps/search/?api=1&query=52.22038,5.95512" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className={cn('text-blue-600 hover:text-blue-800 hover:underline', cc.transition.colors)}
+                        <a
+                          href="https://www.google.com/maps/search/?api=1&query=52.22038,5.95512"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn('text-blue-600 hover:text-blue-800 hover:underline', cc.text.small, cc.transition.colors)}
                         >
                           Grote Kerk
                         </a>
-                        ): 
+                        ):
                       </p>
                       <div className={cn('grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 pl-5', cc.text.small)}>
                         <div className="font-semibold text-right">15 KM:</div> <div>10:15 uur</div>
@@ -246,12 +246,12 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                               ) : (
                                  // Empty state voor de *huidige tab*
                                  <motion.div
-                                   className="text-center text-gray-500 py-10"
+                                   className={cn('text-center py-10', cc.text.muted)}
                                    initial={{ opacity: 0 }}
                                    animate={{ opacity: 1 }}
                                    exit={{ opacity: 0 }}
                                  >
-                                   <p>Geen items gevonden voor "{activeTab}".</p>
+                                   <p className={cn(cc.text.body)}>Geen items gevonden voor "{activeTab}".</p>
                                  </motion.div>
                               )}
                            </motion.ul>

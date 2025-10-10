@@ -53,7 +53,8 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick, className = '
       />
       <span
         className={cn(
-          'font-medium text-base lg:text-lg whitespace-nowrap',
+          cc.text.bodyLarge,
+          'whitespace-nowrap',
           cc.transition.base,
           isActive ? cn('text-white', accessibilityPrefs.transformStyles) : 'text-white/80'
         )}

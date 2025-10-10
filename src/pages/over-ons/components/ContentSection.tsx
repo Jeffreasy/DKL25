@@ -26,23 +26,23 @@ const ContentSection: React.FC<ContentSectionProps> = memo(({ icon, title, conte
           <span className={cn('material-icons-round text-[14px] font-light mb-1', 'text-primary/60')}>
             {icon}
           </span>
-          <span className={cn(cc.text.h3, 'font-bold tracking-tight text-gray-900', "font-['Roboto_Slab']")}>
+          <span className={cn(cc.text.h3, 'tracking-tight text-gray-900', cc.typography.heading)}>
             {title}
           </span>
         </div>
         <div className={cn('absolute bottom-0 left-0 w-12 h-0.5 bg-primary/20', cc.transition.base, 'group-hover:w-24 group-hover:bg-primary')} />
       </h2>
-      <div className="space-y-4 font-['Roboto_Slab']">
+      <div className="space-y-4">
         {content.map((paragraph, index) => (
           isThankYou && index === content.length - 1 ? (
-            <p key={index} className={cn('text-center font-medium text-gray-900 mt-6 p-4 bg-primary/10 rounded-lg')}>
+            <p key={index} className={cn('text-center text-gray-900 mt-6 p-4 bg-primary/10 rounded-lg')}>
               <i className={cn('material-icons-round align-middle mr-1', colors.primary.text)}>
                 favorite
               </i>
-              <span className="font-medium">{paragraph}</span>
+              <span>{paragraph}</span>
             </p>
           ) : (
-            <p key={index} className={cn(cc.text.muted, 'font-light leading-relaxed')}>
+            <p key={index} className={cn(cc.text.muted)}>
               {paragraph}
             </p>
           )

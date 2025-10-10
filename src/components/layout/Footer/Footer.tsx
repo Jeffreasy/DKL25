@@ -107,7 +107,7 @@ const Footer: React.FC<FooterProps> = memo(({
             <div className="text-center md:text-left space-y-2">
               <h2 className={cn(cc.text.h4, 'tracking-tight')}>Doe je met ons mee?</h2>
               <p className={cn(cc.text.small, 'text-white/90')}>Samen op weg voor een goed doel.</p>
-              <p className={cn(cc.text.h5, 'font-semibold bg-gradient-to-r from-yellow-200 to-yellow-500 text-transparent bg-clip-text')}>
+              <p className={cn(cc.text.h5, 'bg-gradient-to-r from-yellow-200 to-yellow-500 text-transparent bg-clip-text')}>
                 Loop mee met de Koninklijke Loop!
               </p>
             </div>
@@ -144,7 +144,7 @@ const Footer: React.FC<FooterProps> = memo(({
 
           {showQuickLinks && (
             <div className={cn(cc.flex.col, 'items-center md:items-start space-y-6')}>
-              <h3 className={cn(cc.text.h5, 'font-bold tracking-tight')}>Snelle Links</h3>
+              <h3 className={cn(cc.text.h5, 'tracking-tight')}>Snelle Links</h3>
               <nav aria-label="Footer snelle links">
                 <ul className="grid grid-cols-2 gap-x-12 gap-y-3">
                   {quickLinks.map((link: QuickLinkType) => (
@@ -194,7 +194,7 @@ const Footer: React.FC<FooterProps> = memo(({
             <p className={cn(cc.text.small, 'text-white/80')}>
               &copy; {currentYear} De Koninklijke Loop. Alle rechten voorbehouden.
             </p>
-            <p className={cn('text-xs text-white/60')}>
+            <p className={cn(cc.text.small, 'text-white/60')}>
               Met ❤️ gemaakt voor een betere wereld
             </p>
           </div>

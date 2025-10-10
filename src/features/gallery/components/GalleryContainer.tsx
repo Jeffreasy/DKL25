@@ -212,7 +212,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
         <div className={cn(cc.flex.center, 'min-h-[400px] bg-gray-50 rounded-lg')}>
           <div className="text-center">
             <div className={cn('w-12 h-12 border-4 border-t-transparent mx-auto mb-4', colors.primary.border, cc.border.circle, 'animate-spin')} />
-            <p className={cn(cc.text.muted, 'text-sm')}>Foto's laden...</p>
+            <p className={cn(cc.text.muted)}>Foto's laden...</p>
           </div>
         </div>
       );
@@ -223,7 +223,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
         <div className={cn('text-center p-8 bg-gray-50 rounded-lg', cc.text.error)}>
           <div className="max-w-md mx-auto">
             <h3 className={cn(cc.text.h3, 'mb-2')}>Foto's konden niet worden geladen</h3>
-            <p className="mb-4 text-gray-600">{error}</p>
+            <p className={cn(cc.text.body, 'mb-4 text-gray-600')}>{error}</p>
             <button
               onClick={fetchPhotos}
               className={cn(cc.button.primary, 'px-6 py-2')}
@@ -273,7 +273,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
                 key={album.id}
                 onClick={() => handleAlbumSelect(album.id)}
                 className={cn(
-                  'px-4 py-2 font-medium',
+                  'px-4 py-2',
                   cc.border.circle,
                   cc.text.small,
                   cc.transition.colors,

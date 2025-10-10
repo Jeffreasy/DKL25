@@ -76,7 +76,7 @@ const TitleSection: React.FC<TitleSectionProps> = memo(({ onInschrijfClick }) =>
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md mx-auto"
         >
-          <p className="text-red-600 mb-4">{titleError}</p>
+          <p className={cn(cc.text.error, 'mb-4')}>{titleError}</p>
           <button
             onClick={handleRetry}
             className={cn(cc.button.primary, colors.primary.focusRing)}

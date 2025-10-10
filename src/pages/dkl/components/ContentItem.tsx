@@ -134,10 +134,10 @@ export const ContentItem: React.FC<ContentItemProps> = memo(({
         <span className={cn('material-icons-round text-4xl mb-4 block', colors.primary.text)}>
           {icon}
         </span>
-        <h2 className={cn(cc.text.h3, cc.typography.heading, 'font-semibold text-gray-900 mb-4')}>
+        <h2 className={cn(cc.text.h3, cc.typography.heading, 'text-gray-900 mb-4')}>
           {title}
         </h2>
-        <p className={cn(cc.text.body, cc.text.muted, 'leading-relaxed mb-6')}>
+        <p className={cn(cc.text.body, cc.text.muted, 'mb-6')}>
           {text}
         </p>
 

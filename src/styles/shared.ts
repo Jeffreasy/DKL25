@@ -168,15 +168,18 @@ export const cc = {
 
   // Text
   text: {
-    h1: 'text-4xl md:text-5xl lg:text-6xl font-bold',
-    h2: 'text-3xl md:text-4xl lg:text-5xl font-bold',
-    h3: 'text-2xl md:text-3xl lg:text-4xl font-bold',
-    h4: 'text-xl md:text-2xl lg:text-3xl font-semibold',
-    h5: 'text-lg md:text-xl lg:text-2xl font-semibold',
-    body: 'text-base leading-relaxed',
-    small: 'text-sm',
-    muted: 'text-gray-600',
-    error: 'text-red-600 text-sm'
+    h1: 'text-4xl md:text-5xl lg:text-6xl font-bold font-heading leading-tight tracking-tight',
+    h2: 'text-3xl md:text-4xl lg:text-5xl font-bold font-heading leading-tight tracking-tight',
+    h3: 'text-2xl md:text-3xl lg:text-4xl font-semibold font-heading leading-snug tracking-tight',
+    h4: 'text-xl md:text-2xl lg:text-3xl font-semibold font-heading leading-snug',
+    h5: 'text-lg md:text-xl lg:text-2xl font-medium font-heading leading-snug',
+    h6: 'text-base md:text-lg font-medium font-heading leading-normal',
+    body: 'text-base leading-relaxed font-body',
+    bodyLarge: 'text-lg leading-relaxed font-body',
+    bodySmall: 'text-sm leading-relaxed font-body',
+    small: 'text-sm font-body',
+    muted: 'text-gray-600 font-body',
+    error: 'text-red-600 text-sm font-body'
   },
 
   // Containers
@@ -245,16 +248,87 @@ export const cc = {
     gradient: 'absolute inset-0 bg-gradient-to-t from-black/60 to-transparent'
   },
 
-  // Typography
+  // Typography - Professional system using Roboto Slab for headings and Roboto for body
   typography: {
     heading: 'font-heading',
     body: 'font-body',
-    link: 'text-primary hover:text-primary-dark underline transition-colors',
-    linkExternal: 'text-primary hover:text-primary-dark underline transition-colors inline-flex items-center gap-1',
+    link: 'text-primary hover:text-primary-dark underline transition-colors font-body',
+    linkExternal: 'text-primary hover:text-primary-dark underline transition-colors inline-flex items-center gap-1 font-body',
     truncate: 'truncate',
     ellipsis: 'overflow-hidden text-ellipsis',
-    uppercase: 'uppercase tracking-wide',
-    capitalize: 'capitalize',
+    uppercase: 'uppercase tracking-wide font-heading',
+    capitalize: 'capitalize font-heading',
+
+    // Professional weights for Roboto Slab
+    thin: 'font-thin font-heading', // 100 (if available, fallback to 300)
+    extralight: 'font-extralight font-heading', // 200 (fallback to 300)
+    light: 'font-light font-heading', // 300
+    normal: 'font-normal font-heading', // 400
+    medium: 'font-medium font-heading', // 500
+    semibold: 'font-semibold font-heading', // 600
+    bold: 'font-bold font-heading', // 700
+    extrabold: 'font-extrabold font-heading', // 800
+    black: 'font-black font-heading', // 900
+
+    // Body weights for Roboto
+    bodyThin: 'font-thin font-body', // 100 (fallback to 300)
+    bodyLight: 'font-light font-body', // 300
+    bodyNormal: 'font-normal font-body', // 400
+    bodyMedium: 'font-medium font-body', // 500
+    bodySemibold: 'font-semibold font-body', // 600
+    bodyBold: 'font-bold font-body', // 700
+
+    // Display styles
+    display: 'font-heading font-bold text-5xl md:text-6xl lg:text-7xl leading-none tracking-tight',
+    subtitle: 'font-heading font-medium text-xl md:text-2xl leading-snug text-gray-600',
+
+    // Text styles
+    lead: 'font-body text-xl leading-relaxed text-gray-700',
+    caption: 'font-body text-sm leading-normal text-gray-500',
+    overline: 'font-heading text-xs uppercase tracking-widest font-medium',
+
+    // Advanced text effects
+    gradient: 'bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent',
+    shadow: 'text-shadow-sm',
+    shadowMd: 'text-shadow-md',
+    shadowLg: 'text-shadow-lg',
+    glow: 'text-shadow-2xl text-primary',
+
+    // Letter spacing variations
+    trackingTighter: 'tracking-tighter',
+    trackingTight: 'tracking-tight',
+    trackingNormal: 'tracking-normal',
+    trackingWide: 'tracking-wide',
+    trackingWider: 'tracking-wider',
+    trackingWidest: 'tracking-widest',
+
+    // Line height variations
+    leadingNone: 'leading-none',
+    leadingTight: 'leading-tight',
+    leadingSnug: 'leading-snug',
+    leadingNormal: 'leading-normal',
+    leadingRelaxed: 'leading-relaxed',
+    leadingLoose: 'leading-loose',
+
+    // Special text treatments
+    blockquote: 'font-heading italic text-lg leading-relaxed border-l-4 border-primary pl-6 my-6',
+    code: 'font-mono text-sm bg-gray-100 px-2 py-1 rounded',
+    highlight: 'bg-yellow-200 px-1 rounded',
+    strikethrough: 'line-through text-gray-500',
+
+    // Responsive typography utilities
+    fluid: 'text-fluid-sm sm:text-fluid-md md:text-fluid-lg lg:text-fluid-xl',
+    clamp: 'text-clamp-sm md:text-clamp-md lg:text-clamp-lg',
+
+    // Text alignment utilities
+    textLeft: 'text-left',
+    textCenter: 'text-center',
+    textRight: 'text-right',
+    textJustify: 'text-justify',
+
+    // Text transform utilities
+    lowercase: 'lowercase',
+    normalCase: 'normal-case',
   },
 
   // Z-index layers
@@ -492,7 +566,7 @@ export const utils = {
    * Conditionally join class names
    */
   clsx: cn,
-  
+
   /**
    * Get responsive class based on breakpoint
    */
@@ -504,6 +578,29 @@ export const utils = {
       lg && `lg:${lg}`,
       xl && `xl:${xl}`
     )
+  },
+
+  /**
+   * Combine typography classes for custom text styles
+   */
+  typography: (options: {
+    size?: keyof typeof cc.text;
+    weight?: keyof typeof cc.typography;
+    color?: string;
+    spacing?: keyof typeof cc.typography;
+    leading?: keyof typeof cc.typography;
+    transform?: keyof typeof cc.typography;
+    effect?: keyof typeof cc.typography;
+  }) => {
+    const classes = [];
+    if (options.size) classes.push(cc.text[options.size]);
+    if (options.weight) classes.push(cc.typography[options.weight]);
+    if (options.color) classes.push(options.color);
+    if (options.spacing) classes.push(cc.typography[options.spacing]);
+    if (options.leading) classes.push(cc.typography[options.leading]);
+    if (options.transform) classes.push(cc.typography[options.transform]);
+    if (options.effect) classes.push(cc.typography[options.effect]);
+    return cn(...classes);
   },
 }
 

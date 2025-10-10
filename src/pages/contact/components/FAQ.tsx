@@ -49,7 +49,7 @@ const QuestionItem: React.FC<QuestionItemProps> = memo(({
       <summary 
         className={cn(
           cc.flex.start,
-          'cursor-pointer p-4 text-white font-bold rounded-lg outline-none',
+          'cursor-pointer p-4 text-white rounded-lg outline-none',
           colors.primary.bg,
           colors.primary.hover,
           cc.transition.base
@@ -74,7 +74,7 @@ const QuestionItem: React.FC<QuestionItemProps> = memo(({
       </summary>
       <div className="overflow-hidden transition-all duration-300 max-h-0 group-open:max-h-[500px]">
         <div className="p-4 bg-gray-50 rounded-b-lg transform transition-all duration-300 translate-y-[-100%] group-open:translate-y-0">
-          <p className="text-gray-700 leading-relaxed">{answer}</p>
+          <p className={cn(cc.text.body, 'text-gray-700')}>{answer}</p>
           {action && (
             <button
               onClick={() => {
@@ -142,7 +142,7 @@ const CategoryHeader: React.FC<{ title: string; icon: string }> = memo(({ title,
     <span className="text-3xl" role="img" aria-label={icon}>
       {icon}
     </span>
-    <h3 className={cn(cc.text.h3, 'text-gray-800 font-bold', cc.typography.heading)}>
+    <h3 className={cn(cc.text.h3, 'text-gray-800', cc.typography.heading)}>
       {title}
     </h3>
   </div>
@@ -173,7 +173,7 @@ const FAQ: React.FC<FAQProps> = memo(({ onInschrijfClick, onContactClick }) => {
   return (
     <section className={cn('w-full bg-white text-gray-800 p-8 rounded-xl', cc.shadow.lg)}>
       <div className={cn(cc.container.narrow, 'text-center mb-12')}>
-        <h2 className={cn(cc.text.h1, 'font-bold mb-6', colors.primary.text, cc.typography.heading)}>
+        <h2 className={cn(cc.text.h1, 'mb-6', colors.primary.text, cc.typography.heading)}>
           Alles wat je wilt weten over De Koninklijke Loop
         </h2>
         <p className={cn(cc.text.h5, cc.text.muted, 'mb-8')}>
@@ -207,7 +207,7 @@ const FAQ: React.FC<FAQProps> = memo(({ onInschrijfClick, onContactClick }) => {
 
       <div className="mt-16 text-center">
         <div className="max-w-2xl mx-auto bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 rounded-2xl p-8">
-          <h3 className={cn(cc.text.h3, 'font-bold text-gray-900 mb-4', cc.typography.heading)}>
+          <h3 className={cn(cc.text.h3, 'text-gray-900 mb-4', cc.typography.heading)}>
             Nog vragen?
           </h3>
           <p className={cn(cc.text.muted, 'mb-6')}>
@@ -216,7 +216,7 @@ const FAQ: React.FC<FAQProps> = memo(({ onInschrijfClick, onContactClick }) => {
           <button
             onClick={handleContactClick}
             className={cn(
-              'text-white px-8 py-3 rounded-xl font-medium group',
+              'text-white px-8 py-3 rounded-xl group',
               colors.primary.bg,
               colors.primary.hover,
               'hover:-translate-y-1',

@@ -105,7 +105,7 @@ const MobileMenu = memo<MobileMenuProps>(({ isOpen, onClose }) => {
         </nav>
 
         <div className={cn('mt-auto pt-6', cc.divider.horizontal, 'border-white/20')}>
-          <p className={cn(cc.text.small, 'text-white/90 font-medium mb-4 text-center')}>
+          <p className={cn(cc.text.small, 'text-white/90 mb-4 text-center')}>
             Volg ons
           </p>
           <div className="flex justify-center space-x-4">

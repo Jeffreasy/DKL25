@@ -270,7 +270,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
       >
         {/* Contactgegevens */}
         <div ref={contactSectionRef} className="space-y-6">
-          <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
+          <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
             Je contactgegevens
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -297,7 +297,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                 }, [trackInteraction])}
               />
               {errors.naam && (
-                <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.naam.message}</p>
+                <p className={cn(cc.form.errorMessage)}>{errors.naam.message}</p>
               )}
             </div>
             <div className="space-y-2">
@@ -323,7 +323,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                 }, [trackInteraction])}
               />
               {errors.email && (
-                <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.email.message}</p>
+                <p className={cn(cc.form.errorMessage)}>{errors.email.message}</p>
               )}
             </div>
           </div>
@@ -331,7 +331,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
 
         {/* Rol sectie */}
         <div ref={roleSectionRef} className={cn('space-y-6 transition-opacity duration-300', 'opacity-100')}>
-            <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading)}>
+            <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
               Kies je rol
             </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -357,21 +357,21 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
               </label>
             ))}
           </div>
-          {errors.rol && <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.rol.message}</p>}
+          {errors.rol && <p className={cn(cc.form.errorMessage)}>{errors.rol.message}</p>}
         </div>
 
         {/* Telefoonnummer sectie - alleen voor Begeleider/Vrijwilliger */}
         {shouldShowPhoneSection && (
           <div ref={phoneSectionRef} className="space-y-6 transition-opacity duration-300">
-            <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading)}>
+            <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
               Contactgegevens voor tijdens het evenement
             </h2>
             <div className="space-y-4">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 className="text-base font-semibold text-blue-900 mb-2">
+                <h3 className={cn(cc.text.body, 'text-blue-900 mb-2')}>
                   Waarom vragen we je telefoonnummer?
                 </h3>
-                <ul className="text-sm text-blue-800 space-y-2">
+                <ul className={cn(cc.text.small, 'text-blue-800 space-y-2')}>
                   <li className="flex items-start">
                     <span className="text-primary mr-2">•</span>
                     Voor snelle communicatie tijdens het evenement
@@ -388,16 +388,16 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="text-base font-semibold text-gray-900 mb-2">
+                <h3 className={cn(cc.text.body, 'text-gray-900 mb-2')}>
                   Privacy waarborg
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className={cn(cc.text.small, 'text-gray-600')}>
                   Je telefoonnummer wordt alleen gebruikt voor communicatie rondom het evenement en wordt na afloop niet bewaard. We delen deze informatie nooit met derden.
                 </p>
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="telefoon" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="telefoon" className={cn(cc.form.label)}>
                   Telefoonnummer (optioneel)
                 </label>
                 <input
@@ -416,7 +416,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                     }
                   }}
                 />
-                <p className="text-sm text-gray-500 mt-1">
+                <p className={cn(cc.text.small, 'text-gray-500 mt-1')}>
                   Tip: Voeg een tweede nummer toe in het bijzonderheden veld als back-up
                 </p>
               </div>
@@ -445,8 +445,8 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                   }}
                 />
                 {errors.bijzonderheden?.message && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.bijzonderheden.message.toString()}
+                  <p className={cn(cc.form.errorMessage)}>
+                    {errors.bijzonderheden.message}
                   </p>
                 )}
               </div>
@@ -456,7 +456,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
 
         {/* Afstand sectie - voor iedereen */}
         <div ref={distanceSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('distance') ? 'opacity-100' : 'opacity-0')}>
-          <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading)}>
+          <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
             Kies je afstand
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -482,13 +482,13 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
             ))}
           </div>
           {errors.afstand?.message && (
-            <p className="text-sm text-red-500 mt-1 font-medium">{errors.afstand.message}</p>
+            <p className={cn(cc.form.errorMessage)}>{errors.afstand.message}</p>
           )}
         </div>
 
         {/* Ondersteuning sectie */}
         <div ref={supportSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('support') ? 'opacity-100' : 'opacity-0')}>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading">
+          <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
             Heb je ondersteuning nodig?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -516,7 +516,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
             ))}
           </div>
           {errors.ondersteuning?.message && (
-            <p className="text-sm text-red-500 mt-1 font-medium">
+            <p className={cn(cc.form.errorMessage)}>
               {errors.ondersteuning.message}
             </p>
           )}
@@ -529,8 +529,8 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
             : 'opacity-0 max-h-0 overflow-hidden'
         }`}>
           <div className="space-y-2">
-            <label htmlFor="bijzonderheden" className="block text-sm font-medium text-gray-700">
-              {selectedOndersteuning === 'Ja' 
+            <label htmlFor="bijzonderheden" className={cn(cc.form.label)}>
+              {selectedOndersteuning === 'Ja'
                 ? 'Beschrijf welke ondersteuning je nodig hebt'
                 : 'Beschrijf je situatie'}
             </label>
@@ -553,7 +553,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
               }}
             />
             {errors.bijzonderheden?.message && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className={cn(cc.form.errorMessage)}>
                 {errors.bijzonderheden.message}
               </p>
             )}
@@ -563,11 +563,11 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
         {/* Terms checkbox */}
         <div ref={termsSectionRef} className={cn('flex flex-col items-center pt-6 space-y-2 transition-opacity duration-300', visibleSections.has('terms') ? 'opacity-100' : 'opacity-0')}>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-2 text-center max-w-lg">
-            <span className="text-sm text-gray-700">
+            <span className={cn(cc.text.small, 'text-gray-700')}>
               Je moet eerst de algemene voorwaarden lezen voordat je je kunt inschrijven.{' '}
               <button
                 type="button"
-                className={cn(colors.primary.text, 'underline hover:text-primary-dark font-medium', cc.transition.colors)}
+                className={cn(colors.primary.text, 'underline hover:text-primary-dark', cc.text.small, cc.transition.colors)}
                 onClick={openTermsModal}
               >
                 Lees de Algemene Voorwaarden
@@ -592,12 +592,12 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                 }
               }}
             />
-            <span className={`text-sm ${!hasReadTerms ? 'text-gray-400' : 'text-gray-600'}`}>
+            <span className={cn(cc.text.small, !hasReadTerms ? 'text-gray-400' : 'text-gray-600')}>
               Ik heb de algemene voorwaarden gelezen en ga hiermee akkoord
             </span>
           </label>
           {errors.terms?.message && (
-            <p className={cn(cc.form.errorMessage, 'text-center font-medium')}>
+            <p className={cn(cc.form.errorMessage, 'text-center')}>
               {errors.terms.message}
             </p>
           )}

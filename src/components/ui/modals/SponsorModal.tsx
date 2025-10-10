@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { Sponsor } from '@/features/sponsors/types';
+import { cc, cn } from '@/styles/shared';
 
 export const SponsorModal: React.FC<SponsorModalProps> = memo(({ isOpen, onClose, sponsor }) => {
   // Performance tracking
@@ -63,11 +64,11 @@ export const SponsorModal: React.FC<SponsorModalProps> = memo(({ isOpen, onClose
           <div className="p-6">
             <div className="text-center mb-6">
               {/* You might want to add a sponsor tier or other info here if available */}
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <h3 className={cn(cc.text.h3, 'text-gray-900')}>
                 {sponsor.name}
               </h3>
             </div>
-            <p className="text-gray-600 text-sm sm:text-base leading-relaxed break-words">
+            <p className={cn(cc.text.body, 'text-gray-600 leading-relaxed break-words')}>
               {sponsor.description}
             </p>
           </div>
@@ -80,7 +81,7 @@ export const SponsorModal: React.FC<SponsorModalProps> = memo(({ isOpen, onClose
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleWebsiteClick}
-                className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+                className={cn('flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg', cc.text.body)}
               >
                 <span>Bezoek website</span>
                 <svg

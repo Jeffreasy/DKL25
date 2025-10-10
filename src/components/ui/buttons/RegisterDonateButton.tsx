@@ -47,13 +47,13 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = memo(({
             'gap-1 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4',
             colors.primary.bg,
             colors.primary.hover,
-            'text-white font-semibold',
+            'text-white',
             cc.border.circle,
             cc.transition.base,
             'hover:-translate-y-0.5',
             cc.shadow.lg,
             colors.primary.focusRing,
-            'text-sm sm:text-base'
+            cc.text.body
           )}
           aria-label="Aanmelden voor het evenement"
         >
@@ -67,13 +67,13 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = memo(({
             'gap-1 px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4',
             colors.primary.bg,
             colors.primary.hover,
-            'text-white font-semibold',
+            'text-white',
             cc.border.circle,
             cc.transition.base,
             'hover:-translate-y-0.5',
             cc.shadow.lg,
             colors.primary.focusRing,
-            'text-sm sm:text-base'
+            cc.text.body
           )}
           aria-label="Doneren aan het goede doel"
         >

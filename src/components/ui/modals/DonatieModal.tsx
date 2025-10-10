@@ -8,6 +8,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import type { DonatieModalProps } from './types';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
+import { cc, cn } from '@/styles/shared';
 
 export const DonatieModal: React.FC<DonatieModalProps> = memo(({ isOpen, onClose }) => {
   // Performance tracking
@@ -40,7 +41,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = memo(({ isOpen, onClose
       <div className="fixed inset-0 z-50 flex items-start justify-center p-0 md:p-4 overflow-y-auto">
         <Dialog.Panel className="w-full min-h-screen bg-white shadow-xl overflow-hidden animate-slideIn z-50 md:max-w-2xl md:rounded-xl md:min-h-0 md:my-8">
           <div className="bg-primary p-4 flex items-center justify-between">
-            <Dialog.Title className="text-white font-bold text-lg" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <Dialog.Title className={cn(cc.text.bodyLarge, 'text-white')}>
               Doneren aan het Liliane Fonds
             </Dialog.Title>
             <button
@@ -53,7 +54,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = memo(({ isOpen, onClose
           </div>
 
           <div className="px-6 pt-6 pb-4 space-y-4 overflow-y-auto max-h-[calc(100vh-200px)] md:overflow-visible md:max-h-none">
-            <p className="text-center text-gray-700 font-medium text-base" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+            <p className={cn(cc.text.body, 'text-center text-gray-700')}>
               Bekijk hier live hoeveel er al is ingezameld voor het Liliane Fonds.
             </p>
 
@@ -73,7 +74,7 @@ export const DonatieModal: React.FC<DonatieModalProps> = memo(({ isOpen, onClose
                 href="https://www.gofundme.com/f/samen-op-weg-voor-het-liliane-fonds-met-de-koninklijke-loop"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-primary hover:bg-primary-dark text-white px-4 py-2 text-sm md:px-6 md:py-3 md:text-base rounded-full font-medium transition"
+                className={cn('inline-block bg-primary hover:bg-primary-dark text-white px-4 py-2 md:px-6 md:py-3 rounded-full transition', cc.text.body)}
               >
                 Doneer via GoFundMe
               </a>
@@ -89,10 +90,10 @@ export const DonatieModal: React.FC<DonatieModalProps> = memo(({ isOpen, onClose
               <div className="flex items-center gap-3">
                 <VolunteerActivismIcon className="text-primary text-xl" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold group-hover:text-primary transition-colors" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <h3 className={cn(cc.text.small, 'group-hover:text-primary transition-colors')}>
                     Over het goede doel
                   </h3>
-                  <p className="text-xs text-gray-600 group-hover:translate-x-1 transition-transform" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+                  <p className={cn(cc.text.small, 'text-gray-600 group-hover:translate-x-1 transition-transform')}>
                     Lees meer over waar we voor lopen.
                   </p>
                 </div>
@@ -108,10 +109,10 @@ export const DonatieModal: React.FC<DonatieModalProps> = memo(({ isOpen, onClose
               <div className="flex items-center gap-3">
                 <HelpOutlineIcon className="text-primary text-xl" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold group-hover:text-primary transition-colors" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <h3 className={cn(cc.text.small, 'group-hover:text-primary transition-colors')}>
                     Vragen over doneren?
                   </h3>
-                  <p className="text-xs text-gray-600 group-hover:translate-x-1 transition-transform" style={{ fontFamily: "'Open Sans', sans-serif" }}>
+                  <p className={cn(cc.text.small, 'text-gray-600 group-hover:translate-x-1 transition-transform')}>
                     Bekijk onze FAQ of neem contact op.
                   </p>
                 </div>

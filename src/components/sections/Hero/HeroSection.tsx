@@ -98,22 +98,22 @@ const HeroSection: React.FC = () => { // No props expected
             <h1 className={cn(cc.text.h1, 'font-bold text-white leading-tight drop-shadow-lg')}>
               De sponsorloop van mensen met een beperking voor een goed doel!
             </h1>
-            <p className={cn(cc.text.h5, 'text-white/90 mt-3 drop-shadow-md')}>
+            <p className={cn(cc.typography.lead, 'text-white/90 mt-3 drop-shadow-md')}>
               Samen maken we het verschil
             </p>
             <div className={cn('mt-6 px-4 py-3 rounded-md text-center max-w-sm mx-auto', colors.primary.bg)}>
               <div className="mb-2">
-                <span className={cn('block font-bold text-base sm:text-lg text-white')}>De Koninklijke Loop 2025</span>
-                <span className={cn(cc.text.small, 'block text-white/90')}>Zaterdag 17 mei 2025</span>
+                <span className={cn(cc.text.bodyLarge, 'block text-white font-bold')}>De Koninklijke Loop 2025</span>
+                <span className={cn(cc.text.body, 'block text-white/90')}>Zaterdag 17 mei 2025</span>
               </div>
               <button
                 onClick={handleProgrammaClick}
                 className={cn(
-                  'mt-1 px-3 py-1.5 bg-white font-semibold shadow-sm',
+                  'mt-1 px-3 py-1.5 bg-white shadow-sm',
                   colors.primary.text,
-                  cc.text.small,
+                  cc.text.body,
                   cc.border.circle,
-                  'hover:bg-gray-100 hover:scale-105 active:scale-95',
+                  'hover:bg-gray-100 hover:scale-105 active:scale-95 font-semibold',
                   cc.transition.base,
                   'transform-gpu' // Use GPU acceleration for transforms
                 )}

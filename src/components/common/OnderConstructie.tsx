@@ -108,19 +108,19 @@ const OnderConstructie: React.FC = memo(() => {
     return (
       <div className={cn(cc.flex.center, 'gap-4 mb-4')} aria-label="Countdown tot lancering" aria-live="polite">
         <div className="text-center">
-          <span className={cn('block text-lg font-bold', colors.primary.text)}>{days}</span>
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{days}</span>
           <span className={cn(cc.text.small, cc.text.muted)}>Dagen</span>
         </div>
         <div className="text-center">
-          <span className={cn('block text-lg font-bold', colors.primary.text)}>{hours}</span>
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{hours}</span>
           <span className={cn(cc.text.small, cc.text.muted)}>Uren</span>
         </div>
         <div className="text-center">
-          <span className={cn('block text-lg font-bold', colors.primary.text)}>{minutes}</span>
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{minutes}</span>
           <span className={cn(cc.text.small, cc.text.muted)}>Minuten</span>
         </div>
         <div className="text-center">
-          <span className={cn('block text-lg font-bold', colors.primary.text)}>{seconds}</span>
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{seconds}</span>
           <span className={cn(cc.text.small, cc.text.muted)}>Seconden</span>
         </div>
       </div>

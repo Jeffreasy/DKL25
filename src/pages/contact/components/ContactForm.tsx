@@ -69,7 +69,7 @@ export const ContactForm = memo(() => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <div>
-          <label htmlFor="naam" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="naam" className={cn(cc.form.label)}>
             Naam
           </label>
           <input
@@ -87,7 +87,7 @@ export const ContactForm = memo(() => {
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="email" className={cn(cc.form.label)}>
             E-mailadres
           </label>
           <input
@@ -105,7 +105,7 @@ export const ContactForm = memo(() => {
         </div>
 
         <div>
-          <label htmlFor="bericht" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="bericht" className={cn(cc.form.label)}>
             Je bericht
           </label>
           <textarea
@@ -136,7 +136,7 @@ export const ContactForm = memo(() => {
             />
           </div>
           <div className="ml-3 text-sm">
-            <label htmlFor="privacy_akkoord" className="font-medium text-gray-700">
+            <label htmlFor="privacy_akkoord" className={cn(cc.text.body, 'text-gray-700')}>
               Ik ga akkoord met de privacy voorwaarden
             </label>
             {errors.privacy_akkoord?.message && (
@@ -153,7 +153,7 @@ export const ContactForm = memo(() => {
           className={cn(
             'w-full',
             cc.flex.center,
-            'py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white',
+            'py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white',
             isSubmitting ? cc.button.disabled : `${colors.primary.bg} ${colors.primary.hover}`,
             'focus:outline-none',
             colors.primary.focusRing

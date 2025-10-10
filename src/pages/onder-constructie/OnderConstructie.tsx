@@ -34,7 +34,7 @@ const OnderConstructie: React.FC = memo(() => {
         <>
           <SEO {...seoProps} />
           <div className="min-h-screen pt-20 bg-white">
-            <div className="w-full max-w-[1400px] mx-auto px-6 py-12 font-roboto antialiased">
+            <div className={cn('w-full max-w-[1400px] mx-auto px-6 py-12', cc.typography.body)}>
               <div className="flex items-center justify-center min-h-[50vh]">
                 <div className="text-center">
                   <div className="animate-pulse">
@@ -56,11 +56,11 @@ const OnderConstructie: React.FC = memo(() => {
         <>
           <SEO {...seoProps} />
           <div className="min-h-screen pt-20 bg-white">
-            <div className="w-full max-w-[1400px] mx-auto px-6 py-12 font-roboto antialiased">
+            <div className={cn('w-full max-w-[1400px] mx-auto px-6 py-12', cc.typography.body)}>
               <div className="flex items-center justify-center min-h-[50vh]">
                 <div className="text-center">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-4">Fout bij laden</h1>
-                  <p className="text-gray-600">Er is een probleem opgetreden bij het laden van de pagina.</p>
+                  <h1 className={cn(cc.text.h2, 'text-gray-900 mb-4', cc.typography.heading)}>Fout bij laden</h1>
+                  <p className={cn(cc.text.body, 'text-gray-600')}>Er is een probleem opgetreden bij het laden van de pagina.</p>
                 </div>
               </div>
             </div>
@@ -84,13 +84,13 @@ const OnderConstructie: React.FC = memo(() => {
               <div className={cn(cc.flex.center, 'mb-6')}>
                 <FaTools className={cn('w-16 h-16', colors.primary.text)} aria-label="Onder constructie" />
               </div>
-              <h1 className={cn(cc.text.h1, 'font-bold text-gray-900 tracking-tight leading-tight', cc.typography.heading)}>
+              <h1 className={cn(cc.text.h1, 'text-gray-900 tracking-tight leading-tight', cc.typography.heading)}>
                 {data.title}
               </h1>
-              <p className={cn(cc.text.h4, cc.text.muted, cc.typography.body, 'max-w-2xl mx-auto leading-relaxed')}>
+              <p className={cn(cc.typography.lead, cc.text.muted, 'max-w-2xl mx-auto')}>
                 {data.message}
               </p>
-              <p className={cn(cc.text.h5, 'font-semibold', colors.primary.text, cc.typography.body)}>
+              <p className={cn(cc.text.bodyLarge, colors.primary.text, cc.typography.body)}>
                 {data.footer_text}
               </p>
             </motion.div>

@@ -124,7 +124,7 @@ const VideoGallery: React.FC = memo(() => {
     <div className={cn(cc.flex.center, 'min-h-[400px] bg-gray-50 rounded-lg')}>
       <div className="text-center">
         <div className={cn('w-12 h-12 border-4 border-t-transparent mx-auto mb-4', colors.primary.border, cc.border.circle, 'animate-spin')} />
-        <p className={cn(cc.text.muted, 'text-sm')}>Video's laden...</p>
+        <p className={cn(cc.text.muted)}>Video's laden...</p>
       </div>
     </div>
   );
@@ -133,7 +133,7 @@ const VideoGallery: React.FC = memo(() => {
     <div className={cn('text-center p-8 bg-gray-50 rounded-lg', cc.text.error)}>
       <div className="max-w-md mx-auto">
         <h3 className={cn(cc.text.h3, 'mb-2')}>Video's konden niet worden geladen</h3>
-        <p className="mb-4 text-gray-600">{error}</p>
+        <p className={cn(cc.text.body, 'mb-4 text-gray-600')}>{error}</p>
         <button
           onClick={() => window.location.reload()}
           className={cn(cc.button.primary, 'px-6 py-2')}
@@ -163,7 +163,7 @@ const VideoGallery: React.FC = memo(() => {
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center mb-6 md:mb-12">
-          <h2 className={cn(cc.text.h2, 'text-gray-900 font-bold mb-2 md:mb-3')}>
+          <h2 className={cn(cc.text.h2, 'text-gray-900 mb-2 md:mb-3')}>
             Onze Video's
           </h2>
           <p className={cn(cc.text.h5, cc.text.muted, 'px-4')}>
