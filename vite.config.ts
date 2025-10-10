@@ -81,11 +81,11 @@ export default defineConfig({
         manualChunks(id) {
           // React ecosystem in separate chunk
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || id.includes('use-sync-external-store')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || id.includes('use-sync-external-store') || id.includes('@emotion')) {
               return 'vendor-react';
             }
             // Material UI in separate chunk
-            if (id.includes('@mui') || id.includes('@emotion')) {
+            if (id.includes('@mui')) {
               return 'vendor-mui';
             }
             // Framer Motion in separate chunk
