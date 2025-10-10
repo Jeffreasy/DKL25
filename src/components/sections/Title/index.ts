@@ -11,4 +11,4 @@ export { default as CountdownTimer } from './components/CountdownTimer';
 export { default as EventDetailsGrid } from './components/EventDetailsGrid';
 export { default as CTAButton } from './components/CTAButton';
 export * from './components/EventDetailCard';
-export * from './components/SocialMediaSection';
+// SocialMediaSection is lazy loaded, so not exported statically
