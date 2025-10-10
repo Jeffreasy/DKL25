@@ -1,27 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, memo } from 'react';
 import type { PartnerModalProps } from './types';
 import { Dialog } from '@headlessui/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 
-export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, partner }) => {
+export const PartnerModal: React.FC<PartnerModalProps> = memo(({ isOpen, onClose, partner }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('PartnerModal');
+
   // Track modal open/close
   useEffect(() => {
     if (isOpen && partner) {
-      trackEvent('partners', 'modal_opened', partner.name);
+      trackInteraction('modal_opened', partner.name);
     }
-  }, [isOpen, partner]);
+  }, [isOpen, partner, trackInteraction]);
 
-  const handleClose = () => {
-    trackEvent('partners', 'modal_closed', partner?.name || 'partner_details');
+  const handleClose = useCallback(() => {
+    trackInteraction('modal_closed', partner?.name || 'partner_details');
     onClose();
-  };
+  }, [trackInteraction, partner, onClose]);
 
-  const handleWebsiteClick = () => {
+  const handleWebsiteClick = useCallback(() => {
     if (partner?.website) {
-      trackEvent('partners', 'website_click', partner.name);
+      trackInteraction('website_click', partner.name);
     }
-  };
+  }, [trackInteraction, partner]);
 
   if (!isOpen || !partner) return null;
 
@@ -93,4 +97,6 @@ export const PartnerModal: React.FC<PartnerModalProps> = ({ isOpen, onClose, par
       </div>
     </Dialog>
   );
-};
+});
+
+PartnerModal.displayName = 'PartnerModal';

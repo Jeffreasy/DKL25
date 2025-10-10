@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, memo } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
@@ -7,17 +7,21 @@ import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import type { DonatieModalProps } from './types';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 
-export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) => {
-  const handleClose = () => {
-    trackEvent('donatie', 'modal_closed', 'donatie_form');
+export const DonatieModal: React.FC<DonatieModalProps> = memo(({ isOpen, onClose }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('DonatieModal');
+
+  const handleClose = useCallback(() => {
+    trackInteraction('modal_closed', 'donatie_form');
     onClose();
-  };
+  }, [trackInteraction, onClose]);
 
-  const handleLinkClick = (path: string) => {
-    trackEvent('donatie', 'link_click', path);
+  const handleLinkClick = useCallback((path: string) => {
+    trackInteraction('link_click', path);
     handleClose();
-  };
+  }, [trackInteraction, handleClose]);
 
   const streamWidgetUrl =
     'https://www.gofundme.com/f/samen-op-weg-voor-het-liliane-fonds-met-de-koninklijke-loop/stream-goal-bar?lang=nl_NL&utm_campaign=fp_sharesheet&utm_medium=customer&utm_source=streaming_widget&attribution_id=sl%3Aa6f3b757-4989-41be-978f-6ddf2932766c&locale=nl-NL';
@@ -119,4 +123,6 @@ export const DonatieModal: React.FC<DonatieModalProps> = ({ isOpen, onClose }) =
       </div>
     </Dialog>
   );
-};
+});
+
+DonatieModal.displayName = 'DonatieModal';

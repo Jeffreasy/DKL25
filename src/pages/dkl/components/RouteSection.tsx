@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ContentItem } from './ContentItem';
 import { contentItems } from './route.data';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
-const RouteSection: React.FC = () => {
+const RouteSection: React.FC = memo(() => {
   React.useEffect(() => {
     trackEvent('dkl', 'section_view', 'route_section');
   }, []);
@@ -49,6 +49,8 @@ const RouteSection: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
-export default RouteSection; 
+RouteSection.displayName = 'RouteSection';
+
+export default RouteSection;

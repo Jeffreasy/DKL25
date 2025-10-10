@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo, memo } from 'react';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { motion } from 'framer-motion';
 
 interface RadioPlayerProps {
@@ -10,13 +11,16 @@ interface RadioPlayerProps {
   date?: string;
 }
 
-const RadioPlayer: React.FC<RadioPlayerProps> = ({
+const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
   audioUrl,
   title,
   description,
   thumbnailUrl,
   date
 }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('RadioPlayer');
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -27,32 +31,49 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  // Format time in MM:SS format
-  const formatTime = (seconds: number): string => {
+  // Memoized waveform bars to prevent recreation on every render
+  const waveformBars = useMemo(() =>
+    [...Array(50)].map((_, i) => {
+      const height = 30 + Math.random() * 70;
+      return (
+        <div
+          key={i}
+          className="flex-1 mx-px bg-orange-400 opacity-60"
+          style={{
+            height: `${height}%`,
+            transition: 'height 0.2s ease'
+          }}
+        />
+      );
+    }), []
+  );
+
+  // Optimized format time function with useCallback
+  const formatTime = useCallback((seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
+  }, []);
 
-  // Handle audio playback
-  const togglePlayPause = () => {
+  // Optimized event handlers
+  const togglePlayPause = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     if (isPlaying) {
       audio.pause();
-      trackEvent('media_player', 'pause', title);
+      trackInteraction('pause', title);
     } else {
       audio.play().catch(error => {
         console.error('Audio playback error:', error);
         setHasError(true);
-        trackEvent('media_player', 'error', `${title}: ${error.message}`);
+        trackInteraction('error', `${title}: ${error.message}`);
       });
-      trackEvent('media_player', 'play', title);
+      trackInteraction('play', title);
     }
-    
+
     setIsPlaying(!isPlaying);
-  };
+  }, [isPlaying, title, trackInteraction]);
 
   // Update progress bar as audio plays
   useEffect(() => {
@@ -94,49 +115,47 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
     };
   }, [title, volume]);
 
-  // Handle clicking on the progress bar
-  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Optimized event handlers
+  const handleProgressBarClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;
     const progressBar = progressBarRef.current;
-    
+
     if (!audio || !progressBar) return;
-    
+
     // Calculate click position relative to progress bar
     const rect = progressBar.getBoundingClientRect();
     const clickPositionRatio = (e.clientX - rect.left) / rect.width;
     const newTime = clickPositionRatio * duration;
-    
+
     // Update audio time
     audio.currentTime = newTime;
     setCurrentTime(newTime);
-    
-    trackEvent('media_player', 'seek', `${title}: ${formatTime(newTime)}`);
-  };
 
-  // Handle volume change
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    trackInteraction('seek', `${title}: ${formatTime(newTime)}`);
+  }, [duration, title, formatTime, trackInteraction]);
+
+  const handleVolumeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    
+
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
     }
-    
-    trackEvent('media_player', 'volume_change', `${title}: ${Math.round(newVolume * 100)}%`);
-  };
-  
-  // Handle retry when error occurs
-  const handleRetry = () => {
+
+    trackInteraction('volume_change', `${title}: ${Math.round(newVolume * 100)}%`);
+  }, [title, trackInteraction]);
+
+  const handleRetry = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    
+
     setHasError(false);
     setIsLoading(true);
-    
+
     // Force reload of audio source
     audio.load();
-    trackEvent('media_player', 'retry', title);
-  };
+    trackInteraction('retry', title);
+  }, [title, trackInteraction]);
 
   return (
     <motion.div 
@@ -160,19 +179,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
               <div className="w-4/5 h-24 relative">
                 {/* Audio visualization */}
                 <div className="absolute inset-0 flex items-center">
-                  {[...Array(50)].map((_, i) => {
-                    const height = 30 + Math.random() * 70;
-                    return (
-                      <div 
-                        key={i}
-                        className="flex-1 mx-px bg-orange-400 opacity-60"
-                        style={{ 
-                          height: `${height}%`,
-                          transition: 'height 0.2s ease'
-                        }}
-                      />
-                    );
-                  })}
+                  {waveformBars}
                 </div>
               </div>
             </div>
@@ -272,6 +279,8 @@ const RadioPlayer: React.FC<RadioPlayerProps> = ({
       />
     </motion.div>
   );
-};
+});
 
-export default RadioPlayer; 
+RadioPlayer.displayName = 'RadioPlayer';
+
+export default RadioPlayer;

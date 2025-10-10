@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import CTACard from './CTACard';
@@ -6,13 +6,14 @@ import { ctaCardsData } from './data';
 import type { CTACardData } from './types';
 import { logEvent } from '@/utils/googleAnalytics';
 import { useModal } from '@/contexts/ModalContext';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface CTACardsProps {
   onInschrijfClick: () => void;
 }
 
-const CardSkeleton: React.FC = () => (
+const CardSkeleton: React.FC = memo(() => (
   <div className={cn('bg-white rounded-3xl p-8', cc.shadow.lg, animations.pulse)}>
     <div className={cn(cc.flex.colCenter, 'text-center space-y-4')}>
       <div className={cn('w-20 h-20 bg-gray-200', cc.border.circle, 'mb-2')} />
@@ -22,16 +23,21 @@ const CardSkeleton: React.FC = () => (
       <div className={cn('h-12 bg-gray-200', cc.border.circle, 'w-2/3 mt-4')} />
     </div>
   </div>
-);
+));
 
-const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
+CardSkeleton.displayName = 'CardSkeleton';
+
+const CTACards: React.FC<CTACardsProps> = memo(({ onInschrijfClick }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('CTACards');
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { handleDonatieClick } = useModal(); // Get handler from context
 
-  // Container animation variants
-  const containerVariants = {
+  // Memoized container animation variants
+  const containerVariants = React.useMemo(() => ({
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -39,7 +45,7 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
         staggerChildren: 0.2
       }
     }
-  };
+  }), []);
 
   // Track page section view and simulate loading
   useEffect(() => {
@@ -53,10 +59,10 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleAction = async (card: CTACardData) => {
+  const handleAction = useCallback(async (card: CTACardData) => {
     try {
-      logEvent('conversion', 'cta_click', `${card.title}_${card.actionType}`);
-      
+      trackInteraction('cta_click', `${card.title}_${card.actionType}`);
+
       switch (card.actionType) {
         case 'inschrijven':
           await onInschrijfClick();
@@ -72,14 +78,14 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
     } catch (err) {
       console.error('Error handling CTA action:', err);
       setError('Er ging iets mis. Probeer het later opnieuw.');
-      logEvent('error', 'cta_action_failed', `${card.title}_${card.actionType}`);
+      trackInteraction('cta_action_failed', `${card.title}_${card.actionType}`);
     }
-  };
+  }, [trackInteraction, onInschrijfClick, handleDonatieClick, navigate]);
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     setError(null);
-    logEvent('interaction', 'cta_error_retry', 'retry_clicked');
-  };
+    trackInteraction('cta_error_retry', 'retry_clicked');
+  }, [trackInteraction]);
 
   return (
     <section className={cn(cc.spacing.section, 'px-4 bg-white relative overflow-hidden', cc.typography.heading)}>
@@ -146,6 +152,8 @@ const CTACards: React.FC<CTACardsProps> = ({ onInschrijfClick }) => {
       </div>
     </section>
   );
-};
+});
 
-export default React.memo(CTACards);
+CTACards.displayName = 'CTACards';
+
+export default CTACards;

@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import VideoSlide from './VideoPlayer';
+import React, { useCallback, useEffect, useState, useRef, memo, Suspense, lazy } from 'react';
 import NavigationButton from './VideoNavButton';
 import DotIndicator from './VideoIndicator';
+
+// Lazy load heavy components
+const VideoSlide = lazy(() => import('./VideoPlayer'));
 import { useVideoGallery } from '@/hooks/useVideoGallery';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import { useSwipe } from '@/hooks/useSwipe';
@@ -10,27 +12,20 @@ import { PRELOAD_CLEANUP_TIMEOUT } from '../constants';
 import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
 import { cc, cn, colors } from '@/styles/shared';
 
-const VideoGallery: React.FC = () => {
+const VideoGallery: React.FC = memo(() => {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  
+
   const {
     videos,
+    currentIndex,
     isLoading,
     error,
+    handlePrevious,
+    handleNext,
+    setCurrentIndex,
   } = useVideoGallery();
 
-  // Lokale navigatiefuncties die de lokale state aanpassen
-  const handlePrevious = useCallback(() => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? videos.length - 1 : prevIndex - 1
-    );
-  }, [videos.length]);
-
-  const handleNext = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
-  }, [videos.length]);
 
   // Keyboard navigatie - alleen actief wanneer geen input element actief is
   useEffect(() => {
@@ -92,56 +87,60 @@ const VideoGallery: React.FC = () => {
     link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
 
-    // Cleanup preload link 
+    // Cleanup preload link na timeout
     const timer = setTimeout(() => {
       if (document.head.contains(link)) {
         document.head.removeChild(link);
       }
     }, PRELOAD_CLEANUP_TIMEOUT);
 
-    // Cleanup effect
+    // Cleanup effect - altijd opruimen bij unmount of dependency change
     return () => {
-        clearTimeout(timer);
-        // Verwijder de link direct bij cleanup 
-        if (document.head.contains(link)) {
-           document.head.removeChild(link);
-        }
+      clearTimeout(timer);
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
     };
-
   }, [currentIndex, videos, isVisible]);
 
-  const handleDotClick = (index: number) => {
+  const handleDotClick = useCallback((index: number) => {
     trackEvent('video_gallery', 'dot_click', `slide_${index + 1}`);
     setCurrentIndex(index);
-  };
+  }, []);
 
-  const handleVideoPlay = () => {
+  const handleVideoPlay = useCallback(() => {
     trackEvent('video_gallery', 'video_play', `slide_${currentIndex + 1}`);
-  };
+  }, [currentIndex]);
 
-  const handleVideoPause = () => {
+  const handleVideoPause = useCallback(() => {
     trackEvent('video_gallery', 'video_pause', `slide_${currentIndex + 1}`);
-  };
+  }, [currentIndex]);
 
-  const handleVideoEnded = () => {
+  const handleVideoEnded = useCallback(() => {
     trackEvent('video_gallery', 'video_ended', `slide_${currentIndex + 1}`);
-  };
+  }, [currentIndex]);
 
   if (isLoading) return (
-    <div className={cn(cc.flex.center, 'min-h-[300px]')}>
-      <div className={cn('w-12 h-12 border-4 border-t-transparent', colors.primary.border, cc.border.circle, 'animate-spin')} />
+    <div className={cn(cc.flex.center, 'min-h-[400px] bg-gray-50 rounded-lg')}>
+      <div className="text-center">
+        <div className={cn('w-12 h-12 border-4 border-t-transparent mx-auto mb-4', colors.primary.border, cc.border.circle, 'animate-spin')} />
+        <p className={cn(cc.text.muted, 'text-sm')}>Video's laden...</p>
+      </div>
     </div>
   );
   
   if (error) return (
-    <div className={cn('text-center p-4', cc.text.error)}>
-      <p>Er is een fout opgetreden: {error}</p>
-      <button 
-        onClick={() => window.location.reload()} 
-        className={cn(cc.button.primary, 'mt-2')}
-      >
-        Probeer opnieuw
-      </button>
+    <div className={cn('text-center p-8 bg-gray-50 rounded-lg', cc.text.error)}>
+      <div className="max-w-md mx-auto">
+        <h3 className={cn(cc.text.h3, 'mb-2')}>Video's konden niet worden geladen</h3>
+        <p className="mb-4 text-gray-600">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className={cn(cc.button.primary, 'px-6 py-2')}
+        >
+          Probeer opnieuw
+        </button>
+      </div>
     </div>
   );
   
@@ -174,16 +173,26 @@ const VideoGallery: React.FC = () => {
 
         {/* Main Video met navigatie */}
         <div className="relative mb-4 md:mb-8 group">
-          <VideoSlide
-            key={currentVideo.id}
-            videoId={currentVideo.video_id}
-            url={currentVideo.url}
-            title={currentVideo.title}
-            isSelected={true}
-            onPlay={handleVideoPlay}
-            onPause={handleVideoPause}
-            onEnded={handleVideoEnded}
-          />
+          <Suspense fallback={
+            <div className="w-full max-w-[1280px] mx-auto">
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <div className="absolute inset-0 rounded-xl overflow-hidden shadow-lg bg-gray-100 flex items-center justify-center">
+                  <div className={cn(cc.loading.spinner, 'w-12 h-12')} />
+                </div>
+              </div>
+            </div>
+          }>
+            <VideoSlide
+              key={currentVideo.id}
+              videoId={currentVideo.video_id}
+              url={currentVideo.url}
+              title={currentVideo.title}
+              isSelected={true}
+              onPlay={handleVideoPlay}
+              onPause={handleVideoPause}
+              onEnded={handleVideoEnded}
+            />
+          </Suspense>
           
           {/* Navigation Buttons - Verborgen op mobiel */}
           {hasMultipleVideos && (
@@ -201,42 +210,25 @@ const VideoGallery: React.FC = () => {
             </div>
           )}
 
-          {/* Mobiele navigatie indicators */}
-          {hasMultipleVideos && (
-            <div className="flex md:hidden justify-center gap-2 mt-4">
-              {videos.map((_, index) => (
-                <button
-                  key={index}
-                  className={cn(
-                    'w-2 h-2',
-                    cc.border.circle,
-                    cc.transition.base,
-                    index === currentIndex ? cn(colors.primary.bg, 'w-4') : 'bg-gray-300'
-                  )}
-                  onClick={() => !isLoading && setCurrentIndex(index)}
-                  aria-label={`Ga naar video ${index + 1}`}
-                  disabled={isLoading}
-                />
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Thumbnails - Scrollbaar op mobiel */}
         {hasMultipleVideos && (
           <div className="relative px-4 md:px-12 -mx-4 md:mx-0">
             <div className="flex justify-start gap-2 md:gap-4 overflow-x-auto scrollbar-hide py-2 px-4 md:px-0">
-              {videos.map((video, index) => (
-                <VideoSlide
-                  key={video.id}
-                  videoId={video.video_id}
-                  url={video.url}
-                  title={video.title}
-                  isThumbnail
-                  isSelected={index === currentIndex}
-                  onClick={() => !isLoading && setCurrentIndex(index)}
-                />
-              ))}
+              <Suspense fallback={null}>
+                {videos.map((video, index) => (
+                  <VideoSlide
+                    key={video.id}
+                    videoId={video.video_id}
+                    url={video.url}
+                    title={video.title}
+                    isThumbnail
+                    isSelected={index === currentIndex}
+                    onClick={() => !isLoading && setCurrentIndex(index)}
+                  />
+                ))}
+              </Suspense>
             </div>
           </div>
         )}
@@ -251,6 +243,8 @@ const VideoGallery: React.FC = () => {
       </div>
     </section>
   );
-};
+});
 
-export default VideoGallery; 
+VideoGallery.displayName = 'VideoGallery';
+
+export default VideoGallery;

@@ -3,7 +3,7 @@
  * React hook for fetching and managing partners
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { partnerService } from '../services/partnerService'
 import type { Partner } from '../types'
 
@@ -40,12 +40,13 @@ export const usePartners = (): UsePartnersReturn => {
     fetchPartners()
   }, [])
 
-  return {
+  // Memoize return value to prevent unnecessary re-renders
+  return useMemo(() => ({
     partners,
     isLoading,
     error,
     refetch: fetchPartners
-  }
+  }), [partners, isLoading, error])
 }
 
 /**
@@ -74,12 +75,13 @@ export const usePartnersByTier = (tier: string): UsePartnersReturn => {
     fetchPartners()
   }, [tier])
 
-  return {
+  // Memoize return value to prevent unnecessary re-renders
+  return useMemo(() => ({
     partners,
     isLoading,
     error,
     refetch: fetchPartners
-  }
+  }), [partners, isLoading, error])
 }
 
 /**
@@ -87,13 +89,16 @@ export const usePartnersByTier = (tier: string): UsePartnersReturn => {
  */
 export const usePartnersGrouped = () => {
   const { partners, isLoading, error, refetch } = usePartners()
-  const grouped = partnerService.groupByTier(partners)
 
-  return {
+  // Memoize the expensive grouping operation
+  const grouped = useMemo(() => partnerService.groupByTier(partners), [partners])
+
+  // Memoize return value to prevent unnecessary re-renders
+  return useMemo(() => ({
     grouped,
     partners,
     isLoading,
     error,
     refetch
-  }
+  }), [grouped, partners, isLoading, error])
 }

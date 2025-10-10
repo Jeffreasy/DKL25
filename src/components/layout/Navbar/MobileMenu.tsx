@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import NavItem from './NavItem';
 import SocialLink from './SocialLink';
 import { NAV_ITEMS, SOCIAL_LINKS, DEFAULT_LOGO } from './constants';
@@ -9,26 +10,42 @@ import type { MobileMenuProps } from './types';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
 const MobileMenu = memo<MobileMenuProps>(({ isOpen, onClose }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('MobileMenu');
+
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Memoize accessibility preferences to prevent recalculation
+  const accessibilityPrefs = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return {
+      animationClass: prefersReducedMotion ? '' : animations.slideInRight
+    };
+  }, [trackInteraction]);
+
+  // Memoize event handlers with useCallback
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      onClose();
+      trackInteraction('click_outside', 'menu_closed');
+    }
+  }, [onClose, trackInteraction]);
+
+  const handleEscape = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      onClose();
+      trackInteraction('escape_key', 'menu_closed');
+    }
+  }, [onClose, trackInteraction]);
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
       trackEvent('navbar', 'mobile_menu_open');
+      trackInteraction('menu_opened', 'focus_set');
       menuRef.current?.focus(); // Focus op menu bij openen
     }
 
@@ -37,16 +54,13 @@ const MobileMenu = memo<MobileMenuProps>(({ isOpen, onClose }) => {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClickOutside, handleEscape, trackInteraction]);
 
-  const handleNavigation = () => {
+  const handleNavigation = useCallback(() => {
     onClose();
     trackEvent('navbar', 'mobile_menu_close');
-  };
-
-  const animationClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ? ''
-    : animations.slideInRight;
+    trackInteraction('navigation', 'menu_closed');
+  }, [onClose, trackInteraction]);
 
   if (!isOpen) return null;
 
@@ -59,7 +73,7 @@ const MobileMenu = memo<MobileMenuProps>(({ isOpen, onClose }) => {
     >
       <div
         ref={menuRef}
-        className={cn('fixed right-0 top-0 w-[280px] h-full p-6 overflow-y-auto', colors.primary.bg, cc.shadow.xl, animationClass)}
+        className={cn('fixed right-0 top-0 w-[280px] h-full p-6 overflow-y-auto', colors.primary.bg, cc.shadow.xl, accessibilityPrefs.animationClass)}
         tabIndex={-1}
       >
         <div className={cn(cc.flex.between, 'mb-8')}>

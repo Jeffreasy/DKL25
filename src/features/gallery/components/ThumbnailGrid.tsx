@@ -1,7 +1,6 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import type { Photo } from '../types';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { trackEvent } from '@/utils/googleAnalytics';
 import debounce from 'lodash.debounce';
 import { cc, cn, colors, animations } from '@/styles/shared';
@@ -124,7 +123,7 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
           )}
           aria-label="Scroll thumbnails left"
         >
-          <ChevronLeftIcon className="text-gray-700" />
+          <ChevronLeft className="text-gray-700" />
         </button>
       )}
 
@@ -185,7 +184,7 @@ const ThumbnailSlider: React.FC<ThumbnailSliderProps> = ({
           )}
           aria-label="Scroll thumbnails right"
         >
-          <ChevronRightIcon className="text-gray-700" />
+          <ChevronRight className="text-gray-700" />
         </button>
       )}
     </div>

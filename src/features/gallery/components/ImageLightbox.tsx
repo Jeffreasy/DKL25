@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback, memo, useRef } from 'react';
+import React, { useEffect, useState, useCallback, memo, useRef, useMemo } from 'react';
 import FocusTrap from 'focus-trap-react';
 import type { Photo } from '../types';
 import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { shouldHandleKeyboardEvent } from '@/utils/eventUtils';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface ImageModalProps {
@@ -16,15 +17,18 @@ interface ImageModalProps {
   currentIndex?: number;
 }
 
-const ImageModal: React.FC<ImageModalProps> = memo(({ 
-  photo, 
-  isOpen, 
+const ImageModal: React.FC<ImageModalProps> = memo(({
+  photo,
+  isOpen,
   onClose,
   onNext,
   onPrevious,
   totalPhotos,
   currentIndex
 }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('ImageModal');
+
   const [isZoomed, setIsZoomed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
@@ -45,73 +49,73 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
     setIsDragging(false);
   }, []);
 
-  // Track modal open/close
-  useEffect(() => {
-    if (isOpen) {
-      trackEvent('gallery', 'modal_opened', `photo_${currentIndex}`);
-    }
-  }, [isOpen, currentIndex]);
-
-  // Swipe handling (blijft grotendeels, maar reset zoom bij navigeren)
-  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe({
-    onSwipeLeft: () => {
-      resetZoomAndPan(); // Reset bij navigeren
-      trackEvent('gallery', 'modal_swipe', 'left');
-      onNext?.();
-    },
-    onSwipeRight: () => {
-      resetZoomAndPan(); // Reset bij navigeren
-      trackEvent('gallery', 'modal_swipe', 'right');
-      onPrevious?.();
-    },
-    onSwipeDown: () => {
-      if (!isZoomed) { // Alleen sluiten als niet ingezoomd
-          trackEvent('gallery', 'modal_swipe', 'down');
-          handleClose();
-      }
-    },
-    onSwipeUp: () => {
-        if (!isZoomed) { // Alleen sluiten als niet ingezoomd
-            trackEvent('gallery', 'modal_swipe', 'up');
-            handleClose();
-        }
-    },
-    threshold: 50,
-  });
-
   // handleClose reset nu ook zoom/pan
   const handleClose = useCallback(() => {
     setIsClosing(true);
-    trackEvent('gallery', 'modal_closed', `photo_${currentIndex}`);
+    trackInteraction('modal_closed', `photo_${currentIndex}`);
     setTimeout(() => {
       onClose();
       setIsClosing(false);
       resetZoomAndPan(); // Reset hier
     }, 200);
-  }, [onClose, currentIndex, resetZoomAndPan]);
+  }, [onClose, currentIndex, resetZoomAndPan, trackInteraction]);
+
+  // Track modal open/close
+  useEffect(() => {
+    if (isOpen) {
+      trackInteraction('modal_opened', `photo_${currentIndex}`);
+    }
+  }, [isOpen, currentIndex, trackInteraction]);
+
+  // Swipe handling (blijft grotendeels, maar reset zoom bij navigeren)
+  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe({
+    onSwipeLeft: useCallback(() => {
+      resetZoomAndPan(); // Reset bij navigeren
+      trackInteraction('modal_swipe', 'left');
+      onNext?.();
+    }, [resetZoomAndPan, trackInteraction, onNext]),
+    onSwipeRight: useCallback(() => {
+      resetZoomAndPan(); // Reset bij navigeren
+      trackInteraction('modal_swipe', 'right');
+      onPrevious?.();
+    }, [resetZoomAndPan, trackInteraction, onPrevious]),
+    onSwipeDown: useCallback(() => {
+      if (!isZoomed) { // Alleen sluiten als niet ingezoomd
+          trackInteraction('modal_swipe', 'down');
+          handleClose();
+      }
+    }, [isZoomed, trackInteraction, handleClose]),
+    onSwipeUp: useCallback(() => {
+        if (!isZoomed) { // Alleen sluiten als niet ingezoomd
+            trackInteraction('modal_swipe', 'up');
+            handleClose();
+        }
+    }, [isZoomed, trackInteraction, handleClose]),
+    threshold: 50,
+  });
 
   // Keyboard navigatie (reset zoom bij navigeren) - alleen actief wanneer modal open is EN geen input actief
   useEffect(() => {
     if (!isOpen) return;
-    
-    const handleKeyDown = (e: KeyboardEvent) => {
+
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
       if (!shouldHandleKeyboardEvent()) {
         return;
       }
 
       switch (e.key) {
         case 'Escape':
-          trackEvent('gallery', 'modal_keyboard', 'escape');
+          trackInteraction('modal_keyboard', 'escape');
           handleClose();
           break;
         case 'ArrowLeft':
           resetZoomAndPan(); // Reset bij navigeren
-          trackEvent('gallery', 'modal_keyboard', 'left');
+          trackInteraction('modal_keyboard', 'left');
           onPrevious?.();
           break;
         case 'ArrowRight':
           resetZoomAndPan(); // Reset bij navigeren
-          trackEvent('gallery', 'modal_keyboard', 'right');
+          trackInteraction('modal_keyboard', 'right');
           onNext?.();
           break;
         case ' ':
@@ -125,16 +129,16 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
             setScale(2);
             setDragPosition({ x: 0, y: 0 }); // Zoom naar midden
           }
-          trackEvent('gallery', 'modal_zoom', isZoomed ? 'out' : 'in');
+          trackInteraction('modal_zoom', isZoomed ? 'out' : 'in');
           break;
         default:
           break;
       }
-    };
-    
+    }, [isOpen, handleClose, onNext, onPrevious, isZoomed, resetZoomAndPan, trackInteraction]);
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, handleClose, onNext, onPrevious, isZoomed, resetZoomAndPan]);
+  }, [isOpen, handleClose, onNext, onPrevious, isZoomed, resetZoomAndPan, trackInteraction]);
 
   // Reset states wanneer foto verandert
   useEffect(() => {
@@ -142,10 +146,10 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
     setIsLoading(true);
   }, [photo?.url, resetZoomAndPan]);
 
-  const handleImageLoad = () => {
+  const handleImageLoad = useCallback(() => {
     setIsLoading(false);
-    trackEvent('gallery', 'modal_image_loaded', `photo_${currentIndex}`);
-  };
+    trackInteraction('modal_image_loaded', `photo_${currentIndex}`);
+  }, [trackInteraction, currentIndex]);
 
   // Klik om te zoomen op het geklikte punt, of uit te zoomen
   const handleImageClick = useCallback((e: React.MouseEvent<HTMLImageElement>) => {
@@ -156,7 +160,7 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
     if (isZoomed) {
       // Uitzoomen
       resetZoomAndPan();
-      trackEvent('gallery', 'modal_zoom', 'out');
+      trackInteraction('modal_zoom', 'out');
     } else {
       // --- Inzoomen op geklikt punt (herziene logica v2) ---
       const rect = imgElement.getBoundingClientRect();
@@ -184,7 +188,7 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
         setIsZoomed(true);
         setScale(2);
         setDragPosition({ x: 0, y: 0 });
-        trackEvent('gallery', 'modal_zoom', 'in_center');
+        trackInteraction('modal_zoom', 'in_center');
         return;
       }
 
@@ -204,8 +208,8 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
 
       setIsZoomed(true);
       setScale(newScale);
-      setDragPosition({ x: newX, y: newY }); 
-      trackEvent('gallery', 'modal_zoom', 'in_point');
+      setDragPosition({ x: newX, y: newY });
+      trackInteraction('modal_zoom', 'in_point');
     }
   }, [isZoomed, resetZoomAndPan]);
 
@@ -233,31 +237,31 @@ const ImageModal: React.FC<ImageModalProps> = memo(({
   };
 
   // End dragging
-  const handleDragEnd = () => {
+  const handleDragEnd = useCallback(() => {
     if (isDragging) {
       setIsDragging(false);
-      trackEvent('gallery', 'modal_pan', `x:${dragPosition.x.toFixed(0)},y:${dragPosition.y.toFixed(0)}`);
+      trackInteraction('modal_pan', `x:${dragPosition.x.toFixed(0)},y:${dragPosition.y.toFixed(0)}`);
     }
-  };
+  }, [isDragging, dragPosition.x, dragPosition.y, trackInteraction]);
 
   // Mouse events for dragging
-  const onMouseDown = (e: React.MouseEvent<HTMLImageElement>) => handleDragStart(e.clientX, e.clientY);
-  const onMouseMove = (e: React.MouseEvent<HTMLImageElement>) => handleDragging(e.clientX, e.clientY);
-  const onMouseUp = () => handleDragEnd();
-  const onMouseLeave = () => handleDragEnd(); // Stop ook bij verlaten van img
+  const onMouseDown = useCallback((e: React.MouseEvent<HTMLImageElement>) => handleDragStart(e.clientX, e.clientY), []);
+  const onMouseMove = useCallback((e: React.MouseEvent<HTMLImageElement>) => handleDragging(e.clientX, e.clientY), []);
+  const onMouseUp = useCallback(() => handleDragEnd(), [handleDragEnd]);
+  const onMouseLeave = useCallback(() => handleDragEnd(), [handleDragEnd]); // Stop ook bij verlaten van img
 
   // Touch events for dragging
-  const onTouchStart = (e: React.TouchEvent<HTMLImageElement>) => {
+  const onTouchStart = useCallback((e: React.TouchEvent<HTMLImageElement>) => {
     if (e.touches.length === 1) { // Alleen pannen bij 1 vinger
       handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
     }
-  };
-  const onTouchMove = (e: React.TouchEvent<HTMLImageElement>) => {
+  }, []);
+  const onTouchMove = useCallback((e: React.TouchEvent<HTMLImageElement>) => {
     if (e.touches.length === 1) {
       handleDragging(e.touches[0].clientX, e.touches[0].clientY);
     }
-  };
-  const onTouchEnd = () => handleDragEnd();
+  }, []);
+  const onTouchEnd = useCallback(() => handleDragEnd(), [handleDragEnd]);
 
   if (!isOpen || !photo) return null;
 

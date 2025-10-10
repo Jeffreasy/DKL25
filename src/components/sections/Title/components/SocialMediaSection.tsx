@@ -1,5 +1,6 @@
 // SocialMediaSection.tsx
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef, memo } from 'react';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { motion } from 'framer-motion';
 import { SocialEmbedRow } from '../functions/types';
 import DOMPurify from 'dompurify';
@@ -20,13 +21,25 @@ const EmbedSkeleton: React.FC = () => (
   </div>
 );
 
-const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds }) => {
+const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbeds }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('SocialMediaSection');
+
   const [isLoading, setIsLoading] = useState(true);
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [instagramEmbeds, setInstagramEmbeds] = useState<{ [key: string]: boolean }>({});
+  
+  const instagramRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const processedEmbeds = useRef<Set<string>>(new Set());
+  const processingTimeouts = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const isMounted = useRef(false);
+  const scriptsLoadingRef = useRef(false);
 
-  const componentKey = useMemo(() => `${socialEmbeds.length}-${Date.now()}`, []);
+  // Stable key based only on embed IDs
+  const componentKey = useMemo(() =>
+    socialEmbeds.map(e => e.id).join('-'),
+    [socialEmbeds]
+  );
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -53,19 +66,64 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
     }
   };
 
-  const processInstagramEmbed = useCallback((node: HTMLElement, embedId: string) => {
-    if (node && window.instgrm?.Embeds?.process) {
-      try {
-        window.instgrm.Embeds.process(node);
-        setInstagramEmbeds(prev => ({ ...prev, [embedId]: true }));
-      } catch (e) {
-        console.error(`Error processing Instagram embed for ${embedId}:`, e);
-      }
-    }
+  // Set mounted flag - runs first
+  useEffect(() => {
+    console.log('[DEBUG] Mount effect running');
+    isMounted.current = true;
+    
+    return () => {
+      console.log('[DEBUG] Unmount effect running');
+      isMounted.current = false;
+      scriptsLoadingRef.current = false;
+      processingTimeouts.current.forEach(timeout => clearTimeout(timeout));
+      processingTimeouts.current.clear();
+    };
   }, []);
 
-  const renderEmbed = (embed: SocialEmbedRow) => {
-    console.log(`[DEBUG] SocialMediaSection: Rendering embed for ${embed.platform} ID: ${embed.id}`);
+  const processInstagramEmbed = useCallback((embedId: string, node: HTMLElement) => {
+    // Check if already processed
+    if (processedEmbeds.current.has(embedId)) {
+      console.log(`[DEBUG] Embed ${embedId} already processed, skipping`);
+      return;
+    }
+
+    if (!scriptsLoaded || !window.instgrm?.Embeds?.process) {
+      console.log(`[DEBUG] Cannot process Instagram ${embedId}: scripts not ready`);
+      return;
+    }
+
+    console.log(`[DEBUG] Processing Instagram embed ${embedId}`);
+    
+    // Mark as processed immediately to prevent duplicates
+    processedEmbeds.current.add(embedId);
+
+    // Clear any existing timeout for this embed
+    const existingTimeout = processingTimeouts.current.get(embedId);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
+    }
+
+    // Process with delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      if (!isMounted.current) return;
+
+      try {
+        window.instgrm!.Embeds.process(node);
+        processingTimeouts.current.delete(embedId);
+        console.log(`[DEBUG] Successfully processed Instagram embed ${embedId}`);
+      } catch (e) {
+        console.error(`Error processing Instagram embed ${embedId}:`, e);
+        // Remove from processed on error so it can be retried
+        processedEmbeds.current.delete(embedId);
+      }
+    }, 300);
+
+    processingTimeouts.current.set(embedId, timeoutId);
+  }, [scriptsLoaded]);
+
+  const renderEmbed = useCallback((embed: SocialEmbedRow) => {
+    console.log(`[DEBUG] Rendering embed for ${embed.platform} ID: ${embed.id}`);
+    
     const getEmbedUrl = (code: string) => {
       const urlMatch = code.match(/src="([^\"]+)"/);
       return urlMatch ? urlMatch[1] : '';
@@ -78,7 +136,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
           console.warn(`Could not extract Facebook URL for embed ID: ${embed.id}`);
           return <div className="p-4 text-center text-red-500">Kon Facebook post niet laden (URL niet gevonden).</div>;
         }
-        console.log(`[DEBUG] SocialMediaSection: Facebook URL extracted: ${fbUrl}`);
         return (
           <div className="facebook-container relative w-full h-[738px]">
             <iframe
@@ -93,31 +150,27 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
             />
           </div>
         );
+      
       case 'instagram':
         const originalInstaHtml = embed.embed_code.split('<script')[0];
         if (!originalInstaHtml.trim()) {
           return <div className="p-4 text-center text-red-500">Kon Instagram post niet laden (Lege code).</div>;
         }
         const sanitizedInstaHtml = DOMPurify.sanitize(originalInstaHtml);
-        console.log(`[DEBUG] SocialMediaSection: Instagram HTML sanitized, length: ${sanitizedInstaHtml.length}`);
+        
         return (
           <div
             className="instagram-container relative w-full min-h-[680px]"
             ref={(node) => {
-              console.log(`[DEBUG] SocialMediaSection: Instagram ref callback for ID: ${embed.id}`, { node, instgrm: !!window.instgrm });
-              if (node && window.instgrm?.Embeds?.process) {
-                const timeoutId = setTimeout(() => {
-                  if (window.instgrm?.Embeds?.process) {
-                    try {
-                      console.log(`[DEBUG] SocialMediaSection: Processing Instagram embed for ID: ${embed.id}`);
-                      window.instgrm.Embeds.process(node);
-                    } catch (e) {
-                      console.error(`Error processing Instagram embed via ref (delayed) for ${embed.id}:`, e);
-                    }
-                  } else {
-                      console.error(`window.instgrm became undefined before timeout executed for embed ${embed.id}`);
-                  }
-                }, 0);
+              if (node) {
+                instagramRefs.current.set(embed.id, node);
+                // Only process if scripts are loaded and not already processed
+                if (scriptsLoaded && !processedEmbeds.current.has(embed.id)) {
+                  processInstagramEmbed(embed.id, node);
+                }
+              } else {
+                instagramRefs.current.delete(embed.id);
+                processedEmbeds.current.delete(embed.id);
               }
             }}
             dangerouslySetInnerHTML={{
@@ -125,48 +178,105 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
             }}
           />
         );
+      
       default:
         console.warn(`Unsupported social platform: ${embed.platform}`);
         return null;
     }
-  };
+  }, [scriptsLoaded, processInstagramEmbed]);
 
   const loadScripts = useCallback(async () => {
-    console.log('[DEBUG] SocialMediaSection: Starting loadScripts');
+    // Prevent multiple simultaneous loads
+    if (scriptsLoadingRef.current) {
+      console.log('[DEBUG] Scripts already loading, skipping');
+      return;
+    }
+
+    if (!isMounted.current) {
+      console.log('[DEBUG] Component not mounted, skipping loadScripts');
+      return;
+    }
+    
+    console.log('[DEBUG] Starting loadScripts, isMounted:', isMounted.current);
+    scriptsLoadingRef.current = true;
     setIsLoading(true);
     setScriptsLoaded(false);
     setError(null);
+    processedEmbeds.current.clear();
 
     try {
-      console.log('[DEBUG] SocialMediaSection: Loading Facebook and Instagram SDKs');
-      await Promise.all([
+      console.log('[DEBUG] Loading Facebook and Instagram SDKs');
+      const results = await Promise.all([
         loadFacebookSDK(),
         loadInstagramEmbed()
       ]);
-      console.log('[DEBUG] SocialMediaSection: SDKs loaded successfully');
+      
+      console.log('[DEBUG] Promise.all resolved', results, 'isMounted:', isMounted.current);
+      
+      // Always set scriptsLoaded even if unmounted - the scripts ARE loaded
+      console.log('[DEBUG] SDKs loaded successfully, setting scriptsLoaded=true');
       setScriptsLoaded(true);
-      trackEvent('social_section', 'sdk_loaded', `count:${socialEmbeds.length}`);
+      console.log('[DEBUG] scriptsLoaded state set');
+      
+      if (isMounted.current) {
+        trackEvent('social_section', 'sdk_loaded', `count:${socialEmbeds.length}`);
+      }
 
     } catch (err: any) {
-      console.error('Error loading social SDKs:', err);
-      console.log('[DEBUG] SocialMediaSection: SDK loading failed', err);
-      setError(err?.message || 'Er ging iets mis bij het laden van de social media scripts.');
-      trackEvent('social_section', 'error', 'sdk_loading_failed');
-      setScriptsLoaded(false);
+      console.error('[DEBUG] Error in loadScripts catch block:', err);
+      
+      if (isMounted.current) {
+        console.error('Error loading social SDKs:', err);
+        setError(err?.message || 'Er ging iets mis bij het laden van de social media scripts.');
+        trackEvent('social_section', 'error', 'sdk_loading_failed');
+        setScriptsLoaded(false);
+      }
     } finally {
-      console.log('[DEBUG] SocialMediaSection: loadScripts complete, isLoading=false');
+      scriptsLoadingRef.current = false;
+      console.log('[DEBUG] loadScripts complete, setting isLoading=false, isMounted:', isMounted.current);
       setIsLoading(false);
     }
   }, [socialEmbeds.length]);
 
+  // Load scripts on mount - runs after mount effect
   useEffect(() => {
+    console.log('[DEBUG] Script loading effect triggered', {
+      embedCount: socialEmbeds.length,
+      isMounted: isMounted.current,
+      scriptsLoading: scriptsLoadingRef.current
+    });
+    
     if (socialEmbeds.length > 0) {
-      loadScripts();
+      // Small delay to ensure mount effect has run
+      const timeoutId = setTimeout(() => {
+        if (isMounted.current) {
+          console.log('[DEBUG] Calling loadScripts after delay');
+          loadScripts();
+        }
+      }, 50);
+      
+      return () => clearTimeout(timeoutId);
     } else {
       setIsLoading(false);
       setScriptsLoaded(false);
     }
   }, [socialEmbeds.length, loadScripts]);
+
+  // Process Instagram embeds when scripts are loaded
+  useEffect(() => {
+    if (!scriptsLoaded || !window.instgrm?.Embeds?.process) {
+      return;
+    }
+
+    console.log('[DEBUG] Scripts loaded, processing Instagram embeds');
+    
+    // Process all unprocessed embeds
+    instagramRefs.current.forEach((node, embedId) => {
+      if (!processedEmbeds.current.has(embedId)) {
+        processInstagramEmbed(embedId, node);
+      }
+    });
+  }, [scriptsLoaded, processInstagramEmbed]);
 
   const handleSocialClick = (platform: string) => {
     trackEvent('social_section', 'social_click', platform);
@@ -295,6 +405,8 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = ({ socialEmbeds })
       <div id="fb-root"></div>
     </motion.div>
   );
-};
+});
 
-export default React.memo(SocialMediaSection);
+SocialMediaSection.displayName = 'SocialMediaSection';
+
+export default SocialMediaSection;

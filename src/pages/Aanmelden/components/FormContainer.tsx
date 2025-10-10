@@ -1,25 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef, memo, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RegistrationSchema, type RegistrationFormData, validateForm } from '../types/schema';
-import { TermsModal } from './TermsModal';
 import { supabase } from '../../../lib/supabase';
 import { toast } from 'react-hot-toast';
 import { logEvent } from '../../../utils/googleAnalytics';
 import { cc, cn, colors } from '@/styles/shared';
+import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
+import { usePerformanceTracking } from '../../../hooks/usePerformanceTracking';
+import { TermsModal } from './TermsModal';
 
 // In development, de API calls gaan via de Vite proxy
 const API_BASE_URL = import.meta.env.VITE_EMAIL_SERVICE_URL || 'https://dklemailservice.onrender.com';
 
 console.log('Email Service URL:', API_BASE_URL);
 
-export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void }> = ({ 
-  onSuccess 
+const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void }> = memo(({
+  onSuccess
 }) => {
+  // Performance tracking
+  const { trackInteraction, trackPerformanceMetric } = usePerformanceTracking('FormContainer');
+
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [hasReadTerms, setHasReadTerms] = useState(false);
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set(['contact']));
+
+  // Refs for intersection observer
+  const contactSectionRef = useRef<HTMLDivElement>(null);
+  const roleSectionRef = useRef<HTMLDivElement>(null);
+  const phoneSectionRef = useRef<HTMLDivElement>(null);
+  const distanceSectionRef = useRef<HTMLDivElement>(null);
+  const supportSectionRef = useRef<HTMLDivElement>(null);
+  const termsSectionRef = useRef<HTMLDivElement>(null);
 
   const { register, handleSubmit, setValue, control, formState: { errors } } = useForm<RegistrationFormData>({
     resolver: zodResolver(RegistrationSchema),
@@ -44,7 +58,16 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
     name: 'afstand'
   });
 
-  const showBijzonderheden = selectedOndersteuning === 'Ja' || selectedOndersteuning === 'Anders';
+  // Memoized computed values for conditional rendering
+  const showBijzonderheden = useMemo(() =>
+    selectedOndersteuning === 'Ja' || selectedOndersteuning === 'Anders',
+    [selectedOndersteuning]
+  );
+
+  const shouldShowPhoneSection = useMemo(() =>
+    selectedRole === 'Begeleider' || selectedRole === 'Vrijwilliger',
+    [selectedRole]
+  );
 
   // Track page view when component mounts
   useEffect(() => {
@@ -54,42 +77,98 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
   // Track when role selection changes
   useEffect(() => {
     if (selectedRole) {
-      logEvent('registration', 'select_role', selectedRole);
+      trackInteraction('select_role', selectedRole);
     }
-  }, [selectedRole]);
+  }, [selectedRole, trackInteraction]);
 
   // Track when afstand selection changes
   useEffect(() => {
     if (selectedAfstand) {
-      logEvent('registration', 'select_distance', selectedAfstand);
+      trackInteraction('select_distance', selectedAfstand);
     }
-  }, [selectedAfstand]);
+  }, [selectedAfstand, trackInteraction]);
 
   // Track when ondersteuning selection changes
   useEffect(() => {
     if (selectedOndersteuning) {
-      logEvent('registration', 'select_support', selectedOndersteuning);
+      trackInteraction('select_support', selectedOndersteuning);
     }
-  }, [selectedOndersteuning]);
+  }, [selectedOndersteuning, trackInteraction]);
 
-  const openTermsModal = () => {
+  // Optimized intersection observer callbacks
+  const handleSectionVisible = useCallback((sectionName: string) => {
+    setVisibleSections(prev => new Set([...prev, sectionName]));
+  }, []);
+
+  // Intersection Observer for progressive loading
+  useIntersectionObserver(contactSectionRef, useCallback((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        handleSectionVisible('contact');
+      }
+    });
+  }, [handleSectionVisible]), { threshold: 0.1 });
+
+  useIntersectionObserver(roleSectionRef, useCallback((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        handleSectionVisible('role');
+      }
+    });
+  }, [handleSectionVisible]), { threshold: 0.1 });
+
+  useIntersectionObserver(phoneSectionRef, useCallback((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        handleSectionVisible('phone');
+      }
+    });
+  }, [handleSectionVisible]), { threshold: 0.1 });
+
+  useIntersectionObserver(distanceSectionRef, useCallback((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        handleSectionVisible('distance');
+      }
+    });
+  }, [handleSectionVisible]), { threshold: 0.1 });
+
+  useIntersectionObserver(supportSectionRef, useCallback((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        handleSectionVisible('support');
+      }
+    });
+  }, [handleSectionVisible]), { threshold: 0.1 });
+
+  useIntersectionObserver(termsSectionRef, useCallback((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        handleSectionVisible('terms');
+      }
+    });
+  }, [handleSectionVisible]), { threshold: 0.1 });
+
+  const openTermsModal = useCallback(() => {
     logEvent('registration', 'open_terms_modal');
     setIsTermsOpen(true);
-  };
+  }, []);
 
-  const handleAcceptTerms = () => {
+  const handleAcceptTerms = useCallback(() => {
     logEvent('registration', 'accept_terms');
     setHasReadTerms(true);
     setValue('terms', true);
     setIsTermsOpen(false);
-  };
+  }, [setValue]);
 
   const onSubmit = async (data: RegistrationFormData) => {
+    const startTime = performance.now();
+
     try {
       console.log('Form submitted with data:', data);
       // Track form submission attempt
       logEvent('registration', 'form_submit_attempt', `${data.rol}_${data.afstand}`);
-      
+
       setIsSubmitting(true);
       setSubmitError(null);
       
@@ -114,7 +193,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
           .single();
 
         if (supabaseError) {
-          console.error('Database error:', supabaseError);
+          console.error('Database error:', JSON.stringify(supabaseError));
           if (supabaseError.code === '23505') {
             throw new Error('Je bent al ingeschreven met dit e-mailadres.');
           } else {
@@ -159,15 +238,17 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       }
 
       // Track complete registration success
-      logEvent('registration', 'registration_complete', `${validatedData.rol}_${validatedData.afstand}`);
+      const endTime = performance.now();
+      const duration = Math.round(endTime - startTime);
+      logEvent('registration', 'registration_complete', `${validatedData.rol}_${validatedData.afstand}_duration:${duration}ms`);
 
       // Ga door naar success pagina
       onSuccess(validatedData);
     } catch (error) {
-      console.error('Submit error:', error);
+      console.error('Submit error:', error instanceof Error ? error.message : JSON.stringify(error));
       // Track form submission failure
       logEvent('registration', 'form_submit_failure', error instanceof Error ? error.message : 'unknown_error');
-      
+
       setSubmitError(error instanceof Error ? error.message : 'Er ging iets mis bij je aanmelding');
     } finally {
       setIsSubmitting(false);
@@ -191,7 +272,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
         className="space-y-10"
       >
         {/* Contactgegevens */}
-        <div className="space-y-6">
+        <div ref={contactSectionRef} className="space-y-6">
           <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
             Je contactgegevens
           </h2>
@@ -211,12 +292,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 )}
                 placeholder="Vul je naam in"
                 {...register('naam')}
-                onChange={(e) => {
+                onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
                   register('naam').onChange(e);
                   if (e.target.value.length > 0) {
-                    logEvent('registration', 'input_interaction', 'naam_field');
+                    trackInteraction('input_interaction', 'naam_field');
                   }
-                }}
+                }, [trackInteraction])}
               />
               {errors.naam && (
                 <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.naam.message}</p>
@@ -237,12 +318,12 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 )}
                 placeholder="Vul je e-mailadres in"
                 {...register('email')}
-                onChange={(e) => {
+                onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
                   register('email').onChange(e);
                   if (e.target.value.length > 0) {
-                    logEvent('registration', 'input_interaction', 'email_field');
+                    trackInteraction('input_interaction', 'email_field');
                   }
-                }}
+                }, [trackInteraction])}
               />
               {errors.email && (
                 <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.email.message}</p>
@@ -252,10 +333,10 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
         </div>
 
         {/* Rol sectie */}
-        <div className="space-y-6">
-          <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
-            Kies je rol
-          </h2>
+        <div ref={roleSectionRef} className={cn('space-y-6 transition-opacity duration-300', 'opacity-100')}>
+            <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading)}>
+              Kies je rol
+            </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {['Deelnemer', 'Begeleider', 'Vrijwilliger'].map((role) => (
               <label key={role} className={cn('relative cursor-pointer')}>
@@ -279,15 +360,13 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               </label>
             ))}
           </div>
-          {errors.rol && (
-            <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.rol.message}</p>
-          )}
+          {errors.rol && <p className={cn(cc.form.errorMessage, 'font-medium')}>{errors.rol.message}</p>}
         </div>
 
         {/* Telefoonnummer sectie - alleen voor Begeleider/Vrijwilliger */}
-        {(selectedRole === 'Begeleider' || selectedRole === 'Vrijwilliger') && (
-          <div className="space-y-6">
-            <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
+        {shouldShowPhoneSection && (
+          <div ref={phoneSectionRef} className="space-y-6 transition-opacity duration-300">
+            <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading)}>
               Contactgegevens voor tijdens het evenement
             </h2>
             <div className="space-y-4">
@@ -368,9 +447,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                     }
                   }}
                 />
-                {errors.bijzonderheden && (
+                {errors.bijzonderheden?.message && (
                   <p className="text-sm text-red-500 mt-1">
-                    {errors.bijzonderheden.message?.toString()}
+                    {errors.bijzonderheden.message.toString()}
                   </p>
                 )}
               </div>
@@ -379,8 +458,8 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
         )}
 
         {/* Afstand sectie - voor iedereen */}
-        <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
+        <div ref={distanceSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('distance') ? 'opacity-100' : 'opacity-0')}>
+          <h2 className={cn(cc.text.h2, 'font-bold text-gray-900 pb-4 relative', cc.typography.heading)}>
             Kies je afstand
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -392,9 +471,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                   className="peer sr-only"
                   {...register('afstand')}
                 />
-                <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200 
-                  bg-white transition-all hover:shadow-md 
-                  peer-checked:border-primary peer-checked:bg-primary 
+                <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200
+                  bg-white transition-all hover:shadow-md
+                  peer-checked:border-primary peer-checked:bg-primary
                   peer-checked:text-white text-gray-900
                   min-h-[140px] group">
                   <span className="text-4xl mb-3 transition-transform group-hover:scale-110">
@@ -405,14 +484,14 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               </label>
             ))}
           </div>
-          {errors.afstand && (
+          {errors.afstand?.message && (
             <p className="text-sm text-red-500 mt-1 font-medium">{errors.afstand.message}</p>
           )}
         </div>
 
         {/* Ondersteuning sectie */}
-        <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded">
+        <div ref={supportSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('support') ? 'opacity-100' : 'opacity-0')}>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 pb-4 relative font-heading">
             Heb je ondersteuning nodig?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -444,9 +523,9 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               </label>
             ))}
           </div>
-          {errors.ondersteuning && (
+          {errors.ondersteuning?.message && (
             <p className="text-sm text-red-500 mt-1 font-medium">
-              {errors.ondersteuning.message?.toString()}
+              {errors.ondersteuning.message}
             </p>
           )}
         </div>
@@ -481,16 +560,16 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
                 }
               }}
             />
-            {errors.bijzonderheden && (
+            {errors.bijzonderheden?.message && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.bijzonderheden.message?.toString()}
+                {errors.bijzonderheden.message}
               </p>
             )}
           </div>
         </div>
 
         {/* Terms checkbox */}
-          <div className="flex flex-col items-center pt-6 space-y-2">
+        <div ref={termsSectionRef} className={cn('flex flex-col items-center pt-6 space-y-2 transition-opacity duration-300', visibleSections.has('terms') ? 'opacity-100' : 'opacity-0')}>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-2 text-center max-w-lg">
             <span className="text-sm text-gray-700">
               Je moet eerst de algemene voorwaarden lezen voordat je je kunt inschrijven.{' '}
@@ -525,7 +604,7 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               Ik heb de algemene voorwaarden gelezen en ga hiermee akkoord
             </span>
           </label>
-          {errors.terms && (
+          {errors.terms?.message && (
             <p className={cn(cc.form.errorMessage, 'text-center font-medium')}>
               {errors.terms.message}
             </p>
@@ -558,11 +637,11 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
               'active:bg-primary-dark',
               colors.primary.focusRing
             )}
-            onClick={() => {
+            onClick={useCallback(() => {
               if (!isSubmitting) {
-                logEvent('registration', 'submit_button_click', 'form_submit_attempt');
+                trackInteraction('submit_button_click', 'form_submit_attempt');
               }
-            }}
+            }, [isSubmitting, trackInteraction])}
           >
             {isSubmitting ? (
               <>
@@ -589,4 +668,8 @@ export const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) =
       />
     </div>
   );
-};
+});
+
+FormContainer.displayName = 'FormContainer';
+
+export default FormContainer;

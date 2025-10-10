@@ -3,7 +3,7 @@
  * React hook for fetching and managing sponsors
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { sponsorService } from '../services/sponsorService'
 import type { SponsorRow } from '../types'
 

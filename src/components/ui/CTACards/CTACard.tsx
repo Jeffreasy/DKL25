@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo, memo } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import NavIcon from '../../layout/Navbar/NavIcon';
 import type { CTACardData } from './types';
 import { logEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors } from '@/styles/shared';
 
 type CTACardProps = CTACardData & {
@@ -16,7 +17,7 @@ interface CardState {
   isFocused: boolean;
 }
 
-const CTACard: React.FC<CTACardProps> = ({
+const CTACard: React.FC<CTACardProps> = memo(({
   title,
   description,
   icon,
@@ -25,14 +26,17 @@ const CTACard: React.FC<CTACardProps> = ({
   actionType,
   index
 }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('CTACard');
+
   const [state, setState] = useState<CardState>({
     isHovered: false,
     isPressed: false,
     isFocused: false
   });
 
-  // Animation variants
-  const cardVariants: Variants = {
+  // Memoized animation variants
+  const cardVariants: Variants = useMemo(() => ({
     hidden: {
       opacity: 0,
       y: 20,
@@ -66,7 +70,7 @@ const CTACard: React.FC<CTACardProps> = ({
         damping: 10
       }
     }
-  };
+  }), [index]);
 
   // Track card impressions
   React.useEffect(() => {
@@ -90,18 +94,43 @@ const CTACard: React.FC<CTACardProps> = ({
     };
   }, [title, actionType, index]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     // Track de knop klik specifiek in deze component voor meer gedetailleerde gegevens
-    logEvent('interaction', 'cta_button_click', `${title}_${buttonText}_${actionType}`);
+    trackInteraction('cta_button_click', `${title}_${buttonText}_${actionType}`);
     onClick();
-  };
+  }, [trackInteraction, title, buttonText, actionType, onClick]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleClick();
     }
-  };
+  }, [handleClick]);
+
+  const handleHoverStart = useCallback(() => {
+    setState(prev => ({ ...prev, isHovered: true }));
+    trackInteraction('cta_card_hover', title);
+  }, [trackInteraction, title]);
+
+  const handleHoverEnd = useCallback(() => {
+    setState(prev => ({ ...prev, isHovered: false }));
+  }, []);
+
+  const handleMouseDown = useCallback(() => {
+    setState(prev => ({ ...prev, isPressed: true }));
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    setState(prev => ({ ...prev, isPressed: false }));
+  }, []);
+
+  const handleFocus = useCallback(() => {
+    setState(prev => ({ ...prev, isFocused: true }));
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setState(prev => ({ ...prev, isFocused: false }));
+  }, []);
 
   return (
     <motion.div
@@ -118,11 +147,8 @@ const CTACard: React.FC<CTACardProps> = ({
       whileHover="hover"
       whileTap="tap"
       variants={cardVariants}
-      onHoverStart={() => {
-        setState(prev => ({ ...prev, isHovered: true }));
-        logEvent('interaction', 'cta_card_hover', title);
-      }}
-      onHoverEnd={() => setState(prev => ({ ...prev, isHovered: false }))}
+      onHoverStart={handleHoverStart}
+      onHoverEnd={handleHoverEnd}
       role="article"
       aria-labelledby={`cta-title-${index}`}
     >
@@ -173,10 +199,10 @@ const CTACard: React.FC<CTACardProps> = ({
           )}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onMouseDown={() => setState(prev => ({ ...prev, isPressed: true }))}
-          onMouseUp={() => setState(prev => ({ ...prev, isPressed: false }))}
-          onFocus={() => setState(prev => ({ ...prev, isFocused: true }))}
-          onBlur={() => setState(prev => ({ ...prev, isFocused: false }))}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           aria-label={`${buttonText} - ${description}`}
         >
           {buttonText}
@@ -184,6 +210,8 @@ const CTACard: React.FC<CTACardProps> = ({
       </div>
     </motion.div>
   );
-};
+});
 
-export default React.memo(CTACard);
+CTACard.displayName = 'CTACard';
+
+export default CTACard;

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import { throttle } from 'lodash';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import NavItem from './NavItem';
 import MobileMenu from './MobileMenu';
 import { NAV_ITEMS, DEFAULT_LOGO } from './constants';
@@ -10,39 +11,38 @@ import type { NavbarProps } from './types';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
 const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLogo, onNavigate }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('Navbar');
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    const handleScroll = throttle(() => {
-      const shouldBeScrolled = window.scrollY > 20;
-      if (isScrolled !== shouldBeScrolled) {
-        setIsScrolled(shouldBeScrolled);
-      }
-    }, 100);
+  // Memoize accessibility preferences to prevent recalculation
+  const accessibilityPrefs = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return {
+      prefersReducedMotion,
+      animationClass: prefersReducedMotion ? '' : animations.fadeIn,
+      transformStyles: prefersReducedMotion ? '' : 'group-hover:scale-105',
+      shineAnimation: prefersReducedMotion ? '' : animations.shine
+    };
+  }, [trackInteraction]);
 
+  // Memoize scroll handler with useCallback
+  const handleScroll = useCallback(throttle(() => {
+    const shouldBeScrolled = window.scrollY > 20;
+    if (isScrolled !== shouldBeScrolled) {
+      setIsScrolled(shouldBeScrolled);
+    }
+  }, 100), [isScrolled]);
+
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isScrolled]);
+  }, [handleScroll]);
 
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen((prev) => {
-      const newState = !prev;
-      trackEvent('navbar', newState ? 'menu_open' : 'menu_close');
-      return newState;
-    });
-  }, []);
-
-  const handleNavigation = useCallback(
-    (path: string) => {
-      onNavigate?.(path);
-      if (isMenuOpen) {
-        toggleMenu();
-      }
-    },
-    [onNavigate, isMenuOpen, toggleMenu]
-  );
 
   const isPathActive = useCallback(
     (path: string) => {
@@ -68,8 +68,26 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
     [isScrolled, className]
   );
 
-  const animationClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : animations.fadeIn;
-  const transformStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'group-hover:scale-105';
+  // Enhanced event handlers with performance tracking
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen((prev) => {
+      const newState = !prev;
+      trackEvent('navbar', newState ? 'menu_open' : 'menu_close');
+      trackInteraction('menu_toggle', newState ? 'open' : 'close');
+      return newState;
+    });
+  }, [trackInteraction]);
+
+  const handleNavigation = useCallback(
+    (path: string) => {
+      onNavigate?.(path);
+      trackInteraction('navigation', path);
+      if (isMenuOpen) {
+        toggleMenu();
+      }
+    },
+    [onNavigate, isMenuOpen, toggleMenu, trackInteraction]
+  );
 
   return (
     <>
@@ -81,7 +99,7 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
                 <img
                   src={customLogo || DEFAULT_LOGO}
                   alt="De Koninklijke Loop logo"
-                  className={cn('h-16 w-auto relative', cc.zIndex.dropdown, cc.transition.transform, transformStyles)}
+                  className={cn('h-16 w-auto relative', cc.zIndex.dropdown, cc.transition.transform, accessibilityPrefs.transformStyles)}
                   loading="lazy"
                   width={64}
                   height={64}
@@ -89,13 +107,13 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
                 <div
                   className={cn(
                     'absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent',
-                    window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : animations.shine
+                    accessibilityPrefs.shineAnimation
                   )}
                 />
               </Link>
             </div>
 
-            <div className={cn('hidden lg:flex lg:items-center lg:justify-center lg:flex-1', animationClass)}>
+            <div className={cn('hidden lg:flex lg:items-center lg:justify-center lg:flex-1', accessibilityPrefs.animationClass)}>
               <ul className="flex items-center space-x-4">
                 {NAV_ITEMS.map((item) => (
                   <NavItem

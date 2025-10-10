@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { CircularProgress } from '@mui/material';
 import { cc, cn, colors, animations } from '@/styles/shared';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 
 interface LoadingScreenProps {
   title?: string;
@@ -9,15 +10,28 @@ interface LoadingScreenProps {
   size?: number;
 }
 
-const LoadingScreen: React.FC<LoadingScreenProps> = ({
+const LoadingScreen: React.FC<LoadingScreenProps> = memo(({
   title = 'De Koninklijke Loop',
   message = 'Laden...',
   color = colors.primary.bg,
   size = 60,
 }) => {
-  const pulseClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ? ''
-    : animations.pulse;
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('LoadingScreen');
+
+  // Memoize media query check to prevent recalculation on every render
+  const pulseClass = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return prefersReducedMotion ? '' : animations.pulse;
+  }, [trackInteraction]);
+
+  // Memoize CircularProgress sx prop to prevent recreation
+  const circularProgressSx = useMemo(() => ({
+    color,
+    width: `${size}px !important`,
+    height: `${size}px !important`
+  }), [color, size]);
 
   return (
     <div
@@ -28,7 +42,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       <section className="text-center">
         <CircularProgress
           className={cn(cc.loading.spinner)}
-          sx={{ color, width: `${size}px !important`, height: `${size}px !important` }}
+          sx={circularProgressSx}
           aria-label={message}
         />
         <div className={cn('mt-4', cc.typography.heading)}>
@@ -42,6 +56,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       </section>
     </div>
   );
-};
+});
 
-export default React.memo(LoadingScreen);
+LoadingScreen.displayName = 'LoadingScreen';
+
+export default LoadingScreen;

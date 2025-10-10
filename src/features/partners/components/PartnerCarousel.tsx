@@ -1,16 +1,127 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, memo, Suspense, lazy } from 'react';
 import { usePartners } from '@/hooks/usePartners';
-import { PartnerModal } from '@/components/ui/modals/PartnerModal';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { cc, cn, animations } from '@/styles/shared';
 
-const PartnerCarrousel: React.FC = () => {
+// Lazy load the modal for better performance
+const PartnerModal = lazy(() => import('@/components/ui/modals/PartnerModal').then(module => ({ default: module.PartnerModal })));
+
+// Optimized Partner Image Component with lazy loading
+const PartnerImage: React.FC<{
+  partner: any;
+  onClick: () => void;
+  className?: string;
+  size?: 'small' | 'medium' | 'large';
+}> = memo(({ partner, onClick, className, size = 'medium' }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  const sizeClasses = {
+    small: 'w-[80px] h-[40px]',
+    medium: 'w-32 h-16',
+    large: 'w-40 h-20'
+  };
+
+  const handleLoad = () => {
+    setIsLoaded(true);
+    trackEvent('partners', 'image_loaded', partner.name);
+  };
+
+  const handleError = () => {
+    setHasError(true);
+    trackEvent('partners', 'image_error', partner.name);
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        cc.flex.center,
+        'hover:opacity-75 focus:opacity-75',
+        cc.transition.base,
+        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+        sizeClasses[size],
+        className
+      )}
+      aria-label={`Bekijk details van ${partner.name}`}
+    >
+      {!isLoaded && !hasError && (
+        <div className={cn('animate-pulse bg-gray-200 rounded', sizeClasses[size])} />
+      )}
+      {hasError ? (
+        <div className={cn(
+          cc.flex.center,
+          'bg-gray-100 text-gray-400 text-xs rounded',
+          sizeClasses[size]
+        )}>
+          Logo
+        </div>
+      ) : (
+        <img
+          ref={imgRef}
+          src={partner.logo}
+          alt={`Logo van ${partner.name}`}
+          className={cn(
+            'max-w-full max-h-full object-contain',
+            !isLoaded && 'opacity-0'
+          )}
+          loading="lazy"
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      )}
+    </button>
+  );
+});
+
+PartnerImage.displayName = 'PartnerImage';
+
+// Skeleton component for loading state
+const PartnerSkeleton: React.FC<{ size?: 'small' | 'medium' | 'large' }> = memo(({ size = 'medium' }) => {
+  const sizeClasses = {
+    small: 'w-[80px] h-[40px]',
+    medium: 'w-32 h-16',
+    large: 'w-40 h-20'
+  };
+
+  return (
+    <div className={cn(
+      cc.flex.center,
+      'animate-pulse bg-gray-200 rounded',
+      sizeClasses[size]
+    )} />
+  );
+});
+
+PartnerSkeleton.displayName = 'PartnerSkeleton';
+
+const PartnerCarrousel: React.FC = memo(() => {
   const { partners, isLoading, error } = usePartners();
   const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (partners.length === 0) return null;
+  // Intersection observer for lazy loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    if (carouselRef.current) {
+      observer.observe(carouselRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const handlePartnerClick = (partnerId: string, partnerName: string) => {
     trackEvent('partners', 'partner_click', partnerName);
@@ -24,63 +135,98 @@ const PartnerCarrousel: React.FC = () => {
 
   const selectedPartner = partners.find(p => p.id === selectedPartnerId);
 
-  return (
-    <>
+  if (error) {
+    return (
       <section className="bg-white">
         <div className="max-w-screen-xl mx-auto px-4 py-4">
-          {/* Desktop view */}
-          <div className={cn('hidden md:flex md:justify-center md:items-center md:gap-12')}>
-            {partners.map((partner) => (
-              <button
-                key={partner.id}
-                onClick={() => handlePartnerClick(partner.id, partner.name)}
-                className={cn('w-32 h-16', cc.flex.center, 'hover:opacity-75', cc.transition.base)}
-              >
-                <img
-                  src={partner.logo ?? undefined}
-                  alt={`Logo van ${partner.name}`}
-                  className="max-w-full max-h-full object-contain"
-                />
-              </button>
-            ))}
-          </div>
-
-          {/* Mobiele carousel */}
-          <div className="md:hidden relative overflow-hidden mx-auto">
-            <div className="relative h-16 flex justify-center">
-              <div className={cn('absolute flex gap-8', animations.partnerSlide)}>
-                {[...partners, ...partners].map((partner, index) => (
-                  <div
-                    key={`${partner.id}-${index}`}
-                    className="flex-shrink-0"
-                  >
-                    <button
-                      onClick={() => handlePartnerClick(partner.id, partner.name)}
-                      className={cn('w-[100px] h-16', cc.flex.center)}
-                    >
-                      <img
-                        src={partner.logo ?? undefined}
-                        alt={`Logo van ${partner.name}`}
-                        className="max-w-[80px] max-h-[40px] object-contain"
-                      />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className={cn('text-center p-8', cc.text.error)}>
+            <p className="mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className={cn(cc.button.primary, 'px-4 py-2')}
+            >
+              Probeer opnieuw
+            </button>
           </div>
         </div>
       </section>
+    );
+  }
 
+  if (partners.length === 0 && !isLoading) return null;
+
+  return (
+    <section ref={carouselRef} className="bg-white">
+      <div className="max-w-screen-xl mx-auto px-4 py-4">
+        {isLoading ? (
+          // Loading state with skeletons
+          <>
+            <div className={cn('hidden md:flex md:justify-center md:items-center md:gap-12')}>
+              {Array.from({ length: 6 }).map((_, index) => (
+                <PartnerSkeleton key={index} size="medium" />
+              ))}
+            </div>
+            <div className="md:hidden relative overflow-hidden mx-auto">
+              <div className="relative h-16 flex justify-center">
+                <div className="flex gap-8">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <PartnerSkeleton key={index} size="small" />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Desktop view */}
+            <div className={cn('hidden md:flex md:justify-center md:items-center md:gap-12')}>
+              {isVisible && partners.map((partner) => (
+                <PartnerImage
+                  key={partner.id}
+                  partner={partner}
+                  onClick={() => handlePartnerClick(partner.id, partner.name)}
+                  size="medium"
+                />
+              ))}
+            </div>
+
+            {/* Mobile carousel */}
+            <div className="md:hidden relative overflow-hidden mx-auto">
+              <div className="relative h-16 flex justify-center">
+                <div className={cn('absolute flex gap-8', isVisible ? animations.partnerSlide : '')}>
+                  {isVisible && [...partners, ...partners].map((partner, index) => (
+                    <div
+                      key={`${partner.id}-${index}`}
+                      className="flex-shrink-0"
+                    >
+                      <PartnerImage
+                        partner={partner}
+                        onClick={() => handlePartnerClick(partner.id, partner.name)}
+                        size="small"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Lazy loaded modal */}
       {selectedPartner && (
-        <PartnerModal 
-          isOpen={true}
-          onClose={handleModalClose}
-          partner={selectedPartner}
-        />
+        <Suspense fallback={null}>
+          <PartnerModal
+            isOpen={true}
+            onClose={handleModalClose}
+            partner={selectedPartner}
+          />
+        </Suspense>
       )}
-    </>
+    </section>
   );
-};
+});
 
-export default PartnerCarrousel; 
+PartnerCarrousel.displayName = 'PartnerCarrousel';
+
+export default PartnerCarrousel;

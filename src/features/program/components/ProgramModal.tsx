@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, memo } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,8 +6,30 @@ import { useProgramSchedule } from '../hooks/useProgramSchedule';
 import ProgramItemComponent from './ProgramItem';
 import { ProgramItem as ProgramItemType } from '../types';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import InfoIcon from '@mui/icons-material/Info';
-import { cc, cn, colors } from '@/styles/shared';
+import { Info } from '@mui/icons-material';
+import { cc, cn, colors, animations } from '@/styles/shared';
+
+// Skeleton component for program items
+const ProgramItemSkeleton: React.FC = memo(() => (
+  <li className="relative pl-16">
+    {/* Timeline line */}
+    <span className="absolute left-[21px] top-[2.125rem] bottom-[-0.5rem] w-0.5 bg-gradient-to-b from-orange-200 via-orange-100 to-orange-50" />
+
+    {/* Timeline circle with icon skeleton */}
+    <div className={cn('absolute left-0 top-[0.625rem] h-11 w-11 ring-4 bg-gray-200 ring-gray-100', cc.flex.center, cc.border.circle)}>
+      <div className={cn('h-5 w-5 bg-gray-300 rounded', animations.pulse)} />
+    </div>
+
+    {/* Content skeleton */}
+    <div className="pb-8">
+      <div className={cn('h-6 bg-gray-200 rounded mb-1 w-16', animations.pulse)} />
+      <div className={cn('h-4 bg-gray-200 rounded mb-2 w-48', animations.pulse)} />
+      <div className={cn('h-4 bg-gray-200 rounded w-32', animations.pulse)} />
+    </div>
+  </li>
+));
+
+ProgramItemSkeleton.displayName = 'ProgramItemSkeleton';
 
 interface ProgramModalProps {
   isOpen: boolean;
@@ -19,8 +41,7 @@ interface ProgramModalProps {
 // Reordered TABS array
 const TABS = ['Start/Finish/Feest', '15 km', '10 km', '6 km', '2.5 km', 'Alles'];
 
-// Update keywords to be regex patterns for more robust matching
-// Using \b for word boundaries and i for case-insensitivity
+// Memoized regex patterns for better performance
 const KEYWORDS_REGEX_BY_TAB: { [key: string]: RegExp } = {
   '15 km': /\b15\s?km\b/i,
   '10 km': /\b10\s?km\b/i,
@@ -29,16 +50,15 @@ const KEYWORDS_REGEX_BY_TAB: { [key: string]: RegExp } = {
   'Start/Finish/Feest': /\b(start|finish|feest|aanvang|vertrek|aankomst|inhuldiging)\b/i
 };
 
+// Memoized filter function for better performance
 const filterSchedule = (items: ProgramItemType[], tab: string): ProgramItemType[] => {
   if (tab === 'Alles') {
     return items;
   }
   const regex = KEYWORDS_REGEX_BY_TAB[tab];
   if (!regex) {
-     // Fallback for tabs without specific regex (should not happen with current TABS)
-     // Or handle generic tabs differently if needed
-     console.warn(`No regex defined for tab: ${tab}`);
-     return [];
+      console.warn(`No regex defined for tab: ${tab}`);
+      return [];
   }
   return items.filter(item => regex.test(item.event_description));
 };
@@ -112,7 +132,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                   </Dialog.Title>
                   <div className={cn('flex flex-col gap-y-3 p-4 mb-4 border bg-orange-50 text-gray-700', colors.primary.border, 'border-primary/30', cc.border.rounded)}>
                     <div className={cn(cc.flex.start, 'gap-x-2')}>
-                      <InfoIcon className={cn('h-5 w-5 mt-0.5 flex-shrink-0', colors.primary.text)} aria-hidden="true" />
+                      <Info className={cn('h-5 w-5 mt-0.5 flex-shrink-0', colors.primary.text)} aria-hidden="true" />
                       <p className={cn(cc.text.body, 'font-bold', colors.primary.text)}>
                         DEELNEMERS OPGELET!
                       </p>
@@ -187,8 +207,10 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                     {/* Content Area */}
                     <div className="min-h-[400px] max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
                       {isLoading && (
-                          <div className="flex justify-center items-center h-full min-h-[200px]">
-                              <LoadingSpinner />
+                          <div className="space-y-6">
+                            {Array.from({ length: 5 }).map((_, index) => (
+                              <ProgramItemSkeleton key={index} />
+                            ))}
                           </div>
                       )}
                       {error && (

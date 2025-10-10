@@ -1,7 +1,9 @@
-import React from 'react';
-import MobileTrigger from './MobileTrigger';
-import TabletTrigger from './TabletTrigger';
-import DesktopTrigger from './DesktopTrigger';
+import React, { memo, Suspense, lazy, useState, useEffect, useRef } from 'react';
+
+// Lazy load trigger components for better performance
+const MobileTrigger = lazy(() => import('./MobileTrigger'));
+const TabletTrigger = lazy(() => import('./TabletTrigger'));
+const DesktopTrigger = lazy(() => import('./DesktopTrigger'));
 
 // Renamed prop interface
 interface ProgramSidebarTriggerProps {
@@ -9,29 +11,53 @@ interface ProgramSidebarTriggerProps {
 }
 
 // Main component that renders the correct trigger based on screen size
-// Renamed prop deconstruction
-const ProgramSidebarTrigger: React.FC<ProgramSidebarTriggerProps> = ({ onOpenModal }) => {
+const ProgramSidebarTrigger: React.FC<ProgramSidebarTriggerProps> = memo(({ onOpenModal }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Intersection observer for lazy loading triggers
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect(); // Only trigger once
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <>
-      {/* Visible only on small screens (up to sm breakpoint) */}
-      <div className="block sm:hidden">
-        {/* Passed renamed prop */}
-        <MobileTrigger onOpenModal={onOpenModal} />
-      </div>
+    <div ref={containerRef}>
+      <Suspense fallback={null}>
+        {/* Visible only on small screens (up to sm breakpoint) */}
+        <div className="block sm:hidden">
+          {isVisible && <MobileTrigger onOpenModal={onOpenModal} />}
+        </div>
 
-      {/* Visible only on medium screens (sm to md breakpoint) */}
-      <div className="hidden sm:block md:hidden">
-         {/* Passed renamed prop */}
-         <TabletTrigger onOpenModal={onOpenModal} />
-      </div>
+        {/* Visible only on medium screens (sm to md breakpoint) */}
+        <div className="hidden sm:block md:hidden">
+          {isVisible && <TabletTrigger onOpenModal={onOpenModal} />}
+        </div>
 
-      {/* Visible only on large screens (md and up) */}
-      <div className="hidden md:block">
-        {/* Passed renamed prop - Desktop needs update too */}
-        <DesktopTrigger onOpenModal={onOpenModal} />
-      </div>
-    </>
+        {/* Visible only on large screens (md and up) */}
+        <div className="hidden md:block">
+          {isVisible && <DesktopTrigger onOpenModal={onOpenModal} />}
+        </div>
+      </Suspense>
+    </div>
   );
-};
+});
 
-export default ProgramSidebarTrigger; 
+ProgramSidebarTrigger.displayName = 'ProgramSidebarTrigger';
+
+export default ProgramSidebarTrigger;

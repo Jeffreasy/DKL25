@@ -17,9 +17,10 @@ export const sponsorService = {
    * Fetch all visible and active sponsors
    */
   fetchActive: async (): Promise<SponsorRow[]> => {
-    return sponsorApiService.fetchAll({
+    const data = await sponsorApiService.fetchAll({
       filter: { visible: true, is_active: true }
     })
+    return data
   },
 
   /**
@@ -41,5 +42,17 @@ export const sponsorService = {
    */
   fetchById: async (id: string): Promise<SponsorRow | null> => {
     return sponsorApiService.fetchById(id)
+  },
+
+  /**
+   * Transform SponsorRow to Sponsor type for components
+   */
+  transformToSponsor: (sponsorRow: SponsorRow): import('../types').Sponsor => {
+    return {
+      ...sponsorRow,
+      logo: sponsorRow.logo_url,
+      website: sponsorRow.website_url || undefined,
+      visible: sponsorRow.visible ?? true
+    }
   }
 }

@@ -1,5 +1,6 @@
-import { HTMLAttributes } from 'react';
+import { HTMLAttributes, memo, useMemo } from 'react';
 import { cc, cn } from '@/styles/shared';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 
 interface LoadingSpinnerProps {
   className?: HTMLAttributes<HTMLElement>['className'];
@@ -7,7 +8,21 @@ interface LoadingSpinnerProps {
   color?: string;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ className = '', size = 24, color = 'currentColor' }) => {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = memo(({
+  className = '',
+  size = 24,
+  color = 'currentColor'
+}) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('LoadingSpinner');
+
+  // Memoize SVG style to prevent recreation
+  const svgStyle = useMemo(() => ({ color }), [color]);
+
+  // Track spinner usage
+  useMemo(() => {
+    trackInteraction('render', `size_${size}_color_${color}`);
+  }, [trackInteraction, size, color]);
   return (
     <svg
       className={cn(cc.loading.spinner, 'inline-block', className)}
@@ -16,7 +31,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ className = '', size = 
       viewBox="0 0 24 24"
       width={size}
       height={size}
-      style={{ color }}
+      style={svgStyle}
       aria-hidden="true"
     >
       <circle
@@ -34,6 +49,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ className = '', size = 
       />
     </svg>
   );
-};
+});
+
+LoadingSpinner.displayName = 'LoadingSpinner';
 
 export default LoadingSpinner;

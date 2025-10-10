@@ -1,24 +1,53 @@
-import React from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import CelebrationIcon from '@mui/icons-material/Celebration';
+import { DirectionsWalk, Celebration } from '@mui/icons-material';
 import { useModal } from '@/contexts/ModalContext';
 import { cc, cn, colors } from '@/styles/shared';
+
+// Lazy load the heavy modal component
+const ProgramModal = lazy(() => import('./ProgramModal'));
 
 const ROUTE_TABS = ['15 km', '10 km', '6 km', '2.5 km'];
 
 const ProgramSection: React.FC = () => {
   const { handleOpenProgramModal } = useModal();
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Intersection observer for animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect(); // Only trigger once
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section id="programma-sectie" className="py-16 sm:py-20 px-4 bg-white overflow-hidden" aria-labelledby="programma-title">
+    <section
+      ref={sectionRef}
+      id="programma-sectie"
+      className="py-16 sm:py-20 px-4 bg-white overflow-hidden"
+      aria-labelledby="programma-title"
+    >
       <div className="max-w-4xl mx-auto">
         <motion.h2
           id="programma-title"
           className={cn(cc.text.h2, 'font-bold text-center text-gray-900 mb-6', cc.typography.heading)}
           initial={{ opacity: 0, y: -30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 }}
           transition={{ duration: 0.6 }}
         >
           Bekijk het Programma <span className={colors.primary.text}>per Afstand</span>
@@ -28,8 +57,7 @@ const ProgramSection: React.FC = () => {
         <motion.div
            className="flex flex-wrap justify-center gap-3 mb-10"
            initial={{ opacity: 0, y: -10 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true, amount: 0.3 }}
+           animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
            transition={{ delay: 0.2, duration: 0.5 }}
         >
            {ROUTE_TABS.map((route) => (
@@ -49,7 +77,7 @@ const ProgramSection: React.FC = () => {
                )}
                aria-label={`Bekijk programma voor ${route}`}
              >
-               <DirectionsWalkIcon fontSize="small" />
+               <DirectionsWalk fontSize="small" />
                {route}
              </button>
            ))}
@@ -69,7 +97,7 @@ const ProgramSection: React.FC = () => {
                )}
                aria-label="Bekijk start, finish en feest programma"
              >
-               <CelebrationIcon fontSize="small" />
+               <Celebration fontSize="small" />
                Start/Finish/Feest
             </button>
         </motion.div>

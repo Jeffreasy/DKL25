@@ -1,32 +1,34 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
-import FlagIcon from '@mui/icons-material/Flag';
-import CoffeeIcon from '@mui/icons-material/Coffee';
-import CelebrationIcon from '@mui/icons-material/Celebration';
-import SportsScoreIcon from '@mui/icons-material/SportsScore';
-import GroupIcon from '@mui/icons-material/Group';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PlaceIcon from '@mui/icons-material/Place';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import {
+  AccessTime,
+  DirectionsBus,
+  Flag,
+  Coffee,
+  Celebration,
+  SportsScore,
+  Group,
+  PlayArrow,
+  Place,
+  LocationOn
+} from '@mui/icons-material';
 import type { ProgramItem as ProgramItemData } from '../types';
 import { cc, cn, colors } from '@/styles/shared';
 
 // Uitgebreidere iconMap gebaseerd op mogelijke category/icon_name waarden
 const iconMap: { [key: string]: React.ReactNode } = {
-  aanvang: <GroupIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  vertrek: <DirectionsBusIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  aanwezig: <GroupIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  start: <FlagIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  rustpunt: <CoffeeIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  hervatting: <PlayArrowIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  aankomst: <PlaceIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  finish: <SportsScoreIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  inhuldiging: <CelebrationIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  feest: <CelebrationIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  bus: <DirectionsBusIcon className={cn('h-5 w-5', colors.primary.text)} />,
-  default: <AccessTimeIcon className={cn('h-5 w-5', colors.primary.text)} />,
+  aanvang: <Group className={cn('h-5 w-5', colors.primary.text)} />,
+  vertrek: <DirectionsBus className={cn('h-5 w-5', colors.primary.text)} />,
+  aanwezig: <Group className={cn('h-5 w-5', colors.primary.text)} />,
+  start: <Flag className={cn('h-5 w-5', colors.primary.text)} />,
+  rustpunt: <Coffee className={cn('h-5 w-5', colors.primary.text)} />,
+  hervatting: <PlayArrow className={cn('h-5 w-5', colors.primary.text)} />,
+  aankomst: <Place className={cn('h-5 w-5', colors.primary.text)} />,
+  finish: <SportsScore className={cn('h-5 w-5', colors.primary.text)} />,
+  inhuldiging: <Celebration className={cn('h-5 w-5', colors.primary.text)} />,
+  feest: <Celebration className={cn('h-5 w-5', colors.primary.text)} />,
+  bus: <DirectionsBus className={cn('h-5 w-5', colors.primary.text)} />,
+  default: <AccessTime className={cn('h-5 w-5', colors.primary.text)} />,
 };
 
 interface ProgramItemProps {
@@ -99,8 +101,8 @@ const ProgramItem: React.FC<ProgramItemProps> = ({ item, isLast, index }) => {
             rel="noopener noreferrer"
             className={cn('mt-2 inline-flex items-center text-xs text-blue-600 hover:text-blue-800 hover:underline', cc.transition.colors)}
           >
-             <LocationOnIcon className="h-4 w-4 mr-1" />
-             Bekijk op kaart
+            <LocationOn className="h-4 w-4 mr-1" />
+            Bekijk op kaart
           </a>
         )}
       </div>

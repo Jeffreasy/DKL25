@@ -1,26 +1,38 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import NavIcon from './NavIcon';
 import type { NavItemProps } from './types';
 import { cc, cn, animations } from '@/styles/shared';
 
 const NavItem = memo<NavItemProps>(({ to, icon, children, onClick, className = '', isActive = false }) => {
-  const handleClick = (e: React.MouseEvent) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('NavItem');
+
+  // Memoize accessibility preferences to prevent recalculation
+  const accessibilityPrefs = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return {
+      animationClass: prefersReducedMotion ? '' : animations.fadeIn,
+      transformStyles: prefersReducedMotion ? '' : 'translate-x-1'
+    };
+  }, [trackInteraction]);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
     if (onClick) {
       if (!to) e.preventDefault();
       onClick();
     }
     try {
       trackEvent('navbar', 'navigation_click', children as string);
+      trackInteraction('click', `${children}_${isActive ? 'active' : 'inactive'}`);
     } catch (error) {
       console.error('Error tracking navigation click:', error);
       // Sentry.captureException(error);
     }
-  };
-
-  const animationClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : animations.fadeIn;
-  const transformStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'translate-x-1';
+  }, [onClick, to, children, isActive, trackInteraction]);
 
   const linkClasses = cn(
     cc.flex.start,
@@ -43,7 +55,7 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick, className = '
         className={cn(
           'font-medium text-base lg:text-lg whitespace-nowrap',
           cc.transition.base,
-          isActive ? cn('text-white', transformStyles) : 'text-white/80'
+          isActive ? cn('text-white', accessibilityPrefs.transformStyles) : 'text-white/80'
         )}
       >
         {children}
@@ -52,7 +64,7 @@ const NavItem = memo<NavItemProps>(({ to, icon, children, onClick, className = '
   );
 
   return (
-    <li className={animationClass}>
+    <li className={accessibilityPrefs.animationClass}>
       {to ? (
         <Link to={to} className={linkClasses} onClick={onClick ? handleClick : undefined} aria-current={isActive ? 'page' : undefined}>
           {content}

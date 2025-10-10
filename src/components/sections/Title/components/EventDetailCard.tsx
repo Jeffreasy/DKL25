@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import PeopleIcon from '@mui/icons-material/People';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import React, { useState, useMemo, useCallback } from 'react';
+import { motion, Variants } from 'framer-motion';
+import { CalendarToday, People, EmojiEvents } from '@mui/icons-material';
 import { EventDetail } from '../functions/types';
 import { trackEvent } from '@/utils/googleAnalytics';
 
-export const iconMap = {
-  calendar: <CalendarTodayIcon sx={{ fontSize: 40 }} />,
-  users: <PeopleIcon sx={{ fontSize: 40 }} />,
-  medal: <EmojiEventsIcon sx={{ fontSize: 40 }} />
-};
+// Icon components map - using component references instead of JSX
+const IconComponents = {
+  calendar: CalendarToday,
+  users: People,
+  medal: EmojiEvents
+} as const;
+
+const iconSxProps = { fontSize: 40 };
 
 interface EventDetailCardProps extends EventDetail {
   titleStyle?: React.CSSProperties;
@@ -25,11 +26,11 @@ interface CardState {
   isFocused: boolean;
 }
 
-const EventDetailCard: React.FC<EventDetailCardProps> = ({ 
-  icon, 
-  title, 
-  description, 
-  titleStyle, 
+const EventDetailCard: React.FC<EventDetailCardProps> = ({
+  icon,
+  title,
+  description,
+  titleStyle,
   textStyle,
   onClick,
   isClickable = false,
@@ -40,8 +41,8 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
     isFocused: false
   });
 
-  // Animation variants
-  const cardVariants = {
+  // Memoized animation variants
+  const cardVariants = useMemo<Variants>(() => ({
     hidden: {
       opacity: 0,
       y: 20,
@@ -52,7 +53,7 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
       y: 0,
       scale: 1,
       transition: {
-        type: "spring" as const,
+        type: "spring",
         stiffness: 100,
         damping: 15,
         delay: index * 0.1
@@ -62,14 +63,18 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
       y: -5,
       scale: 1.02,
       transition: {
-        type: "spring" as const,
+        type: "spring",
         stiffness: 400,
         damping: 10
       }
     }
-  };
+  }), [index]);
 
-  const iconVariants = {
+  const iconVariants = useMemo<Variants>(() => ({
+    initial: {
+      rotate: 0,
+      scale: 1
+    },
     hover: {
       rotate: [0, -5, 5, -5, 0],
       scale: 1.1,
@@ -77,30 +82,54 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
         duration: 0.5
       }
     }
-  };
+  }), []);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (onClick) {
       trackEvent('event_details', 'detail_click', title);
       onClick();
     }
-  };
+  }, [onClick, title]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
       handleClick();
     }
-  };
+  }, [isClickable, handleClick]);
+
+  const handleHoverStart = useCallback(() => {
+    setState(prev => ({ ...prev, isHovered: true }));
+  }, []);
+
+  const handleHoverEnd = useCallback(() => {
+    setState(prev => ({ ...prev, isHovered: false }));
+  }, []);
+
+  const handleFocus = useCallback(() => {
+    setState(prev => ({ ...prev, isFocused: true }));
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setState(prev => ({ ...prev, isFocused: false }));
+  }, []);
+
+  // Get the icon component
+  const IconComponent = IconComponents[icon as keyof typeof IconComponents];
+
+  if (!IconComponent) {
+    console.warn(`Unknown icon type: ${icon}`);
+    return null;
+  }
 
   return (
     <motion.div
       role={isClickable ? 'button' : 'article'}
       tabIndex={isClickable ? 0 : undefined}
       className={`
-        bg-white p-6 rounded-lg
+        bg-white p-6 rounded-lg shadow-md
         transition-shadow duration-300
-        ${isClickable ? 'cursor-pointer' : ''}
+        ${isClickable ? 'cursor-pointer hover:shadow-lg' : ''}
         ${state.isFocused ? 'ring-2 ring-primary/40' : ''}
       `}
       variants={cardVariants}
@@ -109,32 +138,30 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
       whileHover={isClickable ? "hover" : undefined}
       onClick={isClickable ? handleClick : undefined}
       onKeyDown={handleKeyDown}
-      onHoverStart={() => {
-        setState(prev => ({ ...prev, isHovered: true }));
-        trackEvent('event_details', 'detail_hover', title);
-      }}
-      onHoverEnd={() => setState(prev => ({ ...prev, isHovered: false }))}
-      onFocus={() => setState(prev => ({ ...prev, isFocused: true }))}
-      onBlur={() => setState(prev => ({ ...prev, isFocused: false }))}
+      onHoverStart={handleHoverStart}
+      onHoverEnd={handleHoverEnd}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       aria-label={`${title}: ${description}`}
     >
       <div className="flex flex-col items-center text-center gap-3">
-        <motion.div 
+        <motion.div
           className="text-primary mb-2"
           variants={iconVariants}
+          initial="initial"
           animate={state.isHovered ? "hover" : "initial"}
         >
-          {iconMap[icon as keyof typeof iconMap]}
+          <IconComponent sx={iconSxProps} />
         </motion.div>
         
-        <h3 
+        <h3
           className="text-gray-900 font-semibold text-xl"
           style={titleStyle}
         >
           {title}
         </h3>
         
-        <p 
+        <p
           className="text-gray-600"
           style={textStyle}
         >
@@ -145,4 +172,4 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
   );
 };
 
-export default React.memo(EventDetailCard); 
+export default React.memo(EventDetailCard);

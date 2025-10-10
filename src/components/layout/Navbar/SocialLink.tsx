@@ -1,21 +1,33 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import NavIcon from './NavIcon';
 import type { SocialLinkProps } from './types';
 import { cc, cn, colors } from '@/styles/shared';
 
 const SocialLink = memo<SocialLinkProps>(({ href, icon, label, hoverColor = 'white.20' }) => {
-  const handleClick = () => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('SocialLink');
+
+  // Memoize accessibility preferences to prevent recalculation
+  const accessibilityPrefs = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return {
+      hoverStyles: prefersReducedMotion ? '' : 'hover:-translate-y-1',
+      transformStyles: prefersReducedMotion ? '' : 'group-hover:scale-110'
+    };
+  }, [trackInteraction]);
+
+  const handleClick = useCallback(() => {
     try {
       trackEvent('navbar', 'social_media_click', icon);
+      trackInteraction('click', icon);
     } catch (error) {
       console.error('Error tracking social click:', error);
       // Sentry.captureException(error);
     }
-  };
-
-  const hoverStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'hover:-translate-y-1';
-  const transformStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'group-hover:scale-110';
+  }, [icon, trackInteraction]);
 
   return (
     <a
@@ -29,14 +41,14 @@ const SocialLink = memo<SocialLinkProps>(({ href, icon, label, hoverColor = 'whi
         'bg-white/10 text-white',
         hoverColor,
         cc.transition.base,
-        hoverStyles,
+        accessibilityPrefs.hoverStyles,
         cc.shadow.lg,
         'group'
       )}
       onClick={handleClick}
       aria-label={label}
     >
-      <NavIcon name={icon} className={cn(cc.transition.transform, transformStyles)} />
+      <NavIcon name={icon} className={cn(cc.transition.transform, accessibilityPrefs.transformStyles)} />
     </a>
   );
 });

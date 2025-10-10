@@ -1,5 +1,5 @@
 // src/components/AIChatButton/ChatInput.tsx
-import React, { useState, KeyboardEvent } from 'react';
+import React, { useState, KeyboardEvent, useCallback, memo } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import { cc, cn, colors } from '@/styles/shared';
 
@@ -8,22 +8,22 @@ interface ChatInputProps {
   disabled?: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
+const ChatInput: React.FC<ChatInputProps> = memo(({ onSendMessage, disabled }) => {
   const [message, setMessage] = useState('');
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (message.trim() && !disabled) {
       onSendMessage(message.trim());
       setMessage('');
     }
-  };
+  }, [message, disabled, onSendMessage]);
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  };
+  }, [handleSend]);
 
   return (
     <div className={cn('p-4', cc.divider.horizontal, 'border-gray-100')}>
@@ -60,6 +60,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
       </div>
     </div>
   );
-};
+});
+
+ChatInput.displayName = 'ChatInput';
 
 export default ChatInput;

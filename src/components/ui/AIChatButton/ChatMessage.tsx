@@ -1,5 +1,5 @@
 // ChatMessage.tsx
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { Message } from './types';
 import { cc, cn, colors } from '@/styles/shared';
 
@@ -8,7 +8,7 @@ interface ChatMessageProps {
   onActionClick: (actionText: string) => void;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick }) => {
+const ChatMessage: React.FC<ChatMessageProps> = memo(({ message, onActionClick }) => {
   const isAssistant = message.sender === 'assistant';
   
   // Split content om links te vinden
@@ -74,6 +74,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick }) => 
       </div>
     </div>
   );
-};
+});
+
+ChatMessage.displayName = 'ChatMessage';
 
 export default ChatMessage;

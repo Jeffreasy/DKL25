@@ -2,7 +2,7 @@
 // geoptimaliseerd zijn qua grootte en formaat (bv. WebP/AVIF) via de image provider (bv. Cloudinary/Supabase Storage)
 // voor de beste laadprestaties.
 
-import React from 'react';
+import React, { memo } from 'react';
 import MainSlider from './MainImageSlider';
 import ThumbnailSlider from './ThumbnailGrid';
 import { usePhotoGallery } from '../hooks/usePhotoGallery';
@@ -16,7 +16,7 @@ interface PhotoGalleryProps {
   onModalChange?: (isOpen: boolean) => void;
 }
 
-const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
+const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null);
@@ -25,8 +25,9 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
   const [retryCount, setRetryCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Haal albums op bij mount
+  // Combined effect for initial data loading and modal state tracking
   useEffect(() => {
+    // Fetch albums on mount
     const fetchAlbums = async () => {
       const { data, error: albumError } = await supabase
         .from('albums')
@@ -46,20 +47,29 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
         trackEvent('gallery', 'error', 'no_albums_found');
       }
     };
+
     fetchAlbums();
-  }, []); // Fetch albums only once
 
-  // Notify parent component of modal state changes
-  useEffect(() => {
+    // Notify parent component of modal state changes
     onModalChange?.(isModalOpen);
-  }, [isModalOpen, onModalChange]);
+  }, [isModalOpen, onModalChange]); // Only re-run when modal state or callback changes
 
-  // Preload images
+  // Preload images with cleanup
   const preloadImages = useCallback((urls: string[]) => {
+    const preloadPromises: Promise<void>[] = [];
+
     urls.forEach(url => {
       const img = new Image();
-      img.src = url;
+      const promise = new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // Don't fail on preload errors
+        img.src = url;
+      });
+      preloadPromises.push(promise);
     });
+
+    // Return promise for potential future use
+    return Promise.all(preloadPromises);
   }, []);
 
   // Aangepaste fetchPhotos functie
@@ -199,12 +209,10 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
   const renderContent = () => {
     if (isLoading && photos.length === 0) { // Toon skeleton alleen bij initiële load of album switch
       return (
-        <div className={cc.loading.skeleton}>
-          <div className={cn(cc.loading.skeleton, 'h-[600px] rounded-2xl mb-4')} />
-          <div className={cn(cc.flex.center, 'gap-2')}>
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className={cn(cc.loading.skeleton, 'w-24 h-16 rounded-lg')} />
-            ))}
+        <div className={cn(cc.flex.center, 'min-h-[400px] bg-gray-50 rounded-lg')}>
+          <div className="text-center">
+            <div className={cn('w-12 h-12 border-4 border-t-transparent mx-auto mb-4', colors.primary.border, cc.border.circle, 'animate-spin')} />
+            <p className={cn(cc.text.muted, 'text-sm')}>Foto's laden...</p>
           </div>
         </div>
       );
@@ -212,14 +220,17 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
   
     if (error) {
       return (
-        <div className="text-center">
-          <p className={cn(cc.text.error, 'mb-4')}>{error}</p>
-          <button
-            onClick={fetchPhotos}
-            className={cn(cc.button.primary, 'px-4 py-2')}
-          >
-            Opnieuw proberen
-          </button>
+        <div className={cn('text-center p-8 bg-gray-50 rounded-lg', cc.text.error)}>
+          <div className="max-w-md mx-auto">
+            <h3 className={cn(cc.text.h3, 'mb-2')}>Foto's konden niet worden geladen</h3>
+            <p className="mb-4 text-gray-600">{error}</p>
+            <button
+              onClick={fetchPhotos}
+              className={cn(cc.button.primary, 'px-6 py-2')}
+            >
+              Opnieuw proberen
+            </button>
+          </div>
         </div>
       );
     }
@@ -283,6 +294,8 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onModalChange }) => {
       </div>
     </div>
   );
-};
+});
 
-export default PhotoGallery; 
+PhotoGallery.displayName = 'PhotoGallery';
+
+export default PhotoGallery;

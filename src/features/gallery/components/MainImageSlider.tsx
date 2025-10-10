@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, Suspense, lazy } from 'react';
 import type { Photo } from '../types';
 import NavigationButton from './GalleryNavButton';
 import { useSwipe } from '@/hooks/useSwipe';
-import ImageModal from './ImageLightbox';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { cc, cn, animations } from '@/styles/shared';
+
+// Lazy load the heavy ImageModal component
+const ImageModal = lazy(() => import('./ImageLightbox'));
 
 interface MainSliderProps {
   photos: Photo[];
@@ -184,18 +186,24 @@ const MainSlider: React.FC<MainSliderProps> = ({
         </div>
       </div>
 
-      <ImageModal
-        photo={currentPhoto}
-        isOpen={isModalOpen}
-        onClose={() => {
-          trackEvent('gallery', 'close_modal', `photo_${currentIndex}`);
-          setIsModalOpen(false);
-        }}
-        onNext={onNext}
-        onPrevious={onPrevious}
-        totalPhotos={photos.length}
-        currentIndex={currentIndex}
-      />
+      <Suspense fallback={
+        <div className={cn('fixed inset-0 bg-black/50 flex items-center justify-center', cc.zIndex.modal)}>
+          <div className={cn('w-12 h-12 border-4 border-white/20 border-t-white', cc.border.circle, 'animate-spin')} />
+        </div>
+      }>
+        <ImageModal
+          photo={currentPhoto}
+          isOpen={isModalOpen}
+          onClose={() => {
+            trackEvent('gallery', 'close_modal', `photo_${currentIndex}`);
+            setIsModalOpen(false);
+          }}
+          onNext={onNext}
+          onPrevious={onPrevious}
+          totalPhotos={photos.length}
+          currentIndex={currentIndex}
+        />
+      </Suspense>
     </>
   );
 };

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import RadioPlayer from './RadioPlayer';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
 interface RadioRecording {
@@ -22,11 +23,14 @@ interface RadioGalleryProps {
   maxItems?: number;
 }
 
-const RadioGallery: React.FC<RadioGalleryProps> = ({
+const RadioGallery: React.FC<RadioGalleryProps> = memo(({
   title = "Radio Uitzendingen",
   subtitle = "Luister naar onze radio uitzendingen van voorgaande jaren",
   maxItems = 3
 }) => {
+  // Performance tracking
+  const { trackInteraction, trackPerformanceMetric } = usePerformanceTracking('RadioGallery');
+
   const [recordings, setRecordings] = useState<RadioRecording[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,11 +103,11 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
     fetchRecordings();
   }, [maxItems, retryCount]);
 
-  // Handle retry when error occurs
-  const handleRetry = () => {
+  // Optimized event handlers
+  const handleRetry = useCallback(() => {
     setRetryCount(0);
-    trackEvent('media_gallery', 'retry_clicked', error || 'unknown_error');
-  };
+    trackInteraction('retry_clicked', error || 'unknown_error');
+  }, [error, trackInteraction]);
 
   return (
     <section className={cn(cc.spacing.section, 'px-4 bg-gradient-to-b from-white to-orange-50')}>
@@ -224,6 +228,8 @@ const RadioGallery: React.FC<RadioGalleryProps> = ({
       </div>
     </section>
   );
-};
+});
 
-export default RadioGallery; 
+RadioGallery.displayName = 'RadioGallery';
+
+export default RadioGallery;

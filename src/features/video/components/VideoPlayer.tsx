@@ -42,13 +42,19 @@ const VideoSlide: React.FC<VideoSlideProps> = memo(({
   // Veilige video URL
   const safeVideoUrl = url.includes('streamable.com/e/') ? url : '';
 
-  // Intersection Observer (alleen voor thumbnails)
+  // Intersection Observer en state reset gecombineerd
   useEffect(() => {
-    if (!isThumbnail || !slideRef.current) {
-      // Als het geen thumbnail is, of ref is null, doe niets of markeer direct als in view
-      setIsInView(true); // Markeer hoofdvideo altijd als in view
+    if (!isThumbnail) {
+      // Hoofdvideo: altijd in view en reset states bij URL verandering
+      setIsInView(true);
+      setIsLoading(true);
+      setHasError(false);
+      setHasPlayed(false);
       return;
     }
+
+    // Thumbnail: intersection observer
+    if (!slideRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -68,16 +74,7 @@ const VideoSlide: React.FC<VideoSlideProps> = memo(({
     return () => {
       observer.unobserve(currentRef);
     };
-  }, [isThumbnail]);
-
-  // Reset states bij URL verandering (alleen voor hoofdvideo)
-  useEffect(() => {
-    if (!isThumbnail) {
-      setIsLoading(true); 
-      setHasError(false);
-      setHasPlayed(false);
-    }
-  }, [url, isThumbnail]); 
+  }, [isThumbnail, url]);
 
   // Luister naar berichten van de iframe voor video events
   useEffect(() => {
@@ -110,8 +107,7 @@ const VideoSlide: React.FC<VideoSlideProps> = memo(({
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  // Geen shouldLoadIframe dependency meer
-  }, [title, onPlay, onPause, onEnded, isThumbnail]); 
+  }, [title, onPlay, onPause, onEnded, isThumbnail]);
 
   if (isThumbnail) {
     // Toon alleen de thumbnail als deze in beeld is

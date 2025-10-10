@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { FaTools, FaEnvelope, FaClock, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { SEO } from './SEO';
 import { useUnderConstruction } from '../../hooks/useUnderConstruction';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import Countdown, { CountdownRenderProps } from 'react-countdown';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
@@ -18,17 +19,28 @@ interface UnderConstructionData {
   footer_text?: string;
 }
 
-const OnderConstructie: React.FC = () => {
+const OnderConstructie: React.FC = memo(() => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('OnderConstructieComponent');
+
   const { data, loading, error } = useUnderConstruction() as {
     data: UnderConstructionData | null;
     loading: boolean;
     error: Error | null;
   };
 
-  const pulseClass = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : animations.pulse;
-  const motionProps = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ? {}
-    : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } };
+  // Memoize accessibility checks to prevent recalculation
+  const accessibilityPrefs = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return {
+      prefersReducedMotion,
+      pulseClass: prefersReducedMotion ? '' : animations.pulse,
+      motionProps: prefersReducedMotion
+        ? {}
+        : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
+    };
+  }, [trackInteraction]);
 
   if (loading) {
     return (
@@ -43,7 +55,7 @@ const OnderConstructie: React.FC = () => {
           <div className={cn(cc.container.wide, cc.spacing.section, cc.typography.body)}>
             <div className={cn(cc.flex.center, 'min-h-[50vh]')}>
               <div className="text-center">
-                <div className={pulseClass}>
+                <div className={accessibilityPrefs.pulseClass}>
                   <div className={cn(cc.loading.skeleton, 'h-8 w-48 mx-auto mb-4')}></div>
                   <div className={cn(cc.loading.skeleton, 'h-4 w-64 mx-auto mb-2')}></div>
                   <div className={cn(cc.loading.skeleton, 'h-4 w-56 mx-auto')}></div>
@@ -89,7 +101,7 @@ const OnderConstructie: React.FC = () => {
     );
   }
 
-  const countdownRenderer = ({ days, hours, minutes, seconds, completed }: CountdownRenderProps) => {
+  const countdownRenderer = useCallback(({ days, hours, minutes, seconds, completed }: CountdownRenderProps) => {
     if (completed) {
       return <p className={cn(cc.text.muted, cc.typography.body)}>We zijn bijna klaar!</p>;
     }
@@ -113,7 +125,7 @@ const OnderConstructie: React.FC = () => {
         </div>
       </div>
     );
-  };
+  }, []);
 
   return (
     <>
@@ -125,7 +137,7 @@ const OnderConstructie: React.FC = () => {
       />
       <div className={cn('min-h-screen', colors.gradient.construction, cc.flex.center, cc.typography.body)}>
         <div className={cn(cc.container.narrow, cc.spacing.section, 'text-center')}>
-          <motion.div {...motionProps} className="space-y-8">
+          <motion.div {...accessibilityPrefs.motionProps} className="space-y-8">
             {data.logo_url && (
               <div className="flex justify-center mb-6">
                 <img src={data.logo_url} alt="De Koninklijke Loop Logo" className="h-20 w-auto" />
@@ -242,6 +254,8 @@ const OnderConstructie: React.FC = () => {
       </div>
     </>
   );
-};
+});
 
-export default React.memo(OnderConstructie);
+OnderConstructie.displayName = 'OnderConstructie';
+
+export default OnderConstructie;

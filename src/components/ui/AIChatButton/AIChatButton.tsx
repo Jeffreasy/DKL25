@@ -1,5 +1,5 @@
 // src/components/AIChatButton/AIChatButton.tsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CloseIcon from '@mui/icons-material/Close';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,9 +10,10 @@ import SuggestionChips from './SuggestionChips';
 import { Message } from './types';
 import { getIntroMessage, processMessage } from './aiChatService';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
-// Suggestion mapping based on context hints from aiChatService
+// Memoized suggestion mapping to prevent recreation on every render
 const suggestionMap: Record<string, string[]> = {
   // FAQ Contexts (based on category titles)
   faq_over_het_evenement: ["Wanneer is de loop?", "Waar is de loop precies?", "Is het toegankelijk?"],
@@ -48,7 +49,10 @@ const suggestionMap: Record<string, string[]> = {
   default: ["Wanneer is De Koninklijke Loop?", "Hoe kan ik meedoen?", "Welke afstanden zijn er?"]
 };
 
-const AIChatButton = () => {
+const AIChatButton = memo(() => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('AIChatButton');
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -68,12 +72,12 @@ const AIChatButton = () => {
     "Is de route rolstoelvriendelijk?"
   ];
 
-  // Generate suggestions based on the context hint from the AI service
-  const generateSuggestions = (contextHint: string): string[] => {
+  // Memoized function to generate suggestions based on context hint
+  const generateSuggestions = useCallback((contextHint: string): string[] => {
     console.log("Context Hint for Suggestions:", contextHint);
     // Find suggestions in the map, fallback to default or initial suggestions
     return suggestionMap[contextHint] || suggestionMap['default'] || initialSuggestions;
-  };
+  }, []);
 
   // Initialiseer chatgeschiedenis
   useEffect(() => {
@@ -104,17 +108,17 @@ const AIChatButton = () => {
     }
   }, [messages]);
 
-  const toggleChat = () => {
+  const toggleChat = useCallback(() => {
     setIsOpen(!isOpen);
-    trackEvent('chat', isOpen ? 'chat_closed' : 'chat_opened');
-  };
+    trackInteraction(isOpen ? 'chat_closed' : 'chat_opened');
+  }, [isOpen, trackInteraction]);
 
-  const handleSendMessage = async (text: string) => {
+  const handleSendMessage = useCallback(async (text: string) => {
     if (!text.trim()) return;
-    
+
     // Verberg suggesties tijdens gesprek
     setSuggestions([]);
-    
+
     // Voeg gebruikersbericht toe
     const userMessage: Message = {
       id: uuidv4(),
@@ -122,25 +126,25 @@ const AIChatButton = () => {
       sender: 'user',
       timestamp: new Date()
     };
-    
+
     // Update messages state immediately with user message
-    setMessages(prev => [...prev, userMessage]); 
-    
+    setMessages(prev => [...prev, userMessage]);
+
     // Toon typing indicator
     setIsTyping(true);
-    
+
     try {
       // Verwerk bericht en krijg antwoord + context hint
       const { response: assistantMessage, contextHint } = await processMessage(text);
-      
+
       // Voeg assistentantwoord toe
       // Gebruik een functionele update om zeker te zijn van de laatste state
-      setMessages(prev => [...prev, assistantMessage]); 
-      
+      setMessages(prev => [...prev, assistantMessage]);
+
       // Track successful message exchange
-      trackEvent('chat', 'message_sent', text);
-      trackEvent('chat', 'message_received', assistantMessage.content);
-      
+      trackInteraction('message_sent', text);
+      trackInteraction('message_received', assistantMessage.content);
+
        // Toon nieuwe suggesties na een korte pauze (na het tonen van het antwoord)
        // Nu gebaseerd op contextHint
       setTimeout(() => {
@@ -151,10 +155,10 @@ const AIChatButton = () => {
 
     } catch (error) {
       console.error("Error processing message:", error);
-      
+
       // Track error
-      trackEvent('chat', 'error', 'message_processing_failed');
-      
+      trackInteraction('error', 'message_processing_failed');
+
       // Voeg foutbericht toe
       setMessages(prev => [...prev, {
         id: uuidv4(),
@@ -162,24 +166,24 @@ const AIChatButton = () => {
         sender: 'assistant',
         timestamp: new Date()
       }]);
-      
+
       // Reset suggesties naar standaard bij fout
        setSuggestions(initialSuggestions);
        setIsTyping(false); // Ensure typing indicator stops on error
-    } 
+    }
     // Removed finally block as setIsTyping is handled within try/catch setTimeout
-  };
+  }, [trackInteraction, generateSuggestions]);
 
-  const handleSuggestionClick = (suggestion: string) => {
-    trackEvent('chat', 'suggestion_clicked', suggestion);
+  const handleSuggestionClick = useCallback((suggestion: string) => {
+    trackInteraction('suggestion_clicked', suggestion);
     handleSendMessage(suggestion);
-  };
+  }, [trackInteraction, handleSendMessage]);
 
   // Handler voor actieknoppen in berichten
-  const handleActionClick = (actionText: string) => {
-    trackEvent('chat', 'action_clicked', actionText);
+  const handleActionClick = useCallback((actionText: string) => {
+    trackInteraction('action_clicked', actionText);
     const normalizedAction = actionText.toLowerCase();
-    
+
     if (normalizedAction === 'schrijf je nu in') {
       navigate('/aanmelden');
       setIsOpen(false);
@@ -191,7 +195,7 @@ const AIChatButton = () => {
       // Optioneel: stuur een bericht terug dat de actie niet bekend is
       // handleSendMessage(`Ik weet niet hoe ik "${actionText}" moet uitvoeren.`);
     }
-  };
+  }, [trackInteraction, navigate]);
 
   return (
     <div className={cn('fixed bottom-28 right-4 sm:right-8', cc.zIndex.max)}>
@@ -292,6 +296,8 @@ const AIChatButton = () => {
       </button>
     </div>
   );
-};
+});
+
+AIChatButton.displayName = 'AIChatButton';
 
 export default AIChatButton;

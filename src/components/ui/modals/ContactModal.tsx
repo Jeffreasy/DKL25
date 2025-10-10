@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, memo } from 'react';
 import { Dialog } from '@headlessui/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { toast } from 'react-hot-toast';
@@ -10,9 +10,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useNavigate } from 'react-router-dom';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
-export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
+export const ContactModal: React.FC<ContactModalProps> = memo(({ isOpen, onClose }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('ContactModal');
+
   const { submitContactForm, isSubmitting } = useContactForm();
   const navigate = useNavigate();
   
@@ -28,34 +32,34 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
   // Track modal open/close
   React.useEffect(() => {
     if (isOpen) {
-      trackEvent('contact', 'modal_opened', 'contact_form');
+      trackInteraction('modal_opened', 'contact_form');
     }
-  }, [isOpen]);
+  }, [isOpen, trackInteraction]);
 
-  const onSubmit = async (data: ContactFormData) => {
+  const onSubmit = useCallback(async (data: ContactFormData) => {
     const result = await submitContactForm(data);
-    
+
     if (result.success) {
-      trackEvent('contact', 'form_submitted', 'success');
+      trackInteraction('form_submitted', 'success');
       toast.success('Je bericht is verzonden! We nemen zo snel mogelijk contact met je op.');
       reset();
       onClose();
     } else {
-      trackEvent('contact', 'form_submitted', 'error');
+      trackInteraction('form_submitted', 'error');
       toast.error(result.message || 'Er ging iets mis bij het versturen van je bericht.');
     }
-  };
+  }, [submitContactForm, trackInteraction, reset, onClose]);
 
-  const handleClose = () => {
-    trackEvent('contact', 'modal_closed', 'contact_form');
+  const handleClose = useCallback(() => {
+    trackInteraction('modal_closed', 'contact_form');
     onClose();
-  };
+  }, [trackInteraction, onClose]);
 
-  const handlePrivacyClick = () => {
-    trackEvent('contact', 'privacy_click', 'privacy_policy');
+  const handlePrivacyClick = useCallback(() => {
+    trackInteraction('privacy_click', 'privacy_policy');
     onClose(); // Sluit eerst de modal
     navigate('/privacy'); // Navigeer dan naar de privacy pagina
-  };
+  }, [trackInteraction, onClose, navigate]);
 
   return (
     <Dialog open={isOpen} onClose={handleClose} className={cn('relative', cc.zIndex.modal)}>
@@ -197,4 +201,6 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
       </div>
     </Dialog>
   );
-}; 
+});
+
+ContactModal.displayName = 'ContactModal';

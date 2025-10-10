@@ -1,6 +1,5 @@
 import React, { memo } from 'react'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import { cc, cn, colors } from '@/styles/shared'
 
 interface NavigationButtonProps {
@@ -10,7 +9,7 @@ interface NavigationButtonProps {
 }
 
 const NavigationButton: React.FC<NavigationButtonProps> = memo(({ direction, onClick, disabled }) => {
-  const Icon = direction === 'previous' ? ChevronLeftIcon : ChevronRightIcon
+  const Icon = direction === 'previous' ? ChevronLeft : ChevronRight
   
   return (
     <button

@@ -1,4 +1,5 @@
 import { cc, cn, colors } from '@/styles/shared';
+import { memo } from 'react';
 
 interface TermsModalProps {
   isOpen: boolean;
@@ -6,7 +7,7 @@ interface TermsModalProps {
   onAccept: () => void;
 }
 
-export const TermsModal = ({ isOpen, onClose, onAccept }: TermsModalProps) => {
+export const TermsModal = memo(({ isOpen, onClose, onAccept }: TermsModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -114,4 +115,6 @@ export const TermsModal = ({ isOpen, onClose, onAccept }: TermsModalProps) => {
       </div>
     </div>
   );
-};
+});
+
+TermsModal.displayName = 'TermsModal';

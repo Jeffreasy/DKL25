@@ -1,39 +1,23 @@
 // TitleSection.tsx
-import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, MotionStyle } from 'framer-motion';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import PlaceIcon from '@mui/icons-material/Place';
+import React, { useCallback, memo, useMemo, Suspense, lazy } from 'react';
+import { motion } from 'framer-motion';
 import { useTitleSectionData } from './functions/useTitleSectionData';
 import { TitleSectionData } from './functions/types';
-import EventDetailCard from './components/EventDetailCard';
-import SocialMediaSection from './components/SocialMediaSection';
-import { trackEvent } from '@/utils/googleAnalytics';
 import { useSocialMediaData } from './functions/useSocialMediaData';
 import { cc, cn, colors, animations } from '@/styles/shared';
+import TitleHeader from './components/TitleHeader';
+import EventImage from './components/EventImage';
+import ParticipantCounter from './components/ParticipantCounter';
+import CountdownTimer from './components/CountdownTimer';
+import EventDetailsGrid from './components/EventDetailsGrid';
+import CTAButton from './components/CTAButton';
+
+// Lazy load SocialMediaSection for better performance
+const SocialMediaSection = lazy(() => import('./components/SocialMediaSection'));
 
 interface TitleSectionProps {
   onInschrijfClick: () => void;
 }
-
-// --- Countdown Timer Logic ---
-const calculateTimeLeft = (targetDate: Date): { days: number; hours: number; minutes: number; seconds: number } | null => {
-  const difference = +targetDate - +new Date();
-  let timeLeft = null;
-
-  if (difference > 0) {
-    timeLeft = {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / 1000 / 60) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-    };
-  }
-
-  return timeLeft;
-};
-
-const targetEventDate = new Date('2025-05-17T09:00:00'); // Set target date and time (e.g., 9 AM)
-// --- End Countdown Timer Logic ---
 
 const TitleSkeleton: React.FC = () => (
   <div className={cn(animations.pulse, 'space-y-8')}>
@@ -56,7 +40,7 @@ const TitleSkeleton: React.FC = () => (
 const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
   event_title: 'De Koninklijke Loop (DKL) 2025',
   event_subtitle: 'Het unieke, rolstoelvriendelijke wandelevenement (DKL) in Apeldoorn voor en door mensen met een beperking.',
-  image_url: 'https://placehold.co/600x400/ff9328/white?text=De+Koninklijke+Loop+(DKL)+2025',
+  image_url: 'https://via.placeholder.com/600x400/ff9328/ffffff?text=De+Koninklijke+Loop+(DKL)+2025',
   image_alt: 'Banner De Koninklijke Loop (DKL) 2025 wandelevenement',
   detail_1_title: 'Datum',
   detail_1_description: '17 mei 2025 (starttijden variëren)',
@@ -66,37 +50,9 @@ const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
   detail_3_description: 'Steun het goede doel via dit unieke wandelevenement.',
 };
 
-const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
+const TitleSection: React.FC<TitleSectionProps> = memo(({ onInschrijfClick }) => {
   const { titleData, isLoading: isTitleLoading, error: titleError, refetch } = useTitleSectionData();
   const { socialEmbeds, isLoading: isSocialLoading, error: socialError } = useSocialMediaData();
-  const { scrollYProgress } = useScroll();
-  
-  // Re-added Parallax effects (ensure they are defined before use)
-  const titleY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
-
-  // --- Countdown State and Effect ---
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetEventDate));
-
-  useEffect(() => {
-    // Use setInterval for continuous update
-    const intervalId = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(targetEventDate));
-    }, 1000);
-
-    // Clear interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []); // Empty dependency array: run only on mount and unmount
-
-  useEffect(() => {
-    // Font loading effect...
-  }, []);
-
-  const handleRegisterClick = () => {
-    trackEvent('title_section', 'register_click', 'register_button');
-    onInschrijfClick();
-  };
 
   const handleRetry = () => {
     refetch();
@@ -104,6 +60,13 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
 
   // Use loaded data or defaults
   const displayData = titleData || DEFAULT_TITLE_DATA;
+
+  // Memoize details array to prevent recreation
+  const eventDetails = useMemo(() => [
+    { title: displayData.detail_1_title || '', description: displayData.detail_1_description || '' },
+    { title: displayData.detail_2_title || '', description: displayData.detail_2_description || '' },
+    { title: displayData.detail_3_title || '', description: displayData.detail_3_description || '' },
+  ], [displayData]);
 
   if (titleError && !titleData) {
     return (
@@ -136,178 +99,35 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
           <TitleSkeleton />
         </div>
       ) : (
-        <motion.div 
+        <motion.div
           className="max-w-[1100px] mx-auto px-4 sm:px-8 py-8 sm:py-12 relative z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.div 
+          <motion.div
             className="relative rounded-2xl p-4 sm:p-8 backdrop-blur-none bg-white shadow-lg"
-            style={{ y: titleY, opacity, scale } as MotionStyle}
           >
             {/* Main Content */}
             <div className="space-y-12">
-              {/* Title & Subtitle */}
-              <motion.div 
-                className="space-y-6 max-w-3xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <h1
-                  className={cn(cc.text.h1, 'font-bold font-sans leading-tight', colors.primary.text)}
-                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
-                >
-                  {displayData.event_title}
-                </h1>
-                <p
-                  className={cn(cc.text.h4, 'text-gray-800 font-sans leading-relaxed max-w-2xl mx-auto')}
-                  style={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
-                >
-                  {displayData.event_subtitle}
-                </p>
-              </motion.div>
+              <TitleHeader title={displayData.event_title || ''} subtitle={displayData.event_subtitle || ''} />
 
-              {/* Image Section */}
-              <motion.div 
-                className="max-w-[800px] mx-auto"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className={cn('rounded-xl overflow-hidden', cc.shadow.xl)}>
-                  <img
-                    src={displayData.image_url ?? DEFAULT_TITLE_DATA.image_url ?? ''}
-                    alt={displayData.image_alt ?? DEFAULT_TITLE_DATA.image_alt ?? 'Event Banner'}
-                    className="w-full h-auto"
-                    onError={(e) => {
-                      console.error('Afbeelding kon niet worden geladen:', e.currentTarget.src);
-                      e.currentTarget.src = DEFAULT_TITLE_DATA.image_url!;
-                      e.currentTarget.onerror = null;
-                    }}
-                  />
-                </div>
-              </motion.div>
+              <EventImage src={displayData.image_url ?? DEFAULT_TITLE_DATA.image_url ?? ''} alt={displayData.image_alt ?? DEFAULT_TITLE_DATA.image_alt ?? 'Event Banner'} />
 
-              {/* === Participant Counter === */}
-              <motion.div
-                className="mt-8 mb-4 text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.45 }}
-              >
-                <h3
-                  className={cn(cc.text.h5, 'font-semibold text-gray-800 mb-2')}
-                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
-                >
-                  Aantal Huidige Deelnemers:
-                </h3>
-                <p
-                  className={cn(
-                    'text-4xl font-bold',
-                    (!displayData?.participant_count && displayData?.participant_count !== 0) ? 'text-gray-400' : colors.primary.text
-                  )}
-                >
-                  {(displayData?.participant_count !== null && displayData?.participant_count !== undefined)
-                    ? displayData.participant_count 
-                    : '--' // Fallback if null/undefined or not loaded
-                  }
-                </p>
-              </motion.div>
-              {/* ========================= */}
+              <ParticipantCounter count={displayData.participant_count} />
 
-              {/* === Countdown Timer === */}
-              <motion.div 
-                className="mt-10 mb-6 max-w-lg mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-              >
-                {timeLeft ? (
-                  <div className="flex justify-center items-center space-x-2 sm:space-x-6 text-center">
-                    {Object.entries(timeLeft).map(([unit, value]) => (
-                      <div key={unit} className="p-2">
-                        <div className={cn('text-3xl sm:text-4xl font-bold', colors.primary.text)}>{String(value).padStart(2, '0')}</div>
-                        <div className={cn(cc.text.small, cc.typography.uppercase, cc.text.muted)}>
-                          {unit === 'days' ? 'Dagen' : unit === 'hours' ? 'Uren' : unit === 'minutes' ? 'Minuten' : 'Seconden'}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className={cn('text-center', cc.text.h4, 'font-semibold', colors.primary.text)}>
-                    Het evenement is succesvol afgelopen, bedankt en tot volgend jaar!
-                  </div>
-                )}
-              </motion.div>
-              {/* ====================== */}
+              <CountdownTimer />
 
-              {/* Event Details Grid - Adjusted column layout */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10 max-w-5xl mx-auto">
-                <EventDetailCard 
-                  icon="calendar"
-                  title={displayData.detail_1_title ?? DEFAULT_TITLE_DATA.detail_1_title ?? ''}
-                  description={displayData.detail_1_description ?? DEFAULT_TITLE_DATA.detail_1_description ?? ''}
-                  index={0}
-                  titleStyle={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
-                  textStyle={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
-                />
-                <EventDetailCard 
-                  icon="users"
-                  title={displayData.detail_2_title ?? DEFAULT_TITLE_DATA.detail_2_title ?? ''}
-                  description={displayData.detail_2_description ?? DEFAULT_TITLE_DATA.detail_2_description ?? ''}
-                  index={1}
-                  titleStyle={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
-                  textStyle={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
-                />
-                <EventDetailCard 
-                  icon="medal"
-                  title={displayData.detail_3_title ?? DEFAULT_TITLE_DATA.detail_3_title ?? ''}
-                  description={displayData.detail_3_description ?? DEFAULT_TITLE_DATA.detail_3_description ?? ''}
-                  index={2}
-                  titleStyle={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
-                  textStyle={{fontFamily: "'Open Sans', sans-serif"} as React.CSSProperties}
-                />
-              </div>
+              <EventDetailsGrid details={eventDetails} />
 
-              {/* CTA Button Container */}
-              <motion.div 
-                className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-center gap-4" 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-              >
-                {/* Inschrijven Button - Adjusted for mobile */}
-                <motion.button
-                  onClick={handleRegisterClick}
-                  className={cn(
-                    'text-white px-6 py-3 text-lg sm:px-12 sm:py-5 sm:text-xl font-bold tracking-wide w-full sm:w-auto',
-                    colors.primary.bg,
-                    colors.primary.hover,
-                    cc.border.circle,
-                    cc.transition.base,
-                    'hover:-translate-y-1',
-                    cc.shadow.xl,
-                    cc.flex.center,
-                    'gap-4'
-                  )}
-                  style={{fontFamily: "'Montserrat', sans-serif"} as React.CSSProperties}
-                  aria-label="Schrijf je nu in voor De Koninklijke Loop"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span>Schrijf je nu in</span>
-                  <ArrowForwardIcon sx={{ fontSize: { xs: 20, sm: 24 } }} /> {/* Adjusted icon size */}
-                </motion.button>
-              </motion.div>
+              <CTAButton onClick={onInschrijfClick} />
             </div>
           </motion.div>
         </motion.div>
       )}
 
       {/* Divider */}
-      <motion.div 
+      <motion.div
         className="relative mt-8 mb-8 w-full h-[3px]"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
@@ -319,7 +139,9 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
       {/* Social Media Section */}
       <div className="bg-white py-12">
         {!isSocialLoading && socialEmbeds.length > 0 && (
-          <SocialMediaSection socialEmbeds={socialEmbeds} />
+          <Suspense fallback={<div className="text-center py-8">Social media laden...</div>}>
+            <SocialMediaSection socialEmbeds={socialEmbeds} />
+          </Suspense>
         )}
         {socialError && (
           <div className={cn('max-w-md mx-auto p-4 bg-red-50 border border-red-200', cc.border.rounded, 'text-center')}>
@@ -329,6 +151,6 @@ const TitleSection: React.FC<TitleSectionProps> = ({ onInschrijfClick }) => {
       </div>
     </section>
   );
-};
+});
 
-export default React.memo(TitleSection);
+export default TitleSection;

@@ -1,5 +1,12 @@
-// Export RadioGallery as the default export
-export { default as RadioGallery } from './RadioGallery';
+// Lazy load RadioGallery for better performance
+import { lazy } from 'react';
 
-// Export individual components as named exports
-export { default as RadioPlayer } from './RadioPlayer'; 
+const RadioGallery = lazy(() => import('./RadioGallery'));
+const RadioPlayer = lazy(() => import('./RadioPlayer'));
+
+// Export lazy-loaded components
+export { RadioGallery, RadioPlayer };
+
+// Export individual components as named exports for backward compatibility
+export { default as RadioGallerySync } from './RadioGallery';
+export { default as RadioPlayerSync } from './RadioPlayer';

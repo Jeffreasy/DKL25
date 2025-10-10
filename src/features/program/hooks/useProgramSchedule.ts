@@ -3,7 +3,7 @@
  * React hook for fetching and managing program schedule
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { programService } from '../services/programService'
 import { trackEvent } from '../../../utils/googleAnalytics'
 import type { ProgramItem } from '../types'
@@ -83,12 +83,13 @@ export const useProgramByCategory = (category: string): UseProgramScheduleReturn
     fetchSchedule()
   }, [fetchSchedule])
 
-  return {
+  // Memoize return value to prevent unnecessary re-renders
+  return useMemo(() => ({
     scheduleItems,
     isLoading,
     error,
     refetch: fetchSchedule
-  }
+  }), [scheduleItems, isLoading, error])
 }
 
 /**

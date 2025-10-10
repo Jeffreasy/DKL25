@@ -1,28 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo, useCallback, useMemo } from 'react';
 import type { SocialLink } from './types';
 import SocialIcon from './SocialIcon';
 import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
-const socialColors = {
-  facebook: '#4267B2', // Official Facebook brand color
-  instagram: '#E1306C', // Official Instagram brand color
-  youtube: '#FF0000',   // Official YouTube brand color
-  linkedin: '#0A66C2'   // Official LinkedIn brand color
-} as const;
+const DKLSocials: React.FC = memo(() => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('DKLSocials');
 
-const DKLSocials: React.FC = () => {
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Memoize social colors to prevent recreation
+  const socialColors = useMemo(() => ({
+    facebook: '#4267B2', // Official Facebook brand color
+    instagram: '#E1306C', // Official Instagram brand color
+    youtube: '#FF0000',   // Official YouTube brand color
+    linkedin: '#0A66C2'   // Official LinkedIn brand color
+  }), []);
+
+  // Memoize loading skeletons array
+  const loadingSkeletons = useMemo(() =>
+    [...Array(4)].map((_, i) => (
+      <div
+        key={i}
+        className={cn('aspect-square rounded-2xl bg-gray-800/30', animations.pulse)}
+      />
+    )), []);
 
   useEffect(() => {
     const fetchSocialLinks = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const { data, error } = await supabase
           .from('social_links')
           .select('*')
@@ -32,6 +46,7 @@ const DKLSocials: React.FC = () => {
           console.error('Error fetching social links:', error);
           setError('Er ging iets mis bij het laden van de sociale media links.');
           trackEvent('social', 'error', 'fetch_failed');
+          trackInteraction('error', 'fetch_failed');
         } else if (data) {
           const transformedData: SocialLink[] = data.map(item => ({
             platform: item.platform as SocialLink['platform'],
@@ -41,22 +56,25 @@ const DKLSocials: React.FC = () => {
           }));
           setSocialLinks(transformedData);
           trackEvent('social', 'loaded', `count:${data.length}`);
+          trackInteraction('loaded', `count:${data.length}`);
         }
       } catch (err) {
         console.error('Unexpected error:', err);
         setError('Er ging iets mis. Probeer het later opnieuw.');
         trackEvent('social', 'error', 'unexpected');
+        trackInteraction('error', 'unexpected');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchSocialLinks();
-  }, []);
+  }, [trackInteraction]);
 
-  const handleSocialClick = (platform: string) => {
+  const handleSocialClick = useCallback((platform: string) => {
     trackEvent('social', 'social_click', platform);
-  };
+    trackInteraction('click', platform);
+  }, [trackInteraction]);
 
   return (
     <section className={cn('bg-gray-900 py-20 px-5 relative overflow-hidden', cc.typography.heading)}>
@@ -95,12 +113,7 @@ const DKLSocials: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8 max-w-[800px] mx-auto">
           {isLoading ? (
             // Loading skeletons
-            [...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className={cn('aspect-square rounded-2xl bg-gray-800/30', animations.pulse)}
-              />
-            ))
+            loadingSkeletons
           ) : (
             // Social media links
             socialLinks.map((social: SocialLink) => (
@@ -155,6 +168,8 @@ const DKLSocials: React.FC = () => {
       </div>
     </section>
   );
-};
+  });
 
-export default DKLSocials; 
+DKLSocials.displayName = 'DKLSocials';
+
+export default DKLSocials;

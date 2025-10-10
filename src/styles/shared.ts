@@ -433,16 +433,19 @@ export const animations = {
   
   // Shine effect
   shine: 'animate-shine',
-  
+
   // Slide effects
   slide: 'animate-slide',
   slideReverse: 'animate-slide-reverse',
-  
+
   // Partner carousel
   partnerSlide: 'animate-partnerSlide',
-  
+
   // Hue rotate
   hueRotate: 'animate-hue-rotate',
+
+  // Delayed animations for staggered effects
+  delayedFadeIn: 'animate-delayed-fade-in',
 }
 
 /**

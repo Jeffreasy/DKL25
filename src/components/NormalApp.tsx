@@ -1,112 +1,72 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, memo, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
 import LoadingScreen from './common/LoadingScreen';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { ModalProvider, useModal } from '../contexts/ModalContext';
+import { usePerformanceTracking } from '../hooks/usePerformanceTracking';
 
-// Lazy load pages
-const Home = lazy(() => import('../pages/home/Home'));
-const OverOns = lazy(() => import('../pages/over-ons/OverOns'));
-const Contact = lazy(() => import('../pages/contact/Contact'));
-const DKL = lazy(() => import('../pages/dkl/DKL'));
-const RadioPage = lazy(() => import('../pages/Mediapage/Media'));
-const Aanmelden = lazy(() => import('../pages/Aanmelden/aanmelden'));
-const Privacy = lazy(() => import('../pages/privacy/Privacy'));
-const OnderConstructie = lazy(() => import('../pages/onder-constructie/OnderConstructie'));
+// Lazy load pages with aggressive code splitting
+const Home = lazy(() => import(/* webpackChunkName: "home" */ '../pages/home/Home'));
+const OverOns = lazy(() => import(/* webpackChunkName: "about" */ '../pages/over-ons/OverOns'));
+const Contact = lazy(() => import(/* webpackChunkName: "contact" */ '../pages/contact/Contact'));
+const DKL = lazy(() => import(/* webpackChunkName: "dkl-info" */ '../pages/dkl/DKL'));
+const RadioPage = lazy(() => import(/* webpackChunkName: "media" */ '../pages/Mediapage/Media'));
+const Aanmelden = lazy(() => import(/* webpackChunkName: "registration" */ '../pages/Aanmelden/aanmelden'));
+const Privacy = lazy(() => import(/* webpackChunkName: "privacy" */ '../pages/privacy/Privacy'));
+const OnderConstructie = lazy(() => import(/* webpackChunkName: "maintenance" */ '../pages/onder-constructie/OnderConstructie'));
 
-const NormalApp: React.FC = () => {
+const NormalApp: React.FC = memo(() => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('NormalApp');
+
+  // Memoize the routes configuration to prevent recreation
+  const routesConfig = useMemo(() => [
+    { path: '/', component: Home, trackName: 'home' },
+    { path: '/over-ons', component: OverOns, trackName: 'over_ons' },
+    { path: '/contact', component: Contact, trackName: 'contact' },
+    { path: '/faq', component: Contact, trackName: 'faq' },
+    { path: '/wat-is-de-koninklijkeloop', component: DKL, trackName: 'dkl_info' },
+    { path: '/media', component: RadioPage, trackName: 'media', hasErrorBoundary: true },
+    { path: '/aanmelden', component: Aanmelden, trackName: 'aanmelden', hasErrorBoundary: true },
+    { path: '/privacy', component: Privacy, trackName: 'privacy', hasErrorBoundary: true },
+    { path: '/onder-constructie', component: OnderConstructie, trackName: 'onder_constructie' },
+  ], []);
+
   return (
     <ModalProvider>
       <Routes>
         <Route element={<LayoutWrapper />}>
-          <Route
-            path="/"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <Home />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/over-ons"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <OverOns />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <Contact />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/faq"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <Contact />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/wat-is-de-koninklijkeloop"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <DKL />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/media"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <ErrorBoundary>
-                  <RadioPage />
-                </ErrorBoundary>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/aanmelden"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <ErrorBoundary>
-                  <Aanmelden />
-                </ErrorBoundary>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/privacy"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <ErrorBoundary>
-                  <Privacy />
-                </ErrorBoundary>
-              </Suspense>
-            }
-          />
-          <Route
-            path="/onder-constructie"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <OnderConstructie />
-              </Suspense>
-            }
-          />
+          {routesConfig.map(({ path, component: Component, trackName, hasErrorBoundary }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <Suspense fallback={<LoadingScreen />}>
+                  {hasErrorBoundary ? (
+                    <ErrorBoundary>
+                      <Component />
+                    </ErrorBoundary>
+                  ) : (
+                    <Component />
+                  )}
+                </Suspense>
+              }
+            />
+          ))}
         </Route>
       </Routes>
     </ModalProvider>
   );
-};
+});
+
+NormalApp.displayName = 'NormalApp';
 
 // Layout wrapper component that uses modal context
-const LayoutWrapper: React.FC = () => {
+const LayoutWrapper: React.FC = memo(() => {
   return <Layout />;
-};
+});
+
+LayoutWrapper.displayName = 'LayoutWrapper';
 
 export default NormalApp;

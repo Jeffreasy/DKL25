@@ -1,7 +1,7 @@
 import { RegistrationFormData } from '../types/schema';
-import confetti from 'canvas-confetti';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo, useCallback } from 'react';
 import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaPrint, FaDownload, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa';
+import confetti from 'canvas-confetti';
 import QRCode from 'qrcode';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
@@ -30,7 +30,7 @@ const getMapsUrl = () => {
   return `https://www.google.com/maps/search/?api=1&query=${query}`;
 };
 
-export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
+export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => {
   const [isPrinting, setIsPrinting] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
 
@@ -56,12 +56,12 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
     img.src = "https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png";
   }, []);
 
-  const generatePDF = async () => {
+  const generatePDF = useCallback(async () => {
     try {
       setIsPrinting(true);
       const { jsPDF } = await import('jspdf');
       const doc = new jsPDF();
-      
+
       // PDF logica hier
       doc.save('DKL-aanmeldbevestiging.pdf');
       toast.success('PDF is gedownload');
@@ -71,7 +71,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
     } finally {
       setIsPrinting(false);
     }
-  };
+  }, []);
 
   const handlePrint = async () => {
     try {
@@ -513,4 +513,6 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ data }) => {
       </div>
     </div>
   );
-}; 
+});
+
+SuccessMessage.displayName = 'SuccessMessage';

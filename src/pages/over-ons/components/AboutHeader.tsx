@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { cc, cn, colors } from '@/styles/shared';
 
-const AboutHeader: React.FC = () => {
+const AboutHeader: React.FC = memo(() => {
   return (
     <div className="text-center max-w-4xl mx-auto">
       <h1 className={cn(cc.text.h1, cc.typography.heading, 'font-bold text-gray-900 mb-6')}>
@@ -15,6 +15,8 @@ const AboutHeader: React.FC = () => {
       </p>
     </div>
   );
-};
+});
+
+AboutHeader.displayName = 'AboutHeader';
 
 export default AboutHeader;

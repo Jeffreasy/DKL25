@@ -5,53 +5,72 @@ import { socialLinks, createQuickLinks } from './data';
 import { PrivacyModal } from '../../ui/modals';
 import type { FooterProps, QuickLinkType, SocialLink } from './types';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors } from '@/styles/shared';
 
 const DEFAULT_LOGO = 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png';
 const MemoizedSocialIcon = memo(SocialIcon);
 
-const Footer: React.FC<FooterProps> = ({
+const Footer: React.FC<FooterProps> = memo(({
   className = '',
   showSocials = true,
   showQuickLinks = true,
   customLogo,
 }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('Footer');
+
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
-  const currentYear = new Date().getFullYear();
+
+  // Memoize current year to prevent recalculation
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
+
+  // Memoize accessibility preferences to prevent recalculation
+  const accessibilityPrefs = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return {
+      prefersReducedMotion,
+      showDecorativeElements: !prefersReducedMotion,
+      hoverStyles: prefersReducedMotion ? '' : 'hover:-translate-y-1 hover:shadow-lg',
+      transformStyles: prefersReducedMotion ? '' : 'group-hover:scale-110',
+      linkHoverStyles: prefersReducedMotion ? '' : 'group-hover:translate-x-1 duration-300'
+    };
+  }, [trackInteraction]);
 
   const handlePrivacyClick = useCallback(() => {
     try {
       setIsPrivacyModalOpen(true);
       trackEvent('footer', 'privacy_policy_click');
+      trackInteraction('privacy_click', 'modal_opened');
     } catch (error) {
       console.error('Error handling privacy click:', error);
       // Sentry.captureException(error);
     }
-  }, []);
+  }, [trackInteraction]);
 
   const handleSocialClick = useCallback((platform: string) => {
     try {
       trackEvent('footer', 'social_media_click', platform);
+      trackInteraction('social_click', platform);
     } catch (error) {
       console.error('Error tracking social click:', error);
       // Sentry.captureException(error);
     }
-  }, []);
+  }, [trackInteraction]);
 
   const handleQuickLinkClick = useCallback((linkText: string) => {
     try {
       trackEvent('footer', 'quick_link_click', linkText);
+      trackInteraction('quick_link_click', linkText);
     } catch (error) {
       console.error('Error tracking quick link click:', error);
       // Sentry.captureException(error);
     }
-  }, []);
+  }, [trackInteraction]);
 
   const quickLinks = useMemo(() => createQuickLinks(handlePrivacyClick), [handlePrivacyClick]);
-  const showDecorativeElements = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const hoverStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'hover:-translate-y-1 hover:shadow-lg';
-  const transformStyles = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'group-hover:scale-110';
 
   return (
     <>
@@ -64,7 +83,7 @@ const Footer: React.FC<FooterProps> = ({
           className
         )}
       >
-        {showDecorativeElements && (
+        {accessibilityPrefs.showDecorativeElements && (
           <div className="absolute inset-0 opacity-5">
             <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2" />
@@ -105,7 +124,7 @@ const Footer: React.FC<FooterProps> = ({
                       'rounded-lg bg-white/10 backdrop-blur-sm',
                       hoverColor,
                       cc.transition.base,
-                      hoverStyles,
+                      accessibilityPrefs.hoverStyles,
                       'group'
                     )}
                     aria-label={label}
@@ -115,7 +134,7 @@ const Footer: React.FC<FooterProps> = ({
                   >
                     <MemoizedSocialIcon
                       platform={platform}
-                      className={cn('w-5 h-5 fill-white', cc.transition.transform, transformStyles)}
+                      className={cn('w-5 h-5 fill-white', cc.transition.transform, accessibilityPrefs.transformStyles)}
                     />
                   </a>
                 ))}
@@ -137,7 +156,7 @@ const Footer: React.FC<FooterProps> = ({
                             cc.flex.start,
                             'space-x-2 text-white/90 hover:text-white',
                             cc.transition.colors,
-                            window.matchMedia('(prefers-reduced-motion: reduce)').matches ? '' : 'group-hover:translate-x-1 duration-300'
+                            accessibilityPrefs.linkHoverStyles
                           )}
                           aria-current={window.location.pathname === link.to ? 'page' : undefined}
                           onClick={() => handleQuickLinkClick(link.text)}
@@ -185,6 +204,8 @@ const Footer: React.FC<FooterProps> = ({
       <PrivacyModal isOpen={isPrivacyModalOpen} onClose={() => setIsPrivacyModalOpen(false)} />
     </>
   );
-};
+});
 
-export default memo(Footer);
+Footer.displayName = 'Footer';
+
+export default Footer;

@@ -1,5 +1,6 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 
 type ISO8601Date = string; // ISO 8601 format (e.g., "2025-10-09T12:00:00Z")
 
@@ -64,20 +65,33 @@ export const SEO = memo(
     eventLocationAddress,
     eventUrl,
   }: SEOProps) => {
-    const siteBaseUrl = import.meta.env.VITE_SITE_URL || 'https://www.dekoninklijkeloop.nl';
-    const url = `${siteBaseUrl}${route}`;
-    const fullTitle = `${title}${title === defaultTitle ? '' : ` | ${defaultTitle}`}`;
-    const imageArray = Array.isArray(images) ? images : [images];
-    const isValidDate = (date: string | undefined): boolean => !!date && !isNaN(new Date(date).getTime());
+    // Performance tracking
+    const { trackInteraction } = usePerformanceTracking('SEO');
 
-    let eventJsonLd = null;
-    if (
-      isEventPage &&
-      eventName &&
-      isValidDate(eventStartDate) &&
-      eventLocationName &&
-      eventLocationAddress
-    ) {
+    // Memoize site configuration
+    const siteConfig = useMemo(() => ({
+      siteBaseUrl: import.meta.env.VITE_SITE_URL || 'https://www.dekoninklijkeloop.nl',
+      url: `${import.meta.env.VITE_SITE_URL || 'https://www.dekoninklijkeloop.nl'}${route}`,
+      fullTitle: `${title}${title === defaultTitle ? '' : ` | ${defaultTitle}`}`,
+      imageArray: Array.isArray(images) ? images : [images],
+      keywordsString: [...defaultKeywords, ...(keywords || [])].join(', ')
+    }), [route, title, images, keywords]);
+
+    // Memoize date validation function
+    const isValidDate = useMemo(() => (date: string | undefined): boolean => !!date && !isNaN(new Date(date).getTime()), []);
+
+    // Memoize event JSON-LD creation
+    const eventJsonLd = useMemo(() => {
+      if (
+        !isEventPage ||
+        !eventName ||
+        !isValidDate(eventStartDate) ||
+        !eventLocationName ||
+        !eventLocationAddress
+      ) {
+        return null;
+      }
+
       const address =
         typeof eventLocationAddress === 'string'
           ? {
@@ -91,13 +105,13 @@ export const SEO = memo(
       const eventData = {
         '@context': 'https://schema.org',
         '@type': 'Event',
-        '@id': `${url}#event`,
+        '@id': `${siteConfig.url}#event`,
         name: eventName,
         alternateName: year ? `DKL ${year}` : 'DKL',
         startDate: eventStartDate,
         endDate: eventEndDate,
         description: eventDescription || description,
-        image: [eventImage || imageArray[0]],
+        image: [eventImage || siteConfig.imageArray[0]],
         eventStatus: 'https://schema.org/EventScheduled',
         eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
         location: {
@@ -115,36 +129,54 @@ export const SEO = memo(
           '@type': 'Organization',
           name: 'De Koninklijke Loop',
           alternateName: 'DKL',
-          url: siteBaseUrl,
+          url: siteConfig.siteBaseUrl,
         },
-        url: eventUrl || url,
+        url: eventUrl || siteConfig.url,
       };
       if (!eventData.endDate || !isValidDate(eventData.endDate)) {
         delete eventData.endDate;
       }
-      eventJsonLd = JSON.stringify(eventData);
-    }
+
+      trackInteraction('event_jsonld_created', eventName);
+      return JSON.stringify(eventData);
+    }, [
+      isEventPage,
+      eventName,
+      eventStartDate,
+      eventLocationName,
+      eventLocationAddress,
+      eventEndDate,
+      eventDescription,
+      description,
+      eventImage,
+      eventUrl,
+      siteConfig,
+      isValidDate,
+      trackInteraction
+    ]);
 
     return (
       <Helmet htmlAttributes={{ lang: 'nl' }}>
-        <title>{fullTitle}</title>
+        <title>{siteConfig.fullTitle}</title>
         <meta name="description" content={description} />
         {noIndex && <meta name="robots" content="noindex" />}
-        <meta name="keywords" content={[...defaultKeywords, ...(keywords || [])].join(', ')} />
-        <meta property="og:url" content={url} />
-        <meta property="og:title" content={fullTitle} />
+        <meta name="keywords" content={siteConfig.keywordsString} />
+        <meta property="og:url" content={siteConfig.url} />
+        <meta property="og:title" content={siteConfig.fullTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content={type} />
-        {imageArray.map((img, index) => (
+        {siteConfig.imageArray.map((img: string, index: number) => (
           <meta key={`og-image-${index}`} property="og:image" content={img} />
         ))}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={fullTitle} />
+        <meta name="twitter:title" content={siteConfig.fullTitle} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={imageArray[0]} />
-        <link rel="canonical" href={url} />
+        <meta name="twitter:image" content={siteConfig.imageArray[0]} />
+        <link rel="canonical" href={siteConfig.url} />
         {eventJsonLd && <script type="application/ld+json">{eventJsonLd}</script>}
       </Helmet>
     );
   }
 );
+
+SEO.displayName = 'SEO';

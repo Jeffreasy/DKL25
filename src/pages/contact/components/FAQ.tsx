@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { faqData } from './faq.data';
 import { useDebounce } from '../../../hooks/ui/useDebounce';
 import { trackEvent } from '@/utils/googleAnalytics';
@@ -32,7 +32,7 @@ interface FAQItem {
   actionText?: string;
 }
 
-const QuestionItem: React.FC<QuestionItemProps> = ({
+const QuestionItem: React.FC<QuestionItemProps> = memo(({
   question,
   answer,
   icon,
@@ -99,12 +99,14 @@ const QuestionItem: React.FC<QuestionItemProps> = ({
       </div>
     </details>
   );
-};
+});
+
+QuestionItem.displayName = 'QuestionItem';
 
 const SearchBar: React.FC<{
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}> = ({ value, onChange }) => {
+}> = memo(({ value, onChange }) => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     trackEvent('faq', 'search', e.target.value);
     onChange(e);
@@ -131,9 +133,11 @@ const SearchBar: React.FC<{
       </span>
     </div>
   );
-};
+});
 
-const CategoryHeader: React.FC<{ title: string; icon: string }> = ({ title, icon }) => (
+SearchBar.displayName = 'SearchBar';
+
+const CategoryHeader: React.FC<{ title: string; icon: string }> = memo(({ title, icon }) => (
   <div className="flex items-center space-x-3 mb-6 pb-3 border-b-2 border-primary/10">
     <span className="text-3xl" role="img" aria-label={icon}>
       {icon}
@@ -142,9 +146,9 @@ const CategoryHeader: React.FC<{ title: string; icon: string }> = ({ title, icon
       {title}
     </h3>
   </div>
-);
+));
 
-const FAQ: React.FC<FAQProps> = ({ onInschrijfClick, onContactClick }) => {
+const FAQ: React.FC<FAQProps> = memo(({ onInschrijfClick, onContactClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -230,6 +234,8 @@ const FAQ: React.FC<FAQProps> = ({ onInschrijfClick, onContactClick }) => {
       </div>
     </section>
   );
-};
+});
 
-export default FAQ; 
+FAQ.displayName = 'FAQ';
+
+export default FAQ;

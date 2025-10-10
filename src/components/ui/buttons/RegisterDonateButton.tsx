@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback, memo } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import EmailIcon from '@mui/icons-material/Email';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useModal } from '@/contexts/ModalContext';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors } from '@/styles/shared';
 
 interface InschDoneerButtonProps {
@@ -11,30 +12,33 @@ interface InschDoneerButtonProps {
   isModalOpen?: boolean;
 }
 
-const InschDoneerButton: React.FC<InschDoneerButtonProps> = ({ 
-  onInschrijfClick, 
+const InschDoneerButton: React.FC<InschDoneerButtonProps> = memo(({
+  onInschrijfClick,
   className = '',
   isModalOpen = false
 }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('InschDoneerButton');
+
   const { handleDonatieClick } = useModal();
 
   if (isModalOpen) {
     return null;
   }
 
-  const handleInschrijfClick = () => {
-    trackEvent('cta', 'button_click', 'aanmelden');
+  const handleInschrijfClick = useCallback(() => {
+    trackInteraction('aanmelden_click');
     onInschrijfClick();
-  };
+  }, [trackInteraction, onInschrijfClick]);
 
-  const handleDonatieClickInternal = () => {
+  const handleDonatieClickInternal = useCallback(() => {
     console.log("InschDoneerButton: Triggering openDonatieModal from context");
-    trackEvent('cta', 'button_click', 'doneren');
+    trackInteraction('doneren_click');
     handleDonatieClick();
-  };
+  }, [trackInteraction, handleDonatieClick]);
 
   return (
-    <div className={cn('sticky bottom-4 sm:bottom-6 md:bottom-8 w-full mx-auto px-4', cc.zIndex.modal)}>
+    <div className={cn('fixed bottom-4 sm:bottom-6 md:bottom-8 left-0 right-0 w-full mx-auto px-4', cc.zIndex.modal)}>
       <div className={cn(cc.flex.center, 'gap-2 sm:gap-4', className)}>
         <button
           onClick={handleInschrijfClick}
@@ -79,6 +83,8 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = ({
       </div>
     </div>
   );
-};
+});
+
+InschDoneerButton.displayName = 'InschDoneerButton';
 
 export default InschDoneerButton;

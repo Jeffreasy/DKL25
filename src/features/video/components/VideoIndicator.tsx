@@ -1,5 +1,6 @@
-import React, { memo } from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import { cc, cn, colors } from '@/styles/shared'
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking'
 
 interface DotIndicatorProps {
   total: number;
@@ -8,19 +9,30 @@ interface DotIndicatorProps {
   className?: string;
 }
 
-const DotIndicator: React.FC<DotIndicatorProps> = memo(({ 
-  total, 
-  current, 
+const DotIndicator: React.FC<DotIndicatorProps> = memo(({
+  total,
+  current,
   onClick,
   className = ''
 }) => {
-  const handleClick = (index: number) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('DotIndicator');
+
+  // Memoize the click handler to prevent recreation
+  const handleClick = useCallback((index: number) => {
+    trackInteraction('indicator_click', `slide_${index + 1}`);
     onClick(index);
-  };
+  }, [onClick, trackInteraction]);
+
+  // Memoize the array to prevent recreation on every render
+  const indicators = useMemo(() =>
+    Array.from({ length: total }, (_, index) => index),
+    [total]
+  );
 
   return (
     <div className={cn(cc.flex.center, 'gap-2', className)}>
-      {Array.from({ length: total }).map((_, index) => (
+      {indicators.map((index) => (
         <button
           key={index}
           onClick={() => handleClick(index)}

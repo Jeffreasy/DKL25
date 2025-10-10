@@ -1,5 +1,5 @@
 // src/components/AIChatButton/SuggestionChips.tsx
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { cc, cn } from '@/styles/shared';
 
 interface SuggestionChipsProps {
@@ -7,7 +7,7 @@ interface SuggestionChipsProps {
   onSelect: (suggestion: string) => void;
 }
 
-const SuggestionChips: React.FC<SuggestionChipsProps> = ({ suggestions, onSelect }) => {
+const SuggestionChips: React.FC<SuggestionChipsProps> = memo(({ suggestions, onSelect }) => {
   if (!suggestions || suggestions.length === 0) return null;
   
   return (
@@ -26,6 +26,8 @@ const SuggestionChips: React.FC<SuggestionChipsProps> = ({ suggestions, onSelect
       ))}
     </div>
   );
-};
+});
+
+SuggestionChips.displayName = 'SuggestionChips';
 
 export default SuggestionChips;

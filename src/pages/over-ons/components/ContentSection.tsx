@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { cc, cn, colors } from '@/styles/shared';
 
 interface ContentSectionProps {
@@ -8,7 +8,7 @@ interface ContentSectionProps {
   isThankYou?: boolean;
 }
 
-const ContentSection: React.FC<ContentSectionProps> = ({ icon, title, content, isThankYou }) => {
+const ContentSection: React.FC<ContentSectionProps> = memo(({ icon, title, content, isThankYou }) => {
   return (
     <div 
       className={cn(
@@ -50,6 +50,8 @@ const ContentSection: React.FC<ContentSectionProps> = ({ icon, title, content, i
       </div>
     </div>
   );
-};
+});
+
+ContentSection.displayName = 'ContentSection';
 
 export default ContentSection;

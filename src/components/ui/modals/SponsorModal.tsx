@@ -1,28 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, memo } from 'react';
 import type { SponsorModalProps } from './types';
 import { Dialog } from '@headlessui/react';
 import CloseIcon from '@mui/icons-material/Close';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { Sponsor } from '@/features/sponsors/types';
 
-export const SponsorModal: React.FC<SponsorModalProps> = ({ isOpen, onClose, sponsor }) => {
+export const SponsorModal: React.FC<SponsorModalProps> = memo(({ isOpen, onClose, sponsor }) => {
+  // Performance tracking
+  const { trackInteraction } = usePerformanceTracking('SponsorModal');
+
   // Track modal open/close
   useEffect(() => {
     if (isOpen && sponsor) {
-      trackEvent('sponsors', 'modal_opened', sponsor.name);
+      trackInteraction('modal_opened', sponsor.name);
     }
-  }, [isOpen, sponsor]);
+  }, [isOpen, sponsor, trackInteraction]);
 
-  const handleClose = () => {
-    trackEvent('sponsors', 'modal_closed', sponsor?.name || 'sponsor_details');
+  const handleClose = useCallback(() => {
+    trackInteraction('modal_closed', sponsor?.name || 'sponsor_details');
     onClose();
-  };
+  }, [trackInteraction, sponsor, onClose]);
 
-  const handleWebsiteClick = () => {
+  const handleWebsiteClick = useCallback(() => {
     if (sponsor?.website_url) {
-      trackEvent('sponsors', 'website_click', sponsor.name);
+      trackInteraction('website_click', sponsor.name);
     }
-  };
+  }, [trackInteraction, sponsor]);
 
   if (!isOpen || !sponsor) return null;
 
@@ -99,4 +103,6 @@ export const SponsorModal: React.FC<SponsorModalProps> = ({ isOpen, onClose, spo
       </div>
     </Dialog>
   );
-}; 
+});
+
+SponsorModal.displayName = 'SponsorModal';
