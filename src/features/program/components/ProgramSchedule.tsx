@@ -1,11 +1,8 @@
-import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { DirectionsWalk, Celebration } from '@mui/icons-material';
 import { useModal } from '@/contexts/ModalContext';
 import { cc, cn, colors } from '@/styles/shared';
-
-// Lazy load the heavy modal component
-const ProgramModal = lazy(() => import('./ProgramModal'));
 
 const ROUTE_TABS = ['15 km', '10 km', '6 km', '2.5 km'];
 

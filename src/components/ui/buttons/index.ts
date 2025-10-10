@@ -3,4 +3,4 @@
  * Reusable button components
  */
 
-export { default as RegisterDonateButton } from './RegisterDonateButton';
+// Note: RegisterDonateButton is lazy loaded in Home.tsx, so not exported here to avoid mixed import warnings

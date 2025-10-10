@@ -1,1 +1,1 @@
-export { default } from './CTACards'; 
+// Note: CTACards is lazy loaded in Home.tsx, so not exported here to avoid mixed import warnings

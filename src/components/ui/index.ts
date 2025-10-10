@@ -4,6 +4,4 @@
  */
 
 export * from './AIChatButton';
-export * from './buttons';
-export * from './CTACards';
 export * from './modals';

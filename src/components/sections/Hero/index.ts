@@ -3,4 +3,4 @@
  * Main hero banner component
  */
 
-export { default as HeroSection } from './HeroSection';
+// Note: HeroSection is lazy loaded in Home.tsx, so not exported here to avoid mixed import warnings

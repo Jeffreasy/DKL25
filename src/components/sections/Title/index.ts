@@ -3,7 +3,7 @@
  * Event title and details section
  */
 
-export { default as TitleSection } from './TitleSection';
+// Note: TitleSection is lazy loaded in Home.tsx, so not exported here to avoid mixed import warnings
 export { default as TitleHeader } from './components/TitleHeader';
 export { default as EventImage } from './components/EventImage';
 export { default as ParticipantCounter } from './components/ParticipantCounter';

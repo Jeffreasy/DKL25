@@ -5,16 +5,16 @@ import { useModal } from '../../contexts/ModalContext';
 import { cc, cn } from '@/styles/shared';
 
 // Lazy load heavy components for better performance
-const PartnerCarrousel = lazy(() => import('../../components').then(module => ({ default: module.PartnerCarrousel })));
-const HeroSection = lazy(() => import('../../components').then(module => ({ default: module.HeroSection })));
-const TitleSection = lazy(() => import('../../components').then(module => ({ default: module.TitleSection })));
-const CTACards = lazy(() => import('../../components').then(module => ({ default: module.CTACards })));
-const PhotoGallery = lazy(() => import('../../components').then(module => ({ default: module.PhotoGallery })));
-const DKLSocials = lazy(() => import('../../components').then(module => ({ default: module.DKLSocials })));
+const PartnerCarrousel = lazy(() => import('../../features/partners/components/PartnerCarousel'));
+const HeroSection = lazy(() => import('../../components/sections/Hero/HeroSection'));
+const TitleSection = lazy(() => import('../../components/sections/Title/TitleSection'));
+const CTACards = lazy(() => import('../../components/ui/CTACards/CTACards'));
+const PhotoGallery = lazy(() => import('../../features/gallery/components/GalleryContainer'));
+const DKLSocials = lazy(() => import('../../components/sections/Socials/SocialLinks'));
 import { DKLSponsors, RadioGallery } from '../../components';
 const VideoGallery = lazy(() => import('../../features/video/components').then(module => ({ default: module.VideoGallery })));
 const ProgramSection = lazy(() => import('../../features/program/components').then(module => ({ default: module.ProgramSection })));
-const InschDoneerButton = lazy(() => import('../../components/ui/buttons/RegisterDonateButton').then(module => ({ default: module.default })));
+const InschDoneerButton = lazy(() => import('../../components/ui/buttons/RegisterDonateButton'));
 
 // Optimized section component with intersection observer
 const LazySection: React.FC<{
