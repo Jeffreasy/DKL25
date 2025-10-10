@@ -68,11 +68,9 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
 
   // Set mounted flag - runs first
   useEffect(() => {
-    console.log('[DEBUG] Mount effect running');
     isMounted.current = true;
-    
+
     return () => {
-      console.log('[DEBUG] Unmount effect running');
       isMounted.current = false;
       scriptsLoadingRef.current = false;
       processingTimeouts.current.forEach(timeout => clearTimeout(timeout));
@@ -83,17 +81,13 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   const processInstagramEmbed = useCallback((embedId: string, node: HTMLElement) => {
     // Check if already processed
     if (processedEmbeds.current.has(embedId)) {
-      console.log(`[DEBUG] Embed ${embedId} already processed, skipping`);
       return;
     }
 
     if (!scriptsLoaded || !window.instgrm?.Embeds?.process) {
-      console.log(`[DEBUG] Cannot process Instagram ${embedId}: scripts not ready`);
       return;
     }
 
-    console.log(`[DEBUG] Processing Instagram embed ${embedId}`);
-    
     // Mark as processed immediately to prevent duplicates
     processedEmbeds.current.add(embedId);
 
@@ -110,7 +104,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       try {
         window.instgrm!.Embeds.process(node);
         processingTimeouts.current.delete(embedId);
-        console.log(`[DEBUG] Successfully processed Instagram embed ${embedId}`);
       } catch (e) {
         console.error(`Error processing Instagram embed ${embedId}:`, e);
         // Remove from processed on error so it can be retried
@@ -122,7 +115,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   }, [scriptsLoaded]);
 
   const renderEmbed = useCallback((embed: SocialEmbedRow) => {
-    console.log(`[DEBUG] Rendering embed for ${embed.platform} ID: ${embed.id}`);
     
     const getEmbedUrl = (code: string) => {
       const urlMatch = code.match(/src="([^\"]+)"/);
@@ -188,16 +180,13 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   const loadScripts = useCallback(async () => {
     // Prevent multiple simultaneous loads
     if (scriptsLoadingRef.current) {
-      console.log('[DEBUG] Scripts already loading, skipping');
       return;
     }
 
     if (!isMounted.current) {
-      console.log('[DEBUG] Component not mounted, skipping loadScripts');
       return;
     }
-    
-    console.log('[DEBUG] Starting loadScripts, isMounted:', isMounted.current);
+
     scriptsLoadingRef.current = true;
     setIsLoading(true);
     setScriptsLoaded(false);
@@ -205,26 +194,19 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
     processedEmbeds.current.clear();
 
     try {
-      console.log('[DEBUG] Loading Facebook and Instagram SDKs');
       const results = await Promise.all([
         loadFacebookSDK(),
         loadInstagramEmbed()
       ]);
-      
-      console.log('[DEBUG] Promise.all resolved', results, 'isMounted:', isMounted.current);
-      
+
       // Always set scriptsLoaded even if unmounted - the scripts ARE loaded
-      console.log('[DEBUG] SDKs loaded successfully, setting scriptsLoaded=true');
       setScriptsLoaded(true);
-      console.log('[DEBUG] scriptsLoaded state set');
-      
+
       if (isMounted.current) {
         trackEvent('social_section', 'sdk_loaded', `count:${socialEmbeds.length}`);
       }
 
     } catch (err: any) {
-      console.error('[DEBUG] Error in loadScripts catch block:', err);
-      
       if (isMounted.current) {
         console.error('Error loading social SDKs:', err);
         setError(err?.message || 'Er ging iets mis bij het laden van de social media scripts.');
@@ -233,28 +215,20 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       }
     } finally {
       scriptsLoadingRef.current = false;
-      console.log('[DEBUG] loadScripts complete, setting isLoading=false, isMounted:', isMounted.current);
       setIsLoading(false);
     }
   }, [socialEmbeds.length]);
 
   // Load scripts on mount - runs after mount effect
   useEffect(() => {
-    console.log('[DEBUG] Script loading effect triggered', {
-      embedCount: socialEmbeds.length,
-      isMounted: isMounted.current,
-      scriptsLoading: scriptsLoadingRef.current
-    });
-    
     if (socialEmbeds.length > 0) {
       // Small delay to ensure mount effect has run
       const timeoutId = setTimeout(() => {
         if (isMounted.current) {
-          console.log('[DEBUG] Calling loadScripts after delay');
           loadScripts();
         }
       }, 50);
-      
+
       return () => clearTimeout(timeoutId);
     } else {
       setIsLoading(false);
@@ -268,8 +242,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       return;
     }
 
-    console.log('[DEBUG] Scripts loaded, processing Instagram embeds');
-    
     // Process all unprocessed embeds
     instagramRefs.current.forEach((node, embedId) => {
       if (!processedEmbeds.current.has(embedId)) {

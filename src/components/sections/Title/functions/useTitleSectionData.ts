@@ -9,7 +9,6 @@ export const useTitleSectionData = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchTitleData = useCallback(async () => {
-    console.log('[DEBUG] useTitleSectionData: Starting fetchTitleData');
     setIsLoading(true);
     setError(null);
     try {
@@ -34,18 +33,14 @@ export const useTitleSectionData = () => {
         .limit(1)
         .single();
 
-      console.log('[DEBUG] useTitleSectionData: Supabase query result', { data, dbError });
-
       if (dbError && dbError.code !== 'PGRST116') {
         console.error("Supabase error fetching title section content:", dbError);
         throw new Error('Fout bij ophalen titel sectie data.');
       }
 
       if (data) {
-        console.log('[DEBUG] useTitleSectionData: Setting titleData', data);
         setTitleData(data as TitleSectionData);
       } else {
-        console.log('[DEBUG] useTitleSectionData: No data found, setting to null');
         setTitleData(null);
       }
 
@@ -55,7 +50,6 @@ export const useTitleSectionData = () => {
       setError(message);
       setTitleData(null);
     } finally {
-      console.log('[DEBUG] useTitleSectionData: Fetch complete, setting isLoading to false');
       setIsLoading(false);
     }
   }, []);
