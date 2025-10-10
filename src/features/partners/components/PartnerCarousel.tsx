@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, memo, Suspense, lazy } from 'react';
 import { usePartners } from '@/hooks/usePartners';
+import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { cc, cn, animations } from '@/styles/shared';
+import { cc, cn } from '@/styles/shared';
 
 // Lazy load the modal for better performance
 const PartnerModal = lazy(() => import('@/components/ui/modals/PartnerModal').then(module => ({ default: module.PartnerModal })));
@@ -18,7 +19,7 @@ const PartnerImage: React.FC<{
   const imgRef = useRef<HTMLImageElement>(null);
 
   const sizeClasses = {
-    small: 'w-[80px] h-[40px]',
+    small: 'w-24 h-12',
     medium: 'w-32 h-16',
     large: 'w-40 h-20'
   };
@@ -80,7 +81,7 @@ PartnerImage.displayName = 'PartnerImage';
 // Skeleton component for loading state
 const PartnerSkeleton: React.FC<{ size?: 'small' | 'medium' | 'large' }> = memo(({ size = 'medium' }) => {
   const sizeClasses = {
-    small: 'w-[80px] h-[40px]',
+    small: 'w-24 h-12',
     medium: 'w-32 h-16',
     large: 'w-40 h-20'
   };
@@ -100,6 +101,8 @@ const PartnerCarrousel: React.FC = memo(() => {
   const { partners, isLoading, error } = usePartners();
   const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Intersection observer for lazy loading
@@ -122,6 +125,26 @@ const PartnerCarrousel: React.FC = memo(() => {
 
     return () => observer.disconnect();
   }, []);
+
+  // Auto-scroll for mobile carousel
+  useEffect(() => {
+    if (isPaused || !isVisible || partners.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % partners.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isPaused, isVisible, partners.length]);
+
+  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipe({
+    onSwipeLeft: () => {
+      setCurrentIndex(prev => (prev + 1) % partners.length);
+      trackEvent('partners', 'carousel_swipe', 'left');
+    },
+    onSwipeRight: () => {
+      setCurrentIndex(prev => (prev - 1 + partners.length) % partners.length);
+      trackEvent('partners', 'carousel_swipe', 'right');
+    },
+  });
 
   const handlePartnerClick = (partnerId: string, partnerName: string) => {
     trackEvent('partners', 'partner_click', partnerName);
@@ -166,13 +189,11 @@ const PartnerCarrousel: React.FC = memo(() => {
                 <PartnerSkeleton key={index} size="medium" />
               ))}
             </div>
-            <div className="md:hidden relative overflow-hidden mx-auto">
-              <div className="relative h-16 flex justify-center">
-                <div className="flex gap-8">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <PartnerSkeleton key={index} size="small" />
-                  ))}
-                </div>
+            <div className="md:hidden relative overflow-hidden mx-auto py-4">
+              <div className="flex gap-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <PartnerSkeleton key={index} size="small" />
+                ))}
               </div>
             </div>
           </>
@@ -191,20 +212,21 @@ const PartnerCarrousel: React.FC = memo(() => {
             </div>
 
             {/* Mobile carousel */}
-            <div className="md:hidden relative overflow-hidden mx-auto">
-              <div className="relative h-16 flex justify-center">
-                <div className={cn('absolute flex gap-8', isVisible ? animations.partnerSlide : '')}>
-                  {isVisible && [...partners, ...partners].map((partner, index) => (
-                    <div
+            <div
+              className="md:hidden relative overflow-hidden mx-auto py-4"
+              onTouchStart={(e) => { handleTouchStart(e); setIsPaused(true); }}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={() => { handleTouchEnd(); setIsPaused(false); }}
+            >
+              <div className="flex items-center justify-center">
+                <div className="flex gap-4 transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentIndex * 112}px)` }}>
+                  {isVisible && partners.concat(partners).map((partner, index) => (
+                    <PartnerImage
                       key={`${partner.id}-${index}`}
-                      className="flex-shrink-0"
-                    >
-                      <PartnerImage
-                        partner={partner}
-                        onClick={() => handlePartnerClick(partner.id, partner.name)}
-                        size="small"
-                      />
-                    </div>
+                      partner={partner}
+                      onClick={() => handlePartnerClick(partner.id, partner.name)}
+                      size="small"
+                    />
                   ))}
                 </div>
               </div>
