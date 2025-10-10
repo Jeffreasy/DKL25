@@ -265,10 +265,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
   return (
     <div className="p-6 sm:p-8">
       <form 
-        onSubmit={(e) => {
-          console.log('Form submit triggered'); // Debug log
-          handleSubmit(onSubmit)(e);
-        }} 
+        onSubmit={handleSubmit(onSubmit)}
         className="space-y-10"
       >
         {/* Contactgegevens */}
@@ -501,12 +498,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                   type="radio"
                   value={option}
                   className="peer sr-only"
-                  {...register('ondersteuning', {
-                    onChange: (e) => {
-                      // Extra logging om te zien wat er gebeurt
-                      console.log('Ondersteuning changed:', e.target.value);
-                    }
-                  })}
+                  {...register('ondersteuning')}
                 />
                 <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 
                   border-gray-200 bg-white transition-all hover:shadow-md 
