@@ -55,10 +55,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
             .limit(maxItems);
             
           if (error) throw error;
-          
-          console.log('Fetched recordings:', data); // Debug log
-          console.log('Number of recordings:', data?.length); // Debug log
-          
+
           recordingsData = data;
           trackEvent('media_gallery', 'loaded', `count:${data?.length || 0}`);
         } catch (supabaseError) {
