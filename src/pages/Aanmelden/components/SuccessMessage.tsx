@@ -1,12 +1,12 @@
 import { RegistrationFormData } from '../types/schema';
 import { useEffect, useState, memo, useCallback } from 'react';
-import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaPrint, FaDownload, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa';
-import confetti from 'canvas-confetti';
+import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaPrint, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa';
 import QRCode from 'qrcode';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
 import { toast } from 'react-hot-toast';
 import { cc, cn, colors } from '@/styles/shared';
+import { CSSConfetti } from '@/components/common/CSSConfetti';
 
 interface SuccessMessageProps {
   data: RegistrationFormData;
@@ -33,13 +33,11 @@ const getMapsUrl = () => {
 export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => {
   const [isPrinting, setIsPrinting] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+    // Trigger confetti effect
+    setShowConfetti(true);
 
     // Genereer QR code
     QRCode.toDataURL('https://dekoninklijkeloop.nl', {
@@ -56,22 +54,6 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
     img.src = "https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png";
   }, []);
 
-  const generatePDF = useCallback(async () => {
-    try {
-      setIsPrinting(true);
-      const { jsPDF } = await import('jspdf');
-      const doc = new jsPDF();
-
-      // PDF logica hier
-      doc.save('DKL-aanmeldbevestiging.pdf');
-      toast.success('PDF is gedownload');
-    } catch (error) {
-      toast.error('Er ging iets mis bij het genereren van de PDF');
-      console.error('PDF error:', error);
-    } finally {
-      setIsPrinting(false);
-    }
-  }, []);
 
   const handlePrint = async () => {
     try {
@@ -315,8 +297,10 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
   };
 
   return (
-    <div className={cn(cc.container.base, 'py-12 sm:py-16')}>
-      <div className={cn('max-w-2xl mx-auto bg-white rounded-xl overflow-hidden', cc.shadow.lg)}>
+    <>
+      {showConfetti && <CSSConfetti />}
+      <div className={cn(cc.container.base, 'py-12 sm:py-16')}>
+        <div className={cn('max-w-2xl mx-auto bg-white rounded-xl overflow-hidden', cc.shadow.lg)}>
         {/* Header sectie */}
         <div className={cn(colors.primary.bg, 'p-8 text-center')}>
           <div className="mb-4">
@@ -432,42 +416,23 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             >
               Terug naar home
             </a>
-            <div className="flex gap-4">
-        <button
-          onClick={handlePrint}
-                disabled={isPrinting}
-                className={cn(
-                  'inline-flex items-center gap-2 px-6 py-3 bg-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed',
-                  cc.border.circle,
-                  colors.primary.text,
-                  'border-2',
-                  colors.primary.border,
-                  'hover:bg-orange-50',
-                  cc.transition.base
-                )}
-                aria-label="Print bevestiging"
-              >
-                <FaPrint />
-                <span>{isPrinting ? 'Bezig...' : 'Print bevestiging'}</span>
-              </button>
-              <button
-                onClick={generatePDF}
-                disabled={isPrinting}
-                className={cn(
-                  'inline-flex items-center gap-2 px-6 py-3 bg-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed',
-                  cc.border.circle,
-                  colors.primary.text,
-                  'border-2',
-                  colors.primary.border,
-                  'hover:bg-orange-50',
-                  cc.transition.base
-                )}
-                aria-label="Download PDF"
-              >
-                <FaDownload />
-                <span>{isPrinting ? 'Bezig...' : 'Download PDF'}</span>
-        </button>
-            </div>
+            <button
+              onClick={handlePrint}
+              disabled={isPrinting}
+              className={cn(
+                'inline-flex items-center gap-2 px-6 py-3 bg-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed',
+                cc.border.circle,
+                colors.primary.text,
+                'border-2',
+                colors.primary.border,
+                'hover:bg-orange-50',
+                cc.transition.base
+              )}
+              aria-label="Print bevestiging"
+            >
+              <FaPrint />
+              <span>{isPrinting ? 'Bezig...' : 'Print bevestiging'}</span>
+            </button>
           </div>
 
           {/* Social Media Links */}
@@ -512,6 +477,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
         </div>
       </div>
     </div>
+    </>
   );
 });
 

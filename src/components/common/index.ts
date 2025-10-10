@@ -9,3 +9,4 @@ export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as OnderConstructie } from './OnderConstructie';
 export { default as ScrollToTopButton } from './ScrollToTopButton';
 export { SEO } from './SEO';
+export { CSSConfetti } from './CSSConfetti';

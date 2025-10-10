@@ -97,9 +97,10 @@ export default defineConfig({
             if (id.includes('framer-motion')) {
               return 'vendor-framer';
             }
-            // PDF and canvas libraries in separate chunk (only loaded when needed)
-            if (id.includes('jspdf') || id.includes('html2canvas') || id.includes('canvas-confetti')) {
-              return 'vendor-pdf-canvas';
+            // PDF and canvas libraries removed - no longer used
+            // Canvas confetti in separate chunk since it's dynamically imported
+            if (id.includes('canvas-confetti')) {
+              return 'vendor-confetti';
             }
             // Supabase in separate chunk
             if (id.includes('supabase') || id.includes('@supabase')) {
@@ -120,8 +121,22 @@ export default defineConfig({
           if (id.includes('src/features/video')) {
             return 'feature-video';
           }
-          if (id.includes('src/pages/Aanmelden')) {
-            return 'feature-registration';
+          if (id.includes('src/features/partners')) {
+            return 'feature-partners';
+          }
+          if (id.includes('src/features/program')) {
+            return 'feature-program';
+          }
+          if (id.includes('src/features/sponsors')) {
+            return 'feature-sponsors';
+          }
+
+          // Page-based chunking for better loading
+          if (id.includes('src/pages/')) {
+            const pageName = id.split('/pages/')[1]?.split('/')[0];
+            if (pageName) {
+              return `page-${pageName}`;
+            }
           }
         },
         assetFileNames: 'assets/[name]-[hash][extname]',
