@@ -59,15 +59,10 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: '/icons/icon-192x192.png',
+            src: '/favicon.jpg',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/jpeg',
             purpose: 'any maskable'
-          },
-          {
-            src: '/icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
           }
         ]
       }
@@ -86,7 +81,7 @@ export default defineConfig({
         manualChunks(id) {
           // React ecosystem in separate chunk
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router') || id.includes('use-sync-external-store')) {
               return 'vendor-react';
             }
             // Material UI in separate chunk
