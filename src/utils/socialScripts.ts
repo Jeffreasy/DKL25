@@ -133,6 +133,13 @@ export const loadInstagramEmbed = (): Promise<void> => {
     script.src = 'https://www.instagram.com/embed.js';
     script.async = false; // Load synchronously to ensure proper initialization
 
+    // iOS-specific: Add additional attributes for better compatibility
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
+    if (isIOS) {
+      script.setAttribute('data-instgrm-version', '14');
+      script.crossOrigin = 'anonymous';
+    }
+
     let timeoutId: NodeJS.Timeout | null = null;
     let resolved = false;
 
@@ -158,7 +165,9 @@ export const loadInstagramEmbed = (): Promise<void> => {
           }
         } else if (attempts < maxAttempts) {
           attempts++;
-          const delay = 200 + (attempts * 100); // Increased delay: 200ms + 100ms per attempt
+          // iOS needs longer delays for proper initialization
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
+          const delay = isIOS ? 500 + (attempts * 200) : 200 + (attempts * 100);
           timeoutId = setTimeout(checkInstagram, delay);
         } else {
           cleanup();

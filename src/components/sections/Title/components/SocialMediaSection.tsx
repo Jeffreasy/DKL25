@@ -29,12 +29,18 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   const [isLoading, setIsLoading] = useState(true);
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const instagramRefs = useRef<Map<string, HTMLElement>>(new Map());
   const processedEmbeds = useRef<Set<string>>(new Set());
   const processingTimeouts = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const isMounted = useRef(false);
   const scriptsLoadingRef = useRef(false);
+
+  // Detect iOS devices
+  const isIOS = useMemo(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    return /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+  }, []);
 
   // Stable key based only on embed IDs
   const componentKey = useMemo(() =>
@@ -98,22 +104,53 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       clearTimeout(existingTimeout);
     }
 
-    // Process with delay to ensure DOM is ready
+    // Process with delay to ensure DOM is ready - longer delay for iOS
+    const delay = isIOS ? 1000 : 300;
     const timeoutId = setTimeout(() => {
       if (!isMounted.current) return;
 
       try {
-        window.instgrm!.Embeds.process(node);
-        processingTimeouts.current.delete(embedId);
+        // For iOS, try multiple processing attempts
+        if (isIOS) {
+          let attempts = 0;
+          const maxAttempts = 3;
+          const processWithRetry = () => {
+            if (attempts >= maxAttempts) return;
+
+            try {
+              window.instgrm!.Embeds.process(node);
+              // Check if embed was actually processed by looking for processed class
+              const processedElements = node.querySelectorAll('.instagram-media-rendered');
+              if (processedElements.length > 0) {
+                processingTimeouts.current.delete(embedId);
+                return;
+              }
+            } catch (e) {
+              console.error(`Instagram processing attempt ${attempts + 1} failed for ${embedId}:`, e);
+            }
+
+            attempts++;
+            if (attempts < maxAttempts) {
+              setTimeout(processWithRetry, 500);
+            } else {
+              // Remove from processed on all failures so it can be retried later
+              processedEmbeds.current.delete(embedId);
+            }
+          };
+          processWithRetry();
+        } else {
+          window.instgrm!.Embeds.process(node);
+          processingTimeouts.current.delete(embedId);
+        }
       } catch (e) {
         console.error(`Error processing Instagram embed ${embedId}:`, e);
         // Remove from processed on error so it can be retried
         processedEmbeds.current.delete(embedId);
       }
-    }, 300);
+    }, delay);
 
     processingTimeouts.current.set(embedId, timeoutId);
-  }, [scriptsLoaded]);
+  }, [scriptsLoaded, isIOS]);
 
   const renderEmbed = useCallback((embed: SocialEmbedRow) => {
     
@@ -139,7 +176,22 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
               allowFullScreen={true}
               allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
               title={`Facebook post ${embed.id}`}
-              loading="lazy"
+              loading={isIOS ? "eager" : "lazy"}
+              onLoad={() => {
+                // iOS-specific: Force iframe reload if needed
+                if (isIOS) {
+                  setTimeout(() => {
+                    const iframe = document.querySelector(`iframe[title="Facebook post ${embed.id}"]`) as HTMLIFrameElement;
+                    if (iframe && iframe.contentWindow) {
+                      try {
+                        iframe.src = iframe.src;
+                      } catch (e) {
+                        console.warn('Could not reload Facebook iframe on iOS');
+                      }
+                    }
+                  }, 1000);
+                }
+              }}
             />
           </div>
         );
@@ -223,19 +275,20 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   // Load scripts on mount - runs after mount effect
   useEffect(() => {
     if (socialEmbeds.length > 0) {
-      // Small delay to ensure mount effect has run
+      // Longer delay for iOS to ensure proper initialization
+      const delay = isIOS ? 200 : 50;
       const timeoutId = setTimeout(() => {
         if (isMounted.current) {
           loadScripts();
         }
-      }, 50);
+      }, delay);
 
       return () => clearTimeout(timeoutId);
     } else {
       setIsLoading(false);
       setScriptsLoaded(false);
     }
-  }, [socialEmbeds.length, loadScripts]);
+  }, [socialEmbeds.length, loadScripts, isIOS]);
 
   // Process Instagram embeds when scripts are loaded
   useEffect(() => {
@@ -250,6 +303,25 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       }
     });
   }, [scriptsLoaded, processInstagramEmbed]);
+
+  // iOS-specific: Force re-processing on visibility change (when user scrolls)
+  useEffect(() => {
+    if (!isIOS || !scriptsLoaded) return;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Re-process any unprocessed Instagram embeds when page becomes visible
+        instagramRefs.current.forEach((node, embedId) => {
+          if (!processedEmbeds.current.has(embedId) && window.instgrm?.Embeds?.process) {
+            processInstagramEmbed(embedId, node);
+          }
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [isIOS, scriptsLoaded, processInstagramEmbed]);
 
   const handleSocialClick = (platform: string) => {
     trackEvent('social_section', 'social_click', platform);
