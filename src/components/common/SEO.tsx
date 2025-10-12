@@ -31,8 +31,10 @@ interface SEOProps {
 }
 
 const defaultKeywords = [
-  'De Koninklijke Loop',
   'DKL',
+  'De Koninklijke Loop',
+  'DKL 2026',
+  'Koninklijke Loop',
   'wandelevenement',
   'wandelen',
   'lopen',
@@ -42,14 +44,16 @@ const defaultKeywords = [
   'Apeldoorn',
   'Paleis Het Loo',
   'goed doel',
+  'sponsorloop',
+  'inclusief evenement',
 ];
 
-const defaultTitle = 'De Koninklijke Loop (DKL) 2025';
+const defaultTitle = 'DKL 2026 - De Koninklijke Loop';
 
 export const SEO = memo(
   ({
     title = defaultTitle,
-    description = 'De Koninklijke Loop (DKL) 2025 is een uniek wandelevenement waar mensen met een beperking wandelen voor het goede doel in Apeldoorn.',
+    description = 'DKL 2026 - De Koninklijke Loop is een uniek sponsorloop in Nederland waar mensen met een beperking wandelen voor mensen met een beperking in Apeldoorn.',
     images = 'https://www.dekoninklijkeloop.nl/images/hero.jpg',
     type = 'website',
     route = '',
@@ -107,7 +111,7 @@ export const SEO = memo(
         '@type': 'Event',
         '@id': `${siteConfig.url}#event`,
         name: eventName,
-        alternateName: year ? `DKL ${year}` : 'DKL',
+        alternateName: year ? [`DKL ${year}`, 'DKL', 'De Koninklijke Loop'] : ['DKL', 'De Koninklijke Loop'],
         startDate: eventStartDate,
         endDate: eventEndDate,
         description: eventDescription || description,
@@ -127,8 +131,8 @@ export const SEO = memo(
         },
         organizer: {
           '@type': 'Organization',
-          name: 'De Koninklijke Loop',
-          alternateName: 'DKL',
+          name: 'DKL - De Koninklijke Loop',
+          alternateName: ['DKL', 'De Koninklijke Loop', 'DKL 2026', 'Koninklijke Loop'],
           url: siteConfig.siteBaseUrl,
         },
         url: eventUrl || siteConfig.url,

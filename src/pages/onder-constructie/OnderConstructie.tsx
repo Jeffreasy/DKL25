@@ -28,7 +28,8 @@ const OnderConstructie: React.FC = memo(() => {
   const seoProps = useMemo(() => ({
     route: "/onder-constructie",
     title: data ? `${data.title} - De Koninklijke Loop` : "Onder Constructie - De Koninklijke Loop",
-    description: data?.message || "Deze pagina is momenteel onder constructie."
+    description: data?.message || "Deze pagina is momenteel onder constructie.",
+    noIndex: false
   }), [data]);
 
   // Memoize the main content rendering logic
@@ -64,8 +65,20 @@ const OnderConstructie: React.FC = memo(() => {
             <div className={cn('w-full max-w-[1400px] mx-auto px-6 py-12', cc.typography.body)}>
               <div className="flex items-center justify-center min-h-[50vh]">
                 <div className="text-center">
-                  <h1 className={cn(cc.text.h2, 'text-gray-900 mb-4', cc.typography.heading)}>Fout bij laden</h1>
-                  <p className={cn(cc.text.body, 'text-gray-600')}>Er is een probleem opgetreden bij het laden van de pagina.</p>
+                  <h1 className={cn(cc.text.h2, 'text-gray-900 mb-4', cc.typography.heading)}>De Koninklijke Loop 2025</h1>
+                  <p className={cn(cc.text.body, 'text-gray-600 mb-4')}>
+                    DKL 2026 - De Koninklijke Loop is een uniek sponsorloop in Nederland, mede georganiseerd door mensen met een beperking voor mensen met een beperking.
+                  </p>
+                  <p className={cn(cc.text.muted, 'mb-4')}>
+                    De website is momenteel in ontwikkeling. Neem contact op voor meer informatie.
+                  </p>
+                  <a
+                    href="mailto:info@dekoninklijkeloop.nl"
+                    className={cn('inline-flex items-center gap-2 font-semibold', colors.primary.text, cc.typography.link, colors.primary.focusRing)}
+                    aria-label="Neem contact op via email"
+                  >
+                    Neem contact op
+                  </a>
                 </div>
               </div>
             </div>

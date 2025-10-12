@@ -27,22 +27,27 @@ const App: React.FC = memo(() => {
       return <LoadingScreen />;
     }
 
-    // No error handling needed - hook provides fallback data
-
-    // Als under construction actief is, toon alleen die pagina
+    // If under construction is active, show under construction page
     if (data?.is_active) {
       trackInteraction('under_construction_mode', 'active');
       return <UnderConstruction />;
     }
 
-    // Anders toon de normale website
+    // If there's an error fetching under-construction data, default to under-construction mode
+    // This prevents showing broken normal app when API is down
+    if (error || !data) {
+      trackInteraction('fallback_under_construction', 'api_error');
+      return <UnderConstruction />;
+    }
+
+    // Otherwise show the normal website
     trackInteraction('normal_mode', 'active');
     return (
       <Router>
         <NormalApp />
       </Router>
     );
-  }, [data?.is_active, loading, trackInteraction]);
+  }, [data, loading, error, trackInteraction]);
 
   return appContent;
 });

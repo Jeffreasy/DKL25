@@ -118,24 +118,27 @@ const UnderConstruction: React.FC = memo(() => {
           route="/onder-constructie"
           title="Onder Constructie - De Koninklijke Loop"
           description="Deze pagina is momenteel onder constructie."
-          noIndex={true}
+          noIndex={false}
         />
         <div className={cn('min-h-screen pt-20', colors.neutral.white)} role="alert">
           <div className={cn(cc.container.wide, cc.spacing.section, cc.typography.body)}>
             <div className={cn(cc.flex.center, 'min-h-[50vh]')}>
               <div className="text-center">
-                <h1 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>Fout bij laden</h1>
-                <p className={cc.text.muted}>Er is een probleem opgetreden bij het laden van de pagina.</p>
-                {process.env.NODE_ENV === 'development' && error && (
-                  <p className={cn(cc.text.muted, 'mt-2')}>Fout: {error.message}</p>
-                )}
-                <button
-                  onClick={() => window.location.reload()}
-                  className={cn('mt-4 font-semibold', colors.primary.text, cc.typography.link, colors.primary.focusRing)}
-                  aria-label="Probeer opnieuw"
+                <h1 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>De Koninklijke Loop 2025</h1>
+                <p className={cn(cc.text.body, 'text-gray-600 mb-4')}>
+                  DKL 2026 - De Koninklijke Loop is een uniek sponsorloop in Nederland, mede georganiseerd door mensen met een beperking voor mensen met een beperking.
+                </p>
+                <p className={cn(cc.text.muted, 'mb-4')}>
+                  De website is momenteel in ontwikkeling. Neem contact op voor meer informatie.
+                </p>
+                <a
+                  href="mailto:info@dekoninklijkeloop.nl"
+                  className={cn('inline-flex items-center gap-2 font-semibold', colors.primary.text, cc.typography.link, colors.primary.focusRing)}
+                  aria-label="Neem contact op via email"
                 >
-                  Probeer opnieuw
-                </button>
+                  <FaEnvelope className={cn(icons.lg)} aria-hidden="true" />
+                  Neem contact op
+                </a>
               </div>
             </div>
           </div>
@@ -196,7 +199,7 @@ const getSocialIcon = (platform: string) => {
         route="/onder-constructie"
         title={`${data?.title || 'Onder Constructie'} - De Koninklijke Loop`}
         description={data?.message || 'Deze pagina is momenteel onder constructie.'}
-        noIndex={true}
+        noIndex={false}
       />
       <div className={mainStyles.container}>
         <div className={mainStyles.wrapper}>

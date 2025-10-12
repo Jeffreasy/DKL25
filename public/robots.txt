@@ -14,5 +14,8 @@ Allow: /images/
 Allow: /assets/
 Allow: /media/
 
+# Allow indexing of under-construction pages when site is live
+Allow: /onder-constructie
+
 # Sitemap locatie
-Sitemap: https://dekoninklijkeloop.nl/sitemap.xml 
+Sitemap: https://dekoninklijkeloop.nl/sitemap.xml
