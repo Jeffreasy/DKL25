@@ -210,14 +210,14 @@ const UnderConstruction: React.FC = memo(() => {
     <>
       <SEO
         route="/onder-constructie"
-        title={`${data.title} - De Koninklijke Loop`}
-        description={data.message}
+        title={`${data?.title || 'Onder Constructie'} - De Koninklijke Loop`}
+        description={data?.message || 'Deze pagina is momenteel onder constructie.'}
         noIndex={true}
       />
       <div className={mainStyles.container}>
         <div className={mainStyles.wrapper}>
           <motion.div {...accessibilityPrefs.motionProps} className={mainStyles.motion}>
-            {data.logo_url && (
+            {data?.logo_url && (
               <div className={mainStyles.logoContainer}>
                 <img src={data.logo_url} alt="De Koninklijke Loop Logo" className={mainStyles.logo} />
               </div>
@@ -226,12 +226,12 @@ const UnderConstruction: React.FC = memo(() => {
               <FaTools className={mainStyles.icon} aria-label="Onder constructie" />
             </div>
             <h1 className={mainStyles.title}>
-              {data.title}
+              {data?.title || 'Onder Constructie'}
             </h1>
             <p className={mainStyles.message}>
-              {data.message}
+              {data?.message || 'Deze pagina is momenteel onder constructie.'}
             </p>
-            {data.expected_date && (
+            {data?.expected_date && (
               <div className={mainStyles.section}>
                 <div className={mainStyles.sectionHeader}>
                   <FaClock className={mainStyles.sectionIcon} aria-hidden="true" />
@@ -242,7 +242,7 @@ const UnderConstruction: React.FC = memo(() => {
                 <Countdown date={data.expected_date} renderer={countdownRenderer} />
               </div>
             )}
-            {data.progress_percentage !== undefined && data.progress_percentage > 0 && (
+            {data?.progress_percentage !== undefined && data.progress_percentage > 0 && (
               <div className={mainStyles.section}>
                 <div className={mainStyles.progressContainer}>
                   <div className={cc.progress.container}>
@@ -261,7 +261,7 @@ const UnderConstruction: React.FC = memo(() => {
                 </div>
               </div>
             )}
-            {data.social_links && data.social_links.length > 0 && (
+            {data?.social_links && data.social_links.length > 0 && (
               <div className={mainStyles.section}>
                 <p className={mainStyles.socialTitle}>Volg ons</p>
                 <div className={mainStyles.socialContainer}>
@@ -280,7 +280,7 @@ const UnderConstruction: React.FC = memo(() => {
                 </div>
               </div>
             )}
-            {data.contact_email && (
+            {data?.contact_email && (
               <div className={mainStyles.section}>
                 <p className={mainStyles.contactTitle}>Neem contact op</p>
                 <a
@@ -293,7 +293,7 @@ const UnderConstruction: React.FC = memo(() => {
                 </a>
               </div>
             )}
-            {data.newsletter_enabled && (
+            {data?.newsletter_enabled && (
               <div className={mainStyles.section}>
                 <p className={mainStyles.newsletterTitle}>
                   Blijf op de hoogte
@@ -327,7 +327,7 @@ const UnderConstruction: React.FC = memo(() => {
               </div>
             )}
             <p className={mainStyles.footer}>
-              {data.footer_text}
+              {data?.footer_text || 'Bedankt voor uw geduld!'}
             </p>
           </motion.div>
         </div>
