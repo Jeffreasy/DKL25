@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback } from 'react';
+import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { FaTools, FaEnvelope, FaClock, FaTwitter, FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { SEO } from './SEO';
@@ -6,6 +6,34 @@ import { useUnderConstruction } from '../../hooks/useUnderConstruction';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import Countdown, { CountdownRenderProps } from 'react-countdown';
 import { cc, cn, colors, animations, icons } from '@/styles/shared';
+
+// Define countdown renderer outside component to prevent re-renders
+const countdownRenderer = ({ days, hours, minutes, seconds, completed }: CountdownRenderProps) => {
+  if (completed) {
+    return <p className={cn(cc.text.muted, cc.typography.body)}>We zijn bijna klaar!</p>;
+  }
+
+  return (
+    <div className={cn(cc.flex.center, 'gap-4 mb-4')} aria-label="Countdown tot lancering" aria-live="polite">
+      <div className="text-center">
+        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{days}</span>
+        <span className={cn(cc.text.small, cc.text.muted)}>Dagen</span>
+      </div>
+      <div className="text-center">
+        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{hours}</span>
+        <span className={cn(cc.text.small, cc.text.muted)}>Uren</span>
+      </div>
+      <div className="text-center">
+        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{minutes}</span>
+        <span className={cn(cc.text.small, cc.text.muted)}>Minuten</span>
+      </div>
+      <div className="text-center">
+        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{seconds}</span>
+        <span className={cn(cc.text.small, cc.text.muted)}>Seconden</span>
+      </div>
+    </div>
+  );
+};
 
 interface UnderConstructionData {
   id: number;
@@ -84,16 +112,6 @@ const UnderConstruction: React.FC = memo(() => {
   }
 
   if (error || !data) {
-    const errorStyles = useMemo(() => ({
-      container: cn('min-h-screen pt-20', colors.neutral.white),
-      wrapper: cn(cc.container.wide, cc.spacing.section, cc.typography.body),
-      center: cn(cc.flex.center, 'min-h-[50vh]'),
-      title: cn(cc.text.h3, 'text-gray-900 mb-4'),
-      message: cc.text.muted,
-      errorDetail: cn(cc.text.muted, 'mt-2'),
-      retryButton: cn('mt-4 font-semibold', colors.primary.text, cc.typography.link, colors.primary.focusRing),
-    }), []);
-
     return (
       <>
         <SEO
@@ -102,18 +120,18 @@ const UnderConstruction: React.FC = memo(() => {
           description="Deze pagina is momenteel onder constructie."
           noIndex={true}
         />
-        <div className={errorStyles.container} role="alert">
-          <div className={errorStyles.wrapper}>
-            <div className={errorStyles.center}>
+        <div className={cn('min-h-screen pt-20', colors.neutral.white)} role="alert">
+          <div className={cn(cc.container.wide, cc.spacing.section, cc.typography.body)}>
+            <div className={cn(cc.flex.center, 'min-h-[50vh]')}>
               <div className="text-center">
-                <h1 className={errorStyles.title}>Fout bij laden</h1>
-                <p className={errorStyles.message}>Er is een probleem opgetreden bij het laden van de pagina.</p>
+                <h1 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>Fout bij laden</h1>
+                <p className={cc.text.muted}>Er is een probleem opgetreden bij het laden van de pagina.</p>
                 {process.env.NODE_ENV === 'development' && error && (
-                  <p className={errorStyles.errorDetail}>Fout: {error.message}</p>
+                  <p className={cn(cc.text.muted, 'mt-2')}>Fout: {error.message}</p>
                 )}
                 <button
                   onClick={() => window.location.reload()}
-                  className={errorStyles.retryButton}
+                  className={cn('mt-4 font-semibold', colors.primary.text, cc.typography.link, colors.primary.focusRing)}
                   aria-label="Probeer opnieuw"
                 >
                   Probeer opnieuw
@@ -125,52 +143,25 @@ const UnderConstruction: React.FC = memo(() => {
       </>
     );
   }
+// Define social icon function outside component to prevent re-renders
+const getSocialIcon = (platform: string) => {
+  const iconClasses = cn(icons.lg, icons.primary, icons.interactive);
+  switch (platform.toLowerCase()) {
+    case 'twitter':
+      return <FaTwitter className={iconClasses} aria-hidden="true" />;
+    case 'instagram':
+      return <FaInstagram className={iconClasses} aria-hidden="true" />;
+    case 'facebook':
+      return <FaFacebook className={iconClasses} aria-hidden="true" />;
+    case 'linkedin':
+      return <FaLinkedin className={iconClasses} aria-hidden="true" />;
+    default:
+      return null;
+  }
+};
 
-  const countdownRenderer = useCallback(({ days, hours, minutes, seconds, completed }: CountdownRenderProps) => {
-    if (completed) {
-      return <p className={cn(cc.text.muted, cc.typography.body)}>We zijn bijna klaar!</p>;
-    }
-
-    return (
-      <div className={cn(cc.flex.center, 'gap-4 mb-4')} aria-label="Countdown tot lancering" aria-live="polite">
-        <div className="text-center">
-          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{days}</span>
-          <span className={cn(cc.text.small, cc.text.muted)}>Dagen</span>
-        </div>
-        <div className="text-center">
-          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{hours}</span>
-          <span className={cn(cc.text.small, cc.text.muted)}>Uren</span>
-        </div>
-        <div className="text-center">
-          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{minutes}</span>
-          <span className={cn(cc.text.small, cc.text.muted)}>Minuten</span>
-        </div>
-        <div className="text-center">
-          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{seconds}</span>
-          <span className={cn(cc.text.small, cc.text.muted)}>Seconden</span>
-        </div>
-      </div>
-    );
-  }, []);
-
-  const getSocialIcon = useCallback((platform: string) => {
-    const iconClasses = cn(icons.lg, icons.primary, icons.interactive);
-    switch (platform.toLowerCase()) {
-      case 'twitter':
-        return <FaTwitter className={iconClasses} aria-hidden="true" />;
-      case 'instagram':
-        return <FaInstagram className={iconClasses} aria-hidden="true" />;
-      case 'facebook':
-        return <FaFacebook className={iconClasses} aria-hidden="true" />;
-      case 'linkedin':
-        return <FaLinkedin className={iconClasses} aria-hidden="true" />;
-      default:
-        return null;
-    }
-  }, []);
-
-  // Memoize main content styles
-  const mainStyles = useMemo(() => ({
+  // Define main content styles
+  const mainStyles = {
     container: cn('min-h-screen', colors.gradient.construction, cc.flex.center, cc.typography.body),
     wrapper: cn(cc.container.narrow, cc.spacing.section, 'text-center'),
     motion: 'space-y-8',
@@ -197,7 +188,7 @@ const UnderConstruction: React.FC = memo(() => {
     newsletterButton: cn(cc.button.primary, 'py-3', colors.primary.focusRing),
     newsletterDescription: cn(cc.text.muted, 'text-sm mt-2'),
     footer: cn(cc.text.h5, colors.primary.text, 'font-semibold', cc.typography.body),
-  }), []);
+  };
 
   return (
     <>
