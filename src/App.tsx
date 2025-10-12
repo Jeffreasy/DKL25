@@ -33,11 +33,15 @@ const App: React.FC = memo(() => {
       return <UnderConstruction />;
     }
 
-    // If there's an error fetching under-construction data, default to under-construction mode
-    // This prevents showing broken normal app when API is down
+    // If there's an error fetching under-construction data, default to normal mode
+    // This prevents showing under-construction when API is down
     if (error || !data) {
-      trackInteraction('fallback_under_construction', 'api_error');
-      return <UnderConstruction />;
+      trackInteraction('fallback_normal_mode', 'api_error');
+      return (
+        <Router>
+          <NormalApp />
+        </Router>
+      );
     }
 
     // Otherwise show the normal website
