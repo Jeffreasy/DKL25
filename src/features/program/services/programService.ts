@@ -1,58 +1,104 @@
 /**
  * Program Service
- * API service for program schedule operations
+ * API service for program schedule operations using PostgREST
  */
 
-import { createApiService } from '../../../lib/api/createApiService'
-import type { ProgramScheduleRow, ProgramItem } from '../types'
+import type { ProgramItem } from '../types'
 
-const programApiService = createApiService<any>({
-  endpoint: 'program_schedule',
-  sortBy: 'order_number',
-  sortDirection: 'asc'
-})
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
 
 export const programService = {
   /**
    * Fetch all visible program items
    */
   fetchVisible: async (): Promise<ProgramItem[]> => {
-    const data = await programApiService.fetchVisible()
-    return data as ProgramItem[]
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/program-schedule`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: ProgramItem[] = await response.json()
+      return data
+    } catch (error) {
+      throw new Error('Er ging iets mis bij het ophalen van het programma')
+    }
   },
 
   /**
    * Fetch all program items
    */
   fetchAll: async (): Promise<ProgramItem[]> => {
-    const data = await programApiService.fetchAll()
-    return data as ProgramItem[]
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/program-schedule/admin`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: ProgramItem[] = await response.json()
+      return data
+    } catch (error) {
+      throw new Error('Er ging iets mis bij het ophalen van alle programma items')
+    }
   },
 
   /**
    * Fetch program item by ID
    */
   fetchById: async (id: string): Promise<ProgramItem | null> => {
-    const data = await programApiService.fetchById(id)
-    return data as ProgramItem | null
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/program-schedule/${id}`)
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null
+        }
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: ProgramItem = await response.json()
+      return data
+    } catch (error) {
+      return null
+    }
   },
 
   /**
    * Fetch program items by category
    */
   fetchByCategory: async (category: string): Promise<ProgramItem[]> => {
-    const data = await programApiService.fetchAll({
-      filter: { category, visible: true }
-    })
-    return data as ProgramItem[]
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/program-schedule?category=eq.${encodeURIComponent(category)}`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: ProgramItem[] = await response.json()
+      return data
+    } catch (error) {
+      throw new Error('Er ging iets mis bij het ophalen van programma items per categorie')
+    }
   },
 
   /**
    * Get program items with location data
    */
   fetchWithLocations: async (): Promise<ProgramItem[]> => {
-    const items = await programService.fetchVisible()
-    return items.filter(item => item.latitude !== null && item.longitude !== null)
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/program-schedule?latitude=not.is.null&longitude=not.is.null`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: ProgramItem[] = await response.json()
+      return data
+    } catch (error) {
+      throw new Error('Er ging iets mis bij het ophalen van programma items met locaties')
+    }
   },
 
   /**

@@ -34,7 +34,7 @@ export interface EventDetail {
 
 // Type for the new title_section_content table data
 export interface TitleSectionData {
-  id: number;
+  id: string;
   event_title: string;
   event_subtitle: string | null;
   image_url: string | null;

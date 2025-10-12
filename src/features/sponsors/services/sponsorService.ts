@@ -1,47 +1,99 @@
 /**
  * Sponsors Service
- * API service for sponsor operations
+ * API service for sponsor operations using PostgREST
  */
 
-import { createApiService } from '../../../lib/api/createApiService'
 import type { SponsorRow } from '../types'
 
-const sponsorApiService = createApiService<SponsorRow>({
-  endpoint: 'sponsors',
-  sortBy: 'order_number',
-  sortDirection: 'asc'
-})
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
 
 export const sponsorService = {
   /**
    * Fetch all visible and active sponsors
    */
   fetchActive: async (): Promise<SponsorRow[]> => {
-    const data = await sponsorApiService.fetchAll({
-      filter: { visible: true, is_active: true }
-    })
-    return data
+    try {
+      console.log('Fetching active sponsors from:', `${POSTGREST_URL}/api/sponsors`)
+
+      const response = await fetch(`${POSTGREST_URL}/api/sponsors`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: SponsorRow[] = await response.json()
+      console.log('Fetched active sponsors:', data)
+
+      // Filter for active sponsors only
+      return data.filter(sponsor => sponsor.is_active === true)
+    } catch (error) {
+      console.error('Error fetching active sponsors:', error)
+      throw new Error('Er ging iets mis bij het ophalen van de actieve sponsors')
+    }
   },
 
   /**
    * Fetch all visible sponsors (active or inactive)
    */
   fetchVisible: async (): Promise<SponsorRow[]> => {
-    return sponsorApiService.fetchVisible()
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/sponsors`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: SponsorRow[] = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching visible sponsors:', error)
+      throw new Error('Er ging iets mis bij het ophalen van de zichtbare sponsors')
+    }
   },
 
   /**
    * Fetch all sponsors
    */
   fetchAll: async (): Promise<SponsorRow[]> => {
-    return sponsorApiService.fetchAll()
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/sponsors/admin`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: SponsorRow[] = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching all sponsors:', error)
+      throw new Error('Er ging iets mis bij het ophalen van alle sponsors')
+    }
   },
 
   /**
    * Fetch sponsor by ID
    */
   fetchById: async (id: string): Promise<SponsorRow | null> => {
-    return sponsorApiService.fetchById(id)
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/sponsors/${id}`)
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null
+        }
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: SponsorRow = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching sponsor by ID:', error)
+      return null
+    }
   },
 
   /**

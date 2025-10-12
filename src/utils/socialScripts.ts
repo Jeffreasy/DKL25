@@ -25,17 +25,13 @@ let facebookScriptLoadingPromise: Promise<void> | null = null;
 let facebookScriptLoaded = false;
 
 export const loadFacebookSDK = (): Promise<void> => {
-  console.log('Loading Facebook SDK...', { loading: !!facebookScriptLoadingPromise, loaded: facebookScriptLoaded, hasFB: !!window.FB });
-  
   // Return existing promise if already loading
   if (facebookScriptLoadingPromise) {
-    console.log('Facebook SDK already loading, returning existing promise');
     return facebookScriptLoadingPromise;
   }
 
   // Return resolved promise if already loaded
   if (facebookScriptLoaded && window.FB) {
-    console.log('Facebook SDK already loaded');
     return Promise.resolve();
   }
 
@@ -43,14 +39,12 @@ export const loadFacebookSDK = (): Promise<void> => {
     // Check if script already exists in DOM
     const existingScript = document.querySelector('script[src*="connect.facebook.net"]');
     if (existingScript && window.FB) {
-      console.log('Facebook SDK script already exists');
       facebookScriptLoaded = true;
       facebookScriptLoadingPromise = null;
       resolve();
       return;
     }
 
-    console.log('Loading Facebook SDK script...');
     const script = document.createElement('script');
     script.src = 'https://connect.facebook.net/nl_NL/sdk.js#xfbml=1&version=v18.0';
     script.async = true;
@@ -67,13 +61,11 @@ export const loadFacebookSDK = (): Promise<void> => {
     };
 
     script.onload = () => {
-      console.log('Facebook SDK script loaded, initializing...');
       let attempts = 0;
       const maxAttempts = 20;
 
       const checkFacebook = () => {
         if (window.FB) {
-          console.log('Facebook SDK initialized successfully');
           facebookScriptLoaded = true;
           facebookScriptLoadingPromise = null;
           cleanup();
@@ -86,7 +78,6 @@ export const loadFacebookSDK = (): Promise<void> => {
           const delay = 100 + (attempts * 50);
           timeoutId = setTimeout(checkFacebook, delay);
         } else {
-          console.error('Facebook SDK initialization timeout');
           cleanup();
           facebookScriptLoadingPromise = null;
           if (!resolved) {
@@ -100,7 +91,6 @@ export const loadFacebookSDK = (): Promise<void> => {
     };
 
     script.onerror = (error) => {
-      console.error('Failed to load Facebook SDK script', error);
       cleanup();
       facebookScriptLoadingPromise = null;
       if (!resolved) {
@@ -119,17 +109,13 @@ let instagramScriptLoadingPromise: Promise<void> | null = null;
 let instagramScriptLoaded = false;
 
 export const loadInstagramEmbed = (): Promise<void> => {
-  console.log('Loading Instagram SDK...', { loading: !!instagramScriptLoadingPromise, loaded: instagramScriptLoaded, hasInstgrm: !!window.instgrm });
-  
   // Return existing promise if already loading
   if (instagramScriptLoadingPromise) {
-    console.log('Instagram SDK already loading, returning existing promise');
     return instagramScriptLoadingPromise;
   }
 
   // Return resolved promise if already loaded
   if (instagramScriptLoaded && window.instgrm) {
-    console.log('Instagram SDK already loaded');
     return Promise.resolve();
   }
 
@@ -137,14 +123,12 @@ export const loadInstagramEmbed = (): Promise<void> => {
     // Check if script already exists in DOM
     const existingScript = document.querySelector('script[src*="instagram.com/embed.js"]');
     if (existingScript && window.instgrm) {
-      console.log('Instagram SDK script already exists');
       instagramScriptLoaded = true;
       instagramScriptLoadingPromise = null;
       resolve();
       return;
     }
 
-    console.log('Loading Instagram SDK script...');
     const script = document.createElement('script');
     script.src = 'https://www.instagram.com/embed.js';
     script.async = false; // Load synchronously to ensure proper initialization
@@ -160,13 +144,11 @@ export const loadInstagramEmbed = (): Promise<void> => {
     };
 
     script.onload = () => {
-      console.log('Instagram SDK script loaded, initializing...');
       let attempts = 0;
       const maxAttempts = 50; // Increased from 20
 
       const checkInstagram = () => {
         if (window.instgrm?.Embeds?.process) {
-          console.log('Instagram SDK initialized successfully');
           instagramScriptLoaded = true;
           instagramScriptLoadingPromise = null;
           cleanup();
@@ -179,7 +161,6 @@ export const loadInstagramEmbed = (): Promise<void> => {
           const delay = 200 + (attempts * 100); // Increased delay: 200ms + 100ms per attempt
           timeoutId = setTimeout(checkInstagram, delay);
         } else {
-          console.error('Instagram SDK initialization timeout');
           cleanup();
           instagramScriptLoadingPromise = null;
           if (!resolved) {
@@ -193,7 +174,6 @@ export const loadInstagramEmbed = (): Promise<void> => {
     };
 
     script.onerror = (error) => {
-      console.error('Failed to load Instagram SDK script', error);
       cleanup();
       instagramScriptLoadingPromise = null;
       if (!resolved) {

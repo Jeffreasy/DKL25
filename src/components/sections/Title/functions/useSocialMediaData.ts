@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import { SocialEmbedRow } from './types';
+
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com';
 
 export const useSocialMediaData = () => {
   const [socialEmbeds, setSocialEmbeds] = useState<SocialEmbedRow[]>([]);
@@ -13,18 +14,16 @@ export const useSocialMediaData = () => {
         setIsLoading(true);
         setError(null);
 
-        const { data, error: supabaseError } = await supabase
-          .from('social_embeds')
-          .select('*')
-          .eq('visible', true)
-          .order('order_number', { ascending: true });
+        const response = await fetch(`${POSTGREST_URL}/api/social-embeds`);
 
-        if (supabaseError) {
-          throw new Error(supabaseError.message);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        const data = await response.json();
+
         // Type assertion to ensure data matches SocialEmbedRow type
-        const typedData = (data || []).map(item => ({
+        const typedData = (data || []).map((item: any) => ({
           ...item,
           platform: item.platform as 'facebook' | 'instagram',
           order_number: item.order_number || 0,
@@ -33,7 +32,6 @@ export const useSocialMediaData = () => {
 
         setSocialEmbeds(typedData);
       } catch (err) {
-        console.error('Error fetching social embeds:', err);
         setError(err instanceof Error ? err.message : 'Er ging iets mis bij het ophalen van de social media berichten');
       } finally {
         setIsLoading(false);

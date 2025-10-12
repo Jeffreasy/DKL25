@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import RadioPlayer from './RadioPlayer';
-import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
@@ -43,25 +42,27 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
         setIsLoading(true);
         setError(null);
 
-        // Query recordings from Supabase or use fallback data
+        // Query recordings from PostgREST API or use fallback data
         let recordingsData;
-        
-        try {
-          const { data, error } = await supabase
-            .from('radio_recordings')
-            .select('*')
-            .eq('visible', true)
-            .order('order_number', { ascending: true })
-            .limit(maxItems);
-            
-          if (error) throw error;
 
-          recordingsData = data;
+        try {
+          const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com';
+          console.log('Fetching radio recordings from:', `${POSTGREST_URL}/api/radio-recordings`);
+
+          const response = await fetch(`${POSTGREST_URL}/api/radio-recordings`);
+
+          if (!response.ok) {
+            console.error('HTTP error:', response.status, response.statusText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          recordingsData = data.slice(0, maxItems); // Apply limit client-side
           trackEvent('media_gallery', 'loaded', `count:${data?.length || 0}`);
-        } catch (supabaseError) {
-          console.error('Supabase error:', supabaseError);
-          
-          // Fallback to hardcoded data if Supabase fails
+        } catch (apiError) {
+          console.error('API error:', apiError);
+
+          // Fallback to hardcoded data if API fails
           recordingsData = [
             {
               id: '1',
@@ -74,8 +75,8 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
               order_number: 1
             }
           ];
-          
-          trackEvent('media_gallery', 'fallback_data_used', 'supabase_error');
+
+          trackEvent('media_gallery', 'fallback_data_used', 'api_error');
         }
         
         if (!recordingsData || recordingsData.length === 0) {

@@ -1,46 +1,83 @@
 /**
  * Partners Service
- * API service for partner operations
+ * API service for partner operations using PostgREST
  */
 
-import { createApiService } from '../../../lib/api/createApiService'
 import type { Partner } from '../types'
 
-const partnerApiService = createApiService<Partner>({
-  endpoint: 'partners',
-  sortBy: 'order_number',
-  sortDirection: 'asc'
-})
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
 
 export const partnerService = {
   /**
    * Fetch all visible partners
    */
   fetchVisible: async (): Promise<Partner[]> => {
-    return partnerApiService.fetchVisible()
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/partners`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      throw new Error('Er ging iets mis bij het ophalen van de partners')
+    }
   },
 
   /**
    * Fetch all partners
    */
   fetchAll: async (): Promise<Partner[]> => {
-    return partnerApiService.fetchAll()
+    try {
+      const response = await fetch(`${POSTGREST_URL}/partners?order=order_number.asc`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      throw new Error('Er ging iets mis bij het ophalen van alle partners')
+    }
   },
 
   /**
    * Fetch partner by ID
    */
   fetchById: async (id: string): Promise<Partner | null> => {
-    return partnerApiService.fetchById(id)
+    try {
+      const response = await fetch(`${POSTGREST_URL}/partners?id=eq.${id}`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data.length > 0 ? data[0] : null
+    } catch (error) {
+      return null
+    }
   },
 
   /**
    * Fetch partners by tier
    */
   fetchByTier: async (tier: string): Promise<Partner[]> => {
-    return partnerApiService.fetchAll({
-      filter: { tier, visible: true }
-    })
+    try {
+      const response = await fetch(`${POSTGREST_URL}/partners?tier=eq.${tier}&visible=eq.true&order=order_number.asc`)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      throw new Error('Er ging iets mis bij het ophalen van partners per tier')
+    }
   },
 
   /**

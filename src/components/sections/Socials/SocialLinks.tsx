@@ -1,7 +1,6 @@
 import React, { useEffect, useState, memo, useCallback, useMemo } from 'react';
 import type { SocialLink } from './types';
 import SocialIcon from './SocialIcon';
-import { supabase } from '@/lib/supabase';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations } from '@/styles/shared';
@@ -37,18 +36,19 @@ const DKLSocials: React.FC = memo(() => {
         setIsLoading(true);
         setError(null);
 
-        const { data, error } = await supabase
-          .from('social_links')
-          .select('*')
-          .order('platform');
+        const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com';
+        console.log('Fetching social links from:', `${POSTGREST_URL}/api/social-links`);
 
-        if (error) {
-          console.error('Error fetching social links:', error);
+        const response = await fetch(`${POSTGREST_URL}/api/social-links`);
+
+        if (!response.ok) {
+          console.error('HTTP error:', response.status, response.statusText);
           setError('Er ging iets mis bij het laden van de sociale media links.');
           trackEvent('social', 'error', 'fetch_failed');
           trackInteraction('error', 'fetch_failed');
-        } else if (data) {
-          const transformedData: SocialLink[] = data.map(item => ({
+        } else {
+          const data = await response.json();
+          const transformedData: SocialLink[] = data.map((item: any) => ({
             platform: item.platform as SocialLink['platform'],
             url: item.url,
             bgColorClass: item.bg_color_class,

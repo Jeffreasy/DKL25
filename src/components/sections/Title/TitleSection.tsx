@@ -36,18 +36,19 @@ const TitleSkeleton: React.FC = () => (
   </div>
 );
 
-// Default values for graceful fallback
+// Default values for graceful fallback - matches current API data
 const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
   event_title: 'De Koninklijke Loop (DKL) 2025',
-  event_subtitle: 'Het unieke, rolstoelvriendelijke wandelevenement (DKL) in Apeldoorn voor en door mensen met een beperking.',
-  image_url: 'https://via.placeholder.com/600x400/ff9328/ffffff?text=De+Koninklijke+Loop+(DKL)+2025',
-  image_alt: 'Banner De Koninklijke Loop (DKL) 2025 wandelevenement',
-  detail_1_title: 'Datum',
-  detail_1_description: '17 mei 2025 (starttijden variëren)',
-  detail_2_title: 'Voor Wie?',
-  detail_2_description: 'Voor alle wandelaars, met of zonder beperking (rolstoelvriendelijk).',
-  detail_3_title: 'Doel',
+  event_subtitle: 'Op de koninklijke weg in Apeldoorn kunnen mensen met een beperking samen wandelen tijdens dit unieke, rolstoelvriendelijke sponsorloop (DKL), samen met hun verwanten, vrijwilligers of begeleiders.',
+  image_url: 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1760112848/Wij_gaan_17_mei_lopen_voor_hen_3_zllxno_zoqd7z.webp',
+  image_alt: 'Promotiebanner De Koninklijke Loop (DKL) 2025: Wij gaan 17 mei lopen voor hen',
+  detail_1_title: '17 mei 2025',
+  detail_1_description: 'Starttijden variëren per afstand. Zie programma.',
+  detail_2_title: 'Voor iedereen',
+  detail_2_description: 'wandelaars met of zonder beperking (rolstoelvriendelijk).',
+  detail_3_title: 'Lopen voor een goed doel',
   detail_3_description: 'Steun het goede doel via dit unieke wandelevenement.',
+  participant_count: 69,
 };
 
 const TitleSection: React.FC<TitleSectionProps> = memo(({ onInschrijfClick }) => {
@@ -63,9 +64,9 @@ const TitleSection: React.FC<TitleSectionProps> = memo(({ onInschrijfClick }) =>
 
   // Memoize details array to prevent recreation
   const eventDetails = useMemo(() => [
-    { title: displayData.detail_1_title || '', description: displayData.detail_1_description || '' },
-    { title: displayData.detail_2_title || '', description: displayData.detail_2_description || '' },
-    { title: displayData.detail_3_title || '', description: displayData.detail_3_description || '' },
+    { title: displayData.detail_1_title || DEFAULT_TITLE_DATA.detail_1_title || '', description: displayData.detail_1_description || DEFAULT_TITLE_DATA.detail_1_description || '' },
+    { title: displayData.detail_2_title || DEFAULT_TITLE_DATA.detail_2_title || '', description: displayData.detail_2_description || DEFAULT_TITLE_DATA.detail_2_description || '' },
+    { title: displayData.detail_3_title || DEFAULT_TITLE_DATA.detail_3_title || '', description: displayData.detail_3_description || DEFAULT_TITLE_DATA.detail_3_description || '' },
   ], [displayData]);
 
   if (titleError && !titleData) {

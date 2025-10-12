@@ -1,58 +1,118 @@
 /**
  * Photo Service
- * API service for photo operations
+ * API service for photo operations using PostgREST
  */
 
-import { createApiService } from '../../../lib/api/createApiService'
-import type { PhotoRow, Photo } from '../types'
+import type { Photo } from '../types'
 
-const photoApiService = createApiService<PhotoRow>({
-  endpoint: 'photos',
-  sortBy: 'created_at',
-  sortDirection: 'desc'
-})
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
 
 export const photoService = {
   /**
    * Fetch all visible photos
    */
   fetchVisible: async (): Promise<Photo[]> => {
-    const data = await photoApiService.fetchVisible()
-    return data as Photo[]
+    try {
+      console.log('Fetching photos from:', `${POSTGREST_URL}/api/photos`)
+
+      const response = await fetch(`${POSTGREST_URL}/api/photos`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: Photo[] = await response.json()
+      console.log('Fetched photos:', data)
+      return data
+    } catch (error) {
+      console.error('Error fetching visible photos:', error)
+      throw new Error('Er ging iets mis bij het ophalen van de fotos')
+    }
   },
 
   /**
    * Fetch all photos
    */
   fetchAll: async (): Promise<Photo[]> => {
-    const data = await photoApiService.fetchAll()
-    return data as Photo[]
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/photos/admin`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: Photo[] = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching all photos:', error)
+      throw new Error('Er ging iets mis bij het ophalen van alle fotos')
+    }
   },
 
   /**
    * Fetch photo by ID
    */
   fetchById: async (id: string): Promise<Photo | null> => {
-    const data = await photoApiService.fetchById(id)
-    return data as Photo | null
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/photos/${id}`)
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null
+        }
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: Photo = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching photo by ID:', error)
+      return null
+    }
   },
 
   /**
    * Fetch photos by year
    */
   fetchByYear: async (year: number): Promise<Photo[]> => {
-    const data = await photoApiService.fetchAll({
-      filter: { year, visible: true }
-    })
-    return data as Photo[]
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/photos?year=eq.${year}`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: Photo[] = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching photos by year:', error)
+      throw new Error('Er ging iets mis bij het ophalen van fotos per jaar')
+    }
   },
 
   /**
    * Fetch photos by album
    */
   fetchByAlbum: async (albumId: string): Promise<Photo[]> => {
-    // This would need a join query - implement based on your needs
-    // For now, return empty array
-    return []
+    try {
+      // Use the albums/{id}/photos endpoint as documented in the API reference
+      // Add order parameter to ensure proper ordering
+      const response = await fetch(`${POSTGREST_URL}/api/albums/${albumId}/photos?order=order_number.asc`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const photos: Photo[] = await response.json()
+      return photos
+    } catch (error) {
+      console.error('Error fetching photos by album:', error)
+      throw new Error('Er ging iets mis bij het ophalen van fotos per album')
+    }
   }
 }

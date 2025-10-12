@@ -1,44 +1,82 @@
 /**
  * Video Service
- * API service for video operations
+ * API service for video operations using PostgREST
  */
 
-import { createApiService } from '../../../lib/api/createApiService'
 import { validateVideoUrl, generateThumbnailUrl } from '../utils/videoHelpers'
 import type { VideoRow, Video } from '../types'
 
-const videoApiService = createApiService<VideoRow>({
-  endpoint: 'videos',
-  sortBy: 'order_number',
-  sortDirection: 'asc'
-})
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
 
 export const videoService = {
   /**
    * Fetch all visible videos
    */
   fetchVisible: async (): Promise<Video[]> => {
-    const data = await videoApiService.fetchVisible()
-    return videoService.processVideos(data)
+    try {
+      console.log('Fetching videos from:', `${POSTGREST_URL}/api/videos`)
+
+      const response = await fetch(`${POSTGREST_URL}/api/videos`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: VideoRow[] = await response.json()
+      console.log('Fetched video data:', data)
+
+      const processedVideos = videoService.processVideos(data)
+      return processedVideos
+    } catch (error) {
+      console.error('Error fetching visible videos:', error)
+      throw new Error('Er ging iets mis bij het ophalen van de videos')
+    }
   },
 
   /**
    * Fetch all videos
    */
   fetchAll: async (): Promise<Video[]> => {
-    const data = await videoApiService.fetchAll()
-    return videoService.processVideos(data)
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/videos/admin`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: VideoRow[] = await response.json()
+      const processedVideos = videoService.processVideos(data)
+      return processedVideos
+    } catch (error) {
+      console.error('Error fetching all videos:', error)
+      throw new Error('Er ging iets mis bij het ophalen van alle videos')
+    }
   },
 
   /**
    * Fetch video by ID
    */
   fetchById: async (id: string): Promise<Video | null> => {
-    const data = await videoApiService.fetchById(id)
-    if (!data) return null
-    
-    const processed = videoService.processVideos([data])
-    return processed[0] || null
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/videos/${id}`)
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null
+        }
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: VideoRow = await response.json()
+      const processedVideos = videoService.processVideos([data])
+      return processedVideos.length > 0 ? processedVideos[0] : null
+    } catch (error) {
+      console.error('Error fetching video by ID:', error)
+      return null
+    }
   },
 
   /**
@@ -47,8 +85,8 @@ export const videoService = {
   processVideos: (videos: VideoRow[]): Video[] => {
     const mappedVideos = videos.map(item => {
       // Gebruik de originele URL als deze al correct is
-      const validatedUrl = item.url.includes('streamable.com/e/') 
-        ? item.url 
+      const validatedUrl = item.url.includes('streamable.com/e/')
+        ? item.url
         : validateVideoUrl(item.url, item.video_id)
 
       if (!validatedUrl) {

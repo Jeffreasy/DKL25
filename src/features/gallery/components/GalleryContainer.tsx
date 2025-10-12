@@ -6,7 +6,8 @@ import React, { memo } from 'react';
 import MainSlider from './MainImageSlider';
 import ThumbnailSlider from './ThumbnailGrid';
 import { usePhotoGallery } from '../hooks/usePhotoGallery';
-import { supabase } from '@/lib/supabase';
+import { albumService } from '../services/albumService';
+import { photoService } from '../services/photoService';
 import { useState, useEffect, useCallback } from 'react';
 import type { Photo, Album } from '../types';
 import { trackEvent } from '@/utils/googleAnalytics';
@@ -29,22 +30,19 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
   useEffect(() => {
     // Fetch albums on mount
     const fetchAlbums = async () => {
-      const { data, error: albumError } = await supabase
-        .from('albums')
-        .select('*')
-        .eq('visible', true)
-        .order('order_number', { ascending: true });
-
-      if (albumError) {
+      try {
+        const data = await albumService.fetchVisible();
+        if (data && data.length > 0) {
+          setAlbums(data);
+          setSelectedAlbumId(data[0].id); // Selecteer eerste album standaard
+        } else {
+          setError('Geen zichtbare albums gevonden.');
+          trackEvent('gallery', 'error', 'no_albums_found');
+        }
+      } catch (albumError) {
         console.error('Albums error:', albumError);
         setError('Fout bij ophalen van albums.');
         trackEvent('gallery', 'error', 'albums_fetch_failed');
-      } else if (data && data.length > 0) {
-        setAlbums(data as Album[]);
-        setSelectedAlbumId(data[0].id); // Selecteer eerste album standaard
-      } else {
-        setError('Geen zichtbare albums gevonden.');
-        trackEvent('gallery', 'error', 'no_albums_found');
       }
     };
 
@@ -82,72 +80,18 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
       setPhotos([]); // Leeg foto's bij wisselen album
       setRetryCount(0); // Reset retry count
 
-      // Stap 1: Haal photo_id's en order_number op uit album_photos voor het geselecteerde album
-      const { data: albumPhotosData, error: albumPhotosError } = await supabase
-        .from('album_photos')
-        .select('photo_id, order_number')
-        .eq('album_id', selectedAlbumId)
-        .order('order_number', { ascending: true }); // Sorteer hier alvast voor consistentie
-
-      if (albumPhotosError) {
-        console.error('Album photos error:', albumPhotosError);
-        trackEvent('gallery', 'error', 'album_photos_fetch_failed');
-        throw new Error('Fout bij het ophalen van de foto-koppelingen voor dit album');
-      }
-
-      if (!albumPhotosData || albumPhotosData.length === 0) {
-        trackEvent('gallery', 'info', 'no_photos_found_for_album');
-        setPhotos([]); // Geen foto's gekoppeld aan dit album
-        return; // Stop hier
-      }
-
-      // Maak een mapping van photo_id naar order_number en verzamel photo_ids
-      const photoOrderMap = new Map<string, number>();
-      const validAlbumPhotos = albumPhotosData.filter(ap => ap.photo_id !== null);
-      const photoIds: string[] = validAlbumPhotos.map(ap => {
-        // We weten nu dat ap.photo_id niet null is door de filter hierboven
-        photoOrderMap.set(ap.photo_id!, ap.order_number ?? 0); // Gebruik 0 als fallback voor order_number indien null
-        return ap.photo_id!;
-      });
-
-      // Voorkom een lege 'in' query als er geen geldige photoIds zijn
-      if (photoIds.length === 0) {
-        setPhotos([]);
-        trackEvent('gallery', 'info', 'no_valid_photo_ids_for_album');
-        return;
-      }
-
-      // Stap 2: Haal de daadwerkelijke foto data op voor de gevonden photo_ids
-      const { data: photosData, error: photosError } = await supabase
-        .from('photos')
-        .select('*')
-        .in('id', photoIds)
-        .eq('visible', true); // Extra check of de foto zelf zichtbaar is
-
-      if (photosError) {
-        console.error('Photos fetch error:', photosError);
-        trackEvent('gallery', 'error', 'photos_fetch_failed');
-        throw new Error('Fout bij het ophalen van de foto details');
-      }
+      // Use photoService to fetch photos by album
+      const photosData = await photoService.fetchByAlbum(selectedAlbumId);
 
       if (!photosData || photosData.length === 0) {
-        // Dit zou niet vaak moeten gebeuren als albumPhotosData wel resultaten gaf,
-        // maar het kan als foto's onzichtbaar zijn gemaakt na koppelen.
-        trackEvent('gallery', 'info', 'no_visible_photos_found_for_album');
-        setPhotos([]);
+        trackEvent('gallery', 'info', 'no_photos_found_for_album');
+        setPhotos([]); // Geen foto's gekoppeld aan dit album
       } else {
-        // Stap 3: Sorteer de opgehaalde photosData op basis van de order_number uit albumPhotosData
-        const sortedVisiblePhotos = (photosData as Photo[])
-          .sort((a, b) => {
-            const orderA = photoOrderMap.get(a.id) ?? Infinity; // Geef een hoge waarde als de order onbekend is
-            const orderB = photoOrderMap.get(b.id) ?? Infinity;
-            return orderA - orderB;
-          });
-        trackEvent('gallery', 'photos_loaded', `album:${selectedAlbumId}, count:${sortedVisiblePhotos.length}`);
-        setPhotos(sortedVisiblePhotos);
+        trackEvent('gallery', 'photos_loaded', `album:${selectedAlbumId}, count:${photosData.length}`);
+        setPhotos(photosData);
 
         // Preload first few images of the new album
-        const preloadUrls = sortedVisiblePhotos.slice(0, 3).map(photo => photo.url);
+        const preloadUrls = photosData.slice(0, 3).map(photo => photo.url);
         preloadImages(preloadUrls);
       }
 

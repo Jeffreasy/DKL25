@@ -1,41 +1,77 @@
 /**
  * Album Service
- * API service for album operations
+ * API service for album operations using PostgREST
  */
 
-import { createApiService } from '../../../lib/api/createApiService'
-import { supabase } from '../../../lib/supabase'
-import type { AlbumRow, Album, Photo } from '../types'
+import type { Album, Photo } from '../types'
 
-const albumApiService = createApiService<any>({
-  endpoint: 'albums',
-  sortBy: 'order_number',
-  sortDirection: 'asc'
-})
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
 
 export const albumService = {
   /**
    * Fetch all visible albums
    */
   fetchVisible: async (): Promise<Album[]> => {
-    const data = await albumApiService.fetchVisible()
-    return data as Album[]
+    try {
+      console.log('Fetching albums from:', `${POSTGREST_URL}/api/albums`)
+
+      const response = await fetch(`${POSTGREST_URL}/api/albums`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: Album[] = await response.json()
+      console.log('Fetched albums:', data)
+      return data
+    } catch (error) {
+      console.error('Error fetching visible albums:', error)
+      throw new Error('Er ging iets mis bij het ophalen van de albums')
+    }
   },
 
   /**
    * Fetch all albums
    */
   fetchAll: async (): Promise<Album[]> => {
-    const data = await albumApiService.fetchAll()
-    return data as Album[]
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/albums/admin`)
+
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: Album[] = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching all albums:', error)
+      throw new Error('Er ging iets mis bij het ophalen van alle albums')
+    }
   },
 
   /**
    * Fetch album by ID
    */
   fetchById: async (id: string): Promise<Album | null> => {
-    const data = await albumApiService.fetchById(id)
-    return data as Album | null
+    try {
+      const response = await fetch(`${POSTGREST_URL}/api/albums/${id}`)
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null
+        }
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data: Album = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching album by ID:', error)
+      return null
+    }
   },
 
   /**
@@ -43,38 +79,39 @@ export const albumService = {
    */
   fetchWithPhotos: async (albumId: string): Promise<Album | null> => {
     try {
-      // Fetch album
-      const { data: album, error: albumError } = await supabase
-        .from('albums')
-        .select('*')
-        .eq('id', albumId)
-        .single()
+      // First get the album
+      const album = await albumService.fetchById(albumId)
+      if (!album) {
+        return null
+      }
 
-      if (albumError) throw albumError
-      if (!album) return null
+      // Then get the photos for this album
+      const response = await fetch(`${POSTGREST_URL}/api/album-photos?album_id=eq.${albumId}&order=order_number.asc`)
 
-      // Fetch photos for this album
-      const { data: albumPhotos, error: photosError } = await supabase
-        .from('album_photos')
-        .select(`
-          order_number,
-          photos (*)
-        `)
-        .eq('album_id', albumId)
-        .order('order_number', { ascending: true })
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
 
-      if (photosError) throw photosError
+      const albumPhotos = await response.json()
 
-      // Extract and map photos
-      const photos = (albumPhotos || [])
-        .map((ap: any) => ap.photos)
-        .filter(Boolean) as Photo[]
+      // Get the actual photo data for each album photo
+      const photoPromises = albumPhotos.map(async (albumPhoto: any) => {
+        const response = await fetch(`${POSTGREST_URL}/api/photos?id=eq.${albumPhoto.photo_id}`)
+        if (response.ok) {
+          const photos = await response.json()
+          return photos.length > 0 ? photos[0] : null
+        }
+        return null
+      })
+
+      const photos = await Promise.all(photoPromises)
+      const validPhotos = photos.filter((photo): photo is Photo => photo !== null)
 
       return {
         ...album,
-        photos,
-        photo_count: photos.length
-      } as Album
+        photos: validPhotos
+      }
     } catch (error) {
       console.error('Error fetching album with photos:', error)
       return null
@@ -86,21 +123,18 @@ export const albumService = {
    */
   fetchWithCovers: async (): Promise<Album[]> => {
     try {
-      const { data, error } = await supabase
-        .from('albums')
-        .select(`
-          *,
-          cover_photo:photos!albums_cover_photo_id_fkey (*)
-        `)
-        .eq('visible', true)
-        .order('order_number', { ascending: true })
+      const response = await fetch(`${POSTGREST_URL}/api/albums?cover_photo_id=not.is.null`)
 
-      if (error) throw error
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
 
-      return (data || []) as Album[]
+      const data: Album[] = await response.json()
+      return data
     } catch (error) {
       console.error('Error fetching albums with covers:', error)
-      return []
+      throw new Error('Er ging iets mis bij het ophalen van albums met covers')
     }
   }
 }
