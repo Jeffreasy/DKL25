@@ -16,7 +16,7 @@ interface UnderConstructionData {
   updated_at: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dklemailservice.onrender.com';
 
 export const useUnderConstruction = () => {
   const [data, setData] = useState<UnderConstructionData | null>(null);
