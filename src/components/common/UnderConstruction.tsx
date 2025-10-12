@@ -131,30 +131,23 @@ const UnderConstruction: React.FC = memo(() => {
       return <p className={cn(cc.text.muted, cc.typography.body)}>We zijn bijna klaar!</p>;
     }
 
-    const countdownStyles = {
-      container: cn(cc.flex.center, 'gap-4 mb-4'),
-      item: 'text-center',
-      number: cn(cc.text.bodyLarge, colors.primary.text),
-      label: cn(cc.text.small, cc.text.muted),
-    };
-
     return (
-      <div className={countdownStyles.container} aria-label="Countdown tot lancering" aria-live="polite">
-        <div className={countdownStyles.item}>
-          <span className={countdownStyles.number}>{days}</span>
-          <span className={countdownStyles.label}>Dagen</span>
+      <div className={cn(cc.flex.center, 'gap-4 mb-4')} aria-label="Countdown tot lancering" aria-live="polite">
+        <div className="text-center">
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{days}</span>
+          <span className={cn(cc.text.small, cc.text.muted)}>Dagen</span>
         </div>
-        <div className={countdownStyles.item}>
-          <span className={countdownStyles.number}>{hours}</span>
-          <span className={countdownStyles.label}>Uren</span>
+        <div className="text-center">
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{hours}</span>
+          <span className={cn(cc.text.small, cc.text.muted)}>Uren</span>
         </div>
-        <div className={countdownStyles.item}>
-          <span className={countdownStyles.number}>{minutes}</span>
-          <span className={countdownStyles.label}>Minuten</span>
+        <div className="text-center">
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{minutes}</span>
+          <span className={cn(cc.text.small, cc.text.muted)}>Minuten</span>
         </div>
-        <div className={countdownStyles.item}>
-          <span className={countdownStyles.number}>{seconds}</span>
-          <span className={countdownStyles.label}>Seconden</span>
+        <div className="text-center">
+          <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{seconds}</span>
+          <span className={cn(cc.text.small, cc.text.muted)}>Seconden</span>
         </div>
       </div>
     );
