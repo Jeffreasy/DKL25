@@ -177,19 +177,19 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
               allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
               title={`Facebook post ${embed.id}`}
               loading={isIOS ? "eager" : "lazy"}
-              onLoad={() => {
-                // iOS-specific: Force iframe reload if needed
+              style={isIOS ? { backgroundColor: 'white' } : undefined}
+              onLoad={(e) => {
+                // iOS-specific: Prevent flickering by ensuring stable rendering
                 if (isIOS) {
+                  const iframe = e.target as HTMLIFrameElement;
+                  // Add a small delay before any manipulation to prevent flickering
                   setTimeout(() => {
-                    const iframe = document.querySelector(`iframe[title="Facebook post ${embed.id}"]`) as HTMLIFrameElement;
-                    if (iframe && iframe.contentWindow) {
-                      try {
-                        iframe.src = iframe.src;
-                      } catch (e) {
-                        console.warn('Could not reload Facebook iframe on iOS');
-                      }
+                    // Ensure iframe stays visible and doesn't flicker
+                    if (iframe && iframe.style) {
+                      iframe.style.opacity = '1';
+                      iframe.style.visibility = 'visible';
                     }
-                  }, 1000);
+                  }, 500);
                 }
               }}
             />
@@ -441,6 +441,20 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
             border: none !important;
             margin: 0 !important;
             display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+          }
+
+          /* iOS-specific fixes for Facebook iframe flickering */
+          @supports (-webkit-touch-callout: none) {
+            .facebook-container iframe {
+              -webkit-transform: translateZ(0) !important;
+              transform: translateZ(0) !important;
+              -webkit-backface-visibility: hidden !important;
+              backface-visibility: hidden !important;
+              -webkit-perspective: 1000px !important;
+              perspective: 1000px !important;
+            }
           }
         `}
       </style>
