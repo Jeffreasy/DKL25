@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import { initGA } from './utils/googleAnalytics';
 import { useUnderConstruction } from './hooks/useUnderConstruction';
 import { usePerformanceTracking } from './hooks/usePerformanceTracking';
-import OnderConstructie from './components/common/OnderConstructie';
+import UnderConstruction from './components/common/UnderConstruction';
 import NormalApp from './components/NormalApp';
 import LoadingScreen from './components/common/LoadingScreen';
 
@@ -32,7 +32,7 @@ const App: React.FC = memo(() => {
     // Als under construction actief is, toon alleen die pagina
     if (data?.is_active) {
       trackInteraction('under_construction_mode', 'active');
-      return <OnderConstructie />;
+      return <UnderConstruction />;
     }
 
     // Anders toon de normale website

@@ -4,7 +4,7 @@ import { FaTools } from 'react-icons/fa';
 import { SEO } from '../../components/common/SEO';
 import { useUnderConstruction } from '../../hooks/useUnderConstruction';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
-import { cc, cn, colors } from '@/styles/shared';
+import { cc, cn, colors, animations, icons } from '@/styles/shared';
 
 const OnderConstructie: React.FC = memo(() => {
   // Performance tracking
@@ -12,12 +12,17 @@ const OnderConstructie: React.FC = memo(() => {
 
   const { data, loading, error } = useUnderConstruction();
 
-  // Memoize animation variants to prevent recreation
-  const animationVariants = useMemo(() => ({
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8 }
-  }), []);
+  // Memoize accessibility preferences to prevent recalculation
+  const accessibilityPrefs = useMemo(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    trackInteraction('accessibility_check', prefersReducedMotion ? 'reduced_motion' : 'normal_motion');
+    return {
+      prefersReducedMotion,
+      motionProps: prefersReducedMotion
+        ? {}
+        : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8 } }
+    };
+  }, [trackInteraction]);
 
   // Memoize SEO props to prevent recreation
   const seoProps = useMemo(() => ({
@@ -76,13 +81,11 @@ const OnderConstructie: React.FC = memo(() => {
         <div className={cn('min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50', cc.flex.center, cc.typography.body)}>
           <div className={cn(cc.container.narrow, 'px-6 py-12 text-center')}>
             <motion.div
-              initial={animationVariants.initial}
-              animate={animationVariants.animate}
-              transition={animationVariants.transition}
+              {...accessibilityPrefs.motionProps}
               className="space-y-8"
             >
               <div className={cn(cc.flex.center, 'mb-6')}>
-                <FaTools className={cn('w-16 h-16', colors.primary.text)} aria-label="Onder constructie" />
+                <FaTools className={cn(icons['2xl'], colors.primary.text)} aria-label="Onder constructie" />
               </div>
               <h1 className={cn(cc.text.h1, 'text-gray-900 tracking-tight leading-tight', cc.typography.heading)}>
                 {data.title}
@@ -98,7 +101,7 @@ const OnderConstructie: React.FC = memo(() => {
         </div>
       </>
     );
-  }, [data, loading, error, animationVariants, seoProps, trackInteraction]);
+  }, [data, loading, error, accessibilityPrefs, seoProps, trackInteraction]);
 
   return content;
 });

@@ -2,6 +2,7 @@ import React, { Suspense, lazy, memo, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
 import LoadingScreen from './common/LoadingScreen';
+import ScrollToTop from './common/ScrollToTop';
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { ModalProvider, useModal } from '../contexts/ModalContext';
 import { usePerformanceTracking } from '../hooks/usePerformanceTracking';
@@ -35,6 +36,7 @@ const NormalApp: React.FC = memo(() => {
 
   return (
     <ModalProvider>
+      <ScrollToTop />
       <Routes>
         <Route element={<LayoutWrapper />}>
           {routesConfig.map(({ path, component: Component, trackName, hasErrorBoundary }) => (
