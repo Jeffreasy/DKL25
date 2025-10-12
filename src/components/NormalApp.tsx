@@ -32,6 +32,7 @@ const NormalApp: React.FC = memo(() => {
     { path: '/aanmelden', component: Aanmelden, trackName: 'aanmelden', hasErrorBoundary: true },
     { path: '/privacy', component: Privacy, trackName: 'privacy', hasErrorBoundary: true },
     { path: '/onder-constructie', component: OnderConstructie, trackName: 'onder_constructie' },
+    { path: '/sitemap.xml', component: () => null, trackName: 'sitemap' },
   ], []);
 
   return (
@@ -44,15 +45,19 @@ const NormalApp: React.FC = memo(() => {
               key={path}
               path={path}
               element={
-                <Suspense fallback={<LoadingScreen />}>
-                  {hasErrorBoundary ? (
-                    <ErrorBoundary>
+                path === '/sitemap.xml' ? (
+                  <div></div>
+                ) : (
+                  <Suspense fallback={<LoadingScreen />}>
+                    {hasErrorBoundary ? (
+                      <ErrorBoundary>
+                        <Component />
+                      </ErrorBoundary>
+                    ) : (
                       <Component />
-                    </ErrorBoundary>
-                  ) : (
-                    <Component />
-                  )}
-                </Suspense>
+                    )}
+                  </Suspense>
+                )
               }
             />
           ))}
