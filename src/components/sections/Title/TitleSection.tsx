@@ -38,11 +38,11 @@ const TitleSkeleton: React.FC = () => (
 
 // Default values for graceful fallback - matches current API data
 const DEFAULT_TITLE_DATA: Partial<TitleSectionData> = {
-  event_title: 'De Koninklijke Loop (DKL) 2025',
+  event_title: 'De Koninklijke Loop (DKL) 2026',
   event_subtitle: 'Op de koninklijke weg in Apeldoorn kunnen mensen met een beperking samen wandelen tijdens dit unieke, rolstoelvriendelijke sponsorloop (DKL), samen met hun verwanten, vrijwilligers of begeleiders.',
   image_url: 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1760112848/Wij_gaan_17_mei_lopen_voor_hen_3_zllxno_zoqd7z.webp',
-  image_alt: 'Promotiebanner De Koninklijke Loop (DKL) 2025: Wij gaan 17 mei lopen voor hen',
-  detail_1_title: '17 mei 2025',
+  image_alt: 'Promotiebanner De Koninklijke Loop (DKL) 2026: Wij gaan 17 mei lopen voor hen',
+  detail_1_title: '17 mei 2026',
   detail_1_description: 'Starttijden variëren per afstand. Zie programma.',
   detail_2_title: 'Voor iedereen',
   detail_2_description: 'wandelaars met of zonder beperking (rolstoelvriendelijk).',
