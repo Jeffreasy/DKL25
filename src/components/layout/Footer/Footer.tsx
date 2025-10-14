@@ -98,6 +98,9 @@ const Footer: React.FC<FooterProps> = memo(({
                 alt="De Koninklijke Loop logo"
                 className={cn('w-[100px] sm:w-[120px]', cc.transition.slow, logoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95')}
                 onLoad={() => setLogoLoaded(true)}
+                loading="lazy"
+                width="120"
+                height="120"
               />
               {!logoLoaded && (
                 <div className={cn('absolute inset-0 bg-white/10 rounded-lg', cc.loading.skeleton)} />

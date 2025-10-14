@@ -5,7 +5,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      // Enable JSX runtime for better performance
+      jsxRuntime: 'automatic',
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
@@ -121,7 +124,7 @@ export default defineConfig({
             if (id.includes('supabase') || id.includes('@supabase')) {
               return 'vendor-supabase';
             }
-            // Other large libraries
+            // Other large libraries - optimize by removing unused code
             if (id.includes('date-fns') || id.includes('lodash') || id.includes('dompurify')) {
               return 'vendor-utils';
             }
@@ -157,6 +160,21 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash][extname]',
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
+      },
+      // Enable tree shaking and minification optimizations
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false,
+      },
+    },
+    // Enable minification and compression
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
       },
     },
   },

@@ -45,61 +45,70 @@ export const loadFacebookSDK = (): Promise<void> => {
       return;
     }
 
-    const script = document.createElement('script');
-    script.src = 'https://connect.facebook.net/nl_NL/sdk.js#xfbml=1&version=v18.0';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
+    const loadScript = () => {
+      const script = document.createElement('script');
+      script.src = 'https://connect.facebook.net/nl_NL/sdk.js#xfbml=1&version=v18.0';
+      script.async = true;
+      script.crossOrigin = 'anonymous';
 
-    let timeoutId: NodeJS.Timeout | null = null;
-    let resolved = false;
+      let timeoutId: NodeJS.Timeout | null = null;
+      let resolved = false;
 
-    const cleanup = () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
-      }
-    };
-
-    script.onload = () => {
-      let attempts = 0;
-      const maxAttempts = 20;
-
-      const checkFacebook = () => {
-        if (window.FB) {
-          facebookScriptLoaded = true;
-          facebookScriptLoadingPromise = null;
-          cleanup();
-          if (!resolved) {
-            resolved = true;
-            resolve();
-          }
-        } else if (attempts < maxAttempts) {
-          attempts++;
-          const delay = 100 + (attempts * 50);
-          timeoutId = setTimeout(checkFacebook, delay);
-        } else {
-          cleanup();
-          facebookScriptLoadingPromise = null;
-          if (!resolved) {
-            resolved = true;
-            reject(new Error('Facebook SDK failed to initialize'));
-          }
+      const cleanup = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
         }
       };
 
-      checkFacebook();
+      script.onload = () => {
+        let attempts = 0;
+        const maxAttempts = 20;
+
+        const checkFacebook = () => {
+          if (window.FB) {
+            facebookScriptLoaded = true;
+            facebookScriptLoadingPromise = null;
+            cleanup();
+            if (!resolved) {
+              resolved = true;
+              resolve();
+            }
+          } else if (attempts < maxAttempts) {
+            attempts++;
+            const delay = 100 + (attempts * 50);
+            timeoutId = setTimeout(checkFacebook, delay);
+          } else {
+            cleanup();
+            facebookScriptLoadingPromise = null;
+            if (!resolved) {
+              resolved = true;
+              reject(new Error('Facebook SDK failed to initialize'));
+            }
+          }
+        };
+
+        checkFacebook();
+      };
+
+      script.onerror = (error) => {
+        cleanup();
+        facebookScriptLoadingPromise = null;
+        if (!resolved) {
+          resolved = true;
+          reject(new Error('Failed to load Facebook SDK'));
+        }
+      };
+
+      document.head.appendChild(script);
     };
 
-    script.onerror = (error) => {
-      cleanup();
-      facebookScriptLoadingPromise = null;
-      if (!resolved) {
-        resolved = true;
-        reject(new Error('Failed to load Facebook SDK'));
-      }
-    };
-
-    document.head.appendChild(script);
+    // Defer loading until after page is interactive
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadScript);
+    } else {
+      setTimeout(loadScript, 200);
+    }
   });
 
   return facebookScriptLoadingPromise;
@@ -129,69 +138,78 @@ export const loadInstagramEmbed = (): Promise<void> => {
       return;
     }
 
-    const script = document.createElement('script');
-    script.src = 'https://www.instagram.com/embed.js';
-    script.async = false; // Load synchronously to ensure proper initialization
+    const loadScript = () => {
+      const script = document.createElement('script');
+      script.src = 'https://www.instagram.com/embed.js';
+      script.async = false; // Load synchronously to ensure proper initialization
 
-    // iOS-specific: Add additional attributes for better compatibility
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
-    if (isIOS) {
-      script.setAttribute('data-instgrm-version', '14');
-      script.crossOrigin = 'anonymous';
-    }
-
-    let timeoutId: NodeJS.Timeout | null = null;
-    let resolved = false;
-
-    const cleanup = () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
+      // iOS-specific: Add additional attributes for better compatibility
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
+      if (isIOS) {
+        script.setAttribute('data-instgrm-version', '14');
+        script.crossOrigin = 'anonymous';
       }
-    };
 
-    script.onload = () => {
-      let attempts = 0;
-      const maxAttempts = 50; // Increased from 20
+      let timeoutId: NodeJS.Timeout | null = null;
+      let resolved = false;
 
-      const checkInstagram = () => {
-        if (window.instgrm?.Embeds?.process) {
-          instagramScriptLoaded = true;
-          instagramScriptLoadingPromise = null;
-          cleanup();
-          if (!resolved) {
-            resolved = true;
-            resolve();
-          }
-        } else if (attempts < maxAttempts) {
-          attempts++;
-          // iOS needs longer delays for proper initialization
-          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
-          const delay = isIOS ? 500 + (attempts * 200) : 200 + (attempts * 100);
-          timeoutId = setTimeout(checkInstagram, delay);
-        } else {
-          cleanup();
-          instagramScriptLoadingPromise = null;
-          if (!resolved) {
-            resolved = true;
-            reject(new Error('Instagram embed script failed to initialize'));
-          }
+      const cleanup = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
         }
       };
 
-      checkInstagram();
+      script.onload = () => {
+        let attempts = 0;
+        const maxAttempts = 50; // Increased from 20
+
+        const checkInstagram = () => {
+          if (window.instgrm?.Embeds?.process) {
+            instagramScriptLoaded = true;
+            instagramScriptLoadingPromise = null;
+            cleanup();
+            if (!resolved) {
+              resolved = true;
+              resolve();
+            }
+          } else if (attempts < maxAttempts) {
+            attempts++;
+            // iOS needs longer delays for proper initialization
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
+            const delay = isIOS ? 500 + (attempts * 200) : 200 + (attempts * 100);
+            timeoutId = setTimeout(checkInstagram, delay);
+          } else {
+            cleanup();
+            instagramScriptLoadingPromise = null;
+            if (!resolved) {
+              resolved = true;
+              reject(new Error('Instagram embed script failed to initialize'));
+            }
+          }
+        };
+
+        checkInstagram();
+      };
+
+      script.onerror = (error) => {
+        cleanup();
+        instagramScriptLoadingPromise = null;
+        if (!resolved) {
+          resolved = true;
+          reject(new Error('Failed to load Instagram embed script'));
+        }
+      };
+
+      document.head.appendChild(script);
     };
 
-    script.onerror = (error) => {
-      cleanup();
-      instagramScriptLoadingPromise = null;
-      if (!resolved) {
-        resolved = true;
-        reject(new Error('Failed to load Instagram embed script'));
-      }
-    };
-
-    document.head.appendChild(script);
+    // Defer loading until after page is interactive
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadScript);
+    } else {
+      setTimeout(loadScript, 300);
+    }
   });
 
   return instagramScriptLoadingPromise;

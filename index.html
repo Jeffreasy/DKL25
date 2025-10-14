@@ -30,9 +30,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
 
-  <!-- Preload critical fonts with font-display: swap -->
+  <!-- Preload critical fonts with font-display: swap and optimize loading -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;600;700&display=swap"></noscript>
+  <!-- Preconnect to font origins for faster loading -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <!-- Gestructureerde data -->
   <script type="application/ld+json">
@@ -321,8 +323,10 @@
     ]
   }
   </script>
-  <!-- Add type="module" and crossorigin -->
+  <!-- Modern browsers: ES modules -->
   <script type="module" crossorigin src="/src/main.tsx"></script>
+  <!-- Legacy browsers: fallback -->
+  <script nomodule defer src="/assets/legacy.js"></script>
 </head>
 <body>
   <div id="root"></div>
