@@ -1,14 +1,18 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, Suspense, lazy } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar/Navbar';
 import { Footer } from './Footer';
-import { DonatieModal, ContactModal, SponsorModal } from '../ui/modals';
-import ProgramModal from '../../features/program/components/ProgramModal';
 import { useModal } from '../../contexts/ModalContext';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
-import ProgramSidebarTrigger from '../../features/program/components/SidebarTrigger';
-import AIChatButton from '../ui/AIChatButton/AIChatButton';
 import { cn, colors } from '@/styles/shared';
+
+// Lazy load modals and components for better performance
+const DonatieModal = lazy(() => import('../ui/modals/DonatieModal').then(module => ({ default: module.DonatieModal })));
+const ContactModal = lazy(() => import('../ui/modals/ContactModal').then(module => ({ default: module.ContactModal })));
+const SponsorModal = lazy(() => import('../ui/modals/SponsorModal').then(module => ({ default: module.SponsorModal })));
+const ProgramModal = lazy(() => import('../../features/program/components/ProgramModal'));
+const ProgramSidebarTrigger = lazy(() => import('../../features/program/components/SidebarTrigger'));
+const AIChatButton = lazy(() => import('../ui/AIChatButton/AIChatButton'));
 
 const Layout: React.FC = memo(() => {
   // Performance tracking
@@ -70,12 +74,14 @@ const Layout: React.FC = memo(() => {
         <Outlet />
       </main>
       <Footer />
-      <DonatieModal {...modalProps.donatieModal} />
-      <ProgramModal {...modalProps.programModal} />
-      <ContactModal {...modalProps.contactModal} />
-      <SponsorModal {...modalProps.sponsorModal} />
-      <ProgramSidebarTrigger onOpenModal={handleProgramSidebarTrigger} />
-      <AIChatButton />
+      <Suspense fallback={null}>
+        <DonatieModal {...modalProps.donatieModal} />
+        <ProgramModal {...modalProps.programModal} />
+        <ContactModal {...modalProps.contactModal} />
+        <SponsorModal {...modalProps.sponsorModal} />
+        <ProgramSidebarTrigger onOpenModal={handleProgramSidebarTrigger} />
+        <AIChatButton />
+      </Suspense>
     </div>
   );
 });

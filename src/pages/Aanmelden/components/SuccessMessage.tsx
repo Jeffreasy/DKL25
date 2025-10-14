@@ -1,9 +1,6 @@
 import { RegistrationFormData } from '../types/schema';
 import { useEffect, useState, memo, useCallback } from 'react';
-import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin, FaPrint, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa';
 import QRCode from 'qrcode';
-import { format } from 'date-fns';
-import { nl } from 'date-fns/locale';
 import { toast } from 'react-hot-toast';
 import { cc, cn, colors } from '@/styles/shared';
 import { CSSConfetti } from '@/components/common/CSSConfetti';
@@ -193,7 +190,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               <div class="registration-id">ID: ${registrationId}</div>
               <img src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" alt="DKL Logo">
               <h1>Aanmeldbevestiging</h1>
-              <p>Datum: ${format(new Date(), 'd MMMM yyyy', { locale: nl })}</p>
+              <p>Datum: ${new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
 
             <div class="details">
@@ -370,7 +367,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
         {/* Locatie sectie */}
         <div className="p-8 border-t border-gray-100">
           <div className="flex items-center mb-6">
-            <FaMapMarkerAlt className={cn(colors.primary.text, 'text-xl mr-3')} />
+            <span className={cn(colors.primary.text, 'text-xl mr-3')}>📍</span>
             <h2 className={cn(cc.text.h4, 'text-gray-900', cc.typography.heading)}>
               Startlocatie
             </h2>
@@ -393,7 +390,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
                 cc.transition.base
               )}
             >
-              <FaExternalLinkAlt className="text-sm" />
+              <span className="text-sm">🔗</span>
               <span>Bekijk op Google Maps</span>
             </a>
         </div>
@@ -430,7 +427,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               )}
               aria-label="Print bevestiging"
             >
-              <FaPrint />
+              <span>🖨️</span>
               <span>{isPrinting ? 'Bezig...' : 'Print bevestiging'}</span>
             </button>
           </div>
@@ -444,7 +441,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op Facebook"
             >
-              <FaFacebook size={24} />
+              <span style={{ fontSize: '24px' }}>📘</span>
             </a>
             <a
               href="https://instagram.com/dekoninklijkeloop"
@@ -453,7 +450,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op Instagram"
             >
-              <FaInstagram size={24} />
+              <span style={{ fontSize: '24px' }}>📷</span>
             </a>
             <a
               href="https://youtube.com/@dekoninklijkeloop"
@@ -462,7 +459,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op YouTube"
             >
-              <FaYoutube size={24} />
+              <span style={{ fontSize: '24px' }}>📺</span>
             </a>
             <a
               href="https://linkedin.com/company/dekoninklijkeloop"
@@ -471,7 +468,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               className={cn(colors.primary.text, 'hover:text-primary-dark', cc.transition.colors)}
               aria-label="Volg ons op LinkedIn"
             >
-              <FaLinkedin size={24} />
+              <span style={{ fontSize: '24px' }}>💼</span>
             </a>
           </div>
         </div>

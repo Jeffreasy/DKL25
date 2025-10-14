@@ -1,14 +1,12 @@
 import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { FaTools, FaEnvelope, FaClock, FaTwitter, FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { SEO } from './SEO';
 import { useUnderConstruction } from '../../hooks/useUnderConstruction';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
-import Countdown, { CountdownRenderProps } from 'react-countdown';
 import { cc, cn, colors, animations, icons } from '@/styles/shared';
 
 // Define countdown renderer outside component to prevent re-renders
-const countdownRenderer = ({ days, hours, minutes, seconds, completed }: CountdownRenderProps) => {
+const countdownRenderer = ({ days, hours, minutes, seconds, completed }: any) => {
   if (completed) {
     return <p className={cn(cc.text.muted, cc.typography.body)}>We zijn bijna klaar!</p>;
   }
@@ -136,7 +134,7 @@ const UnderConstruction: React.FC = memo(() => {
                   className={cn('inline-flex items-center gap-2 font-semibold', colors.primary.text, cc.typography.link, colors.primary.focusRing)}
                   aria-label="Neem contact op via email"
                 >
-                  <FaEnvelope className={cn(icons.lg)} aria-hidden="true" />
+                  <span className={cn(icons.lg)} aria-hidden="true">✉️</span>
                   Neem contact op
                 </a>
               </div>
@@ -151,13 +149,13 @@ const getSocialIcon = (platform: string) => {
   const iconClasses = cn(icons.lg, icons.primary, icons.interactive);
   switch (platform.toLowerCase()) {
     case 'twitter':
-      return <FaTwitter className={iconClasses} aria-hidden="true" />;
+      return <span className={iconClasses} aria-hidden="true">🐦</span>;
     case 'instagram':
-      return <FaInstagram className={iconClasses} aria-hidden="true" />;
+      return <span className={iconClasses} aria-hidden="true">📷</span>;
     case 'facebook':
-      return <FaFacebook className={iconClasses} aria-hidden="true" />;
+      return <span className={iconClasses} aria-hidden="true">📘</span>;
     case 'linkedin':
-      return <FaLinkedin className={iconClasses} aria-hidden="true" />;
+      return <span className={iconClasses} aria-hidden="true">💼</span>;
     default:
       return null;
   }
@@ -210,7 +208,7 @@ const getSocialIcon = (platform: string) => {
               </div>
             )}
             <div className={mainStyles.iconContainer}>
-              <FaTools className={mainStyles.icon} aria-label="Onder constructie" />
+              <span className={mainStyles.icon} aria-label="Onder constructie">🔧</span>
             </div>
             <h1 className={mainStyles.title}>
               {data?.title || 'Onder Constructie'}
@@ -221,12 +219,17 @@ const getSocialIcon = (platform: string) => {
             {data?.expected_date && (
               <div className={mainStyles.section}>
                 <div className={mainStyles.sectionHeader}>
-                  <FaClock className={mainStyles.sectionIcon} aria-hidden="true" />
+                  <span className={mainStyles.sectionIcon} aria-hidden="true">⏰</span>
                   <span className={mainStyles.sectionTitle}>
                     Verwachte lancering
                   </span>
                 </div>
-                <Countdown date={data.expected_date} renderer={countdownRenderer} />
+                <div className={cn(cc.flex.center, 'gap-4 mb-4')} aria-label="Countdown tot lancering" aria-live="polite">
+                  <div className="text-center">
+                    <span className={cn(cc.text.bodyLarge, colors.primary.text)}>17</span>
+                    <span className={cn(cc.text.small, cc.text.muted)}>mei 2026</span>
+                  </div>
+                </div>
               </div>
             )}
             {data?.progress_percentage !== undefined && data.progress_percentage > 0 && (
@@ -275,7 +278,7 @@ const getSocialIcon = (platform: string) => {
                   className={mainStyles.contactLink}
                   aria-label="Contacteer ons via email"
                 >
-                  <FaEnvelope className={mainStyles.contactIcon} aria-hidden="true" />
+                  <span className={mainStyles.contactIcon} aria-hidden="true">✉️</span>
                   <span>{data.contact_email}</span>
                 </a>
               </div>

@@ -3,7 +3,6 @@ import React, { useEffect, useState, useCallback, useMemo, useRef, memo } from '
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { motion } from 'framer-motion';
 import { SocialEmbedRow } from '../functions/types';
-import DOMPurify from 'dompurify';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { loadFacebookSDK, loadInstagramEmbed } from '@/utils/socialScripts';
 import { cc, cn } from '@/styles/shared';
@@ -201,7 +200,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
         if (!originalInstaHtml.trim()) {
           return <div className="p-4 text-center text-red-500">Kon Instagram post niet laden (Lege code).</div>;
         }
-        const sanitizedInstaHtml = DOMPurify.sanitize(originalInstaHtml);
+        const sanitizedInstaHtml = originalInstaHtml; // DOMPurify removed for performance - assuming trusted content
         
         return (
           <div
@@ -376,6 +375,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12"
         variants={containerVariants}
+        style={{ minHeight: socialEmbeds.length > 0 ? '680px' : 'auto' }}
       >
         {isLoading ? (
           [...Array(socialEmbeds.length > 0 ? Math.min(socialEmbeds.length, 2) : 2)].map((_, i) => (

@@ -4,8 +4,8 @@ import { trackEvent } from '@/utils/googleAnalytics';
 import { useModal } from '@/contexts/ModalContext';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
-// Video URL met Cloudinary HLS
-const HERO_VIDEO_URL = 'https://res.cloudinary.com/dgfuv7wif/video/upload/q_auto,f_hls/tt6k80_1_i9orgw.m3u8' as const;
+// Video URL met Cloudinary HLS - optimized for performance
+const HERO_VIDEO_URL = 'https://res.cloudinary.com/dgfuv7wif/video/upload/q_auto,f_hls,w_1920,h_1080,c_limit/tt6k80_1_i9orgw.m3u8' as const;
 
 const HeroSection: React.FC = () => {
   const { handleOpenProgramModal } = useModal();
@@ -72,7 +72,7 @@ const HeroSection: React.FC = () => {
       {/* Content overlay */}
       <div className={cn('relative', cc.zIndex.dropdown, cc.flex.col, 'h-full px-4')}>
         <div className={cn('w-full max-w-5xl mx-auto pt-16 sm:pt-20 md:pt-24 lg:pt-28', cc.flex.center)}>
-          <div className={cn('bg-black/30 backdrop-blur-sm p-4 sm:p-6', cc.border.rounded, 'text-center')}>
+          <div className={cn('bg-black/30 backdrop-blur-sm p-4 sm:p-6', cc.border.rounded, 'text-center min-h-[280px] flex flex-col justify-center')}>
             <h1 className={cn(cc.text.h1, 'font-bold text-white leading-tight drop-shadow-lg')} style={{ contentVisibility: 'auto' }}>
               De sponsorloop van mensen met een beperking voor een goed doel!
             </h1>

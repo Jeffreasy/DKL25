@@ -107,7 +107,7 @@ const Footer: React.FC<FooterProps> = memo(({
               )}
             </div>
 
-            <div className="text-center md:text-left space-y-2" style={{ minHeight: '120px' }}>
+            <div className="text-center md:text-left space-y-2" style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <h2 className={cn(cc.text.h4, 'tracking-tight')}>Doe je met ons mee?</h2>
               <p className={cn(cc.text.small, 'text-white/90')}>Samen op weg voor een goed doel.</p>
               <p className={cn(cc.text.h5, 'bg-gradient-to-r from-yellow-200 to-yellow-500 text-transparent bg-clip-text')}>

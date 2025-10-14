@@ -47,6 +47,8 @@ const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
             onLoad={handleImageLoad}
             onError={handleImageError}
             loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
         )}
       </div>

@@ -1,6 +1,5 @@
 import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { FaTools } from 'react-icons/fa';
 import { SEO } from '../../components/common/SEO';
 import { useUnderConstruction } from '../../hooks/useUnderConstruction';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
@@ -98,7 +97,7 @@ const OnderConstructie: React.FC = memo(() => {
               className="space-y-8"
             >
               <div className={cn(cc.flex.center, 'mb-6')}>
-                <FaTools className={cn(icons['2xl'], colors.primary.text)} aria-label="Onder constructie" />
+                <span className={cn(icons['2xl'], colors.primary.text)} aria-label="Onder constructie">🔧</span>
               </div>
               <h1 className={cn(cc.text.h1, 'text-gray-900 tracking-tight leading-tight', cc.typography.heading)}>
                 {data.title}
