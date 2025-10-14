@@ -275,20 +275,21 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   // Load scripts on mount - runs after mount effect
   useEffect(() => {
     if (socialEmbeds.length > 0) {
-      // Longer delay for iOS to ensure proper initialization
-      const delay = isIOS ? 200 : 50;
-      const timeoutId = setTimeout(() => {
+      // Defer loading until after page load to avoid blocking initial render
+      const loadAfterPageLoad = () => {
         if (isMounted.current) {
           loadScripts();
         }
-      }, delay);
+      };
 
-      return () => clearTimeout(timeoutId);
+      window.addEventListener('load', loadAfterPageLoad, { once: true });
+
+      return () => window.removeEventListener('load', loadAfterPageLoad);
     } else {
       setIsLoading(false);
       setScriptsLoaded(false);
     }
-  }, [socialEmbeds.length, loadScripts, isIOS]);
+  }, [socialEmbeds.length, loadScripts]);
 
   // Process Instagram embeds when scripts are loaded
   useEffect(() => {
