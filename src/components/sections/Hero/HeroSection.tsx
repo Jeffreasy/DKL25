@@ -1,30 +1,23 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import BackgroundVideo from '../../../features/video/components/BackgroundVideo';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { useModal } from '@/contexts/ModalContext';
-import { cc, cn, colors } from '@/styles/shared';
+import { cc, cn, colors, animations } from '@/styles/shared';
 
-// Video URLs as constants for better maintainability
-const HERO_VIDEO_URLS = {
-  webm: 'https://res.cloudinary.com/dgfuv7wif/video/upload/tt6k80_1_i9orgw.webm',
-  mp4: 'https://res.cloudinary.com/dgfuv7wif/video/upload/tt6k80_1_i9orgw.mp4',
-  poster: 'https://res.cloudinary.com/dgfuv7wif/video/upload/tt6k80_1_i9orgw.jpg'
-} as const;
+// Video URL met Cloudinary HLS
+const HERO_VIDEO_URL = 'https://res.cloudinary.com/dgfuv7wif/video/upload/q_auto,f_hls/tt6k80_1_i9orgw.m3u8' as const;
 
-// Remove HeroSectionProps if no props are needed
-// interface HeroSectionProps {}
-
-const HeroSection: React.FC = () => { // No props expected
-  const { handleOpenProgramModal } = useModal(); // Get handler from context
+const HeroSection: React.FC = () => {
+  const { handleOpenProgramModal } = useModal();
   const sectionRef = useRef<HTMLElement>(null);
-  const [videoError, setVideoError] = useState<string | null>(null);
-  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoStatus, setVideoStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+  const [videoErrorMsg, setVideoErrorMsg] = useState<string | null>(null);
 
-  // Track when the hero section becomes visible using intersection observer
+  // Track hero section visibility
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             trackEvent('hero', 'section_view', 'hero_section');
             observer.unobserve(entry.target);
@@ -43,14 +36,12 @@ const HeroSection: React.FC = () => { // No props expected
       if (currentSection) {
         observer.unobserve(currentSection);
       }
-      observer.disconnect();
     };
   }, []);
 
   const handleProgrammaClick = () => {
-    console.log("HeroSection: Triggering openProgramModal from context");
     trackEvent('hero', 'program_click', 'programma_tijden_button');
-    handleOpenProgramModal('Start/Finish/Feest'); // Call context function
+    handleOpenProgramModal('Start/Finish/Feest');
   };
 
   return (
@@ -58,40 +49,27 @@ const HeroSection: React.FC = () => { // No props expected
       ref={sectionRef}
       className={cn('relative h-[calc(100vh-5rem)]', cc.typography.heading)}
       role="banner"
-      aria-label="Hero sectie"
+      aria-label="Hero sectie met achtergrondvideo"
     >
       <BackgroundVideo
-        webmUrl={HERO_VIDEO_URLS.webm}
-        mp4Url={HERO_VIDEO_URLS.mp4}
-        posterUrl={HERO_VIDEO_URLS.poster}
+        hlsUrl={HERO_VIDEO_URL}
+        priority // Direct laden voor hero
         onPlay={() => {
-          setVideoLoaded(true);
-          setVideoError(null);
+          setVideoStatus('loaded');
           trackEvent('hero', 'video_play', 'background_video');
         }}
         onPause={() => trackEvent('hero', 'video_pause', 'background_video')}
         onEnded={() => trackEvent('hero', 'video_end', 'background_video')}
         onError={(error: Error) => {
-          setVideoError(error.message);
+          setVideoStatus('error');
+          setVideoErrorMsg(error.message);
           trackEvent('hero', 'video_error', error.message);
         }}
+        title="Achtergrondvideo van de Koninklijke Loop 2026"
       />
 
-      {/* Video loading/error overlay */}
-      {videoError && (
-        <div className={cn('absolute inset-0 bg-black/50 flex items-center justify-center', cc.zIndex.dropdown)}>
-          <div className="text-center text-white p-4">
-            <p className="mb-2">Video kon niet worden geladen</p>
-            <p className="text-sm opacity-75">{videoError}</p>
-          </div>
-        </div>
-      )}
 
-      {!videoLoaded && !videoError && (
-        <div className={cn('absolute inset-0 bg-black/30 flex items-center justify-center', cc.zIndex.dropdown)}>
-          <div className={cn('w-12 h-12 border-4 border-white/20 border-t-white', cc.border.circle, 'animate-spin')} />
-        </div>
-      )}
+      {/* Content overlay */}
       <div className={cn('relative', cc.zIndex.dropdown, cc.flex.col, 'h-full px-4')}>
         <div className={cn('w-full max-w-5xl mx-auto pt-16 sm:pt-20 md:pt-24 lg:pt-28', cc.flex.center)}>
           <div className={cn('bg-black/30 backdrop-blur-sm p-4 sm:p-6', cc.border.rounded, 'text-center')}>
@@ -109,14 +87,11 @@ const HeroSection: React.FC = () => { // No props expected
               <button
                 onClick={handleProgrammaClick}
                 className={cn(
-                  'mt-1 px-3 py-1.5 bg-white shadow-sm',
-                  colors.primary.text,
-                  cc.text.body,
-                  cc.border.circle,
-                  'hover:bg-gray-100 hover:scale-105 active:scale-95 font-semibold',
-                  cc.transition.base,
-                  'transform-gpu' // Use GPU acceleration for transforms
+                  cc.button.primary,
+                  'mt-1 px-3 py-1.5 shadow-sm transform-gpu',
+                  cc.a11y.focusVisible
                 )}
+                aria-label="Open programma en tijden modal"
               >
                 Programma/tijden
               </button>
@@ -125,7 +100,7 @@ const HeroSection: React.FC = () => { // No props expected
         </div>
       </div>
     </section>
-  ); 
-};  
+  );
+};
 
 export default React.memo(HeroSection);
