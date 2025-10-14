@@ -43,6 +43,28 @@ export default defineConfig({
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
               }
             }
+          },
+          {
+            urlPattern: /^https:\/\/connect\.facebook\.net\/.*/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'facebook-sdk',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/www\.instagram\.com\/embed\.js/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'instagram-embed',
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+              }
+            }
           }
         ]
       },

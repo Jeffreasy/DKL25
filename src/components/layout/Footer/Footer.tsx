@@ -78,7 +78,7 @@ const Footer: React.FC<FooterProps> = memo(({
         role="contentinfo"
         className={cn(
           colors.gradient.footer,
-          'py-12 px-4 text-white mt-auto relative overflow-hidden',
+          'py-12 px-4 text-white mt-auto relative overflow-hidden min-h-[300px]',
           cc.typography.heading,
           className
         )}
