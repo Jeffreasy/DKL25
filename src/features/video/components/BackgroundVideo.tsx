@@ -3,7 +3,7 @@ import { cc, cn, colors, animations } from '@/styles/shared';
 
 // Type-safe props
 interface BackgroundVideoProps {
-  hlsUrl: string; // HLS .m3u8 URL
+  videoUrl: string; // MP4/WebM video URL
   onPlay?: () => void;
   onPause?: () => void;
   onEnded?: () => void;
@@ -13,7 +13,7 @@ interface BackgroundVideoProps {
 }
 
 const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
-  hlsUrl,
+  videoUrl,
   onPlay,
   onPause,
   onEnded,
@@ -63,9 +63,9 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
     const errorMessage = (e.target as HTMLVideoElement).error?.message || 'Video afspelen mislukt';
     console.warn('[BackgroundVideo] Error:', errorMessage);
     onError?.(new Error(errorMessage));
-    // In dev mode, toon HLS URL
+    // In dev mode, toon video URL
     if (process.env.NODE_ENV === 'development') {
-      console.error('[BackgroundVideo] HLS URL:', hlsUrl);
+      console.error('[BackgroundVideo] Video URL:', videoUrl);
     }
   };
 
@@ -99,7 +99,8 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
         disablePictureInPicture
         disableRemotePlayback
       >
-        <source src={hlsUrl} type="application/x-mpegURL" />
+        <source src={videoUrl} type="video/mp4" />
+        <source src={videoUrl.replace('.mp4', '.webm')} type="video/webm" />
       </video>
     </div>
   );

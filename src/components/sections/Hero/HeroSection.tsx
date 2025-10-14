@@ -4,8 +4,8 @@ import { trackEvent } from '@/utils/googleAnalytics';
 import { useModal } from '@/contexts/ModalContext';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
-// Video URL met Cloudinary HLS - optimized for performance
-const HERO_VIDEO_URL = 'https://res.cloudinary.com/dgfuv7wif/video/upload/q_auto,f_hls,w_1920,h_1080,c_limit/tt6k80_1_i9orgw.m3u8' as const;
+// Video URL met Cloudinary WebM - optimized for performance
+const HERO_VIDEO_URL = 'https://res.cloudinary.com/dgfuv7wif/video/upload/v1760450059/tt6k80_1_i9orgw_cbdcks.webm' as const;
 
 const HeroSection: React.FC = () => {
   const { handleOpenProgramModal } = useModal();
@@ -52,7 +52,7 @@ const HeroSection: React.FC = () => {
       aria-label="Hero sectie met achtergrondvideo"
     >
       <BackgroundVideo
-        hlsUrl={HERO_VIDEO_URL}
+        videoUrl={HERO_VIDEO_URL}
         priority // Direct laden voor hero
         onPlay={() => {
           setVideoStatus('loaded');
