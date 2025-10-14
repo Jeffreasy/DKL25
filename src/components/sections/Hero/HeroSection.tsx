@@ -103,8 +103,8 @@ const HeroSection: React.FC = () => { // No props expected
             </p>
             <div className={cn('mt-6 px-4 py-3 rounded-md text-center max-w-sm mx-auto', colors.primary.bg)}>
               <div className="mb-2">
-                <span className={cn(cc.text.bodyLarge, 'block text-white font-bold')}>De Koninklijke Loop 2025</span>
-                <span className={cn(cc.text.body, 'block text-white/90')}>Zaterdag 17 mei 2025</span>
+                <span className={cn(cc.text.bodyLarge, 'block text-white font-bold')}>De Koninklijke Loop 2026</span>
+                <span className={cn(cc.text.body, 'block text-white/90')}>Zaterdag 17 mei 2026</span>
               </div>
               <button
                 onClick={handleProgrammaClick}

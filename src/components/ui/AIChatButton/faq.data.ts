@@ -56,7 +56,7 @@ interface FAQItem {
       questions: [
         {
           question: "Hoe kan ik meedoen?",
-          answer: "Super dat je mee wilt doen! Je kunt je nu al inschrijven voor De Koninklijke Loop 2025. Vul het formulier in en je ontvangt direct een bevestiging.",
+          answer: "Super dat je mee wilt doen! Je kunt je nu al inschrijven voor De Koninklijke Loop 2026. Vul het formulier in en je ontvangt direct een bevestiging.",
           icon: "✍",
           action: true,
           actionText: "Schrijf je nu in"

@@ -244,7 +244,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             </div>
 
             <div class="footer">
-              <p>De Koninklijke Loop 2025</p>
+              <p>De Koninklijke Loop 2026</p>
               <p>www.dekoninklijkeloop.nl | info@dekoninklijkeloop.nl</p>
               <p><small>Dit is een automatisch gegenereerd document</small></p>
             </div>

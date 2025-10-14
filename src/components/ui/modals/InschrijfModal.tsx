@@ -54,7 +54,7 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
                 Inschrijvingen openen binnenkort
               </h2>
               <p className={cn(cc.text.body, 'text-gray-600 mb-4 text-center leading-relaxed')}>
-                De inschrijvingen voor De Koninklijke Loop 2025 starten vanaf 15 januari 2025.
+                De inschrijvingen voor De Koninklijke Loop 2026 starten vanaf 15 januari 2026.
               </p>
               <p className={cn(cc.text.body, 'text-gray-600 text-center leading-relaxed')}>
                 Wil je op de hoogte blijven? Volg ons dan op social media of neem contact met ons op.

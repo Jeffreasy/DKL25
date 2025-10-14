@@ -7,9 +7,9 @@
  * Event dates configuration
  */
 export const EVENT_DATES = {
-  main: new Date('2025-05-17T10:00:00+02:00'),
-  registration_deadline: new Date('2025-05-15T23:59:59+02:00'),
-  early_bird: new Date('2025-03-01T00:00:00+02:00')
+  main: new Date('2026-05-17T10:00:00+02:00'),
+  registration_deadline: new Date('2026-05-15T23:59:59+02:00'),
+  early_bird: new Date('2026-03-01T00:00:00+02:00')
 } as const
 
 /**

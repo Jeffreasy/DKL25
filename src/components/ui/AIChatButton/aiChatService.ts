@@ -249,7 +249,7 @@ const formatScheduleResponse = (result: { items: ScheduleItem[], contextHint: st
 
     // Handle full schedule request
     if (contextHint === 'schedule_full') {
-        let response = "Hier is het volledige programma voor De Koninklijke Loop 2025:\n\n";
+        let response = "Hier is het volledige programma voor De Koninklijke Loop 2026:\n\n";
         items.forEach(item => {
             response += `• ${item.time}: ${item.event_description}`;
             // Voeg details toe indien beschikbaar

@@ -9,9 +9,9 @@
 export const EVENT_INFO = {
   name: 'De Kerstloop Leiderdorp',
   shortName: 'DKL',
-  year: 2025,
+  year: 2026,
   edition: 25,
-  date: '2025-05-17',
+  date: '2026-05-17',
   location: 'Leiderdorp',
   organizer: 'Stichting De Kerstloop Leiderdorp'
 } as const
@@ -157,9 +157,9 @@ export const FEATURES = {
  * SEO defaults
  */
 export const SEO_DEFAULTS = {
-  title: 'De Kerstloop Leiderdorp 2025',
-  description: 'De 25e editie van De Kerstloop Leiderdorp. Doe mee aan deze gezellige hardloopevenement!',
-  keywords: ['kerstloop', 'leiderdorp', 'hardlopen', 'evenement', '2025'],
+  title: 'De Koninklijke Loop 2026',
+  description: 'De Koninklijke Loop 2026 is een uniek sponsorloop in Nederland, mede georganiseerd door mensen met een beperking voor mensen met een beperking. Schrijf je in, steun het goede doel en ervaar een onvergetelijke dag!',
+  keywords: ['DKL', 'De Koninklijke Loop', 'Koninklijke Loop', 'wandelevenement', '2026'],
   ogImage: '/og-image.jpg',
   twitterCard: 'summary_large_image'
 } as const

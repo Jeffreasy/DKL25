@@ -76,8 +76,8 @@ const Home: React.FC = memo(() => {
       <SEO
         route="/"
         isEventPage={true}
-        eventName="De Koninklijke Loop (DKL) 2025"
-        eventStartDate="2025-05-17T10:00:00+02:00"
+        eventName="De Koninklijke Loop (DKL) 2026"
+        eventStartDate="2026-05-17T10:00:00+02:00"
         eventDescription="Het unieke, rolstoelvriendelijke wandelevenement (DKL) in Apeldoorn voor en door mensen met een beperking, waarbij gelopen wordt voor het goede doel."
         eventLocationName="Paleis Het Loo, Apeldoorn"
         eventLocationAddress="Koninklijk Park 1, 7315 JA Apeldoorn"

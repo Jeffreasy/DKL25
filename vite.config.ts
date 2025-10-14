@@ -1,13 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import { visualizer } from 'rollup-plugin-visualizer'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   plugins: [
     react(),
-    visualizer({ open: true, filename: 'bundle-analysis.html' }),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
@@ -50,9 +48,9 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'De Koninklijke Loop 2025',
-        short_name: 'DKL 2025',
-        description: 'De Koninklijke Loop 2025 is een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.',
+        name: 'De Koninklijke Loop 2026',
+        short_name: 'DKL 2026',
+        description: 'De Koninklijke Loop 2026 is een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.',
         theme_color: '#FF6B00',
         background_color: '#ffffff',
         display: 'standalone',

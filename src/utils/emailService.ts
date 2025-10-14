@@ -65,7 +65,7 @@ export const sendAanmeldingEmail = async (data: RegistrationFormData) => {
   return sendEmail({
     type: 'aanmelding',
     to: data.email,
-    subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2025',
+    subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2026',
     data: {
       naam: data.naam,
       email: data.email,

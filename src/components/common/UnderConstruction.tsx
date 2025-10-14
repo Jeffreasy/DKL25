@@ -124,7 +124,7 @@ const UnderConstruction: React.FC = memo(() => {
           <div className={cn(cc.container.wide, cc.spacing.section, cc.typography.body)}>
             <div className={cn(cc.flex.center, 'min-h-[50vh]')}>
               <div className="text-center">
-                <h1 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>De Koninklijke Loop 2025</h1>
+                <h1 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>De Koninklijke Loop 2026</h1>
                 <p className={cn(cc.text.body, 'text-gray-600 mb-4')}>
                   DKL 2026 - De Koninklijke Loop is een uniek sponsorloop in Nederland, mede georganiseerd door mensen met een beperking voor mensen met een beperking.
                 </p>

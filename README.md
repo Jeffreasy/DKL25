@@ -1,6 +1,6 @@
-# De Koninklijke Loop 2025
+# De Koninklijke Loop 2026
 
-Een moderne webapplicatie voor De Koninklijke Loop 2025, een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.
+Een moderne webapplicatie voor De Koninklijke Loop 2026, een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.
 
 ## 🏗️ Architectuur
 
