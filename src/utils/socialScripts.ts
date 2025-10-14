@@ -103,12 +103,14 @@ export const loadFacebookSDK = (): Promise<void> => {
       document.head.appendChild(script);
     };
 
-    // Defer loading until after page is interactive
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(loadScript);
-    } else {
-      setTimeout(loadScript, 200);
-    }
+    // Defer loading until after page load event
+    window.addEventListener('load', () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadScript);
+      } else {
+        setTimeout(loadScript, 200);
+      }
+    });
   });
 
   return facebookScriptLoadingPromise;
@@ -204,12 +206,14 @@ export const loadInstagramEmbed = (): Promise<void> => {
       document.head.appendChild(script);
     };
 
-    // Defer loading until after page is interactive
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(loadScript);
-    } else {
-      setTimeout(loadScript, 300);
-    }
+    // Defer loading until after page load event
+    window.addEventListener('load', () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadScript);
+      } else {
+        setTimeout(loadScript, 300);
+      }
+    });
   });
 
   return instagramScriptLoadingPromise;

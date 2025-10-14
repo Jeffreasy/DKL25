@@ -10,7 +10,8 @@ export default defineConfig({
       jsxRuntime: 'automatic',
     }),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+      injectRegister: 'script-defer',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}'],
         runtimeCaching: [
@@ -54,7 +55,7 @@ export default defineConfig({
               cacheName: 'facebook-sdk',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                maxAgeSeconds: 60 * 60 * 24 * 7 // 1 week
               }
             }
           },
@@ -65,7 +66,7 @@ export default defineConfig({
               cacheName: 'instagram-embed',
               expiration: {
                 maxEntries: 5,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                maxAgeSeconds: 60 * 60 * 24 * 7 // 1 week
               }
             }
           }
