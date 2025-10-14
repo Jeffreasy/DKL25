@@ -2,7 +2,7 @@ import ReactGA from "react-ga4";
 
 export const initGA = (measurementId: string) => {
   if (typeof window !== 'undefined') {
-    // Defer Google Analytics loading until after page is interactive
+    // Defer Google Analytics loading until after page load to avoid blocking
     const loadGA = () => {
       // Load the Google Analytics script
       const script = document.createElement('script');
@@ -20,12 +20,14 @@ export const initGA = (measurementId: string) => {
       gtag('config', measurementId);
     };
 
-    // Use requestIdleCallback if available, otherwise setTimeout
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(loadGA);
-    } else {
-      setTimeout(loadGA, 100);
-    }
+    // Defer loading until after page load event
+    window.addEventListener('load', () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadGA);
+      } else {
+        setTimeout(loadGA, 100);
+      }
+    });
   }
 };
 

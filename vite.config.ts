@@ -177,6 +177,9 @@ export default defineConfig({
         drop_debugger: true,
         pure_funcs: ['console.log', 'console.info', 'console.debug'],
       },
+      mangle: {
+        safari10: true,
+      },
     },
   },
   server: {
