@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, memo, useMemo } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout/Layout';
 import LoadingScreen from './common/LoadingScreen';
 import ScrollToTop from './common/ScrollToTop';
@@ -40,6 +40,9 @@ const NormalApp: React.FC = memo(() => {
       <ScrollToTop />
       <Routes>
         <Route element={<LayoutWrapper />}>
+          {/* Redirect /home to / */}
+          <Route path="/home" element={<Navigate to="/" replace />} />
+          
           {routesConfig.map(({ path, component: Component, trackName, hasErrorBoundary }) => (
             <Route
               key={path}
