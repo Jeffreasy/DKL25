@@ -11,6 +11,11 @@
   body {
     @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white;
   }
+
+  /* Prevent FOIT (Flash of Invisible Text) - improves CLS */
+  @font-face {
+    font-display: swap;
+  }
 }
 
 @layer components {

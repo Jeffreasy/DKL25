@@ -5,7 +5,7 @@
 
 import type { Photo } from '../types'
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
 
 export const photoService = {
   /**
@@ -13,9 +13,9 @@ export const photoService = {
    */
   fetchVisible: async (): Promise<Photo[]> => {
     try {
-      console.log('Fetching photos from:', `${POSTGREST_URL}/api/photos`)
+      console.log('Fetching photos from:', `${POSTGREST_URL}/photos`)
 
-      const response = await fetch(`${POSTGREST_URL}/api/photos`)
+      const response = await fetch(`${POSTGREST_URL}/photos`)
 
       if (!response.ok) {
         console.error('HTTP error:', response.status, response.statusText)
@@ -36,7 +36,7 @@ export const photoService = {
    */
   fetchAll: async (): Promise<Photo[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/photos/admin`)
+      const response = await fetch(`${POSTGREST_URL}/photos/admin`)
 
       if (!response.ok) {
         console.error('HTTP error:', response.status, response.statusText)
@@ -56,7 +56,7 @@ export const photoService = {
    */
   fetchById: async (id: string): Promise<Photo | null> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/photos/${id}`)
+      const response = await fetch(`${POSTGREST_URL}/photos/${id}`)
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -79,7 +79,7 @@ export const photoService = {
    */
   fetchByYear: async (year: number): Promise<Photo[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/photos?year=eq.${year}`)
+      const response = await fetch(`${POSTGREST_URL}/photos?year=eq.${year}`)
 
       if (!response.ok) {
         console.error('HTTP error:', response.status, response.statusText)
@@ -101,7 +101,7 @@ export const photoService = {
     try {
       // Use the albums/{id}/photos endpoint as documented in the API reference
       // Add order parameter to ensure proper ordering
-      const response = await fetch(`${POSTGREST_URL}/api/albums/${albumId}/photos?order=order_number.asc`)
+      const response = await fetch(`${POSTGREST_URL}/albums/${albumId}/photos?order=order_number.asc`)
 
       if (!response.ok) {
         console.error('HTTP error:', response.status, response.statusText)

@@ -7,7 +7,15 @@ interface EmailTemplateProps {
   isConfirmation?: boolean;
 }
 
-const LOGO_URL = 'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png';
+import { getOptimizedImageUrl } from './imageOptimization';
+
+const LOGO_URL = getOptimizedImageUrl('664b8c1e593a1e81556b4238_0760849fb8_yn6vdm', {
+  width: 180,
+  height: 180,
+  crop: 'fill',
+  quality: 'auto',
+  format: 'auto'
+});
 
 const socialLinks = {
   facebook: 'https://www.facebook.com/profile.php?id=61555182577683',

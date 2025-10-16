@@ -6,7 +6,7 @@
 import { validateVideoUrl, generateThumbnailUrl } from '../utils/videoHelpers'
 import type { VideoRow, Video } from '../types'
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
 
 export const videoService = {
   /**
@@ -14,9 +14,9 @@ export const videoService = {
    */
   fetchVisible: async (): Promise<Video[]> => {
     try {
-      console.log('Fetching videos from:', `${POSTGREST_URL}/api/videos`)
+      console.log('Fetching videos from:', `${POSTGREST_URL}/videos`)
 
-      const response = await fetch(`${POSTGREST_URL}/api/videos`)
+      const response = await fetch(`${POSTGREST_URL}/videos`)
 
       if (!response.ok) {
         console.error('HTTP error:', response.status, response.statusText)

@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowForward } from '@mui/icons-material';
+import ArrowForward from '@mui/icons-material/ArrowForward';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, colors } from '@/styles/shared';

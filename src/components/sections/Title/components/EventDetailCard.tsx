@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, Variants } from 'framer-motion';
-import { CalendarToday, People, EmojiEvents } from '@mui/icons-material';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import People from '@mui/icons-material/People';
+import EmojiEvents from '@mui/icons-material/EmojiEvents';
 import { EventDetail } from '../functions/types';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { cc, cn } from '@/styles/shared';

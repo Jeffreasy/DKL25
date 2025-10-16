@@ -6,7 +6,7 @@ import { useProgramSchedule } from '../hooks/useProgramSchedule';
 import ProgramItemComponent from './ProgramItem';
 import { ProgramItem as ProgramItemType } from '../types';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { Info } from '@mui/icons-material';
+import Info from '@mui/icons-material/Info';
 import { cc, cn, colors, animations } from '@/styles/shared';
 
 // Skeleton component for program items

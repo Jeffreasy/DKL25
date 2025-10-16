@@ -5,7 +5,7 @@
 
 import type { Partner } from '../types'
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
 
 export const partnerService = {
   /**
@@ -13,7 +13,7 @@ export const partnerService = {
    */
   fetchVisible: async (): Promise<Partner[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/partners`)
+      const response = await fetch(`${POSTGREST_URL}/partners`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)

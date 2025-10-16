@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import type { Photo } from '../types';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 import { trackEvent } from '@/utils/googleAnalytics';
 import debounce from 'lodash.debounce';
 import { cc, cn, colors, animations } from '@/styles/shared';

@@ -4,6 +4,7 @@ import QRCode from 'qrcode';
 import { toast } from 'react-hot-toast';
 import { cc, cn, colors } from '@/styles/shared';
 import { CSSConfetti } from '@/components/common/CSSConfetti';
+import { getOptimizedImageUrl } from '@/utils/imageOptimization';
 
 interface SuccessMessageProps {
   data: RegistrationFormData;
@@ -48,7 +49,13 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
 
     // Preload logo
     const img = new Image();
-    img.src = "https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png";
+    img.src = getOptimizedImageUrl('664b8c1e593a1e81556b4238_0760849fb8_yn6vdm', {
+      width: 180,
+      height: 180,
+      crop: 'fill',
+      quality: 'auto',
+      format: 'auto'
+    });
   }, []);
 
 
@@ -188,7 +195,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
           <body>
             <div class="header">
               <div class="registration-id">ID: ${registrationId}</div>
-              <img src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" alt="DKL Logo">
+              <img src="${getOptimizedImageUrl('664b8c1e593a1e81556b4238_0760849fb8_yn6vdm', { width: 180, height: 180, crop: 'fill', quality: 'auto', format: 'auto' })}" alt="DKL Logo">
               <h1>Aanmeldbevestiging</h1>
               <p>Datum: ${new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
@@ -301,9 +308,15 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
         {/* Header sectie */}
         <div className={cn(colors.primary.bg, 'p-8 text-center')}>
           <div className="mb-4">
-            <img 
-              src="https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png" 
-              alt="DKL Logo" 
+            <img
+              src={getOptimizedImageUrl('664b8c1e593a1e81556b4238_0760849fb8_yn6vdm', {
+                width: 96,
+                height: 96,
+                crop: 'fill',
+                quality: 'auto',
+                format: 'auto'
+              })}
+              alt="DKL Logo"
               className="h-24 mx-auto"
             />
           </div>

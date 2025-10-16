@@ -4,6 +4,7 @@ import { cc, cn, colors, animations } from '@/styles/shared';
 // Type-safe props
 interface BackgroundVideoProps {
   videoUrl: string; // MP4/WebM video URL
+  posterUrl?: string; // Poster image for better performance
   onPlay?: () => void;
   onPause?: () => void;
   onEnded?: () => void;
@@ -14,6 +15,7 @@ interface BackgroundVideoProps {
 
 const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
   videoUrl,
+  posterUrl,
   onPlay,
   onPause,
   onEnded,
@@ -89,7 +91,8 @@ const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
         muted
         loop
         playsInline
-        preload={priority ? 'auto' : 'metadata'}
+        preload={priority ? 'auto' : 'none'}
+        poster={posterUrl}
         onPlay={onPlay}
         onPause={onPause}
         onEnded={onEnded}

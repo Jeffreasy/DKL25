@@ -6,9 +6,10 @@ import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import NavItem from './NavItem';
 import MobileMenu from './MobileMenu';
-import { NAV_ITEMS, DEFAULT_LOGO } from './constants';
+import { NAV_ITEMS, DEFAULT_LOGO_PUBLIC_ID } from './constants';
 import type { NavbarProps } from './types';
 import { cc, cn, colors, animations } from '@/styles/shared';
+import { OptimizedImage } from '@/components/common/OptimizedImage';
 
 const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLogo, onNavigate }) => {
   // Performance tracking
@@ -96,14 +97,30 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
           <div className={cn(cc.flex.between, 'h-full')}>
             <div className="flex-shrink-0 relative overflow-hidden rounded-lg group p-1">
               <Link to="/" className="block relative" aria-label="Home" onClick={() => handleNavigation('/')}>
-                <img
-                  src={customLogo || DEFAULT_LOGO}
-                  alt="De Koninklijke Loop logo"
-                  className={cn('h-16 w-auto relative', cc.zIndex.dropdown, cc.transition.transform, accessibilityPrefs.transformStyles)}
-                  loading="lazy"
-                  width={64}
-                  height={64}
-                />
+                {customLogo ? (
+                  <img
+                    src={customLogo}
+                    alt="De Koninklijke Loop logo"
+                    className={cn('h-16 w-auto relative', cc.zIndex.dropdown, cc.transition.transform, accessibilityPrefs.transformStyles)}
+                    loading="lazy"
+                    width={64}
+                    height={64}
+                  />
+                ) : (
+                  <OptimizedImage
+                    publicId={DEFAULT_LOGO_PUBLIC_ID}
+                    options={{
+                      width: 64,
+                      height: 64,
+                      crop: 'fill',
+                      quality: 'auto',
+                      format: 'auto'
+                    }}
+                    lazy={true}
+                    alt="De Koninklijke Loop logo"
+                    className={cn('h-16 w-auto relative', cc.zIndex.dropdown, cc.transition.transform, accessibilityPrefs.transformStyles)}
+                  />
+                )}
                 <div
                   className={cn(
                     'absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent',

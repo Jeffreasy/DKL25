@@ -13,5 +13,7 @@ export * from './validation/formValidators'
 // Format utilities
 export * from './format/contentFormatters'
 
+// Image optimization utilities
+export * from './imageOptimization'
 // API utilities
 export * from './api/requestHandler'

@@ -16,7 +16,7 @@ interface UnderConstructionData {
   updated_at: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dklemailservice.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export const useUnderConstruction = () => {
   const [data, setData] = useState<UnderConstructionData | null>(null);
@@ -29,7 +29,7 @@ export const useUnderConstruction = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/api/under-construction/active`, {
+        const response = await fetch(`${API_BASE_URL}/under-construction/active`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

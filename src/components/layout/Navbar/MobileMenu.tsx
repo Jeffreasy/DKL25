@@ -5,9 +5,10 @@ import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import NavItem from './NavItem';
 import SocialLink from './SocialLink';
-import { NAV_ITEMS, SOCIAL_LINKS, DEFAULT_LOGO } from './constants';
+import { NAV_ITEMS, SOCIAL_LINKS, DEFAULT_LOGO_PUBLIC_ID } from './constants';
 import type { MobileMenuProps } from './types';
 import { cc, cn, colors, animations } from '@/styles/shared';
+import { OptimizedImage } from '@/components/common/OptimizedImage';
 
 const MobileMenu = memo<MobileMenuProps>(({ isOpen, onClose }) => {
   // Performance tracking
@@ -78,13 +79,18 @@ const MobileMenu = memo<MobileMenuProps>(({ isOpen, onClose }) => {
       >
         <div className={cn(cc.flex.between, 'mb-8')}>
           <Link to="/" className="block" onClick={handleNavigation} aria-label="Home">
-            <img
-              src={DEFAULT_LOGO}
+            <OptimizedImage
+              publicId={DEFAULT_LOGO_PUBLIC_ID}
+              options={{
+                width: 48,
+                height: 48,
+                crop: 'fill',
+                quality: 'auto',
+                format: 'auto'
+              }}
+              lazy={true}
               alt="De Koninklijke Loop logo"
               className="h-12 w-auto"
-              loading="lazy"
-              width={48}
-              height={48}
             />
           </Link>
           <button

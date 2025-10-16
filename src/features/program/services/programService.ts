@@ -5,7 +5,7 @@
 
 import type { ProgramItem } from '../types'
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
 
 export const programService = {
   /**
@@ -13,7 +13,7 @@ export const programService = {
    */
   fetchVisible: async (): Promise<ProgramItem[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/program-schedule`)
+      const response = await fetch(`${POSTGREST_URL}/program-schedule`)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)

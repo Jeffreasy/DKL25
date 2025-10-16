@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn } from '@/styles/shared';
+import { OptimizedImage } from '@/components/common/OptimizedImage';
 
 interface EventImageProps {
   src: string;
@@ -12,6 +13,31 @@ interface EventImageProps {
 const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
   const { trackInteraction } = usePerformanceTracking('EventImage');
   const [imageError, setImageError] = useState(false);
+
+  // Extract Cloudinary public ID from URL
+  const getPublicId = (url: string): string => {
+    try {
+      const urlParts = url.split('/upload/');
+      if (urlParts.length === 2) {
+        const pathParts = urlParts[1].split('/');
+        // Remove version and transformations, keep the public ID
+        const publicIdParts = pathParts.filter(part =>
+          !part.startsWith('v') &&
+          !part.includes('c_') &&
+          !part.includes('w_') &&
+          !part.includes('h_') &&
+          !part.includes('f_') &&
+          !part.includes('q_')
+        );
+        return publicIdParts.join('/');
+      }
+      return url;
+    } catch {
+      return url;
+    }
+  };
+
+  const publicId = getPublicId(src);
 
   const handleImageLoad = useCallback(() => {
     setImageError(false);
@@ -40,15 +66,21 @@ const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
             </div>
           </div>
         ) : (
-          <img
-            src={src}
+          <OptimizedImage
+            publicId={publicId}
+            options={{
+              width: 800,
+              height: 450,
+              crop: 'fill',
+              quality: 'auto',
+              format: 'auto'
+            }}
+            usePictureElement={true}
+            lazy={true}
             alt={alt}
             className="w-full h-full object-cover"
             onLoad={handleImageLoad}
             onError={handleImageError}
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
           />
         )}
       </div>

@@ -5,7 +5,7 @@
 
 import type { Album, Photo } from '../types'
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
 
 export const albumService = {
   /**
@@ -13,9 +13,9 @@ export const albumService = {
    */
   fetchVisible: async (): Promise<Album[]> => {
     try {
-      console.log('Fetching albums from:', `${POSTGREST_URL}/api/albums`)
+      console.log('Fetching albums from:', `${POSTGREST_URL}/albums`)
 
-      const response = await fetch(`${POSTGREST_URL}/api/albums`)
+      const response = await fetch(`${POSTGREST_URL}/albums`)
 
       if (!response.ok) {
         console.error('HTTP error:', response.status, response.statusText)

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { EventNote } from '@mui/icons-material';
+import EventNote from '@mui/icons-material/EventNote';
 import { motion } from 'framer-motion';
 import { cc, cn, colors } from '@/styles/shared';
 

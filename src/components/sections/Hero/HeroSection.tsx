@@ -70,10 +70,10 @@ const HeroSection: React.FC = () => {
 
 
       {/* Content overlay */}
-      <div className={cn('relative', cc.zIndex.dropdown, cc.flex.col, 'h-full px-4')}>
+      <div className={cn('relative', cc.zIndex.dropdown, cc.flex.col, 'h-full px-4')} style={{ containIntrinsicSize: '1px 5000px' }}>
         <div className={cn('w-full max-w-5xl mx-auto pt-16 sm:pt-20 md:pt-24 lg:pt-28', cc.flex.center)}>
-          <div className={cn('bg-black/30 backdrop-blur-sm p-4 sm:p-6', cc.border.rounded, 'text-center min-h-[280px] flex flex-col justify-center')}>
-            <h1 className={cn(cc.text.h1, 'font-bold text-white leading-tight drop-shadow-lg')} style={{ contentVisibility: 'auto' }}>
+          <div className={cn('bg-black/30 backdrop-blur-sm p-4 sm:p-6', cc.border.rounded, 'text-center min-h-[280px] flex flex-col justify-center w-full')} style={{ willChange: 'auto' }}>
+            <h1 className={cn(cc.text.h1, 'font-bold text-white leading-tight drop-shadow-lg')}>
               De sponsorloop van mensen met een beperking voor een goed doel!
             </h1>
             <p className={cn(cc.typography.lead, 'text-white/90 mt-3 drop-shadow-md')}>

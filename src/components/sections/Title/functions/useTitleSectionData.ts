@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { TitleSectionData } from './types';
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com';
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api';
 
 export const useTitleSectionData = () => {
   const [titleData, setTitleData] = useState<TitleSectionData | null>(null);
@@ -13,7 +13,7 @@ export const useTitleSectionData = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/title_section_content`);
+      const response = await fetch(`${POSTGREST_URL}/title_section_content`);
 
       if (!response.ok) {
         if (response.status === 404) {

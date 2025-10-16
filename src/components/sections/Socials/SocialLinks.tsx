@@ -36,10 +36,10 @@ const DKLSocials: React.FC = memo(() => {
         setIsLoading(true);
         setError(null);
 
-        const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com';
-        console.log('Fetching social links from:', `${POSTGREST_URL}/api/social-links`);
+        const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api';
+        console.log('Fetching social links from:', `${POSTGREST_URL}/social-links`);
 
-        const response = await fetch(`${POSTGREST_URL}/api/social-links`);
+        const response = await fetch(`${POSTGREST_URL}/social-links`);
 
         if (!response.ok) {
           console.error('HTTP error:', response.status, response.statusText);

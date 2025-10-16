@@ -46,10 +46,10 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
         let recordingsData;
 
         try {
-          const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com';
-          console.log('Fetching radio recordings from:', `${POSTGREST_URL}/api/radio-recordings`);
+          const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api';
+          console.log('Fetching radio recordings from:', `${POSTGREST_URL}/radio-recordings`);
 
-          const response = await fetch(`${POSTGREST_URL}/api/radio-recordings`);
+          const response = await fetch(`${POSTGREST_URL}/radio-recordings`);
 
           if (!response.ok) {
             console.error('HTTP error:', response.status, response.statusText);

@@ -1,3 +1,5 @@
+export { OptimizedImage } from './OptimizedImage';
+export { ResponsiveImage } from './ResponsiveImage';
 /**
  * Common Components
  * Reusable components used throughout the application

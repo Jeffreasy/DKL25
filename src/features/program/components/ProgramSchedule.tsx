@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { DirectionsWalk, Celebration } from '@mui/icons-material';
+import DirectionsWalk from '@mui/icons-material/DirectionsWalk';
+import Celebration from '@mui/icons-material/Celebration';
 import { useModal } from '@/contexts/ModalContext';
 import { cc, cn, colors } from '@/styles/shared';
 

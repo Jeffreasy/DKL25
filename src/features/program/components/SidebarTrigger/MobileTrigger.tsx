@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import { EventNote } from '@mui/icons-material';
+import EventNote from '@mui/icons-material/EventNote';
 import { cc, cn, colors } from '@/styles/shared';
 
 interface TriggerProps {

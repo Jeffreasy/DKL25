@@ -54,5 +54,4 @@ export const SOCIAL_LINKS = [
   },
 ] as const satisfies Omit<SocialLinkProps, 'onClick'>[];
 
-export const DEFAULT_LOGO =
-  'https://res.cloudinary.com/dgfuv7wif/image/upload/v1733267882/664b8c1e593a1e81556b4238_0760849fb8_yn6vdm.png';
+export const DEFAULT_LOGO_PUBLIC_ID = '664b8c1e593a1e81556b4238_0760849fb8_yn6vdm';

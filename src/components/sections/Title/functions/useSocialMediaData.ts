@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { SocialEmbedRow } from './types';
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com';
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api';
 
 export const useSocialMediaData = () => {
   const [socialEmbeds, setSocialEmbeds] = useState<SocialEmbedRow[]>([]);
@@ -14,7 +14,7 @@ export const useSocialMediaData = () => {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`${POSTGREST_URL}/api/social-embeds`);
+        const response = await fetch(`${POSTGREST_URL}/social-embeds`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

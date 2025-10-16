@@ -5,7 +5,7 @@
 
 import type { SponsorRow } from '../types'
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || 'https://dklemailservice.onrender.com'
+const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
 
 export const sponsorService = {
   /**
@@ -13,9 +13,9 @@ export const sponsorService = {
    */
   fetchActive: async (): Promise<SponsorRow[]> => {
     try {
-      console.log('Fetching active sponsors from:', `${POSTGREST_URL}/api/sponsors`)
+      console.log('Fetching active sponsors from:', `${POSTGREST_URL}/sponsors`)
 
-      const response = await fetch(`${POSTGREST_URL}/api/sponsors`)
+      const response = await fetch(`${POSTGREST_URL}/sponsors`)
 
       if (!response.ok) {
         console.error('HTTP error:', response.status, response.statusText)
