@@ -1,287 +1,115 @@
-# De Koninklijke Loop 2026
+# 🏃 De Koninklijke Loop 2026 (DKL)
 
-Een moderne webapplicatie voor De Koninklijke Loop 2026, een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.
+Een moderne, hoogperformante webapplicatie voor De Koninklijke Loop 2026 - een uniek wandelevenement waar mensen met een beperking lopen voor het goede doel.
 
-## 🏗️ Architectuur
+---
 
-Het project bestaat uit twee hoofdcomponenten:
+## 🚀 Quick Start
 
-### Frontend (React + TypeScript)
-Een moderne React applicatie gebouwd met TypeScript en Vite, die de gebruikersinterface verzorgt voor De Koninklijke Loop.
+### Installatie
 
-### Backend (Go)
-Een robuuste email service geschreven in Go die alle email communicatie verzorgt voor het evenement.
-
-## 🚀 Frontend Features
-
-- Modern en toegankelijk design met Tailwind CSS
-- Responsive layout voor alle apparaten
-- Formulieren voor aanmelding en contact met Zod validatie
-- Email notificaties via N8N integratie
-- Google Analytics tracking
-- SEO optimalisatie met React Helmet
-- Social media integratie (Facebook, Instagram, YouTube, LinkedIn)
-- PDF generatie voor aanmeldbevestigingen
-- Error boundaries voor graceful error handling
-- Loading states en animaties
-- Donatie modal integratie
-- Automatische email ophaling en verwerking
-
-## 🛠️ Frontend Technologieën
-
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router
-- Zod (form validatie)
-- React Helmet (SEO)
-- Material UI
-- React Hot Toast
-- Canvas Confetti
-- QRCode
-- Date-fns
-
-## 📦 Frontend Installatie
-
-1. Clone de repository:
 ```bash
-git clone [repository-url]
-```
+# Clone repository
+git clone https://github.com/Jeffreasy/DKL25.git
+cd DKL25
 
-2. Installeer dependencies:
-```bash
+# Installeer dependencies
 npm install
-```
 
-3. Maak een `.env` bestand aan met de volgende variabelen:
-```env
-# Email Configuration (Mailgun)
-MAILGUN_API_KEY=your_mailgun_api_key
-MAILGUN_DOMAIN=dekoninklijkeloop.nl
-MAILGUN_FROM=noreply@dekoninklijkeloop.nl
-
-# Supabase Configuration
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_SUPABASE_URL=your_supabase_url
-
-# N8N Webhooks
-VITE_N8N_WEBHOOK_URL=your_n8n_webhook_url
-VITE_N8N_WEBHOOK_TEST_URL=your_n8n_test_webhook_url
-
-# Google Analytics
-VITE_GA_MEASUREMENT_ID=your_ga_measurement_id
-
-# Email Service
-RESEND_API_KEY=your_resend_api_key
-VITE_EMAIL_SERVICE_URL=your_email_service_url
-```
-
-4. Start de development server:
-```bash
+# Start development server
 npm run dev
 ```
 
-## 🏗️ Frontend Project Structuur
+### Environment Setup
 
-```
-src/
-├── components/         # Herbruikbare componenten
-│   ├── Navbar/        # Navigatie component
-│   ├── Footer/        # Footer component
-│   ├── modals/        # Modal componenten
-│   └── ...
-├── pages/             # Pagina componenten
-│   ├── home/          # Homepage
-│   ├── over-ons/      # Over ons pagina
-│   ├── contact/       # Contact pagina
-│   ├── aanmelden/     # Aanmeld pagina
-│   └── ...
-├── utils/             # Utility functies
-│   ├── emailService.ts    # Email service integratie
-│   ├── googleAnalytics.ts # Analytics tracking
-│   └── socialScripts.ts   # Social media integratie
-├── lib/               # Bibliotheek functies
-├── hooks/             # Custom React hooks
-├── providers/         # React context providers
-├── icons/             # Icon componenten
-├── types/             # TypeScript type definities
-├── App.tsx            # Hoofdapplicatie component
-└── main.tsx           # Applicatie entry point
-```
+Maak een `.env` bestand aan:
 
-## 📱 Frontend Pagina's
-
-- Home (`/`) - Landing page met event informatie
-- Over Ons (`/over-ons`) - Informatie over De Koninklijke Loop
-- Contact (`/contact`) - Contactformulier
-- FAQ (`/faq`) - Veelgestelde vragen
-- Wat is De Koninklijke Loop (`/wat-is-de-koninklijkeloop`) - Informatie over het evenement
-- Aanmelden (`/aanmelden`) - Aanmeldformulier
-- Privacy (`/privacy`) - Privacybeleid
-
-## 🔒 Frontend Beveiliging
-
-- API keys worden veilig opgeslagen in environment variables
-- Form validatie met Zod
-- Error boundaries voor graceful error handling
-- CORS configuratie voor API calls
-- Secure headers en CSP configuratie
-
-## 🧪 Frontend Testing
-
-```bash
-npm test
-```
-
-## 📦 Frontend Build
-
-```bash
-npm run build
-```
-
-## 🚀 Backend Features
-
-### Email Service
-- Contactformulier emails met automatische bevestigingen
-- Aanmeldingsformulier emails met gepersonaliseerde content
-- Automatische bevestigingsmails met event-specifieke informatie
-- Admin notificaties voor nieuwe aanmeldingen en contactverzoeken
-- HTML templates met dynamische content
-- Fallback naar plaintext voor betere deliverability
-
-### Authenticatie & Autorisatie
-- JWT-gebaseerde authenticatie
-- Gebruikersbeheer met rollen (admin, gebruiker)
-- Wachtwoord hashing met bcrypt
-- Login rate limiting
-- Beveiligde wachtwoord reset
-- HTTP-only cookies
-- Rol-gebaseerde toegangscontrole
-
-### Contact & Aanmelding Beheer
-- Beheer van contactformulieren
-- Beheer van aanmeldingen
-- Antwoorden toevoegen
-- Status tracking
-- Filtering op status en rol
-- Automatische email notificaties
-
-### Beveiliging & Stabiliteit
-- Rate limiting per IP en globaal
-- CORS beveiliging
-- Graceful shutdown
-- Retry mechanisme voor failed emails
-- Input validatie en sanitization
-- Secure SMTP configuratie
-- XSS preventie
-
-### Monitoring & Observability
-- Prometheus metrics
-- ELK logging integratie
-- Email metrics per template
-- Health check endpoints
-- Performance metrics
-- Rate limit statistieken
-- Error tracking
-
-## 🛠️ Backend Technologieën
-
-- Go 1.21+
-- PostgreSQL
-- GORM (ORM)
-- JWT
-- SMTP
-- Prometheus
-- ELK Stack
-- Docker
-
-## 📦 Backend Installatie
-
-1. Clone de repository:
-```bash
-git clone [repository-url]
-cd dklemailservice
-```
-
-2. Installeer dependencies:
-```bash
-go mod download
-go mod verify
-```
-
-3. Configureer de omgevingsvariabelen in `.env`:
 ```env
-# Algemene SMTP configuratie
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_USER=user@example.com
-SMTP_PASSWORD=your_password
-SMTP_FROM=noreply@example.com
-SMTP_TLS_ENABLED=true
-SMTP_TIMEOUT=10s
+# Supabase
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# Database configuratie
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=your_password
-DB_NAME=dklemailservice
-DB_SSL_MODE=disable
+# Email Service
+VITE_EMAIL_SERVICE_URL=https://dklemailservice.onrender.com
 
-# JWT configuratie
-JWT_SECRET=your_jwt_secret_key
-JWT_TOKEN_EXPIRY=24h
-
-# Rate Limiting
-GLOBAL_RATE_LIMIT=1000
-IP_RATE_LIMIT=50
-RATE_LIMIT_WINDOW=1h
+# Analytics
+VITE_GA_MEASUREMENT_ID=your_ga_measurement_id
 ```
 
-4. Start de service:
+---
+
+## 📚 Documentatie
+
+**Complete documentatie:** [`docs/`](docs/README.md)
+
+### Quick Links
+
+- 🏗️ **Architectuur:** [`docs/architecture/`](docs/architecture/PROJECT_OVERVIEW.md)
+- 📚 **Development Guides:** [`docs/guides/`](docs/guides/REFACTORING_GUIDE.md)
+- ⚡ **Performance:** [`docs/performance/`](docs/performance/PERFORMANCE_GUIDE.md)
+- 🎨 **Design System:** [`docs/styling/`](docs/styling/DESIGN_SYSTEM.md)
+- 🔍 **SEO:** [`docs/seo/`](docs/seo/SEO_COMPLETE_GUIDE.md)
+- 🔧 **Technical:** [`docs/technical/`](docs/technical/IMPLEMENTATION_NOTES.md)
+
+---
+
+## 💻 Tech Stack
+
+**Frontend:**
+- React 18 + TypeScript
+- Vite + Tailwind CSS
+- React Router + React Hook Form
+- Framer Motion + Material-UI Icons
+
+**Backend:**
+- Go 1.21+ + PostgreSQL
+- Supabase + Cloudinary
+- Email Service (SMTP)
+
+---
+
+## ✨ Features
+
+- ✅ Modern responsive design
+- ✅ SEO optimized (27+ schemas)
+- ✅ WCAG 2.1 AA accessible
+- ✅ 90+ Lighthouse score
+- ✅ Real-time analytics
+- ✅ AI chatbot (61 FAQ)
+- ✅ Online registration
+- ✅ Media galleries
+- ✅ Email automation
+
+---
+
+## 🎯 Performance
+
+- **Bundle Size:** ~414.5 kB
+- **Lighthouse:** 90+ score
+- **Load Time:** <2s TTI
+- **CLS:** <0.15
+
+Zie [`docs/performance/`](docs/performance/PERFORMANCE_GUIDE.md) voor details.
+
+---
+
+## 📦 Scripts
+
 ```bash
-# Development
-go run main.go
-
-# Production
-go build -ldflags="-s -w" -o dklemailservice
-./dklemailservice
+npm run dev          # Development server
+npm run build        # Production build
+npm run preview      # Preview build
+npm run lint         # Run linter
+npm run type-check   # TypeScript check
 ```
 
-## 🐳 Docker
+---
 
-### Frontend
-```bash
-# Build
-docker build -t dkl-frontend .
+## 📞 Contact
 
-# Run
-docker run -p 3000:3000 dkl-frontend
-```
-
-### Backend
-```bash
-# Build
-docker build -t dklemailservice .
-
-# Run
-docker run -p 8080:8080 --env-file .env dklemailservice
-```
-
-## 📊 Monitoring
-
-### Frontend
-- Google Analytics voor gebruikersgedrag
-- Error tracking met ErrorBoundary
-- Performance monitoring
-
-### Backend
-- Prometheus metrics
-- ELK logging
-- Health check endpoints
-- Rate limit monitoring
+- **Website:** https://dekoninklijkeloop.nl
+- **Email:** info@dekoninklijkeloop.nl
+- **GitHub:** https://github.com/Jeffreasy/DKL25
 
 ## 📄 Licentie
 
