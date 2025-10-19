@@ -18,7 +18,6 @@ interface SEOProps {
   type?: 'website' | 'article';
   route?: string;
   noIndex?: boolean;
-  keywords?: string[];
   isEventPage?: boolean;
   eventName?: string;
   eventStartDate?: ISO8601Date;
@@ -30,23 +29,6 @@ interface SEOProps {
   eventUrl?: string;
 }
 
-const defaultKeywords = [
-  'DKL',
-  'De Koninklijke Loop',
-  'DKL 2026',
-  'Koninklijke Loop',
-  'wandelevenement',
-  'wandelen',
-  'lopen',
-  'rolstoelvriendelijk',
-  'toegankelijk',
-  'beperking',
-  'Apeldoorn',
-  'Paleis Het Loo',
-  'goed doel',
-  'sponsorloop',
-  'inclusief evenement',
-];
 
 const defaultTitle = 'De Koninklijke Loop 2026';
 
@@ -58,7 +40,6 @@ export const SEO = memo(
     type = 'website',
     route = '',
     noIndex = false,
-    keywords,
     isEventPage = false,
     eventName,
     eventStartDate,
@@ -77,9 +58,8 @@ export const SEO = memo(
       siteBaseUrl: import.meta.env.VITE_SITE_URL || 'https://www.dekoninklijkeloop.nl',
       url: `${import.meta.env.VITE_SITE_URL || 'https://www.dekoninklijkeloop.nl'}${route}`,
       fullTitle: `${title}${title === defaultTitle ? '' : ` | ${defaultTitle}`}`,
-      imageArray: Array.isArray(images) ? images : [images],
-      keywordsString: [...defaultKeywords, ...(keywords || [])].join(', ')
-    }), [route, title, images, keywords]);
+      imageArray: Array.isArray(images) ? images : [images]
+    }), [route, title, images]);
 
     // Memoize date validation function
     const isValidDate = useMemo(() => (date: string | undefined): boolean => !!date && !isNaN(new Date(date).getTime()), []);
@@ -164,7 +144,6 @@ export const SEO = memo(
         <title>{siteConfig.fullTitle}</title>
         <meta name="description" content={description} />
         {noIndex && <meta name="robots" content="noindex" />}
-        <meta name="keywords" content={siteConfig.keywordsString} />
         <meta property="og:url" content={siteConfig.url} />
         <meta property="og:title" content={siteConfig.fullTitle} />
         <meta property="og:description" content={description} />
