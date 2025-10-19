@@ -1,11 +1,16 @@
 {
-  "name": "De Koninklijke Loop 2026",
+  "name": "DKL - De Koninklijke Loop 2026",
   "short_name": "DKL 2026",
-  "description": "De Koninklijke Loop 2026 is een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.",
+  "description": "DKL (De Koninklijke Loop) 2026: uniek rolstoeltoegankelijk wandelevenement in Apeldoorn op 17 mei. Voor en door mensen met een beperking.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
-  "theme_color": "#FF6B00",
+  "theme_color": "#FF9328",
+  "lang": "nl-NL",
+  "dir": "ltr",
+  "categories": ["sports", "charity", "events"],
   "icons": [
     {
       "src": "/favicon.jpg",
@@ -13,5 +18,21 @@
       "type": "image/jpeg",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Aanmelden",
+      "short_name": "Inschrijven",
+      "description": "Schrijf je in voor DKL 2026",
+      "url": "/aanmelden",
+      "icons": [{ "src": "/favicon.jpg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Contact",
+      "short_name": "FAQ",
+      "description": "Vragen over DKL",
+      "url": "/faq",
+      "icons": [{ "src": "/favicon.jpg", "sizes": "192x192" }]
+    }
   ]
-} 
+}

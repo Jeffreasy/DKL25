@@ -38,8 +38,8 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = memo(({
   }, [trackInteraction, handleDonatieClick]);
 
   return (
-    <div className={cn('fixed bottom-4 sm:bottom-6 md:bottom-8 left-0 right-0 w-full mx-auto px-4', cc.zIndex.modal)}>
-      <div className={cn(cc.flex.center, 'gap-2 sm:gap-4', className)}>
+    <aside className={cn('fixed bottom-4 sm:bottom-6 md:bottom-8 left-0 right-0 w-full mx-auto px-4', cc.zIndex.modal)} aria-label="Vaste actieknoppen">
+      <nav className={cn(cc.flex.center, 'gap-2 sm:gap-4', className)} aria-label="Primaire acties">
         <button
           onClick={handleInschrijfClick}
           className={cn(
@@ -55,7 +55,7 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = memo(({
             colors.primary.focusRing,
             cc.text.body
           )}
-          aria-label="Aanmelden voor het evenement"
+          aria-label="Aanmelden voor DKL 2026"
         >
           <EmailIcon sx={{ fontSize: { xs: 14, sm: 16 } }} />
           <span>Aanmelden</span>
@@ -75,13 +75,13 @@ const InschDoneerButton: React.FC<InschDoneerButtonProps> = memo(({
             colors.primary.focusRing,
             cc.text.body
           )}
-          aria-label="Doneren aan het goede doel"
+          aria-label="Doneren aan DKL - Het Liliane Fonds"
         >
-          <FavoriteIcon sx={{ fontSize: { xs: 14, sm: 16 } }} />
+          <FavoriteIcon sx={{ fontSize: { xs: 14, sm: 16 } }} aria-hidden="true" />
           <span>Doneren</span>
         </button>
-      </div>
-    </div>
+      </nav>
+    </aside>
   );
 });
 

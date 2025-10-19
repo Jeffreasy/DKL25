@@ -86,9 +86,175 @@ const Contact: React.FC<ContactProps> = memo(({ onInschrijfClick }) => {
   return (
     <>
       <SEO
-        title="Contact & Veelgestelde Vragen (FAQ) | De Koninklijke Loop (DKL)"
-        description="Heb je een vraag over De Koninklijke Loop? Vind hier antwoorden op veelgestelde vragen (FAQ) of neem contact met ons op."
+        title="Contact & Veelgestelde Vragen - De Koninklijke Loop (DKL) 2026"
+        description="Heb je vragen over De Koninklijke Loop 2026? Vind antwoorden in onze uitgebreide FAQ over inschrijven, routes, ondersteuning en praktische informatie. Of neem direct contact op via ons formulier."
+        route="/contact"
+        type="website"
+        images={[
+          'https://www.dekoninklijkeloop.nl/images/hero.jpg',
+          'https://www.dekoninklijkeloop.nl/images/contact-og.jpg'
+        ]}
       />
+
+      {/* Breadcrumb Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.dekoninklijkeloop.nl"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Contact",
+              "item": "https://www.dekoninklijkeloop.nl/contact"
+            }
+          ]
+        })}
+      </script>
+
+      {/* ContactPage Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "@id": "https://www.dekoninklijkeloop.nl/contact#webpage",
+          "url": "https://www.dekoninklijkeloop.nl/contact",
+          "name": "Contact & Veelgestelde Vragen - De Koninklijke Loop",
+          "description": "Neem contact op met De Koninklijke Loop of vind antwoorden in onze FAQ sectie",
+          "inLanguage": "nl-NL",
+          "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://www.dekoninklijkeloop.nl#website",
+            "url": "https://www.dekoninklijkeloop.nl",
+            "name": "De Koninklijke Loop"
+          },
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "De Koninklijke Loop",
+            "alternateName": ["DKL", "DKL 2026", "Koninklijke Loop"],
+            "url": "https://www.dekoninklijkeloop.nl",
+            "logo": "https://www.dekoninklijkeloop.nl/images/logo.png",
+            "description": "Een uniek sponsorloop evenement mede georganiseerd door mensen met een beperking voor mensen met een beperking",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Loolaan 16",
+              "addressLocality": "Apeldoorn",
+              "postalCode": "7315 AB",
+              "addressCountry": "NL"
+            },
+            "email": "info@dekoninklijkeloop.nl",
+            "sameAs": [
+              "https://facebook.com/dekoninklijkeloop",
+              "https://instagram.com/dekoninklijkeloop",
+              "https://youtube.com/@dekoninklijkeloop",
+              "https://linkedin.com/company/dekoninklijkeloop"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "customer support",
+              "email": "info@dekoninklijkeloop.nl",
+              "availableLanguage": ["nl"],
+              "areaServed": "NL"
+            }
+          }
+        })}
+      </script>
+
+      {/* FAQPage Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Wat maakt De Koninklijke Loop zo bijzonder?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De Koninklijke Loop is een sponsorloop mede georganiseerd door mensen met een beperking voor mensen met een beperking. We lopen de route over de Koninklijke weg, een rolstoelvriendelijke wandelroute."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Wanneer vindt de Koninklijke Loop 2026 plaats?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De Koninklijke Loop vindt op zaterdag 17 mei 2026 plaats."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Waar vindt de Koninklijke Loop plaats?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De Koninklijke Loop vindt plaats op de Koninklijke Weg, een rolstoelvriendelijke route. We lopen verschillende afstanden tussen Assel en Paleis het Loo, Apeldoorn. De deelnemers worden vanaf de Grote Kerk in Apeldoorn naar de startpunten van de verschillende afstanden gebracht."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hoe kan ik meedoen met De Koninklijke Loop?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Je kunt je inschrijven voor De Koninklijke Loop 2026 via het registratieformulier op onze website. Vul het formulier in en je ontvangt direct een bevestiging."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Welke afstanden kan ik kiezen bij De Koninklijke Loop?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Je kunt kiezen uit de 15, 10, 6 of 2,5 km. Elke afstand heeft zijn eigen karakter en moeilijkheidsgraad."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Moet je betalen om mee te doen met DKL 25?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Deelname aan de loop is helemaal gratis. Wel moet je jezelf van tevoren opgeven via het inschrijfformulier."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Wat als je hulp of begeleiding nodig hebt tijdens de loop?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Een begeleider of iemand die je helpt, kan zich ook via het formulier opgeven. Heb je niemand die je kan begeleiden of helpen en heb je dit wel nodig, geef dit even aan bij de bijzonderheden, dan kijken we of we je vanuit de organisatie kunnen helpen."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 25?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Er kunnen maximaal 75 mensen meedoen met de Koninklijke Loop. Zorg dus dat je op tijd inschrijft!"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Hoe kan ik contact opnemen met De Koninklijke Loop?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Je kunt direct contact met ons opnemen via het contactformulier op deze pagina of stuur een email naar info@dekoninklijkeloop.nl. We reageren zo snel mogelijk op je bericht."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Waar moet ik me melden als deelnemer?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Je kunt je melden bij het coördinatiepunt bij de Grote Kerk in Apeldoorn. Het adres is Loolaan 16, 7315 AB Apeldoorn."
+              }
+            }
+          ]
+        })}
+      </script>
       <div className={cn('min-h-screen pt-20', colors.neutral.white)}>
         <LazySection
           priority="high"

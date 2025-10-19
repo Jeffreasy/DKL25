@@ -16,15 +16,16 @@ const EventDetailsGrid: React.FC<EventDetailsGridProps> = memo(({ details }) => 
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10 max-w-5xl mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10 max-w-5xl mx-auto" role="list" aria-label="Evenement details">
       {detailCards.map((card, index) => (
-        <EventDetailCard
-          key={index}
-          icon={card.icon as 'calendar' | 'users' | 'medal'}
-          title={card.title}
-          description={card.description}
-          index={index}
-        />
+        <div key={index} role="listitem">
+          <EventDetailCard
+            icon={card.icon as 'calendar' | 'users' | 'medal'}
+            title={card.title}
+            description={card.description}
+            index={index}
+          />
+        </div>
       ))}
     </div>
   );

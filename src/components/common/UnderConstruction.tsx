@@ -88,8 +88,8 @@ const UnderConstruction: React.FC = memo(() => {
       <>
         <SEO
           route="/onder-constructie"
-          title="Onder Constructie - De Koninklijke Loop"
-          description="Deze pagina is momenteel onder constructie."
+          title="Onder Constructie - DKL (De Koninklijke Loop) 2026"
+          description="Deze pagina is momenteel onder constructie. DKL 2026 komt eraan!"
           noIndex={true}
         />
         <div className={loadingSkeleton.container} aria-busy="true">
@@ -114,17 +114,17 @@ const UnderConstruction: React.FC = memo(() => {
       <>
         <SEO
           route="/onder-constructie"
-          title="Onder Constructie - De Koninklijke Loop"
-          description="Deze pagina is momenteel onder constructie."
-          noIndex={false}
+          title="Onder Constructie - DKL (De Koninklijke Loop) 2026"
+          description="Deze pagina is momenteel onder constructie. DKL 2026 komt eraan!"
+          noIndex={true}
         />
         <div className={cn('min-h-screen pt-20', colors.neutral.white)} role="alert">
           <div className={cn(cc.container.wide, cc.spacing.section, cc.typography.body)}>
             <div className={cn(cc.flex.center, 'min-h-[50vh]')}>
               <div className="text-center">
-                <h1 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>De Koninklijke Loop 2026</h1>
+                <h1 className={cn(cc.text.h3, 'text-gray-900 mb-4')}>DKL 2026 - De Koninklijke Loop</h1>
                 <p className={cn(cc.text.body, 'text-gray-600 mb-4')}>
-                  DKL 2026 - De Koninklijke Loop is een uniek sponsorloop in Nederland, mede georganiseerd door mensen met een beperking voor mensen met een beperking.
+                  DKL (De Koninklijke Loop) is een uniek sponsorloop in Nederland, mede georganiseerd door mensen met een beperking voor mensen met een beperking.
                 </p>
                 <p className={cn(cc.text.muted, 'mb-4')}>
                   De website is momenteel in ontwikkeling. Neem contact op voor meer informatie.
@@ -195,9 +195,9 @@ const getSocialIcon = (platform: string) => {
     <>
       <SEO
         route="/onder-constructie"
-        title={`${data?.title || 'Onder Constructie'} - De Koninklijke Loop`}
-        description={data?.message || 'Deze pagina is momenteel onder constructie.'}
-        noIndex={false}
+        title={`${data?.title || 'Onder Constructie'} - DKL 2026`}
+        description={data?.message || 'Deze pagina is momenteel onder constructie. DKL 2026 komt eraan!'}
+        noIndex={true}
       />
       <div className={mainStyles.container}>
         <div className={mainStyles.wrapper}>

@@ -45,11 +45,11 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = memo(({ isOpen, onClose
 
             <div className="p-4 sm:p-6 space-y-6 max-h-[70vh] overflow-y-auto">
               <section>
-                <h2 className={cn(cc.text.h4, 'text-gray-900 mb-3')}>
-                  Privacyverklaring De Koninklijke Loop
+                <h2 className={cn(cc.text.h4, 'text-gray-900 mb-3', cc.typography.heading)}>
+                  Privacyverklaring DKL (De Koninklijke Loop)
                 </h2>
                 <p className={cn(cc.text.body, 'text-gray-600 mb-4')}>
-                  De Koninklijke Loop respecteert de privacy van alle gebruikers van haar website en draagt er zorg voor dat de persoonlijke informatie die u ons verschaft vertrouwelijk wordt behandeld.
+                  DKL (De Koninklijke Loop) respecteert de privacy van alle gebruikers van haar website en draagt er zorg voor dat de persoonlijke informatie die u ons verschaft vertrouwelijk wordt behandeld.
                 </p>
               </section>
 
@@ -58,7 +58,7 @@ export const PrivacyModal: React.FC<PrivacyModalProps> = memo(({ isOpen, onClose
                   Gebruik van verzamelde gegevens
                 </h3>
                 <div className={cn('space-y-3', cc.text.body, 'text-gray-600')}>
-                  <p>Wanneer u zich aanmeldt voor De Koninklijke Loop, vragen we u om persoonsgegevens te verstrekken. Deze gegevens worden gebruikt om:</p>
+                  <p>Wanneer u zich aanmeldt voor DKL (De Koninklijke Loop), vragen we u om persoonsgegevens te verstrekken. Deze gegevens worden gebruikt om:</p>
                   <ul className="list-disc pl-5 space-y-2">
                     <li>De dienst uit te kunnen voeren</li>
                     <li>U te informeren over het evenement</li>

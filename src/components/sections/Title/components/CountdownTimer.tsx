@@ -40,9 +40,9 @@ const CountdownTimer: React.FC = memo(() => {
     }
 
     return (
-      <div className="flex justify-center items-center space-x-2 sm:space-x-6 text-center">
+      <div className="flex justify-center items-center space-x-2 sm:space-x-6 text-center" role="group" aria-label="Tijd tot evenement">
         {Object.entries(timeLeft).map(([unit, value]) => (
-          <div key={unit} className="p-2">
+          <div key={unit} className="p-2" role="presentation">
             <div className={cn(cc.typography.display, colors.primary.text)}>
               {String(value).padStart(2, '0')}
             </div>
@@ -61,6 +61,9 @@ const CountdownTimer: React.FC = memo(() => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.5 }}
+      role="timer"
+      aria-live="off"
+      aria-label="Countdown tot DKL 2026"
     >
       {countdownDisplay}
     </motion.div>

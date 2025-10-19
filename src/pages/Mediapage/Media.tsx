@@ -59,24 +59,80 @@ const MediaPage: React.FC = memo(() => {
   return (
     <>
       <SEO
-        title="Media Archief | De Koninklijke Loop (DKL)"
-        description="Bekijk en beluister media van De Koninklijke Loop. Herbeleef de sfeer en enthousiasme van voorgaande edities via radiofragmenten en meer."
+        title="DKL Media Archief 2024 & 2025 - Foto's, Video's & Radio | De Koninklijke Loop"
+        description="Herbeleef DKL (De Koninklijke Loop) via ons media archief. Luister naar live radio-uitzendingen 2024 & 2025, bekijk foto's en video's van dit unieke rolstoeltoegankelijke wandelevenement in Apeldoorn."
         route="/media"
+        type="website"
+        images={[
+          'https://www.dekoninklijkeloop.nl/images/media-hero.jpg',
+          'https://www.dekoninklijkeloop.nl/images/hero.jpg'
+        ]}
       />
+
+      {/* BreadcrumbList Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.dekoninklijkeloop.nl"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Media Archief",
+              "item": "https://www.dekoninklijkeloop.nl/media"
+            }
+          ]
+        })}
+      </script>
+
+      {/* CollectionPage Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "@id": "https://www.dekoninklijkeloop.nl/media#webpage",
+          "url": "https://www.dekoninklijkeloop.nl/media",
+          "name": "DKL Media Archief - Foto's, Video's & Radio",
+          "description": "Media archief van De Koninklijke Loop met foto's, video's en radio-uitzendingen van voorgaande edities",
+          "inLanguage": "nl-NL",
+          "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://www.dekoninklijkeloop.nl#website"
+          },
+          "about": {
+            "@type": "Event",
+            "name": "De Koninklijke Loop (DKL)",
+            "url": "https://www.dekoninklijkeloop.nl"
+          },
+          "hasPart": [
+            {
+              "@type": "MediaGallery",
+              "name": "Radio Uitzendingen 2024 & 2025",
+              "description": "Live radio-uitzendingen tijdens De Koninklijke Loop 2024 & 2025"
+            }
+          ]
+        })}
+      </script>
 
       <div className="min-h-screen bg-white">
         {/* Hero Section - High Priority */}
         <LazySection priority="high">
-          <div className="relative bg-orange-100 py-20 px-5">
+          <header className="relative bg-orange-100 py-20 px-5">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className={cn(cc.text.h1, 'text-gray-900 mb-4', cc.typography.heading)}>
-                Media Archief
+              <h1 id="media-heading" className={cn(cc.text.h1, 'text-gray-900 mb-4', cc.typography.heading)}>
+                DKL Media Archief
               </h1>
               <p className={cn(cc.typography.lead, 'text-gray-700 max-w-3xl mx-auto')}>
                 Herbeleef de sfeer en enthousiasme van De Koninklijke Loop via onze media fragmenten.
               </p>
             </div>
-          </div>
+          </header>
         </LazySection>
 
         {/* Radio Gallery - Medium Priority */}
@@ -96,10 +152,13 @@ const MediaPage: React.FC = memo(() => {
             </div>
           }
         >
-          <RadioGallery
-            title="Radio Uitzendingen 2024"
-            subtitle="Luister naar fragmenten van onze live radio-uitzending tijdens De Koninklijke Loop 2024"
-          />
+          <section aria-labelledby="radio-heading">
+            <h2 id="radio-heading" className={cn(cc.a11y.srOnly)}>Radio Fragmenten</h2>
+            <RadioGallery
+              title="Radio Uitzendingen 2024 & 2025"
+              subtitle="Luister naar fragmenten van onze live radio-uitzending tijdens De Koninklijke Loop 2024"
+            />
+          </section>
         </LazySection>
 
         {/* Additional Content - Low Priority */}
@@ -116,8 +175,8 @@ const MediaPage: React.FC = memo(() => {
             </div>
           }
         >
-          <div className="max-w-4xl mx-auto py-16 px-5">
-            <h2 className={cn(cc.text.h2, 'text-gray-900 mb-6', cc.typography.heading)}>
+          <article className="max-w-4xl mx-auto py-16 px-5" aria-labelledby="why-media-heading">
+            <h2 id="why-media-heading" className={cn(cc.text.h2, 'text-gray-900 mb-6', cc.typography.heading)}>
               Waarom Media?
             </h2>
             <div className={cn('prose prose-lg max-w-none', cc.typography.body)}>
@@ -134,7 +193,7 @@ const MediaPage: React.FC = memo(() => {
                 Heb je vragen over onze media-uitingen of wil je meer weten? Neem dan <a href="/contact" className={cn(colors.primary.text, 'hover:text-primary-dark underline', cc.transition.colors)}>contact</a> met ons op!
               </p>
             </div>
-          </div>
+          </article>
         </LazySection>
       </div>
     </>

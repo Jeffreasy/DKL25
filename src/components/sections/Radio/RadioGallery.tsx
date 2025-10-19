@@ -104,17 +104,18 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
   }, [error, trackInteraction]);
 
   return (
-    <section className={cn(cc.spacing.section, 'px-4 bg-gradient-to-b from-white to-orange-50')}>
+    <section className={cn(cc.spacing.section, 'px-4 bg-gradient-to-b from-white to-orange-50')} aria-labelledby="radio-gallery-heading">
       <div className={cn(cc.container.wide)}>
         {/* Section Title */}
-        <motion.div 
+        <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <h2
-            className={cn(cc.text.h2, 'text-gray-900 mb-4')}
+            id="radio-gallery-heading"
+            className={cn(cc.text.h2, 'text-gray-900 mb-4', cc.typography.heading)}
           >
             {title}
           </h2>
@@ -129,7 +130,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
 
         {/* Loading State */}
         {isLoading && (
-          <div className="space-y-8">
+          <div className="space-y-8" role="status" aria-live="polite" aria-label="Radio fragmenten laden">
             {[...Array(2)].map((_, index) => (
               <div key={index} className={cn(animations.pulse, 'bg-white rounded-2xl', cc.shadow.lg, 'overflow-hidden w-full max-w-4xl mx-auto')}>
                 <div className="flex flex-col md:flex-row">
@@ -157,7 +158,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
 
         {/* Error State */}
         {!isLoading && error && (
-          <div className={cn('text-center py-10')}>
+          <div className={cn('text-center py-10')} role="alert" aria-live="polite">
             <p className={cn(cc.text.error, 'mb-4')}>{error}</p>
             <button
               onClick={handleRetry}
@@ -173,9 +174,9 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
 
         {/* Radio Recordings */}
         {!isLoading && !error && (
-          <div className="relative">
+          <div className="relative" role="region" aria-label="Radio opnames lijst">
             {/* Horizontal scroll container */}
-            <div className="flex overflow-x-auto pb-6 gap-6 snap-x snap-mandatory scrollbar-hide">
+            <div className="flex overflow-x-auto pb-6 gap-6 snap-x snap-mandatory scrollbar-hide" role="list">
               {recordings.map((recording, index) => (
                 <motion.div 
                   key={recording.id}
@@ -183,6 +184,7 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="flex-none w-full sm:w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] lg:w-[calc(33.333%-1.5rem)] snap-center"
+                  role="listitem"
                 >
                   <RadioPlayer
                     audioUrl={recording.audio_url}

@@ -46,7 +46,7 @@ const QuestionItem: React.FC<QuestionItemProps> = memo(({
 
   return (
     <details className="group rounded-lg overflow-hidden" onClick={handleClick}>
-      <summary 
+      <summary
         className={cn(
           cc.flex.start,
           'cursor-pointer p-4 text-white rounded-lg outline-none',
@@ -54,8 +54,7 @@ const QuestionItem: React.FC<QuestionItemProps> = memo(({
           colors.primary.hover,
           cc.transition.base
         )}
-        role="button"
-        tabIndex={0}
+        aria-label={question}
       >
         <span className="mr-2 text-xl" role="img" aria-label={icon}>
           {icon}
@@ -139,12 +138,12 @@ SearchBar.displayName = 'SearchBar';
 
 const CategoryHeader: React.FC<{ title: string; icon: string }> = memo(({ title, icon }) => (
   <div className="flex items-center space-x-3 mb-6 pb-3 border-b-2 border-primary/10">
-    <span className="text-3xl" role="img" aria-label={icon}>
+    <span className="text-3xl" role="img" aria-hidden="true">
       {icon}
     </span>
-    <h3 className={cn(cc.text.h3, 'text-gray-800', cc.typography.heading)}>
+    <h2 id={`category-${title.toLowerCase().replace(/\s+/g, '-')}`} className={cn(cc.text.h3, 'text-gray-800', cc.typography.heading)}>
       {title}
-    </h3>
+    </h2>
   </div>
 ));
 
@@ -171,11 +170,11 @@ const FAQ: React.FC<FAQProps> = memo(({ onInschrijfClick, onContactClick }) => {
   };
 
   return (
-    <section className={cn('w-full bg-white text-gray-800 p-8 rounded-xl', cc.shadow.lg)}>
-      <div className={cn(cc.container.narrow, 'text-center mb-12')}>
-        <h2 className={cn(cc.text.h1, 'mb-6', colors.primary.text, cc.typography.heading)}>
+    <article className={cn('w-full bg-white text-gray-800 p-8 rounded-xl', cc.shadow.lg)} role="main" aria-labelledby="faq-heading">
+      <header className={cn(cc.container.narrow, 'text-center mb-12')}>
+        <h1 id="faq-heading" className={cn(cc.text.h1, 'mb-6', colors.primary.text, cc.typography.heading)}>
           Alles wat je wilt weten over De Koninklijke Loop
-        </h2>
+        </h1>
         <p className={cn(cc.text.h5, cc.text.muted, 'mb-8')}>
           Vind snel antwoord op je vragen of neem contact met ons op
         </p>
@@ -183,33 +182,36 @@ const FAQ: React.FC<FAQProps> = memo(({ onInschrijfClick, onContactClick }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto" role="list" aria-label="FAQ categorieën">
         {filteredCategories.map((category) => (
-          <div 
-            key={category.title} 
+          <section
+            key={category.title}
             className={cn('bg-white rounded-2xl p-6 border border-gray-100', cc.transition.base, 'hover:shadow-lg')}
+            aria-labelledby={`category-${category.title.toLowerCase().replace(/\s+/g, '-')}`}
+            role="listitem"
           >
             <CategoryHeader title={category.title} icon={category.icon} />
-            <div className="space-y-4">
+            <div className="space-y-4" role="list" aria-label={`Vragen over ${category.title}`}>
               {category.questions.map((qa) => (
-                <QuestionItem
-                  key={qa.question}
-                  {...qa}
-                  onInschrijfClick={qa.question.includes('contact') ? handleContactClick : onInschrijfClick}
-                />
+                <div key={qa.question} role="listitem">
+                  <QuestionItem
+                    {...qa}
+                    onInschrijfClick={qa.question.includes('contact') ? handleContactClick : onInschrijfClick}
+                  />
+                </div>
               ))}
             </div>
-          </div>
+          </section>
         ))}
       </div>
 
-      <div className="mt-16 text-center">
+      <aside className="mt-16 text-center" aria-labelledby="contact-cta-heading">
         <div className="max-w-2xl mx-auto bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 rounded-2xl p-8">
-          <h3 className={cn(cc.text.h3, 'text-gray-900 mb-4', cc.typography.heading)}>
+          <h2 id="contact-cta-heading" className={cn(cc.text.h3, 'text-gray-900 mb-4', cc.typography.heading)}>
             Nog vragen?
-          </h3>
+          </h2>
           <p className={cn(cc.text.muted, 'mb-6')}>
             We helpen je graag verder met al je vragen over De Koninklijke Loop
           </p>
@@ -231,8 +233,8 @@ const FAQ: React.FC<FAQProps> = memo(({ onInschrijfClick, onContactClick }) => {
             </span>
           </button>
         </div>
-      </div>
-    </section>
+      </aside>
+    </article>
   );
 });
 

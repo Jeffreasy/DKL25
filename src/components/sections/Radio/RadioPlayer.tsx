@@ -157,13 +157,16 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
   }, [title, trackInteraction]);
 
   return (
-    <motion.div 
+    <article
       className="bg-white rounded-2xl shadow-lg overflow-hidden w-full h-full border border-orange-200"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      aria-labelledby={`radio-title-${title.toLowerCase().replace(/\s+/g, '-')}`}
     >
-      <div className="flex flex-col h-full">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col h-full"
+      >
         {/* Thumbnail/Waveform side - Adjusted height */}
         <div className="w-full bg-gray-100 relative h-[180px] overflow-hidden">
           {thumbnailUrl ? (
@@ -186,16 +189,16 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
           
           {/* Date badge if provided */}
           {date && (
-            <div className={cn('absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow', cc.text.small, 'font-medium text-gray-800')}>
+            <time dateTime={date} className={cn('absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow', cc.text.small, 'font-medium text-gray-800')}>
               {date}
-            </div>
+            </time>
           )}
         </div>
         
         {/* Player controls side - Adjusted padding and text sizes */}
         <div className="flex-1 p-4 flex flex-col justify-between">
-          <div>
-            <h3 className={cn(cc.text.bodyLarge, 'text-gray-900 mb-2 line-clamp-2')}>
+          <header>
+            <h3 id={`radio-title-${title.toLowerCase().replace(/\s+/g, '-')}`} className={cn(cc.text.bodyLarge, 'text-gray-900 mb-2 line-clamp-2')}>
               {title}
             </h3>
             {description && (
@@ -203,15 +206,21 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
                 {description}
               </p>
             )}
-          </div>
+          </header>
           
           {/* Audio player controls */}
-          <div className="space-y-3">
+          <div className="space-y-3" role="group" aria-label="Audio afspeel controles">
             {/* Progress bar */}
-            <div 
+            <div
               ref={progressBarRef}
               className="h-2 bg-gray-200 rounded-full cursor-pointer relative"
               onClick={handleProgressBarClick}
+              role="slider"
+              aria-label="Audio voortgang"
+              aria-valuemin={0}
+              aria-valuemax={duration}
+              aria-valuenow={currentTime}
+              tabIndex={0}
             >
               <div 
                 className="absolute h-full bg-primary rounded-full"
@@ -261,22 +270,27 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
                     value={volume}
                     onChange={handleVolumeChange}
                     className="w-20 h-1 bg-gray-200 rounded-full appearance-none cursor-pointer"
+                    aria-label="Volume regelen"
+                    aria-valuemin={0}
+                    aria-valuemax={1}
+                    aria-valuenow={volume}
                   />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
       
       {/* Hidden audio element */}
-      <audio 
-        ref={audioRef} 
+      <audio
+        ref={audioRef}
         src={audioUrl}
         preload="metadata"
         className="hidden"
+        aria-label={`Audio speler voor ${title}`}
       />
-    </motion.div>
+    </article>
   );
 });
 

@@ -92,8 +92,7 @@ const TitleSection: React.FC<TitleSectionProps> = memo(({ onInschrijfClick }) =>
   return (
     <section
       className={cn('relative w-full bg-gradient-to-b from-orange-50 to-orange-100 py-12 text-center overflow-hidden isolate', cc.typography.heading)}
-      role="region"
-      aria-label="Evenement details"
+      aria-labelledby="title-section-heading"
     >
       {isTitleLoading && !titleData ? (
         <div className="max-w-[1100px] mx-auto px-4 sm:px-8 py-8 sm:py-12">
@@ -145,7 +144,7 @@ const TitleSection: React.FC<TitleSectionProps> = memo(({ onInschrijfClick }) =>
           </Suspense>
         )}
         {socialError && (
-          <div className={cn('max-w-md mx-auto p-4 bg-red-50 border border-red-200', cc.border.rounded, 'text-center')}>
+          <div className={cn('max-w-md mx-auto p-4 bg-red-50 border border-red-200', cc.border.rounded, 'text-center')} role="alert" aria-live="polite">
             <p className={cn(cc.text.error)}>{socialError}</p>
           </div>
         )}

@@ -54,27 +54,50 @@ const Privacy: React.FC = memo(() => {
 
   return (
     <>
-      <SEO 
-        title="Privacybeleid | De Koninklijke Loop (DKL)"
-        description="Lees hier hoe De Koninklijke Loop omgaat met uw privacy en persoonsgegevens."
+      <SEO
+        title="Privacybeleid - DKL (De Koninklijke Loop) 2026"
+        description="Lees hoe DKL (De Koninklijke Loop) omgaat met uw privacy en persoonsgegevens. Veilig en vertrouwelijk volgens AVG/GDPR wetgeving. Transparant privacybeleid voor deelnemers en bezoekers."
         route="/privacy"
+        noIndex={false}
       />
 
+      {/* BreadcrumbList Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.dekoninklijkeloop.nl"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Privacy",
+              "item": "https://www.dekoninklijkeloop.nl/privacy"
+            }
+          ]
+        })}
+      </script>
+
       <div className={cn('min-h-screen pt-20', colors.neutral.white)}>
-        <div className={cn(cc.container.narrow, 'p-4 sm:p-6')}>
-          <div className={cn('bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden', cc.shadow.xl)}>
-            <div className={cn(colors.primary.bg, 'p-4 sm:p-6')}>
-              <h1 className={cn(cc.text.h3, 'text-white tracking-tight', cc.typography.heading)}>
-                Privacybeleid
+        <main className={cn(cc.container.narrow, 'p-4 sm:p-6')} role="main" aria-labelledby="privacy-heading">
+          <article className={cn('bg-white rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden', cc.shadow.xl)}>
+            <header className={cn(colors.primary.bg, 'p-4 sm:p-6')}>
+              <h1 id="privacy-heading" className={cn(cc.text.h3, 'text-white tracking-tight', cc.typography.heading)}>
+                Privacybeleid DKL
               </h1>
-            </div>
+            </header>
 
             <div className="p-4 sm:p-6 space-y-6">
               {privacySections.map((section, index) => (
-                <section key={section.title}>
+                <section key={section.title} aria-labelledby={`privacy-section-${index}`}>
                   {section.isIntro ? (
                     <>
-                      <h2 className={cn(cc.text.h5, 'text-gray-900 mb-3', cc.typography.heading)}>
+                      <h2 id={`privacy-section-${index}`} className={cn(cc.text.h5, 'text-gray-900 mb-3', cc.typography.heading)}>
                         {section.title}
                       </h2>
                       <p className={cn(cc.text.body, cc.text.muted, 'mb-4')}>
@@ -83,7 +106,7 @@ const Privacy: React.FC = memo(() => {
                     </>
                   ) : (
                     <>
-                      <h3 className={cn('text-md text-gray-900 mb-2', cc.typography.heading)}>
+                      <h3 id={`privacy-section-${index}`} className={cn('text-md text-gray-900 mb-2', cc.typography.heading)}>
                         {section.title}
                       </h3>
                       <div className={cn('space-y-3', cc.text.muted)}>
@@ -101,8 +124,8 @@ const Privacy: React.FC = memo(() => {
                 </section>
               ))}
             </div>
-          </div>
-        </div>
+          </article>
+        </main>
       </div>
     </>
   );

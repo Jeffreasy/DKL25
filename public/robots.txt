@@ -1,3 +1,6 @@
+# DKL (De Koninklijke Loop) 2026 - Robots.txt
+# Last updated: 2025-01-19
+
 User-agent: *
 Allow: /
 
@@ -6,16 +9,30 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /dashboard/
 
-# Voorkom indexering van zoekresultaten
+# Voorkom indexering van zoekresultaten en parameters
 Disallow: /*?*query=
+Disallow: /*?*search=
+Disallow: /*?*utm_
+
+# Sta belangrijke paden expliciet toe
+Allow: /
+Allow: /aanmelden
+Allow: /wat-is-de-koninklijkeloop
+Allow: /faq
+Allow: /media
+Allow: /over-ons
+Allow: /privacy
 
 # Sta media toe
 Allow: /images/
 Allow: /assets/
 Allow: /media/
 
-# Allow indexing of under-construction pages when site is live
-Allow: /onder-constructie
+# Blokkeer onder-constructie van indexering
+Disallow: /onder-constructie
 
-# Sitemap locatie
-Sitemap: https://dekoninklijkeloop.nl/sitemap.xml
+# Sitemap locatie (CORRECT URL)
+Sitemap: https://www.dekoninklijkeloop.nl/sitemap.xml
+
+# Crawl-delay (optioneel, voor heavy crawlers)
+# Crawl-delay: 1

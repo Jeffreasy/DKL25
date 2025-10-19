@@ -26,8 +26,9 @@ const ChatInput: React.FC<ChatInputProps> = memo(({ onSendMessage, disabled }) =
   }, [handleSend]);
 
   return (
-    <div className={cn('p-4', cc.divider.horizontal, 'border-gray-100')}>
+    <div className={cn('p-4', cc.divider.horizontal, 'border-gray-100')} role="form" aria-label="Chat invoer">
       <div className={cn(cc.flex.start, 'gap-2')}>
+        <label htmlFor="chat-input" className={cn(cc.a11y.srOnly)}>Typ je vraag aan DKL Assistant</label>
         <input
           id="chat-input"
           name="chat-message"
@@ -36,7 +37,7 @@ const ChatInput: React.FC<ChatInputProps> = memo(({ onSendMessage, disabled }) =
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={disabled}
-          placeholder={disabled ? "Even geduld..." : "Typ je bericht..."}
+          placeholder={disabled ? "Even geduld..." : "Typ je vraag..."}
           className={cn(
             'flex-1 bg-gray-100 text-gray-900 placeholder-gray-500 px-4 py-2 disabled:opacity-50',
             cc.border.circle,
@@ -44,6 +45,8 @@ const ChatInput: React.FC<ChatInputProps> = memo(({ onSendMessage, disabled }) =
             'focus:ring-2 focus:ring-primary/50'
           )}
           autoComplete="off"
+          aria-label="Chat bericht invoer"
+          aria-describedby="chat-input-help"
         />
         <button
           onClick={handleSend}
@@ -54,10 +57,13 @@ const ChatInput: React.FC<ChatInputProps> = memo(({ onSendMessage, disabled }) =
             cc.border.circle,
             cc.transition.colors
           )}
+          aria-label="Verstuur bericht"
+          type="submit"
         >
-          <SendIcon />
+          <SendIcon aria-hidden="true" />
         </button>
       </div>
+      <span id="chat-input-help" className={cn(cc.a11y.srOnly)}>Druk op Enter om je bericht te versturen</span>
     </div>
   );
 });

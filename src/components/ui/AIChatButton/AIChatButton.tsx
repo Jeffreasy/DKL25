@@ -66,7 +66,7 @@ const AIChatButton = memo(() => {
   
   // Startpunt suggesties (Wordt nu minder gebruikt, meer als fallback)
   const initialSuggestions = [
-    "Wanneer is De Koninklijke Loop?",
+    "Wanneer is DKL 2026?",
     "Hoe kan ik meedoen?",
     "Welke afstanden zijn er?",
     "Is de route rolstoelvriendelijk?"
@@ -91,7 +91,7 @@ const AIChatButton = memo(() => {
       // Toon "komt binnenkort beschikbaar" bericht als chat niet actief is
       setMessages([{
         id: uuidv4(),
-        content: "Welkom bij de DKL Assistant! 👋\n\nDeze chat functie is momenteel in ontwikkeling en zal binnenkort beschikbaar zijn. Je kunt dan hier terecht voor al je vragen over De Koninklijke Loop.",
+        content: "Welkom bij de DKL Assistant! 👋\n\nDeze chat functie is momenteel in ontwikkeling en zal binnenkort beschikbaar zijn. Je kunt dan hier terecht voor al je vragen over DKL (De Koninklijke Loop) 2026.",
         sender: 'assistant',
         timestamp: new Date()
       }]);
@@ -198,14 +198,19 @@ const AIChatButton = memo(() => {
   }, [trackInteraction, navigate]);
 
   return (
-    <div className={cn('fixed bottom-28 right-4 sm:right-8', cc.zIndex.max)}>
+    <aside className={cn('fixed bottom-28 right-4 sm:right-8', cc.zIndex.max)} aria-label="AI Chat Assistant">
       {isOpen && (
-        <div className={cn('absolute bottom-full right-0 mb-4 bg-white rounded-2xl w-[320px] sm:w-[380px] overflow-hidden', cc.shadow.xl, animations.fadeIn)}>
+        <div
+          className={cn('absolute bottom-full right-0 mb-4 bg-white rounded-2xl w-[320px] sm:w-[380px] overflow-hidden', cc.shadow.xl, animations.fadeIn)}
+          role="dialog"
+          aria-labelledby="chat-header"
+          aria-modal="false"
+        >
           {/* Header */}
-          <div className={cn(colors.primary.bg, 'p-4 border-b border-primary-dark/10', cc.flex.between)}>
+          <header className={cn(colors.primary.bg, 'p-4 border-b border-primary-dark/10', cc.flex.between)}>
             <div className={cn(cc.flex.start, 'gap-2')}>
               <SmartToyIcon className="text-white" />
-              <span className={cn('text-white font-semibold', cc.text.h5, cc.typography.heading)}>DKL Assistant</span>
+              <h2 id="chat-header" className={cn('text-white font-semibold', cc.text.h5, cc.typography.heading)}>DKL Assistant</h2>
             </div>
             <button
               onClick={toggleChat}
@@ -214,11 +219,11 @@ const AIChatButton = memo(() => {
             >
               <CloseIcon fontSize="small" />
             </button>
-          </div>
+          </header>
 
           {/* Chat container */}
           <div className={cn('h-[450px]', cc.flex.col)}>
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4" role="log" aria-live="polite" aria-label="Chat berichten">
               {messages.map(message => (
                 <ChatMessage 
                     key={message.id} 
@@ -228,7 +233,7 @@ const AIChatButton = memo(() => {
               ))}
               
               {isTyping && (
-                <div className={cc.flex.start}>
+                <div className={cc.flex.start} role="status" aria-live="polite" aria-label="Assistant is aan het typen">
                   <div className="bg-gray-100 rounded-2xl p-4 max-w-[80%]">
                     <div className={cn(cc.flex.start, 'space-x-2')}>
                       <div className={cn('w-2 h-2 bg-gray-400', cc.border.circle, 'animate-bounce')} style={{ animationDelay: '0s' }}></div>
@@ -285,16 +290,17 @@ const AIChatButton = memo(() => {
           cc.shadow.xl,
           animations.fadeIn
         )}
-        aria-label="Open AI chat"
+        aria-label={isOpen ? "Sluit DKL chat assistant" : "Open DKL chat assistant"}
+        aria-expanded={isOpen}
       >
         {/* Adjusted icon size */}
         <SmartToyIcon 
           sx={{ fontSize: { xs: 24, md: 28 } }} 
           className="transition-transform group-hover:scale-110" 
         />
-        <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white" />
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white" aria-hidden="true" />
       </button>
-    </div>
+    </aside>
   );
 });
 

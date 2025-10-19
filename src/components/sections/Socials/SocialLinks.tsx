@@ -77,15 +77,15 @@ const DKLSocials: React.FC = memo(() => {
   }, [trackInteraction]);
 
   return (
-    <section className={cn('bg-gray-900 py-20 px-5 relative overflow-hidden', cc.typography.heading)}>
+    <section className={cn('bg-gray-900 py-20 px-5 relative overflow-hidden', cc.typography.heading)} aria-labelledby="socials-section-heading">
       {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-gray-900 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-gray-900 pointer-events-none" aria-hidden="true" />
       
       <div className="max-w-7xl mx-auto relative">
         {/* Title with animated underline */}
-        <div className="text-center mb-16 relative">
-          <h2 className={cn(cc.text.h2, 'text-white mb-5 relative')}>
-            Volg ons op sociale media
+        <header className="text-center mb-16 relative">
+          <h2 id="socials-section-heading" className={cn(cc.text.h2, 'text-white mb-5 relative')}>
+            Volg DKL op sociale media
             <span className={cn(
               'absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full',
               colors.primary.bg,
@@ -94,11 +94,11 @@ const DKLSocials: React.FC = memo(() => {
               animations.pulse
             )} />
           </h2>
-        </div>
+        </header>
 
         {/* Error state */}
         {error && (
-          <div className={cn('text-red-400 text-center mb-8 px-4 py-3', cc.border.rounded, 'bg-red-900/20 backdrop-blur-sm max-w-md mx-auto')}>
+          <div className={cn('text-red-400 text-center mb-8 px-4 py-3', cc.border.rounded, 'bg-red-900/20 backdrop-blur-sm max-w-md mx-auto')} role="alert" aria-live="polite">
             <p className={cc.text.body}>{error}</p>
             <button
               onClick={() => window.location.reload()}
@@ -110,7 +110,7 @@ const DKLSocials: React.FC = memo(() => {
         )}
 
         {/* Social Icons Grid with loading state */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8 max-w-[800px] mx-auto">
+        <nav className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-8 max-w-[800px] mx-auto" aria-label="Social media links">
           {isLoading ? (
             // Loading skeletons
             loadingSkeletons
@@ -164,7 +164,7 @@ const DKLSocials: React.FC = memo(() => {
               </a>
             ))
           )}
-        </div>
+        </nav>
       </div>
     </section>
   );

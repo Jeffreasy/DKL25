@@ -46,7 +46,11 @@ const OptimizedImage: React.FC<{
         <div className={cn('absolute inset-0 bg-gray-200 animate-pulse rounded', className)} />
       )}
       {hasError ? (
-        <div className={cn('flex items-center justify-center bg-gray-100 text-gray-400 rounded', className)}>
+        <div
+          className={cn('flex items-center justify-center bg-gray-100 text-gray-400 rounded', className)}
+          role="alert"
+          aria-live="polite"
+        >
           <span className="text-sm">Afbeelding niet beschikbaar</span>
         </div>
       ) : (
@@ -94,7 +98,7 @@ const OptimizedMap: React.FC<{
   return (
     <div className={cn('relative', className)} onClick={handleClick}>
       {!isLoaded && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center" role="status" aria-live="polite">
           <div className="text-gray-500 text-sm">Kaart laden...</div>
         </div>
       )}
@@ -105,6 +109,7 @@ const OptimizedMap: React.FC<{
         title={title}
         loading="lazy"
         onLoad={handleLoad}
+        aria-label={`Interactieve routekaart: ${title}`}
       />
     </div>
   );
@@ -120,21 +125,35 @@ export const ContentItem: React.FC<ContentItemProps> = memo(({
   mapUrl
 }) => {
   return (
-    <div className={cn(
-      'bg-white rounded-xl p-6 border border-gray-100 relative overflow-hidden group',
-      cc.shadow.lg,
-      cc.transition.base,
-      'hover:shadow-xl hover:-translate-y-1'
-    )}>
+    <article
+      className={cn(
+        'bg-white rounded-xl p-6 border border-gray-100 relative overflow-hidden group',
+        cc.shadow.lg,
+        cc.transition.base,
+        'hover:shadow-xl hover:-translate-y-1'
+      )}
+      aria-labelledby={`content-${title.toLowerCase().replace(/\s+/g, '-')}`}
+    >
       {/* Decorative circle */}
-      <div className={cn('absolute -top-20 -right-20 w-40 h-40 bg-primary/10', cc.border.circle, cc.transition.base, 'group-hover:scale-110')} />
+      <div
+        className={cn('absolute -top-20 -right-20 w-40 h-40 bg-primary/10', cc.border.circle, cc.transition.base, 'group-hover:scale-110')}
+        aria-hidden="true"
+      />
 
       {/* Content */}
       <div className="relative z-10">
-        <span className={cn('material-icons-round text-4xl mb-4 block', colors.primary.text)}>
+        <span
+          className={cn('material-icons-round text-4xl mb-4 block', colors.primary.text)}
+          aria-hidden="true"
+          role="img"
+          aria-label={`${title} pictogram`}
+        >
           {icon}
         </span>
-        <h2 className={cn(cc.text.h3, cc.typography.heading, 'text-gray-900 mb-4')}>
+        <h2
+          id={`content-${title.toLowerCase().replace(/\s+/g, '-')}`}
+          className={cn(cc.text.h3, cc.typography.heading, 'text-gray-900 mb-4')}
+        >
           {title}
         </h2>
         <p className={cn(cc.text.body, cc.text.muted, 'mb-6')}>
@@ -142,31 +161,31 @@ export const ContentItem: React.FC<ContentItemProps> = memo(({
         </p>
 
         {illustration && (
-          <div className="text-center my-8">
+          <figure className="text-center my-8">
             <div className={cn('relative overflow-hidden rounded-xl', cc.transition.base, 'hover:scale-[1.02]')}>
               <OptimizedImage
                 src={illustration.src}
-                alt={`Tekening: ${illustration.caption}`}
+                alt={`Route illustratie van de Koninklijke Weg - ${illustration.caption}`}
                 className="w-full h-auto"
                 loading="lazy"
               />
             </div>
-            <p className={cn('mt-2 italic', cc.text.small, 'text-gray-500')}>
+            <figcaption className={cn('mt-2 italic', cc.text.small, 'text-gray-500')}>
               Tekening: {illustration.caption}
-            </p>
-          </div>
+            </figcaption>
+          </figure>
         )}
 
         {mapUrl && (
-          <div className={cn('mt-6 rounded-xl overflow-hidden', cc.shadow.lg)}>
+          <div className={cn('mt-6 rounded-xl overflow-hidden', cc.shadow.lg)} role="region" aria-label="Interactieve routekaart">
             <OptimizedMap
               src={mapUrl}
-              title="Route kaart"
+              title={`Interactieve kaart: ${title}`}
             />
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 });
 

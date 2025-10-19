@@ -19,8 +19,8 @@ interface FAQItem {
       icon: "❗",
       questions: [
         {
-          question: "Wat maakt De Koninklijke Loop zo bijzonder?",
-          answer: "De Koninklijke Loop is een sponsorloop mede georganiseerd door mensen met een beperking voor mensen met een beperking. We lopen de route over de Koninklijke weg, een rolstoelvriendelijke wandelroute.",
+          question: "Wat maakt DKL zo bijzonder?",
+          answer: "DKL (De Koninklijke Loop) is een sponsorloop mede georganiseerd door mensen met een beperking voor mensen met een beperking. We lopen de route over de Koninklijke weg, een rolstoelvriendelijke wandelroute.",
           icon: "🏃"
         },
         {
@@ -30,12 +30,12 @@ interface FAQItem {
         },
         {
           question: "Wanneer is De Koninklijke Loop?",
-          answer: "De Koninklijke Loop vindt op zaterdag 17 mei 2025 plaats.",
+          answer: "De Koninklijke Loop (DKL) vindt op zaterdag 17 mei 2026 plaats.",
           icon: "📅"
         },
         {
-          question: "Wanneer vindt de Koninklijke Loop 2025 plaats?",
-          answer: "De Koninklijke Loop vindt op zaterdag 17 mei 2025 plaats.",
+          question: "Wanneer vindt DKL 2026 plaats?",
+          answer: "DKL (De Koninklijke Loop) 2026 vindt op zaterdag 17 mei 2026 plaats.",
           icon: "📅"
         },
         {
@@ -56,7 +56,7 @@ interface FAQItem {
       questions: [
         {
           question: "Hoe kan ik meedoen?",
-          answer: "Super dat je mee wilt doen! Je kunt je nu al inschrijven voor De Koninklijke Loop 2026. Vul het formulier in en je ontvangt direct een bevestiging.",
+          answer: "Super dat je mee wilt doen! Je kunt je nu al inschrijven voor DKL (De Koninklijke Loop) 2026. Vul het formulier in en je ontvangt direct een bevestiging.",
           icon: "✍",
           action: true,
           actionText: "Schrijf je nu in"
@@ -88,7 +88,7 @@ interface FAQItem {
         },
         {
           question: "Wanneer sluit de inschrijving?",
-          answer: "Je kunt je inschrijven t/m 7 mei 2025. Let wel op: er kunnen maximaal 75 wandelaars deelnemen, dus wees er op tijd bij!",
+          answer: "Je kunt je inschrijven t/m 7 mei 2026. Let wel op: er kunnen maximaal 75 wandelaars deelnemen, dus wees er op tijd bij!",
           icon: "⚠"
         },
         {

@@ -1,51 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Homepage - Highest Priority -->
   <url>
     <loc>https://www.dekoninklijkeloop.nl/</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2025-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  
+  <!-- Registration - Highest Conversion -->
   <url>
     <loc>https://www.dekoninklijkeloop.nl/aanmelden</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2025-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
+  
+  <!-- DKL Info - Brand Page (CORRECT URL) -->
   <url>
-    <loc>https://www.dekoninklijkeloop.nl/over-ons</loc>
-    <lastmod>2026-10-12</lastmod>
+    <loc>https://www.dekoninklijkeloop.nl/wat-is-de-koninklijkeloop</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Contact/FAQ - Support (CORRECT URL) -->
+  <url>
+    <loc>https://www.dekoninklijkeloop.nl/faq</loc>
+    <lastmod>2025-01-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://www.dekoninklijkeloop.nl/dkl</loc>
-    <lastmod>2026-10-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  
+  <!-- Media Archive -->
   <url>
     <loc>https://www.dekoninklijkeloop.nl/media</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2025-01-19</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.dekoninklijkeloop.nl/contact</loc>
-    <lastmod>2026-10-12</lastmod>
-    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://www.dekoninklijkeloop.nl/over-ons</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Privacy Policy -->
   <url>
     <loc>https://www.dekoninklijkeloop.nl/privacy</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2025-01-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.dekoninklijkeloop.nl/onder-constructie</loc>
-    <lastmod>2026-10-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
 </urlset>

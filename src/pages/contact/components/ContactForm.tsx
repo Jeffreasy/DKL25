@@ -66,11 +66,17 @@ export const ContactForm = memo(() => {
   }, [trackInteraction, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6"
+      aria-label="Contactformulier voor De Koninklijke Loop"
+      noValidate
+    >
+      <fieldset className="space-y-4">
+        <legend className={cn(cc.a11y.srOnly)}>Contactgegevens</legend>
         <div>
           <label htmlFor="naam" className={cn(cc.form.label)}>
-            Naam
+            Naam <span className="text-red-500" aria-label="verplicht">*</span>
           </label>
           <input
             type="text"
@@ -80,15 +86,18 @@ export const ContactForm = memo(() => {
               errors.naam ? cc.input.error : cc.input.base
             )}
             {...register('naam')}
+            aria-required="true"
+            aria-invalid={errors.naam ? 'true' : 'false'}
+            aria-describedby={errors.naam ? 'naam-error' : undefined}
           />
           {errors.naam?.message && (
-            <p className={cn(cc.text.error, 'mt-1')}>{errors.naam.message}</p>
+            <p id="naam-error" className={cn(cc.text.error, 'mt-1')} role="alert">{errors.naam.message}</p>
           )}
         </div>
 
         <div>
           <label htmlFor="email" className={cn(cc.form.label)}>
-            E-mailadres
+            E-mailadres <span className="text-red-500" aria-label="verplicht">*</span>
           </label>
           <input
             type="email"
@@ -98,15 +107,18 @@ export const ContactForm = memo(() => {
               errors.email ? cc.input.error : cc.input.base
             )}
             {...register('email')}
+            aria-required="true"
+            aria-invalid={errors.email ? 'true' : 'false'}
+            aria-describedby={errors.email ? 'email-error' : undefined}
           />
           {errors.email?.message && (
-            <p className={cn(cc.text.error, 'mt-1')}>{errors.email.message}</p>
+            <p id="email-error" className={cn(cc.text.error, 'mt-1')} role="alert">{errors.email.message}</p>
           )}
         </div>
 
         <div>
           <label htmlFor="bericht" className={cn(cc.form.label)}>
-            Je bericht
+            Je bericht <span className="text-red-500" aria-label="verplicht">*</span>
           </label>
           <textarea
             id="bericht"
@@ -116,9 +128,12 @@ export const ContactForm = memo(() => {
               errors.bericht ? cc.input.error : cc.input.base
             )}
             {...register('bericht')}
+            aria-required="true"
+            aria-invalid={errors.bericht ? 'true' : 'false'}
+            aria-describedby={errors.bericht ? 'bericht-error' : undefined}
           />
           {errors.bericht?.message && (
-            <p className={cn(cc.text.error, 'mt-1')}>{errors.bericht.message}</p>
+            <p id="bericht-error" className={cn(cc.text.error, 'mt-1')} role="alert">{errors.bericht.message}</p>
           )}
         </div>
 
@@ -133,18 +148,21 @@ export const ContactForm = memo(() => {
                 colors.primary.focus
               )}
               {...register('privacy_akkoord')}
+              aria-required="true"
+              aria-invalid={errors.privacy_akkoord ? 'true' : 'false'}
+              aria-describedby={errors.privacy_akkoord ? 'privacy-error' : undefined}
             />
           </div>
           <div className="ml-3 text-sm">
             <label htmlFor="privacy_akkoord" className={cn(cc.text.body, 'text-gray-700')}>
-              Ik ga akkoord met de privacy voorwaarden
+              Ik ga akkoord met de <a href="/privacy" className={cn(colors.primary.text, 'underline hover:text-primary-dark')}>privacy voorwaarden</a> <span className="text-red-500" aria-label="verplicht">*</span>
             </label>
             {errors.privacy_akkoord?.message && (
-              <p className={cn(cc.text.error, 'mt-1')}>{errors.privacy_akkoord.message}</p>
+              <p id="privacy-error" className={cn(cc.text.error, 'mt-1')} role="alert">{errors.privacy_akkoord.message}</p>
             )}
           </div>
         </div>
-      </div>
+      </fieldset>
 
       <div>
         <button
@@ -158,8 +176,17 @@ export const ContactForm = memo(() => {
             'focus:outline-none',
             colors.primary.focusRing
           )}
+          aria-busy={isSubmitting}
+          aria-label={isSubmitting ? 'Bericht wordt verstuurd' : 'Verstuur contactformulier'}
         >
-          {isSubmitting ? 'Bericht versturen...' : 'Verstuur bericht'}
+          {isSubmitting ? (
+            <>
+              <span className="inline-block animate-spin mr-2" aria-hidden="true">⏳</span>
+              <span>Bericht versturen...</span>
+            </>
+          ) : (
+            'Verstuur bericht'
+          )}
         </button>
       </div>
     </form>

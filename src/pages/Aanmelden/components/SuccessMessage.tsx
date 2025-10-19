@@ -303,10 +303,55 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
   return (
     <>
       {showConfetti && <CSSConfetti />}
-      <div className={cn(cc.container.base, 'py-12 sm:py-16')}>
+      
+      {/* Structured Data for Successful Registration */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ConfirmAction",
+          "actionStatus": "CompletedActionStatus",
+          "agent": {
+            "@type": "Person",
+            "name": data.naam,
+            "email": data.email
+          },
+          "object": {
+            "@type": "RegisterAction",
+            "event": {
+              "@type": "Event",
+              "@id": "https://www.dekoninklijkeloop.nl/aanmelden#event",
+              "name": "De Koninklijke Loop 2025",
+              "startDate": "2025-05-17T09:00:00+02:00",
+              "endDate": "2025-05-17T15:00:00+02:00",
+              "location": {
+                "@type": "Place",
+                "name": VENUE.name,
+                "address": {
+                  "@type": "PostalAddress",
+                  "streetAddress": VENUE.address,
+                  "addressLocality": VENUE.city,
+                  "postalCode": VENUE.postalCode,
+                  "addressCountry": "NL"
+                }
+              }
+            }
+          },
+          "result": {
+            "@type": "Reservation",
+            "reservationStatus": "https://schema.org/ReservationConfirmed",
+            "underName": data.naam,
+            "reservationFor": {
+              "@type": "Event",
+              "name": "De Koninklijke Loop 2025"
+            }
+          }
+        })}
+      </script>
+
+      <article className={cn(cc.container.base, 'py-12 sm:py-16')} role="main" aria-labelledby="success-heading">
         <div className={cn('max-w-2xl mx-auto bg-white rounded-xl overflow-hidden', cc.shadow.lg)}>
         {/* Header sectie */}
-        <div className={cn(colors.primary.bg, 'p-8 text-center')}>
+        <header className={cn(colors.primary.bg, 'p-8 text-center')}>
           <div className="mb-4">
             <img
               src={getOptimizedImageUrl('664b8c1e593a1e81556b4238_0760849fb8_yn6vdm', {
@@ -320,21 +365,21 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               className="h-24 mx-auto"
             />
           </div>
-          <h1 className={cn(cc.text.h2, 'text-white mb-2', cc.typography.heading)}>
+          <h1 id="success-heading" className={cn(cc.text.h2, 'text-white mb-2', cc.typography.heading)}>
             Bedankt voor je aanmelding!
         </h1>
           <p className={cn(cc.text.h5, 'text-white/90')}>
             We hebben je aanmelding ontvangen en een bevestigingsmail gestuurd naar{' '}
             <span className={cn(cc.text.body)}>{data.email}</span>
         </p>
-      </div>
+      </header>
 
         {/* Aanmeldgegevens sectie */}
-        <div className="p-8">
-          <h2 className={cn(cc.text.h4, 'text-gray-900 mb-6', cc.typography.heading)}>
+        <section className="p-8" aria-labelledby="registration-details-heading">
+          <h2 id="registration-details-heading" className={cn(cc.text.h4, 'text-gray-900 mb-6', cc.typography.heading)}>
             Je aanmeldgegevens
           </h2>
-          <div className="space-y-4">
+          <dl className="space-y-4">
             <div className={cn(cc.flex.between, 'py-3', cc.divider.horizontal, 'border-gray-200')}>
               <dt className={cn(cc.text.body, 'text-gray-600')}>Naam</dt>
               <dd className={cn(cc.text.body, 'text-gray-900')}>{data.naam}</dd>
@@ -353,11 +398,11 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
                 <dd className={cn(cc.text.body, 'text-gray-900')}>{data.telefoon}</dd>
               </div>
             )}
-          </div>
+          </dl>
 
           {/* Belangrijke informatie */}
-          <div className={cn('mt-8 bg-orange-50 border border-orange-200 rounded-lg p-6')}>
-            <h3 className={cn(cc.text.h5, 'text-gray-900 mb-4')}>
+          <aside className={cn('mt-8 bg-orange-50 border border-orange-200 rounded-lg p-6')} aria-labelledby="important-info-heading">
+            <h3 id="important-info-heading" className={cn(cc.text.h5, 'text-gray-900 mb-4')}>
               Belangrijke informatie
             </h3>
             <ul className="space-y-2 text-gray-700">
@@ -374,24 +419,24 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
                 Houd onze website in de gaten voor het laatste nieuws
               </li>
             </ul>
-          </div>
-        </div>
+          </aside>
+        </section>
 
         {/* Locatie sectie */}
-        <div className="p-8 border-t border-gray-100">
+        <section className="p-8 border-t border-gray-100" aria-labelledby="location-heading">
           <div className="flex items-center mb-6">
-            <span className={cn(colors.primary.text, 'text-xl mr-3')}>📍</span>
-            <h2 className={cn(cc.text.h4, 'text-gray-900', cc.typography.heading)}>
+            <span className={cn(colors.primary.text, 'text-xl mr-3')} aria-hidden="true">📍</span>
+            <h2 id="location-heading" className={cn(cc.text.h4, 'text-gray-900', cc.typography.heading)}>
               Startlocatie
             </h2>
           </div>
 
           <div className="bg-gray-50 rounded-xl p-6">
-            <div className="space-y-2 mb-4">
-              <h3 className={cn(cc.text.body, 'text-gray-900')}>{VENUE.name}</h3>
+            <address className="space-y-2 mb-4 not-italic">
+              <strong className={cn(cc.text.body, 'text-gray-900')}>{VENUE.name}</strong>
               <p className={cn(cc.text.body, 'text-gray-600')}>{VENUE.address}</p>
               <p className={cn(cc.text.body, 'text-gray-600')}>{VENUE.postalCode} {VENUE.city}</p>
-            </div>
+            </address>
 
             <a
               href={getMapsUrl()}
@@ -407,10 +452,10 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               <span>Bekijk op Google Maps</span>
             </a>
         </div>
-      </div>
+      </section>
 
         {/* Footer met social media en print/download knoppen */}
-        <div className="bg-gray-50 px-8 py-6">
+        <footer className="bg-gray-50 px-8 py-6">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
             <a
               href="/"
@@ -446,7 +491,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
           </div>
 
           {/* Social Media Links */}
-          <div className="flex justify-center items-center gap-6 mt-4">
+          <nav className="flex justify-center items-center gap-6 mt-4" aria-label="Social media links">
             <a
               href="https://facebook.com/dekoninklijkeloop"
               target="_blank"
@@ -483,10 +528,10 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             >
               <span style={{ fontSize: '24px' }}>💼</span>
             </a>
-          </div>
-        </div>
+          </nav>
+        </footer>
       </div>
-    </div>
+    </article>
     </>
   );
 });

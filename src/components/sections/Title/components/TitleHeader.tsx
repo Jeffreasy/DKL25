@@ -16,6 +16,7 @@ const TitleHeader: React.FC<TitleHeaderProps> = memo(({ title, subtitle }) => {
       transition={{ delay: 0.2 }}
     >
       <h1
+        id="title-section-heading"
         className={cn(cc.typography.display, 'text-primary')}
       >
         {title}

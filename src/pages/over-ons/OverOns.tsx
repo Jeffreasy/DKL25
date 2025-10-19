@@ -1,6 +1,7 @@
 import React, { useEffect, Suspense, lazy, memo, useState, useRef } from 'react';
 import { SEO } from '../../components/common/SEO';
 import { trackEvent } from '@/utils/googleAnalytics';
+import { cc, cn } from '@/styles/shared';
 
 // Lazy load components for better performance
 const AboutHeader = lazy(() => import('./components/AboutHeader'));
@@ -61,12 +62,71 @@ const OverOns: React.FC = memo(() => {
   return (
     <>
       <SEO
-        title="Over Ons | De Koninklijke Loop (DKL)"
-        description="Leer meer over de organisatie achter De Koninklijke Loop (DKL), onze missie voor een toegankelijk wandelevenement en hoe we mensen met een beperking ondersteunen."
+        title="Over DKL - Organisatie, Missie & Team | De Koninklijke Loop 2026"
+        description="Ontdek het team achter DKL (De Koninklijke Loop) 2026. Een uniek wandelevenement georganiseerd voor en door mensen met een beperking. Lees over onze missie, visie en de mensen die DKL mogelijk maken."
         route="/over-ons"
+        type="website"
+        images={[
+          'https://www.dekoninklijkeloop.nl/images/team.jpg',
+          'https://www.dekoninklijkeloop.nl/images/hero.jpg'
+        ]}
       />
+
+      {/* BreadcrumbList Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.dekoninklijkeloop.nl"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Over Ons",
+              "item": "https://www.dekoninklijkeloop.nl/over-ons"
+            }
+          ]
+        })}
+      </script>
+
+      {/* AboutPage Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "@id": "https://www.dekoninklijkeloop.nl/over-ons#webpage",
+          "url": "https://www.dekoninklijkeloop.nl/over-ons",
+          "name": "Over DKL - Organisatie en Team",
+          "description": "Informatie over het team, de missie en visie van De Koninklijke Loop",
+          "inLanguage": "nl-NL",
+          "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://www.dekoninklijkeloop.nl#website"
+          },
+          "mainEntity": {
+            "@type": "Organization",
+            "@id": "https://www.dekoninklijkeloop.nl#organization",
+            "name": "De Koninklijke Loop",
+            "alternateName": ["DKL", "DKL 2026"],
+            "description": "De Koninklijke Loop (DKL) organiseert een uniek, toegankelijk wandelevenement voor en door mensen met een beperking",
+            "foundingDate": "2024",
+            "slogan": "Voor en door mensen met een beperking",
+            "memberOf": {
+              "@type": "Organization",
+              "name": "'s Heeren Loo",
+              "url": "https://www.sheerenloo.nl"
+            }
+          }
+        })}
+      </script>
+
       <div className="min-h-screen pt-20 bg-white">
-        <div className="w-full max-w-[1400px] mx-auto px-6 py-12 antialiased">
+        <main className="w-full max-w-[1400px] mx-auto px-6 py-12 antialiased" role="main" aria-labelledby="about-heading">
           {/* High priority sections - load immediately */}
           <LazySection priority="high">
             <AboutHeader />
@@ -85,7 +145,10 @@ const OverOns: React.FC = memo(() => {
               </div>
             }
           >
-            <AboutImage />
+            <section aria-labelledby="image-heading">
+              <h2 id="image-heading" className={cn(cc.a11y.srOnly)}>Team Foto</h2>
+              <AboutImage />
+            </section>
           </LazySection>
 
           {/* Low priority sections - load when scrolled into view */}
@@ -99,9 +162,12 @@ const OverOns: React.FC = memo(() => {
               </div>
             }
           >
-            <ContentGrid />
+            <section aria-labelledby="content-heading">
+              <h2 id="content-heading" className={cn(cc.a11y.srOnly)}>Team Informatie</h2>
+              <ContentGrid />
+            </section>
           </LazySection>
-        </div>
+        </main>
       </div>
     </>
   );

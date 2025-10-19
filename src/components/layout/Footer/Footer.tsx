@@ -79,10 +79,10 @@ const Footer: React.FC<FooterProps> = memo(({
             </div>
 
             <div className="text-center md:text-left space-y-2" style={{ minHeight: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <h2 id="footer-about" className={cn(cc.text.h4, 'tracking-tight')}>Doe je met ons mee?</h2>
+              <h2 id="footer-about" className={cn(cc.text.h4, 'tracking-tight')}>Doe je mee met DKL 2026?</h2>
               <p className={cn(cc.text.small, 'text-white/90')}>Samen op weg voor een goed doel.</p>
               <p className={cn(cc.text.h5, 'bg-gradient-to-r from-yellow-200 to-yellow-500 text-transparent bg-clip-text')}>
-                Loop mee met de Koninklijke Loop!
+                Loop mee met De Koninklijke Loop!
               </p>
             </div>
 
@@ -169,7 +169,7 @@ const Footer: React.FC<FooterProps> = memo(({
         <div className={cn('relative mt-12 pt-6', cc.divider.horizontal, 'border-white/10')} role="contentinfo">
           <div className={cn(cc.container.wide, cc.flex.between, 'flex-col md:flex-row gap-4 text-center md:text-left')}>
             <p className={cn(cc.text.small, 'text-white/80')}>
-              &copy; {CURRENT_YEAR} De Koninklijke Loop. Alle rechten voorbehouden.
+              &copy; {CURRENT_YEAR} DKL - De Koninklijke Loop. Alle rechten voorbehouden.
             </p>
             <p className={cn(cc.text.small, 'text-white/60')}>
               Met ❤️ gemaakt voor een betere wereld

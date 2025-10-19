@@ -258,13 +258,15 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
 
   return (
     <div className="p-6 sm:p-8">
-      <form 
+      <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-10"
+        aria-label="Registratieformulier voor De Koninklijke Loop 2025"
+        noValidate
       >
         {/* Contactgegevens */}
-        <div ref={contactSectionRef} className="space-y-6">
-          <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
+        <section ref={contactSectionRef} className="space-y-6" aria-labelledby="contact-heading">
+          <h2 id="contact-heading" className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading, 'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-1 after:bg-primary after:rounded')}>
             Je contactgegevens
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -321,20 +323,21 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
               )}
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Rol sectie */}
-        <div ref={roleSectionRef} className={cn('space-y-6 transition-opacity duration-300', 'opacity-100')}>
-            <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
+        <section ref={roleSectionRef} className={cn('space-y-6 transition-opacity duration-300', 'opacity-100')} aria-labelledby="role-heading">
+            <h2 id="role-heading" className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
               Kies je rol
             </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" role="radiogroup" aria-label="Selecteer je rol">
             {['Deelnemer', 'Begeleider', 'Vrijwilliger'].map((role) => (
               <label key={role} className={cn('relative cursor-pointer')}>
                 <input
                   type="radio"
                   value={role}
                   className={cn('peer', cc.a11y.srOnly)}
+                  aria-label={`Rol: ${role}`}
                   {...register('rol')}
                 />
                 <div className={cn(
@@ -351,13 +354,13 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
               </label>
             ))}
           </div>
-          {errors.rol && <p className={cn(cc.form.errorMessage)}>{errors.rol.message}</p>}
-        </div>
+          {errors.rol && <p className={cn(cc.form.errorMessage)} role="alert">{errors.rol.message}</p>}
+        </section>
 
         {/* Telefoonnummer sectie - alleen voor Begeleider/Vrijwilliger */}
         {shouldShowPhoneSection && (
-          <div ref={phoneSectionRef} className="space-y-6 transition-opacity duration-300">
-            <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
+          <section ref={phoneSectionRef} className="space-y-6 transition-opacity duration-300" aria-labelledby="phone-heading">
+            <h2 id="phone-heading" className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
               Contactgegevens voor tijdens het evenement
             </h2>
             <div className="space-y-4">
@@ -416,21 +419,22 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
               </div>
 
             </div>
-          </div>
+          </section>
         )}
 
         {/* Afstand sectie - voor iedereen */}
-        <div ref={distanceSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('distance') ? 'opacity-100' : 'opacity-0')}>
-          <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
+        <section ref={distanceSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('distance') ? 'opacity-100' : 'opacity-0')} aria-labelledby="distance-heading">
+          <h2 id="distance-heading" className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
             Kies je afstand
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" role="radiogroup" aria-label="Selecteer je loopafstand">
             {['2.5 KM', '6 KM', '10 KM', '15 KM'].map((distance) => (
               <label key={distance} className="relative cursor-pointer">
                 <input
                   type="radio"
                   value={distance}
                   className="peer sr-only"
+                  aria-label={`Afstand: ${distance}`}
                   {...register('afstand')}
                 />
                 <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-gray-200
@@ -447,22 +451,23 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
             ))}
           </div>
           {errors.afstand?.message && (
-            <p className={cn(cc.form.errorMessage)}>{errors.afstand.message}</p>
+            <p className={cn(cc.form.errorMessage)} role="alert">{errors.afstand.message}</p>
           )}
-        </div>
+        </section>
 
         {/* Ondersteuning sectie */}
-        <div ref={supportSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('support') ? 'opacity-100' : 'opacity-0')}>
-          <h2 className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
+        <section ref={supportSectionRef} className={cn('space-y-6 transition-opacity duration-300', visibleSections.has('support') ? 'opacity-100' : 'opacity-0')} aria-labelledby="support-heading">
+          <h2 id="support-heading" className={cn(cc.text.h2, 'text-gray-900 pb-4 relative', cc.typography.heading)}>
             Heb je ondersteuning nodig?
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" role="radiogroup" aria-label="Geef aan of je ondersteuning nodig hebt">
             {['Ja', 'Nee', 'Anders'].map((option) => (
               <label key={option} className="relative cursor-pointer">
                 <input
                   type="radio"
                   value={option}
                   className="peer sr-only"
+                  aria-label={`Ondersteuning: ${option}`}
                   {...register('ondersteuning')}
                 />
                 <div className="flex flex-col items-center justify-center p-6 rounded-xl border-2 
@@ -481,11 +486,11 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
             ))}
           </div>
           {errors.ondersteuning?.message && (
-            <p className={cn(cc.form.errorMessage)}>
+            <p className={cn(cc.form.errorMessage)} role="alert">
               {errors.ondersteuning.message}
             </p>
           )}
-        </div>
+        </section>
 
         {/* Bijzonderheden veld met verbeterde transitie */}
         <div className={`transition-all duration-300 ease-in-out ${
@@ -516,9 +521,10 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                   logEvent('registration', 'input_interaction', 'bijzonderheden_main_field');
                 }
               }}
+              aria-describedby={errors.bijzonderheden?.message ? 'bijzonderheden-error' : undefined}
             />
             {errors.bijzonderheden?.message && (
-              <p className={cn(cc.form.errorMessage)}>
+              <p id="bijzonderheden-error" className={cn(cc.form.errorMessage)} role="alert">
                 {errors.bijzonderheden.message}
               </p>
             )}
@@ -526,7 +532,8 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
         </div>
 
         {/* Terms checkbox */}
-        <div ref={termsSectionRef} className={cn('flex flex-col items-center pt-6 space-y-2 transition-opacity duration-300', visibleSections.has('terms') ? 'opacity-100' : 'opacity-0')}>
+        <section ref={termsSectionRef} className={cn('flex flex-col items-center pt-6 space-y-2 transition-opacity duration-300', visibleSections.has('terms') ? 'opacity-100' : 'opacity-0')} aria-labelledby="terms-heading">
+          <h2 id="terms-heading" className={cn(cc.a11y.srOnly)}>Algemene voorwaarden</h2>
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-2 text-center max-w-lg">
             <span className={cn(cc.text.small, 'text-gray-700')}>
               Je moet eerst de algemene voorwaarden lezen voordat je je kunt inschrijven.{' '}
@@ -562,15 +569,15 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
             </span>
           </label>
           {errors.terms?.message && (
-            <p className={cn(cc.form.errorMessage, 'text-center')}>
+            <p className={cn(cc.form.errorMessage, 'text-center')} role="alert">
               {errors.terms.message}
             </p>
           )}
-        </div>
+        </section>
 
         {/* Error message */}
         {submitError && (
-          <div className={cn('p-4 bg-red-50 border border-red-200 rounded-lg', cc.text.error)}>
+          <div className={cn('p-4 bg-red-50 border border-red-200 rounded-lg', cc.text.error)} role="alert" aria-live="polite">
             {submitError}
           </div>
         )}

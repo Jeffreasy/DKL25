@@ -88,9 +88,9 @@ const CTACards: React.FC<CTACardsProps> = memo(({ onInschrijfClick }) => {
   }, [trackInteraction]);
 
   return (
-    <section className={cn(cc.spacing.section, 'px-4 bg-white relative overflow-hidden', cc.typography.heading)}>
+    <section className={cn(cc.spacing.section, 'px-4 bg-white relative overflow-hidden', cc.typography.heading)} aria-labelledby="cta-heading">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white pointer-events-none" aria-hidden="true" />
       
       <div className="relative max-w-7xl mx-auto">
         {/* Title */}
@@ -100,20 +100,22 @@ const CTACards: React.FC<CTACardsProps> = memo(({ onInschrijfClick }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className={cn(cc.text.h2, 'text-gray-900 mb-4')}>
-            Kom in actie
+          <h2 id="cta-heading" className={cn(cc.text.h2, 'text-gray-900 mb-4', cc.typography.heading)}>
+            Kom in actie met DKL
           </h2>
           <p className={cn(cc.typography.lead, 'text-gray-600 max-w-2xl mx-auto')}>
-            Ontdek hoe je kunt deelnemen aan De Koninklijke Loop
+            Ontdek hoe je kunt deelnemen aan DKL (De Koninklijke Loop) 2026
           </p>
         </motion.div>
 
         {/* Error message */}
         {error && (
-          <motion.div 
+          <motion.div
             className={cn('max-w-md mx-auto mb-8 px-4 py-3 bg-red-50 border border-red-200', cc.border.rounded)}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
+            role="alert"
+            aria-live="polite"
           >
             <p className={cn(cc.text.error, 'text-center')}>{error}</p>
             <button
@@ -126,11 +128,13 @@ const CTACards: React.FC<CTACardsProps> = memo(({ onInschrijfClick }) => {
         )}
 
         {/* Cards Grid */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
+          role="list"
+          aria-label="Call to action opties"
         >
           {isLoading ? (
             // Loading skeletons
@@ -140,12 +144,13 @@ const CTACards: React.FC<CTACardsProps> = memo(({ onInschrijfClick }) => {
           ) : (
             // Actual cards
             ctaCardsData.map((card, index) => (
-              <CTACard
-                key={card.title}
-                {...card}
-                index={index}
-                onClick={() => handleAction(card)}
-              />
+              <div key={card.title} role="listitem">
+                <CTACard
+                  {...card}
+                  index={index}
+                  onClick={() => handleAction(card)}
+                />
+              </div>
             ))
           )}
         </motion.div>

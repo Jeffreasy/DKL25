@@ -49,7 +49,7 @@ const HeroSection: React.FC = () => {
       ref={sectionRef}
       className={cn('relative h-[calc(100vh-5rem)]', cc.typography.heading)}
       role="banner"
-      aria-label="Hero sectie met achtergrondvideo"
+      aria-labelledby="hero-heading"
     >
       <BackgroundVideo
         videoUrl={HERO_VIDEO_URL}
@@ -73,16 +73,16 @@ const HeroSection: React.FC = () => {
       <div className={cn('relative', cc.zIndex.dropdown, cc.flex.col, 'h-full px-4')} style={{ containIntrinsicSize: '1px 5000px' }}>
         <div className={cn('w-full max-w-5xl mx-auto pt-16 sm:pt-20 md:pt-24 lg:pt-28', cc.flex.center)}>
           <div className={cn('bg-black/30 backdrop-blur-sm p-4 sm:p-6', cc.border.rounded, 'text-center min-h-[280px] flex flex-col justify-center w-full')} style={{ willChange: 'auto' }}>
-            <h1 className={cn(cc.text.h1, 'font-bold text-white leading-tight drop-shadow-lg')}>
+            <h1 id="hero-heading" className={cn(cc.text.h1, 'font-bold text-white leading-tight drop-shadow-lg')}>
               De sponsorloop van mensen met een beperking voor een goed doel!
             </h1>
             <p className={cn(cc.typography.lead, 'text-white/90 mt-3 drop-shadow-md')}>
               Samen maken we het verschil
             </p>
-            <div className={cn('mt-6 px-4 py-3 rounded-md text-center max-w-sm mx-auto', colors.primary.bg)}>
+            <div className={cn('mt-6 px-4 py-3 rounded-md text-center max-w-sm mx-auto', colors.primary.bg)} role="complementary" aria-label="Evenement informatie">
               <div className="mb-2">
-                <span className={cn(cc.text.bodyLarge, 'block text-white font-bold')}>De Koninklijke Loop 2026</span>
-                <span className={cn(cc.text.body, 'block text-white/90')}>Zaterdag 17 mei 2026</span>
+                <span className={cn(cc.text.bodyLarge, 'block text-white font-bold')}>DKL 2026 - De Koninklijke Loop</span>
+                <time dateTime="2026-05-17" className={cn(cc.text.body, 'block text-white/90')}>Zaterdag 17 mei 2026</time>
               </div>
               <button
                 onClick={handleProgrammaClick}

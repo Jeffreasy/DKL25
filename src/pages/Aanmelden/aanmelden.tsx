@@ -35,17 +35,146 @@ const Aanmelden = memo(() => {
   return (
     <>
       <SEO
-        title="Aanmelden - De Koninklijke Loop (DKL)"
-        description="Meld je aan om mee te lopen met De Koninklijke Loop (DKL) 2025. Registreer je als deelnemer, vrijwilliger of begeleider voor dit unieke wandelevenement."
+        title="Aanmelden voor De Koninklijke Loop 2025 - DKL Registratie"
+        description="Schrijf je nu in voor De Koninklijke Loop 2025! Doe mee als deelnemer, vrijwilliger of begeleider. Kies uit 2.5, 6, 10 of 15 KM routes. Inclusief ondersteuning voor mensen met een beperking. Registreer direct online."
         route="/aanmelden"
+        type="website"
+        images={[
+          'https://www.dekoninklijkeloop.nl/images/hero.jpg',
+          'https://www.dekoninklijkeloop.nl/images/registration-og.jpg'
+        ]}
+        isEventPage={true}
+        eventName="De Koninklijke Loop 2025"
+        eventStartDate="2025-05-17T09:00:00+02:00"
+        eventEndDate="2025-05-17T15:00:00+02:00"
+        eventDescription="Meld je aan voor De Koninklijke Loop 2025 - een uniek sponsorloop evenement mede georganiseerd door mensen met een beperking voor mensen met een beperking. Kies je afstand en rol, en doe mee aan dit inspirerende wandelevenement."
+        eventLocationName="Grote Kerk"
+        eventLocationAddress={{
+          streetAddress: "Loolaan 16",
+          addressLocality: "Apeldoorn",
+          postalCode: "7315 AB",
+          addressCountry: "NL"
+        }}
+        eventUrl="https://www.dekoninklijkeloop.nl/aanmelden"
       />
+
+      {/* Breadcrumb Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.dekoninklijkeloop.nl"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Aanmelden",
+              "item": "https://www.dekoninklijkeloop.nl/aanmelden"
+            }
+          ]
+        })}
+      </script>
+
+      {/* WebPage Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "@id": "https://www.dekoninklijkeloop.nl/aanmelden#webpage",
+          "url": "https://www.dekoninklijkeloop.nl/aanmelden",
+          "name": "Aanmelden voor De Koninklijke Loop 2025",
+          "description": "Schrijf je in voor De Koninklijke Loop 2025. Registreer als deelnemer, vrijwilliger of begeleider voor dit unieke wandelevenement.",
+          "inLanguage": "nl-NL",
+          "isPartOf": {
+            "@type": "WebSite",
+            "@id": "https://www.dekoninklijkeloop.nl#website",
+            "url": "https://www.dekoninklijkeloop.nl",
+            "name": "De Koninklijke Loop"
+          },
+          "about": {
+            "@type": "Event",
+            "@id": "https://www.dekoninklijkeloop.nl/aanmelden#event",
+            "name": "De Koninklijke Loop 2025"
+          },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://www.dekoninklijkeloop.nl/images/hero.jpg"
+          }
+        })}
+      </script>
+
+      {/* FAQPage Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Hoe meld ik me aan voor De Koninklijke Loop 2025?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Je kunt je aanmelden door het registratieformulier op deze pagina in te vullen. Kies je rol (deelnemer, begeleider of vrijwilliger), selecteer je gewenste afstand (2.5, 6, 10 of 15 KM), en geef aan of je ondersteuning nodig hebt. Na het accepteren van de algemene voorwaarden kun je je inschrijving voltooien."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Welke afstanden kan ik lopen tijdens De Koninklijke Loop?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Je kunt kiezen uit vier verschillende afstanden: 2.5 KM, 6 KM, 10 KM of 15 KM. Elke afstand is geschikt voor verschillende conditieniveaus en je kunt de afstand kiezen die het beste bij jou past."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Kan ik meedoen als ik ondersteuning nodig heb?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, absoluut! De Koninklijke Loop is mede georganiseerd door mensen met een beperking voor mensen met een beperking. Tijdens de aanmelding kun je aangeven of je ondersteuning nodig hebt en welke vorm van ondersteuning je nodig hebt. We zorgen ervoor dat iedereen kan meedoen."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Wanneer en waar vindt De Koninklijke Loop 2025 plaats?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De Koninklijke Loop 2025 vindt plaats op 17 mei 2025. De startlocatie is bij de Grote Kerk, Loolaan 16, 7315 AB Apeldoorn. Zorg dat je op tijd aanwezig bent voor je start."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Wat is het verschil tussen deelnemer, begeleider en vrijwilliger?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Als deelnemer loop je zelf mee voor het goede doel. Als begeleider help je een deelnemer die ondersteuning nodig heeft tijdens het lopen. Als vrijwilliger help je met de organisatie van het evenement, bijvoorbeeld bij de start/finish, waterposten of route-begeleiding."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Ontvang ik een bevestiging na mijn aanmelding?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, direct na je aanmelding ontvang je een bevestigingsmail met alle details van je registratie. Je kunt ook een printbare bevestiging downloaden met een QR-code en alle evenementinformatie."
+              }
+            }
+          ]
+        })}
+      </script>
 
       <div className={cn('bg-gray-50 py-12 sm:py-16')}>
         <div className={cn(cc.container.base)}>
           <div className={cn(cc.container.narrow)}>
-            <h1 className={cn(cc.text.h1, 'text-gray-900 mb-8 text-center', cc.typography.heading)}>
-              Aanmelden
+            <h1 className={cn(cc.text.h1, 'text-gray-900 mb-4 text-center', cc.typography.heading)}>
+              Aanmelden voor De Koninklijke Loop 2025
             </h1>
+            <p className={cn(cc.text.body, 'text-gray-600 text-center max-w-2xl mx-auto mb-8')}>
+              Schrijf je nu in voor De Koninklijke Loop 2025. Kies je rol, selecteer je afstand en doe mee aan dit inspirerende wandelevenement op 17 mei 2025.
+            </p>
 
             <div className={cn('bg-white rounded-xl', cc.shadow.lg)}>
               <Suspense fallback={
