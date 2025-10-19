@@ -55,9 +55,19 @@ const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
       className="max-w-[800px] mx-auto"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.4 }}
+      transition={{ delay: 0.4, duration: 0.3 }}
     >
-      <div className={`rounded-xl overflow-hidden ${cc.shadow.xl} relative aspect-video`}>
+      {/* Reserve space to prevent layout shift - 16:9 aspect ratio */}
+      <div
+        className={`rounded-xl overflow-hidden ${cc.shadow.xl} relative`}
+        style={{
+          width: '100%',
+          height: '0',
+          paddingBottom: '56.25%', // 16:9 aspect ratio
+          backgroundColor: '#f3f4f6' // Skeleton color
+        }}
+        aria-hidden="true"
+      >
         {imageError ? (
           <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
             <div className="text-center text-gray-500">
@@ -78,7 +88,7 @@ const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
             usePictureElement={true}
             lazy={true}
             alt={alt}
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             onLoad={handleImageLoad}
             onError={handleImageError}
           />

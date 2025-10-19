@@ -12,8 +12,69 @@
     @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white;
   }
 
-  /* Prevent FOIT (Flash of Invisible Text) - improves CLS */
+  /* Self-hosted fonts - Complete Google Fonts replacement for CLS optimization */
   @font-face {
+    font-family: 'Roboto Slab';
+    src: url('/fonts/roboto-slab-300.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Roboto Slab';
+    src: url('/fonts/roboto-slab-variable.woff2') format('woff2-variations');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    font-weight-range: 100 900;
+  }
+
+  @font-face {
+    font-family: 'Roboto Slab';
+    src: url('/fonts/roboto-slab-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Roboto Slab';
+    src: url('/fonts/roboto-slab-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Roboto';
+    src: url('/fonts/roboto-300.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Roboto';
+    src: url('/fonts/roboto.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Roboto';
+    src: url('/fonts/roboto-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Roboto';
+    src: url('/fonts/roboto-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
     font-display: swap;
   }
 }

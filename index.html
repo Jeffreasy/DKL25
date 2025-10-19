@@ -33,12 +33,57 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
 
-  <!-- Preload critical fonts with font-display: swap and optimize loading -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;600;700&display=swap"></noscript>
+  <!-- CRITICAL CSS - Above-the-fold styles for instant render -->
+  <style>
+    /* Reset and base styles */
+    *,::before,::after{box-sizing:border-box;border:0 solid #e5e7eb}
+    html{line-height:1.5;-webkit-text-size-adjust:100%;font-family:Roboto,system-ui,sans-serif}
+    body{margin:0;line-height:inherit;background:#fff;color:#111827}
 
-  <!-- Preload Material Icons with font-display: swap -->
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Material+Icons+Round&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    /* Critical font faces for instant text render */
+    @font-face{font-family:Roboto;font-style:normal;font-weight:400;src:url(/fonts/roboto.woff2) format('woff2');font-display:swap}
+    @font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;src:url(/fonts/roboto-slab-variable.woff2) format('woff2-variations');font-weight-range:100 900;font-display:swap}
+
+    /* Hero section critical styles */
+    .hero-critical{position:relative;height:calc(100vh - 5rem);display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%)}
+    .hero-overlay{background:rgba(31,41,55,0.6);padding:1rem 1.5rem;border-radius:0.5rem;text-align:center;width:100%;max-width:80rem}
+    .hero-title{font-size:3rem;font-weight:700;color:#fff;line-height:1.2;text-shadow:0 2px 4px rgba(0,0,0,0.8);font-family:'Roboto Slab',serif;margin-bottom:1rem}
+    .hero-subtitle{font-size:1.125rem;color:#e5e7eb;margin-bottom:2rem;font-family:Roboto,sans-serif}
+
+    /* Orange color system (WCAG AA compliant) */
+    .text-orange-600{color:rgb(234 88 12)}
+    .bg-orange-600{background-color:rgb(234 88 12)}
+    .bg-orange-700{background-color:rgb(194 65 12)}
+    .text-orange-700{color:rgb(194 65 12)}
+
+    /* Layout utilities */
+    .container{max-width:80rem;margin-left:auto;margin-right:auto;padding-left:1rem;padding-right:1rem}
+    .flex{display:flex}
+    .flex-col{flex-direction:column}
+    .items-center{align-items:center}
+    .justify-center{justify-content:center}
+    .gap-4{gap:1rem}
+    .rounded-full{border-radius:9999px}
+    .shadow-lg{box-shadow:0 10px 15px -3px rgba(0,0,0,0.1)}
+    .text-center{text-align:center}
+
+    /* Button styles */
+    .btn-primary{background-color:rgb(234 88 12);color:#fff;padding:0.75rem 2rem;border-radius:9999px;font-weight:600;text-decoration:none;display:inline-block;transition:background-color 0.2s}
+    .btn-primary:hover{background-color:rgb(194 65 12)}
+
+    /* Prevent flash of unstyled content */
+    [x-cloak]{display:none}
+
+    /* Hide scrollbar during loading */
+    html{overflow-x:hidden}
+  </style>
+
+  <!-- Preload critical fonts -->
+  <link rel="preload" href="/fonts/roboto-slab-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/roboto.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Material Icons (async, non-critical) -->
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Material+Icons+Round&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" media="print" onload="this.media='all';this.onload=null">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons+Round&display=swap"></noscript>
 
   <!-- Gestructureerde data -->
