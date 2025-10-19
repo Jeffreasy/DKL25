@@ -13,7 +13,6 @@ import { TermsModal } from './TermsModal';
 // In development, de API calls gaan via de Vite proxy
 const API_BASE_URL = import.meta.env.VITE_EMAIL_SERVICE_URL || 'https://dklemailservice.onrender.com';
 
-console.log('Email Service URL:', API_BASE_URL);
 
 const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void }> = memo(({
   onSuccess
@@ -165,7 +164,6 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
     const startTime = performance.now();
 
     try {
-      console.log('Form submitted with data:', data);
       // Track form submission attempt
       logEvent('registration', 'form_submit_attempt', `${data.rol}_${data.afstand}`);
 
@@ -193,7 +191,6 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
           .single();
 
         if (supabaseError) {
-          console.error('Database error:', JSON.stringify(supabaseError));
           if (supabaseError.code === '23505') {
             throw new Error('Je bent al ingeschreven met dit e-mailadres.');
           } else {
@@ -203,7 +200,6 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
         // Track successful database save only in production
         logEvent('registration', 'database_save_success', `${validatedData.rol}_${validatedData.afstand}`);
       } else {
-        console.log('DEV MODE: Skipping Supabase insert.');
         // Optioneel: Log dat de insert is overgeslagen
         logEvent('registration', 'database_save_skipped_dev', `${validatedData.rol}_${validatedData.afstand}`);
       }
@@ -231,7 +227,6 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
 
       if (!emailResponse.ok) {
         // Let op: We tonen misschien geen error aan gebruiker in DEV mode voor email fail
-        console.error('Email service error:', await emailResponse.text());
         if (!import.meta.env.DEV) { 
           toast.error('Je aanmelding is verwerkt, maar er was een probleem met de bevestigingsmail.');
         }
@@ -245,7 +240,6 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
       // Ga door naar success pagina
       onSuccess(validatedData);
     } catch (error) {
-      console.error('Submit error:', error instanceof Error ? error.message : JSON.stringify(error));
       // Track form submission failure
       logEvent('registration', 'form_submit_failure', error instanceof Error ? error.message : 'unknown_error');
 
@@ -421,35 +415,6 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                 </p>
               </div>
 
-              <div className={`mt-4 transition-all duration-300 ${showBijzonderheden ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
-                <label htmlFor="bijzonderheden" className="block text-sm font-medium text-gray-700">
-                  {selectedOndersteuning === 'Ja' ? 'Beschrijf welke ondersteuning je nodig hebt' : 'Beschrijf je situatie'}
-                </label>
-                <textarea
-                  id="bijzonderheden"
-                  className="w-full px-4 py-3 rounded-xl border-2 transition-colors 
-                    focus:outline-none focus:ring-2 focus:ring-primary/20 
-                    text-gray-900 placeholder-gray-400 bg-white
-                    border-gray-200 focus:border-primary
-                    min-h-[100px] resize-y"
-                  placeholder={selectedOndersteuning === 'Ja' 
-                    ? "Beschrijf hier welke ondersteuning je nodig hebt..." 
-                    : "Beschrijf hier je situatie..."}
-                  {...register('bijzonderheden')}
-                  required={showBijzonderheden}
-                  onChange={(e) => {
-                    register('bijzonderheden').onChange(e);
-                    if (e.target.value.length > 0) {
-                      logEvent('registration', 'input_interaction', 'bijzonderheden_field');
-                    }
-                  }}
-                />
-                {errors.bijzonderheden?.message && (
-                  <p className={cn(cc.form.errorMessage)}>
-                    {errors.bijzonderheden.message}
-                  </p>
-                )}
-              </div>
             </div>
           </div>
         )}
