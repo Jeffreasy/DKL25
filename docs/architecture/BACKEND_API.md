@@ -1,8 +1,25 @@
-# DKL25 Go Backend API Documentation
+# 🔧 DKL25 Go Backend API Documentation
 
-## Overzicht
+**Versie:** 2.0
+**Status:** Production Ready
+**Laatste Update:** 2025-01-19
 
-Deze Go backend dient als API laag tussen de React frontend en PostgreSQL database voor de DKL25 website. Het vervangt Supabase en biedt directe toegang tot de database via RESTful endpoints.
+---
+
+## 📋 Inhoudsopgave
+
+1. [Overzicht](#-overzicht)
+2. [Frontend API Reference](#-frontend-api-reference)
+3. [Authentication & Authorization](#-authentication--authorization)
+4. [System Components](#-system-components)
+5. [Database Schema](#-database-schema)
+6. [Deployment](#-deployment)
+
+---
+
+## 🎯 Overzicht
+
+Deze Go backend dient als API laag tussen de React frontend en PostgreSQL database voor de DKL25 website. Het biedt directe toegang tot de database via RESTful endpoints met complete authenticatie en autorisatie.
 
 ## Technologie Stack
 
@@ -461,6 +478,430 @@ curl "http://localhost:3001/api/partners?tier=gold"
 
 ---
 
-**Laatste Update:** 2025-10-12
+---
+
+## 📡 Frontend API Reference
+
+### Base URL
+```
+https://your-domain.com/api
+```
+
+### Authentication
+Admin endpoints vereisen JWT authenticatie:
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+### Content Types
+- Request: `application/json`
+- Response: `application/json`
+
+---
+
+### 📸 Albums API
+
+#### Get Visible Albums
+```http
+GET /api/albums
+```
+
+**Response:**
+```json
+[
+  {
+    "id": "uuid",
+    "title": "Album Title",
+    "description": "Album description",
+    "cover_photo_id": "uuid",
+    "visible": true,
+    "order_number": 1,
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-01-01T00:00:00Z"
+  }
+]
+```
+
+#### Admin Endpoints
+```http
+GET    /api/albums/admin?limit=10&offset=0
+GET    /api/albums/{id}
+POST   /api/albums
+PUT    /api/albums/{id}
+DELETE /api/albums/{id}
+```
+
+### 🎥 Videos API
+
+#### Get Visible Videos
+```http
+GET /api/videos
+```
+
+**Response:**
+```json
+[
+  {
+    "id": "uuid",
+    "video_id": "streamable_id",
+    "url": "https://streamable.com/e/...",
+    "title": "Video Title",
+    "thumbnail_url": null,
+    "visible": true,
+    "order_number": 1
+  }
+]
+```
+
+#### Admin Endpoints
+```http
+GET    /api/videos/admin
+POST   /api/videos
+PUT    /api/videos/{id}
+DELETE /api/videos/{id}
+```
+
+### 🤝 Sponsors API
+
+#### Get Visible Sponsors
+```http
+GET /api/sponsors
+```
+
+#### Admin Endpoints
+```http
+GET    /api/sponsors/admin
+POST   /api/sponsors
+PUT    /api/sponsors/{id}
+DELETE /api/sponsors/{id}
+```
+
+### 📅 Program Schedule API
+
+#### Get Visible Schedule
+```http
+GET /api/program-schedule
+```
+
+#### Admin Endpoints
+```http
+GET    /api/program-schedule/admin
+POST   /api/program-schedule
+PUT    /api/program-schedule/{id}
+DELETE /api/program-schedule/{id}
+```
+
+### 📱 Social Media APIs
+
+#### Social Embeds
+```http
+GET    /api/social-embeds
+GET    /api/social-embeds/admin
+POST   /api/social-embeds
+PUT    /api/social-embeds/{id}
+DELETE /api/social-embeds/{id}
+```
+
+#### Social Links
+```http
+GET    /api/social-links
+GET    /api/social-links/admin
+POST   /api/social-links
+PUT    /api/social-links/{id}
+DELETE /api/social-links/{id}
+```
+
+---
+
+## 🔐 Authentication & Authorization
+
+### JWT Token Authenticatie
+
+**Token Claims:**
+```go
+type JWTClaims struct {
+    Email string `json:"email"`
+    Role  string `json:"role"`
+    jwt.RegisteredClaims
+}
+```
+
+**Environment Variables:**
+```bash
+JWT_SECRET=your-secret-key-here
+JWT_TOKEN_EXPIRY=20m
+```
+
+### Authentication Endpoints
+
+```http
+POST /api/auth/login           # Login
+POST /api/auth/logout          # Logout
+POST /api/auth/refresh         # Refresh token
+GET  /api/auth/profile         # User profile
+POST /api/auth/reset-password  # Reset password
+```
+
+### RBAC System
+
+**Rollen:**
+- `admin` - Volledige toegang
+- `staff` - Beperkte admin toegang
+- `user` - Basis toegang
+
+**Permissions:**
+- `read`, `create`, `update`, `delete`, `manage`
+
+**Resources:**
+- `users`, `roles`, `permissions`, `contacts`, `aanmeldingen`, `emails`, etc.
+
+### Middleware
+
+```go
+// Auth verificatie
+AuthMiddleware(authService)
+
+// Admin rol check
+AdminMiddleware(authService)
+
+// Permission check
+PermissionMiddleware(permissionService, "contacts", "manage")
+
+// Rate limiting
+RateLimitMiddleware(rateLimiter)
+```
+
+---
+
+## 🏗️ System Components
+
+### Services Layer
+
+**EmailService:**
+- Template-based email rendering
+- Multi-SMTP configuratie
+- Rate limiting
+- Test mode support
+
+**AuthService:**
+- JWT token management
+- Refresh token mechanisme
+- Password hashing (bcrypt)
+- User CRUD operations
+
+**ChatService:**
+- Real-time chat via WebSockets
+- Channel management
+- Message handling
+
+**NotificationService:**
+- Telegram notifications
+- Priority levels
+- Throttling
+
+**PermissionService:**
+- RBAC permission checks
+- Redis caching (5 min TTL)
+- User permissions
+
+### Repository Layer
+
+Data access layer met repository pattern:
+- `GebruikerRepository`
+- `ContactRepository`
+- `AanmeldingRepository`
+- `IncomingEmailRepository`
+- `ChatChannelRepository`
+- `PermissionRepository`
+- `RoleRepository`
+
+### WebSocket Hub
+
+Real-time communicatie voor chat:
+- Client registratie
+- Broadcast berichten
+- Connection management
+- Concurrent-safe
+
+---
+
+## 💾 Database Schema
+
+### Core Tables
+
+**gebruikers:**
+```sql
+CREATE TABLE gebruikers (
+    id UUID PRIMARY KEY,
+    naam VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    wachtwoord_hash VARCHAR(255) NOT NULL,
+    rol VARCHAR(50) DEFAULT 'gebruiker',
+    is_actief BOOLEAN DEFAULT true,
+    newsletter_subscribed BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**contact_formulieren:**
+```sql
+CREATE TABLE contact_formulieren (
+    id UUID PRIMARY KEY,
+    naam VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    bericht TEXT NOT NULL,
+    status VARCHAR(50) DEFAULT 'nieuw',
+    email_verzonden BOOLEAN DEFAULT false,
+    test_mode BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**aanmeldingen:**
+```sql
+CREATE TABLE aanmeldingen (
+    id UUID PRIMARY KEY,
+    naam VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefoon VARCHAR(20),
+    rol VARCHAR(50) NOT NULL,
+    afstand VARCHAR(20),
+    ondersteuning TEXT,
+    bijzonderheden TEXT,
+    terms BOOLEAN NOT NULL,
+    status VARCHAR(50) DEFAULT 'nieuw',
+    test_mode BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### RBAC Tables
+
+**roles:**
+```sql
+CREATE TABLE roles (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    is_system_role BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**permissions:**
+```sql
+CREATE TABLE permissions (
+    id UUID PRIMARY KEY,
+    resource VARCHAR(100) NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    description TEXT,
+    UNIQUE(resource, action)
+);
+```
+
+**user_roles:**
+```sql
+CREATE TABLE user_roles (
+    user_id UUID REFERENCES gebruikers(id),
+    role_id UUID REFERENCES roles(id),
+    assigned_at TIMESTAMP DEFAULT NOW(),
+    is_active BOOLEAN DEFAULT true,
+    UNIQUE(user_id, role_id)
+);
+```
+
+### Chat Tables
+
+**chat_channels:**
+```sql
+CREATE TABLE chat_channels (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    type TEXT CHECK (type IN ('public', 'private', 'direct')),
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**chat_messages:**
+```sql
+CREATE TABLE chat_messages (
+    id UUID PRIMARY KEY,
+    channel_id UUID REFERENCES chat_channels(id),
+    user_id UUID REFERENCES gebruikers(id),
+    content TEXT,
+    message_type TEXT DEFAULT 'text',
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+## 🚀 Deployment
+
+### Environment Variables
+
+**Database:**
+```bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_NAME=dklemailservice
+DB_SSL_MODE=require
+```
+
+**JWT:**
+```bash
+JWT_SECRET=your-secret-key
+JWT_TOKEN_EXPIRY=20m
+```
+
+**Email:**
+```bash
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=user@example.com
+SMTP_PASSWORD=password
+```
+
+**Server:**
+```bash
+PORT=3001
+CORS_ORIGIN=https://dekoninklijkeloop.nl
+```
+
+### Build & Run
+
+**Development:**
+```bash
+go run main.go
+```
+
+**Production:**
+```bash
+go build -ldflags="-s -w" -o dklemailservice
+./dklemailservice
+```
+
+**Docker:**
+```dockerfile
+FROM golang:1.21-alpine AS builder
+WORKDIR /app
+COPY . .
+RUN go build -o main .
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/main .
+CMD ["./main"]
+```
+
+---
+
+**Versie:** 2.0
+**Laatste Update:** 2025-01-19
 **Go Version:** 1.21+
 **PostgreSQL Version:** 15+
+**Status:** ✅ Production Ready
