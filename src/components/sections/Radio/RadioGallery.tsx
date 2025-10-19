@@ -47,12 +47,10 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
 
         try {
           const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api';
-          console.log('Fetching radio recordings from:', `${POSTGREST_URL}/radio-recordings`);
 
           const response = await fetch(`${POSTGREST_URL}/radio-recordings`);
 
           if (!response.ok) {
-            console.error('HTTP error:', response.status, response.statusText);
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
@@ -60,7 +58,6 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
           recordingsData = data.slice(0, maxItems); // Apply limit client-side
           trackEvent('media_gallery', 'loaded', `count:${data?.length || 0}`);
         } catch (apiError) {
-          console.error('API error:', apiError);
 
           // Fallback to hardcoded data if API fails
           recordingsData = [
@@ -85,7 +82,6 @@ const RadioGallery: React.FC<RadioGalleryProps> = memo(({
         
         setRecordings(recordingsData as RadioRecording[]);
       } catch (err) {
-        console.error('Error fetching radio recordings:', err);
         setError(err instanceof Error ? err.message : 'Er ging iets mis bij het ophalen van de radio opnames');
         
         if (retryCount < 3) {

@@ -66,7 +66,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
       trackInteraction('pause', title);
     } else {
       audio.play().catch(error => {
-        console.error('Audio playback error:', error);
         setHasError(true);
         trackInteraction('error', `${title}: ${error.message}`);
       });
@@ -92,7 +91,6 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
       trackEvent('media_player', 'ended', title);
     };
     const handleError = (e: Event) => {
-      console.error('Audio error:', e);
       setHasError(true);
       setIsLoading(false);
       trackEvent('media_player', 'error', `${title}: Load error`);
@@ -173,7 +171,7 @@ const RadioPlayer: React.FC<RadioPlayerProps> = memo(({
               src={thumbnailUrl} 
               alt={`Thumbnail afbeelding voor radio-opname: ${title}`}
               className="w-full h-full object-cover object-center"
-              onError={() => console.error('Thumbnail kon niet worden geladen')}
+              onError={() => {}}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-200">
