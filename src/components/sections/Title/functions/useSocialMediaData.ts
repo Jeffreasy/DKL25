@@ -14,6 +14,7 @@ export const useSocialMediaData = () => {
         setIsLoading(true);
         setError(null);
 
+        console.log('Fetching social embeds from:', `${POSTGREST_URL}/social-embeds`);
         const response = await fetch(`${POSTGREST_URL}/social-embeds`);
 
         if (!response.ok) {
@@ -21,6 +22,7 @@ export const useSocialMediaData = () => {
         }
 
         const data = await response.json();
+        console.log('Social embeds data received:', data);
 
         // Type assertion to ensure data matches SocialEmbedRow type
         const typedData = (data || []).map((item: any) => ({
@@ -30,8 +32,10 @@ export const useSocialMediaData = () => {
           visible: item.visible || false
         })) as SocialEmbedRow[];
 
+        console.log('Typed social embeds:', typedData);
         setSocialEmbeds(typedData);
       } catch (err) {
+        console.error('Error fetching social embeds:', err);
         setError(err instanceof Error ? err.message : 'Er ging iets mis bij het ophalen van de social media berichten');
       } finally {
         setIsLoading(false);
@@ -42,4 +46,4 @@ export const useSocialMediaData = () => {
   }, []);
 
   return { socialEmbeds, isLoading, error };
-}; 
+};

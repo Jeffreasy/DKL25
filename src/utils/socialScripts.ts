@@ -25,16 +25,20 @@ let facebookScriptLoadingPromise: Promise<void> | null = null;
 let facebookScriptLoaded = false;
 
 export const loadFacebookSDK = (): Promise<void> => {
+  console.log('loadFacebookSDK called');
   // Return existing promise if already loading
   if (facebookScriptLoadingPromise) {
+    console.log('Facebook SDK already loading, returning existing promise');
     return facebookScriptLoadingPromise;
   }
 
   // Return resolved promise if already loaded
   if (facebookScriptLoaded && window.FB) {
+    console.log('Facebook SDK already loaded');
     return Promise.resolve();
   }
 
+  console.log('Starting Facebook SDK load');
   facebookScriptLoadingPromise = new Promise((resolve, reject) => {
     // Check if script already exists in DOM
     const existingScript = document.querySelector('script[src*="connect.facebook.net"]');
@@ -120,16 +124,20 @@ let instagramScriptLoadingPromise: Promise<void> | null = null;
 let instagramScriptLoaded = false;
 
 export const loadInstagramEmbed = (): Promise<void> => {
+  console.log('loadInstagramEmbed called');
   // Return existing promise if already loading
   if (instagramScriptLoadingPromise) {
+    console.log('Instagram embed already loading, returning existing promise');
     return instagramScriptLoadingPromise;
   }
 
   // Return resolved promise if already loaded
   if (instagramScriptLoaded && window.instgrm) {
+    console.log('Instagram embed already loaded');
     return Promise.resolve();
   }
 
+  console.log('Starting Instagram embed load');
   instagramScriptLoadingPromise = new Promise((resolve, reject) => {
     // Check if script already exists in DOM
     const existingScript = document.querySelector('script[src*="instagram.com/embed.js"]');

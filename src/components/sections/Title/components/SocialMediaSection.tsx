@@ -152,7 +152,6 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   }, [scriptsLoaded, isIOS]);
 
   const renderEmbed = useCallback((embed: SocialEmbedRow) => {
-    
     const getEmbedUrl = (code: string) => {
       const urlMatch = code.match(/src="([^\"]+)"/);
       return urlMatch ? urlMatch[1] : '';
@@ -194,14 +193,14 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
             />
           </div>
         );
-      
+
       case 'instagram':
         const originalInstaHtml = embed.embed_code.split('<script')[0];
         if (!originalInstaHtml.trim()) {
           return <div className="p-4 text-center text-red-500">Kon Instagram post niet laden (Lege code).</div>;
         }
         const sanitizedInstaHtml = originalInstaHtml; // DOMPurify removed for performance - assuming trusted content
-        
+
         return (
           <div
             className="instagram-container relative w-full min-h-[680px]"
@@ -222,12 +221,12 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
             }}
           />
         );
-      
+
       default:
         console.warn(`Unsupported social platform: ${embed.platform}`);
         return null;
     }
-  }, [scriptsLoaded, processInstagramEmbed]);
+  }, [scriptsLoaded, processInstagramEmbed, isIOS]);
 
   const loadScripts = useCallback(async () => {
     // Prevent multiple simultaneous loads
@@ -246,9 +245,23 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
     processedEmbeds.current.clear();
 
     try {
-      const results = await Promise.all([
+      // Load scripts with timeout fallback
+      const scriptPromises = [
         loadFacebookSDK(),
         loadInstagramEmbed()
+      ];
+
+      // Add timeout fallback - if scripts don't load within 3 seconds, consider them "loaded" anyway
+      const timeoutPromise = new Promise<void>((resolve) => {
+        setTimeout(() => {
+          console.log('Script loading timeout reached, proceeding anyway');
+          resolve();
+        }, 3000);
+      });
+
+      await Promise.race([
+        Promise.all(scriptPromises),
+        timeoutPromise
       ]);
 
       // Always set scriptsLoaded even if unmounted - the scripts ARE loaded
@@ -259,11 +272,11 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       }
 
     } catch (err: any) {
+      console.error('Error loading social SDKs:', err);
+      // Even on error, set scripts as loaded so embeds show
+      setScriptsLoaded(true);
       if (isMounted.current) {
-        console.error('Error loading social SDKs:', err);
-        setError(err?.message || 'Er ging iets mis bij het laden van de social media scripts.');
         trackEvent('social_section', 'error', 'sdk_loading_failed');
-        setScriptsLoaded(false);
       }
     } finally {
       scriptsLoadingRef.current = false;
@@ -274,21 +287,24 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
   // Load scripts on mount - runs after mount effect
   useEffect(() => {
     if (socialEmbeds.length > 0) {
-      // Defer loading until after page load to avoid blocking initial render
-      const loadAfterPageLoad = () => {
-        if (isMounted.current) {
-          loadScripts();
-        }
-      };
-
-      window.addEventListener('load', loadAfterPageLoad, { once: true });
-
-      return () => window.removeEventListener('load', loadAfterPageLoad);
+      // Load scripts immediately since component is mounted after page load
+      // But delay slightly to avoid blocking initial render
+      const timer = setTimeout(() => {
+        loadScripts();
+      }, 100);
+      return () => clearTimeout(timer);
     } else {
       setIsLoading(false);
       setScriptsLoaded(false);
     }
   }, [socialEmbeds.length, loadScripts]);
+
+  // Force re-render when scripts are loaded to show embeds
+  useEffect(() => {
+    if (scriptsLoaded) {
+      console.log('Scripts loaded, embeds should now show');
+    }
+  }, [scriptsLoaded]);
 
   // Process Instagram embeds when scripts are loaded
   useEffect(() => {
@@ -387,7 +403,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
               <EmbedSkeleton />
             </motion.div>
           ))
-        ) : !error ? (
+        ) : scriptsLoaded && !error ? (
           socialEmbeds
             .sort((a, b) => a.order_number - b.order_number)
             .map((embed) => (

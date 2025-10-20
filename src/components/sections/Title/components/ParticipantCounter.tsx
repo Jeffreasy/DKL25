@@ -20,7 +20,7 @@ const ParticipantCounter: React.FC<ParticipantCounterProps> = memo(({ count }) =
         Aantal Huidige Deelnemers:
       </h3>
       <p
-        className={cn(cc.typography.display, !count && count !== 0 ? 'text-gray-400' : colors.primary.text)}
+        className={cn(cc.typography.display, 'text-4xl md:text-5xl lg:text-6xl xl:text-7xl', !count && count !== 0 ? 'text-gray-400' : colors.primary.text)}
       >
         {count !== null && count !== undefined ? count : '--'}
       </p>

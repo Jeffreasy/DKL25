@@ -17,12 +17,16 @@ const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
   // Extract Cloudinary public ID from URL
   const getPublicId = (url: string): string => {
     try {
+      // If it's already a public ID (no full URL), return as is
+      if (!url.includes('cloudinary.com')) {
+        return url;
+      }
+
       const urlParts = url.split('/upload/');
       if (urlParts.length === 2) {
         const pathParts = urlParts[1].split('/');
-        // Remove version and transformations, keep the public ID
+        // Remove transformations, keep the public ID (including version)
         const publicIdParts = pathParts.filter(part =>
-          !part.startsWith('v') &&
           !part.includes('c_') &&
           !part.includes('w_') &&
           !part.includes('h_') &&
@@ -76,21 +80,13 @@ const EventImage: React.FC<EventImageProps> = memo(({ src, alt }) => {
             </div>
           </div>
         ) : (
-          <OptimizedImage
-            publicId={publicId}
-            options={{
-              width: 800,
-              height: 450,
-              crop: 'fill',
-              quality: 'auto',
-              format: 'auto'
-            }}
-            usePictureElement={true}
-            lazy={true}
+          <img
+            src={src}
             alt={alt}
             className="absolute inset-0 w-full h-full object-cover"
             onLoad={handleImageLoad}
             onError={handleImageError}
+            loading="lazy"
           />
         )}
       </div>
