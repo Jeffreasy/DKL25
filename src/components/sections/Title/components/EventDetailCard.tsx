@@ -43,14 +43,10 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
   // Memoized animation variants
   const cardVariants = useMemo<Variants>(() => ({
     hidden: {
-      opacity: 0,
-      y: 20,
-      scale: 0.95
+      opacity: 0
     },
     visible: {
       opacity: 1,
-      y: 0,
-      scale: 1,
       transition: {
         type: "spring",
         stiffness: 100,
@@ -59,7 +55,6 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
       }
     },
     hover: {
-      y: -5,
       scale: 1.02,
       transition: {
         type: "spring",

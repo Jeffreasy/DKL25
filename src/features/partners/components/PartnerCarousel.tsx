@@ -69,6 +69,8 @@ const PartnerImage: React.FC<{
             !isLoaded && 'opacity-0'
           )}
           loading="lazy"
+          width={size === 'small' ? 96 : size === 'medium' ? 128 : 160}
+          height={size === 'small' ? 48 : size === 'medium' ? 64 : 80}
           onLoad={handleLoad}
           onError={handleError}
         />
@@ -85,6 +87,12 @@ const PartnerSkeleton: React.FC<{ size?: 'small' | 'medium' | 'large' }> = memo(
     small: 'w-24 h-12',
     medium: 'w-32 h-16',
     large: 'w-40 h-20'
+  };
+
+  const sizeDimensions = {
+    small: { width: 96, height: 48 },
+    medium: { width: 128, height: 64 },
+    large: { width: 160, height: 80 }
   };
 
   return (
