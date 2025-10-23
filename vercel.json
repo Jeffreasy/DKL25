@@ -31,7 +31,7 @@
       ]
     },
     {
-      "source": "/assets/*.mjs",
+      "source": "/assets/(.*)\\.mjs",
       "headers": [
         { "key": "Content-Type", "value": "text/javascript" }
       ]
