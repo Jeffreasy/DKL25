@@ -40,13 +40,13 @@ const CountdownTimer: React.FC = memo(() => {
     }
 
     return (
-      <div className="flex justify-center items-center space-x-1 sm:space-x-2 md:space-x-4 lg:space-x-6 text-center" role="group" aria-label="Tijd tot evenement">
+      <div className="flex justify-center items-center space-x-2 sm:space-x-6 text-center" role="group" aria-label="Tijd tot evenement">
         {Object.entries(timeLeft).map(([unit, value]) => (
-          <div key={unit} className="p-1 sm:p-2" role="presentation">
-            <div className={cn(cc.typography.display, 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl', colors.primary.text)}>
+          <div key={unit} className="p-2" role="presentation">
+            <div className={cn(cc.typography.display, colors.primary.text)}>
               {String(value).padStart(2, '0')}
             </div>
-            <div className={`${cc.text.small} ${cc.typography.uppercase} ${cc.text.muted} text-xs sm:text-sm`}>
+            <div className={`${cc.text.small} ${cc.typography.uppercase} ${cc.text.muted}`}>
               {unit === 'days' ? 'Dagen' : unit === 'hours' ? 'Uren' : unit === 'minutes' ? 'Minuten' : 'Seconden'}
             </div>
           </div>

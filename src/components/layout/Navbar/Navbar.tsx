@@ -95,7 +95,7 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
       <nav className={navbarClasses} role="navigation" aria-label="Hoofdnavigatie">
         <div className={cn(cc.container.wide, 'h-full')}>
           <div className={cn(cc.flex.between, 'h-full')}>
-            <div className="flex-shrink-0 relative overflow-hidden rounded-lg group p-1">
+            <div className="flex-shrink-0 relative overflow-visible rounded-lg group w-fit">
               <Link to="/" className="block relative" aria-label="Home" onClick={() => handleNavigation('/')}>
                 {customLogo ? (
                   <img
@@ -110,9 +110,8 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
                   <OptimizedImage
                     publicId={DEFAULT_LOGO_PUBLIC_ID}
                     options={{
-                      width: 64,
                       height: 64,
-                      crop: 'fill',
+                      crop: 'scale',
                       quality: 'auto',
                       format: 'auto'
                     }}
@@ -123,7 +122,7 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
                 )}
                 <div
                   className={cn(
-                    'absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent',
+                    'absolute inset-0 w-24 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent',
                     accessibilityPrefs.shineAnimation
                   )}
                 />
