@@ -37,6 +37,12 @@
       ]
     },
     {
+      "source": "/(.*)\\.js",
+      "headers": [
+        { "key": "Content-Type", "value": "application/javascript" }
+      ]
+    },
+    {
       "source": "/fonts/(.*)\\.woff2",
       "headers": [
         { "key": "Content-Type", "value": "font/woff2" }
