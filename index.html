@@ -29,8 +29,6 @@
   <link rel="icon" href="/favicon.ico">
 
   <!-- Preconnect to critical origins -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
 
   <!-- CRITICAL CSS - Above-the-fold styles for instant render -->
@@ -42,8 +40,11 @@
 
     /* Critical font faces for instant text render */
     @font-face{font-family:Roboto;font-style:normal;font-weight:400;src:url(/fonts/roboto.woff2) format('woff2');font-display:swap}
+    @font-face{font-family:Roboto;font-style:normal;font-weight:500;src:url(/fonts/roboto-500.woff2) format('woff2');font-display:swap}
     @font-face{font-family:Roboto;font-style:normal;font-weight:700;src:url(/fonts/roboto-700.woff2) format('woff2');font-display:swap}
     @font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;src:url(/fonts/roboto-slab-variable.woff2) format('woff2-variations');font-weight-range:100 900;font-display:swap}
+    @font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;src:url(/fonts/roboto-slab-500.woff2) format('woff2');font-display:swap}
+    @font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;src:url(/fonts/roboto-slab-700.woff2) format('woff2');font-display:swap}
 
     /* Hero section critical styles */
     .hero-critical{position:relative;height:calc(100vh - 5rem);display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%)}
@@ -82,7 +83,10 @@
   <!-- Preload critical fonts -->
   <link rel="preload" href="/fonts/roboto-slab-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/roboto.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/roboto-500.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/roboto-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/roboto-slab-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/roboto-slab-700.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Material Icons removed - using MUI icons instead -->
 
@@ -381,8 +385,9 @@
     ]
   }
   </script>
-  <!-- Preload main module for faster loading -->
+  <!-- Preload main module and CSS for faster loading -->
   <link rel="modulepreload" href="/src/main.tsx">
+  <link rel="preload" href="/assets/index-*.css" as="style">
 
   <!-- Modern browsers: ES modules -->
   <script type="module" crossorigin src="/src/main.tsx"></script>
