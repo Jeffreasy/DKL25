@@ -84,8 +84,7 @@
   <link rel="preload" href="/fonts/roboto.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/roboto-700.woff2" as="font" type="font/woff2" crossorigin>
 
-  <!-- Material Icons -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons+Round&display=swap">
+  <!-- Material Icons removed - using MUI icons instead -->
 
   <!-- Gestructureerde data -->
   <script type="application/ld+json">
@@ -382,6 +381,9 @@
     ]
   }
   </script>
+  <!-- Preload main module for faster loading -->
+  <link rel="modulepreload" href="/src/main.tsx">
+
   <!-- Modern browsers: ES modules -->
   <script type="module" crossorigin src="/src/main.tsx"></script>
   <!-- Legacy browsers: fallback -->
