@@ -37,13 +37,15 @@ export const useUnderConstruction = () => {
         });
 
         if (response.status === 404) {
-          // No active under construction found - this is normal
+          // No active under construction found - this is normal, not an error
           setData(null);
           setLoading(false);
           return;
         }
 
         if (!response.ok) {
+          // Only log non-404 errors
+          console.error(`Failed to fetch under construction: HTTP ${response.status}`);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
@@ -68,7 +70,10 @@ export const useUnderConstruction = () => {
 
         setData(transformedData);
       } catch (err) {
-        console.error('Failed to fetch under construction data:', err);
+        // Only log actual errors, not expected 404s (handled above)
+        if (err instanceof Error && !err.message.includes('404')) {
+          console.error('Failed to fetch under construction data:', err);
+        }
         setError(err instanceof Error ? err.message : 'Failed to fetch under construction data');
         // Don't set data to null on error - keep existing data if available
       } finally {
