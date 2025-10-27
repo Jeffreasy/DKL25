@@ -71,7 +71,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.46.0",
-    "@vercel/node": "^5.3.26",
+    "@vercel/node": "^2.3.0",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.16",
     "concurrently": "^9.2.1",
