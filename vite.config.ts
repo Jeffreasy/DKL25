@@ -77,7 +77,7 @@ export default defineConfig({
         name: 'De Koninklijke Loop 2026',
         short_name: 'DKL 2026',
         description: 'De Koninklijke Loop 2026 is een uniek hardloopevenement waar mensen met een beperking wandelen voor het goede doel.',
-        theme_color: '#FF6B00',
+        theme_color: '#FF9328',
         background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',
@@ -98,8 +98,11 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: true,
-    chunkSizeWarningLimit: 500, // Lower threshold to catch issues earlier
+    sourcemap: process.env.NODE_ENV !== 'production',
+    chunkSizeWarningLimit: 500,
+    cssCodeSplit: true,
+    cssMinify: true,
+    assetsInlineLimit: 4096,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -158,9 +161,19 @@ export default defineConfig({
             }
           }
         },
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          if (!assetInfo.name) return 'assets/[name]-[hash][extname]';
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `assets/images/[name]-[hash][extname]`;
+          } else if (/woff2?|eot|ttf|otf/i.test(ext)) {
+            return `assets/fonts/[name]-[hash][extname]`;
+          }
+          return `assets/[name]-[hash][extname]`;
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
       },
       // Enable tree shaking and minification optimizations
       treeshake: {
@@ -169,16 +182,21 @@ export default defineConfig({
         tryCatchDeoptimization: false,
       },
     },
-    // Enable minification and compression
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        drop_console: process.env.NODE_ENV === 'production',
         drop_debugger: true,
         pure_funcs: ['console.log', 'console.info', 'console.debug'],
+        passes: 2,
+        unsafe_arrows: true,
+        unsafe_methods: true,
       },
       mangle: {
         safari10: true,
+      },
+      format: {
+        comments: false,
       },
     },
   },
