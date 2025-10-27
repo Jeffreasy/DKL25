@@ -151,14 +151,9 @@ export const loadInstagramEmbed = (): Promise<void> => {
     const loadScript = () => {
       const script = document.createElement('script');
       script.src = 'https://www.instagram.com/embed.js';
-      script.async = false; // Load synchronously to ensure proper initialization
-
-      // iOS-specific: Add additional attributes for better compatibility
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
-      if (isIOS) {
-        script.setAttribute('data-instgrm-version', '14');
-        script.crossOrigin = 'anonymous';
-      }
+      script.async = true; // Changed to async for better performance
+      script.defer = true; // Add defer for proper loading order
+      script.crossOrigin = 'anonymous';
 
       let timeoutId: NodeJS.Timeout | null = null;
       let resolved = false;
@@ -170,30 +165,42 @@ export const loadInstagramEmbed = (): Promise<void> => {
         }
       };
 
+      // Overall timeout to prevent infinite waiting
+      const overallTimeout = setTimeout(() => {
+        cleanup();
+        if (!resolved) {
+          resolved = true;
+          console.warn('Instagram script loading timeout after 10s');
+          reject(new Error('Instagram embed script loading timeout'));
+        }
+      }, 10000);
+
       script.onload = () => {
         let attempts = 0;
-        const maxAttempts = 50; // Increased from 20
+        const maxAttempts = 30;
 
         const checkInstagram = () => {
           if (window.instgrm?.Embeds?.process) {
             instagramScriptLoaded = true;
             instagramScriptLoadingPromise = null;
             cleanup();
+            clearTimeout(overallTimeout);
             if (!resolved) {
               resolved = true;
+              console.log('Instagram embed script loaded successfully');
               resolve();
             }
           } else if (attempts < maxAttempts) {
             attempts++;
-            // iOS needs longer delays for proper initialization
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor || (window as any).opera) && !(window as any).MSStream;
-            const delay = isIOS ? 500 + (attempts * 200) : 200 + (attempts * 100);
+            const delay = 100 + (attempts * 50); // Progressive delay
             timeoutId = setTimeout(checkInstagram, delay);
           } else {
             cleanup();
+            clearTimeout(overallTimeout);
             instagramScriptLoadingPromise = null;
             if (!resolved) {
               resolved = true;
+              console.error('Instagram embed script failed to initialize after', maxAttempts, 'attempts');
               reject(new Error('Instagram embed script failed to initialize'));
             }
           }
@@ -204,9 +211,11 @@ export const loadInstagramEmbed = (): Promise<void> => {
 
       script.onerror = (error) => {
         cleanup();
+        clearTimeout(overallTimeout);
         instagramScriptLoadingPromise = null;
         if (!resolved) {
           resolved = true;
+          console.error('Failed to load Instagram embed script:', error);
           reject(new Error('Failed to load Instagram embed script'));
         }
       };
@@ -214,14 +223,22 @@ export const loadInstagramEmbed = (): Promise<void> => {
       document.head.appendChild(script);
     };
 
-    // Defer loading until after page load event
-    window.addEventListener('load', () => {
+    // Load immediately if DOM is ready, otherwise wait
+    if (document.readyState === 'complete') {
       if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadScript);
+        requestIdleCallback(loadScript, { timeout: 2000 });
       } else {
-        setTimeout(loadScript, 300);
+        setTimeout(loadScript, 100);
       }
-    });
+    } else {
+      window.addEventListener('load', () => {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadScript, { timeout: 2000 });
+        } else {
+          setTimeout(loadScript, 100);
+        }
+      });
+    }
   });
 
   return instagramScriptLoadingPromise;

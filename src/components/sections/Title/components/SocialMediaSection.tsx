@@ -91,6 +91,7 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
     }
 
     if (!scriptsLoaded || !window.instgrm?.Embeds?.process) {
+      console.warn('Instagram script not ready yet for embed:', embedId);
       return;
     }
 
@@ -103,49 +104,64 @@ const SocialMediaSection: React.FC<SocialMediaSectionProps> = memo(({ socialEmbe
       clearTimeout(existingTimeout);
     }
 
-    // Process with delay to ensure DOM is ready - longer delay for iOS
-    const delay = isIOS ? 1000 : 300;
+    // Progressive retry with exponential backoff
+    const delay = isIOS ? 500 : 200;
     const timeoutId = setTimeout(() => {
       if (!isMounted.current) return;
 
-      try {
-        // For iOS, try multiple processing attempts
-        if (isIOS) {
-          let attempts = 0;
-          const maxAttempts = 3;
-          const processWithRetry = () => {
-            if (attempts >= maxAttempts) return;
+      let attempts = 0;
+      const maxAttempts = isIOS ? 5 : 3;
+      
+      const processWithRetry = () => {
+        if (attempts >= maxAttempts) {
+          console.error(`Instagram embed ${embedId} failed after ${maxAttempts} attempts`);
+          processedEmbeds.current.delete(embedId); // Allow retry later
+          return;
+        }
 
-            try {
-              window.instgrm!.Embeds.process(node);
-              // Check if embed was actually processed by looking for processed class
-              const processedElements = node.querySelectorAll('.instagram-media-rendered');
-              if (processedElements.length > 0) {
-                processingTimeouts.current.delete(embedId);
-                return;
-              }
-            } catch (e) {
-              console.error(`Instagram processing attempt ${attempts + 1} failed for ${embedId}:`, e);
-            }
+        try {
+          // Verify instgrm is still available
+          if (!window.instgrm?.Embeds?.process) {
+            console.error('Instagram Embeds.process not available');
+            processedEmbeds.current.delete(embedId);
+            return;
+          }
 
-            attempts++;
-            if (attempts < maxAttempts) {
-              setTimeout(processWithRetry, 500);
+          // Process the embed
+          window.instgrm.Embeds.process(node);
+          
+          // Verify processing succeeded
+          setTimeout(() => {
+            const processed = node.querySelector('.instagram-media-rendered') ||
+                            node.querySelector('iframe[src*="instagram.com"]');
+            
+            if (processed) {
+              console.log(`Instagram embed ${embedId} processed successfully on attempt ${attempts + 1}`);
+              processingTimeouts.current.delete(embedId);
+            } else if (attempts < maxAttempts - 1) {
+              console.warn(`Instagram embed ${embedId} not rendered, retrying... (attempt ${attempts + 1})`);
+              attempts++;
+              const retryDelay = 300 * Math.pow(2, attempts); // Exponential backoff
+              setTimeout(processWithRetry, retryDelay);
             } else {
-              // Remove from processed on all failures so it can be retried later
+              console.error(`Instagram embed ${embedId} failed verification after ${maxAttempts} attempts`);
               processedEmbeds.current.delete(embedId);
             }
-          };
-          processWithRetry();
-        } else {
-          window.instgrm!.Embeds.process(node);
-          processingTimeouts.current.delete(embedId);
+          }, 500);
+          
+        } catch (e) {
+          console.error(`Instagram processing error for ${embedId} (attempt ${attempts + 1}):`, e);
+          attempts++;
+          if (attempts < maxAttempts) {
+            const retryDelay = 300 * Math.pow(2, attempts);
+            setTimeout(processWithRetry, retryDelay);
+          } else {
+            processedEmbeds.current.delete(embedId);
+          }
         }
-      } catch (e) {
-        console.error(`Error processing Instagram embed ${embedId}:`, e);
-        // Remove from processed on error so it can be retried
-        processedEmbeds.current.delete(embedId);
-      }
+      };
+
+      processWithRetry();
     }, delay);
 
     processingTimeouts.current.set(embedId, timeoutId);
