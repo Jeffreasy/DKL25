@@ -380,13 +380,9 @@
     ]
   }
   </script>
-  <!-- Preload main module for faster loading -->
-  <link rel="modulepreload" href="/src/main.tsx">
-
-  <!-- Modern browsers: ES modules -->
-  <script type="module" crossorigin src="/src/main.tsx"></script>
-  <!-- Legacy browsers: fallback -->
-  <script nomodule defer src="/assets/legacy.js"></script>
+  
+  <!-- Vite will inject the bundled scripts here during build -->
+  <script type="module" src="/src/main.tsx"></script>
 </head>
 <body>
   <div id="root"></div>
