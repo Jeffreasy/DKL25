@@ -7,6 +7,7 @@
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Permissions-Policy", "value": "unload=()" },
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET,HEAD,OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Range" }
@@ -27,19 +28,31 @@
     {
       "source": "/assets/(.*)\\.js",
       "headers": [
-        { "key": "Content-Type", "value": "application/javascript" }
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
       ]
     },
     {
       "source": "/assets/(.*)\\.mjs",
       "headers": [
-        { "key": "Content-Type", "value": "text/javascript" }
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/src/(.*)\\.js",
+      "headers": [
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/src/(.*)\\.tsx",
+      "headers": [
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
       ]
     },
     {
       "source": "/(.*)\\.js",
       "headers": [
-        { "key": "Content-Type", "value": "application/javascript" }
+        { "key": "Content-Type", "value": "text/javascript; charset=utf-8" }
       ]
     },
     {
