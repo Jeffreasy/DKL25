@@ -1,5 +1,3 @@
-export { OptimizedImage } from './OptimizedImage';
-export { ResponsiveImage } from './ResponsiveImage';
 /**
  * Common Components
  * Reusable components used throughout the application
@@ -13,3 +11,6 @@ export { default as ScrollToTopButton } from './ScrollToTopButton';
 export { default as UnderConstruction } from './UnderConstruction';
 export { SEO } from './SEO';
 export { CSSConfetti } from './CSSConfetti';
+export { LazySection } from './LazySection';
+export { OptimizedImage } from './OptimizedImage';
+export { ResponsiveImage } from './ResponsiveImage';

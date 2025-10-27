@@ -1,9 +1,9 @@
 {
   "name": "dkl25main",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
-  "description": "De Koninklijke Loop 2026 - Event Website",
+  "description": "De Koninklijke Loop 2026 - Professional Event Website with Full Accessibility",
   "author": "DKL Team",
   "license": "UNLICENSED",
   "engines": {

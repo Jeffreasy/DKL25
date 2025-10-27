@@ -1,7 +1,8 @@
-import React, { useState, useEffect, Suspense, lazy, memo, useRef } from 'react';
+import React, { useState, useEffect, Suspense, lazy, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { SEO } from '../../components/common/SEO';
+import { LazySection } from '../../components/common/LazySection';
 import { cn, colors } from '@/styles/shared';
 
 // Lazy load heavy components for better performance
@@ -9,52 +10,6 @@ const FAQ = lazy(() => import('./components/FAQ'));
 const ContactModal = lazy(() =>
   import('../../components/ui/modals/ContactModal').then(module => ({ default: module.ContactModal }))
 );
-
-// Optimized section component with intersection observer
-const LazySection: React.FC<{
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
-  className?: string;
-  priority?: 'high' | 'medium' | 'low';
-}> = memo(({ children, fallback, className, priority = 'medium' }) => {
-  const [isVisible, setIsVisible] = useState(priority === 'high');
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (priority === 'high') return; // Load immediately
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.disconnect(); // Load once
-          }
-        });
-      },
-      {
-        threshold: 0.1,
-        rootMargin: priority === 'medium' ? '100px' : '200px'
-      }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [priority]);
-
-  return (
-    <div ref={sectionRef} className={className}>
-      <Suspense fallback={fallback || <div className="h-32 animate-pulse bg-gray-100 rounded-lg" />}>
-        {isVisible ? children : (fallback || <div className="h-32 bg-gray-50 rounded-lg" />)}
-      </Suspense>
-    </div>
-  );
-});
-
-LazySection.displayName = 'LazySection';
 
 interface ContactProps {
   onInschrijfClick?: () => void;
