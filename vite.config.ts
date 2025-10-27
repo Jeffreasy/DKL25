@@ -124,10 +124,9 @@ export default defineConfig({
             if (id.includes('canvas-confetti')) {
               return 'vendor-confetti';
             }
-            // Supabase in separate chunk
-            if (id.includes('supabase') || id.includes('@supabase')) {
-              return 'vendor-supabase';
-            }
+            // Note: Supabase chunk removed as it was empty (0.00 kB)
+            // Supabase is now bundled with vendor-other for efficiency
+            
             // Other large libraries - optimize by removing unused code
             if (id.includes('date-fns') || id.includes('lodash') || id.includes('dompurify')) {
               return 'vendor-utils';
