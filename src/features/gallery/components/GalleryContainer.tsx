@@ -1,14 +1,17 @@
-// BELANGRIJK: Zorg ervoor dat de afbeeldingen (photos.url en photos.thumbnail_url)
-// geoptimaliseerd zijn qua grootte en formaat (bv. WebP/AVIF) via de image provider (bv. Cloudinary/Supabase Storage)
-// voor de beste laadprestaties.
+/**
+ * Gallery Container Component
+ * Main component for photo gallery with album selection and navigation
+ *
+ * @note Images should be optimized (WebP/AVIF) via image provider
+ * for best loading performance
+ */
 
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect, useCallback } from 'react';
 import MainSlider from './MainImageSlider';
 import ThumbnailSlider from './ThumbnailGrid';
 import { usePhotoGallery } from '../hooks/usePhotoGallery';
 import { albumService } from '../services/albumService';
 import { photoService } from '../services/photoService';
-import { useState, useEffect, useCallback } from 'react';
 import type { Photo, Album } from '../types';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { cc, cn, colors } from '@/styles/shared';
@@ -26,15 +29,14 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
   const [retryCount, setRetryCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Combined effect for initial data loading and modal state tracking
+  // Fetch albums once on mount
   useEffect(() => {
-    // Fetch albums on mount
     const fetchAlbums = async () => {
       try {
         const data = await albumService.fetchVisible();
         if (data && data.length > 0) {
           setAlbums(data);
-          setSelectedAlbumId(data[0].id); // Selecteer eerste album standaard
+          setSelectedAlbumId(data[0].id); // Select first album by default
         } else {
           setError('Geen zichtbare albums gevonden.');
           trackEvent('gallery', 'error', 'no_albums_found');
@@ -47,10 +49,12 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
     };
 
     fetchAlbums();
+  }, []); // Empty array - only run on mount
 
-    // Notify parent component of modal state changes
+  // Track modal state changes separately
+  useEffect(() => {
     onModalChange?.(isModalOpen);
-  }, [isModalOpen, onModalChange]); // Only re-run when modal state or callback changes
+  }, [isModalOpen, onModalChange]);
 
   // Preload images with cleanup
   const preloadImages = useCallback((urls: string[]) => {
@@ -151,26 +155,31 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
   }, [currentIndex, photos, preloadImages]);
 
   const renderContent = () => {
-    if (isLoading && photos.length === 0) { // Toon skeleton alleen bij initiële load of album switch
+    // Loading state with spinner
+    if (isLoading && photos.length === 0) {
       return (
-        <div className={cn(cc.flex.center, 'min-h-[400px] bg-gray-50 rounded-lg')}>
-          <div className="text-center">
-            <div className={cn('w-12 h-12 border-4 border-t-transparent mx-auto mb-4', colors.primary.border, cc.border.circle, 'animate-spin')} />
-            <p className={cn(cc.text.muted)}>Foto's laden...</p>
+        <div className={cn(cc.flex.center, 'min-h-[400px]', colors.neutral.gray[50], cc.border.rounded)}>
+          <div className={cn(cc.flex.colCenter, 'gap-4')}>
+            <div className={cn(cc.loading.spinner, 'w-12 h-12')} />
+            <p className={cn(cc.text.muted, cc.typography.bodyNormal)}>Foto's laden...</p>
           </div>
         </div>
       );
     }
   
+    // Error state with retry button
     if (error) {
       return (
-        <div className={cn('text-center p-8 bg-gray-50 rounded-lg', cc.text.error)}>
-          <div className="max-w-md mx-auto">
-            <h3 className={cn(cc.text.h3, 'mb-2')}>Foto's konden niet worden geladen</h3>
-            <p className={cn(cc.text.body, 'mb-4 text-gray-600')}>{error}</p>
+        <div className={cn(cc.flex.center, 'p-8', colors.neutral.gray[50], cc.border.rounded)}>
+          <div className={cn(cc.flex.colCenter, 'gap-4 max-w-md text-center')}>
+            <h3 className={cn(cc.text.h4, cc.typography.semibold, colors.status.danger.text)}>
+              Foto's konden niet worden geladen
+            </h3>
+            <p className={cn(cc.text.body, cc.text.muted)}>{error}</p>
             <button
               onClick={fetchPhotos}
-              className={cn(cc.button.primary, 'px-6 py-2')}
+              className={cn(cc.button.primary)}
+              aria-label="Probeer opnieuw foto's te laden"
             >
               Opnieuw proberen
             </button>
@@ -179,12 +188,21 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
       );
     }
   
+    // Empty states
     if (photos.length === 0 && selectedAlbumId) {
-      return <p className={cn(cc.text.muted, 'text-center')}>Geen foto's gevonden voor dit album.</p>;
+      return (
+        <p className={cn(cc.text.body, cc.text.muted, cc.flex.center, 'py-12')}>
+          Geen foto's gevonden voor dit album.
+        </p>
+      );
     }
 
     if (photos.length === 0 && !selectedAlbumId) {
-      return <p className={cn(cc.text.muted, 'text-center')}>Selecteer een album.</p>;
+      return (
+        <p className={cn(cc.text.body, cc.text.muted, cc.flex.center, 'py-12')}>
+          Selecteer een album om foto's te bekijken.
+        </p>
+      );
     }
 
     return (
@@ -207,36 +225,41 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = memo(({ onModalChange }) => {
   };
 
   return (
-    <div className={cn('py-16 px-5 bg-white', cc.typography.heading)}>
+    <section
+      className={cn(cc.spacing.section, 'px-5', colors.neutral.white)}
+      aria-label="Fotogalerij"
+    >
       <div className={cn(cc.container.wide, 'max-w-[1200px]')}>
-        {/* Album Selectie Knoppen */}
+        {/* Album Selection Buttons */}
         {albums.length > 1 && (
-          <div className={cn(cc.flex.center, 'flex-wrap gap-2 mb-8')}>
+          <nav
+            className={cn(cc.flex.center, 'flex-wrap gap-2 mb-8')}
+            aria-label="Album selectie"
+          >
             {albums.map((album) => (
               <button
                 key={album.id}
                 onClick={() => handleAlbumSelect(album.id)}
                 className={cn(
-                  'px-4 py-2',
-                  cc.border.circle,
-                  cc.text.small,
+                  cc.chip.base,
                   cc.transition.colors,
                   selectedAlbumId === album.id
-                    ? cn(colors.primary.bg, 'text-white', cc.shadow.md)
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? cc.chip.primary
+                    : cn(cc.chip.secondary, 'hover:bg-gray-300')
                 )}
                 aria-current={selectedAlbumId === album.id ? 'page' : undefined}
+                aria-label={`Selecteer album ${album.title}`}
               >
                 {album.title}
               </button>
             ))}
-          </div>
+          </nav>
         )}
 
+        {/* Gallery Content */}
         {renderContent()}
-
       </div>
-    </div>
+    </section>
   );
 });
 

@@ -1,12 +1,21 @@
-import React, { useEffect, useRef, useState, useCallback, Suspense, lazy } from 'react';
+/**
+ * Main Image Slider Component
+ * Primary image display with navigation and modal support
+ *
+ * Features:
+ * - Touch/swipe gestures
+ * - Click to open fullscreen modal
+ * - Lazy loading for performance
+ * - Image preloading
+ */
+
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { Photo } from '../types';
 import NavigationButton from './GalleryNavButton';
+import ImageModal from './ImageLightbox';
 import { useSwipe } from '@/hooks/useSwipe';
 import { trackEvent } from '@/utils/googleAnalytics';
-import { cc, cn, animations } from '@/styles/shared';
-
-// Lazy load the heavy ImageModal component
-const ImageModal = lazy(() => import('./ImageLightbox'));
+import { cc, cn } from '@/styles/shared';
 
 interface MainSliderProps {
   photos: Photo[];
@@ -68,14 +77,20 @@ const MainSlider: React.FC<MainSliderProps> = ({
 
   return (
     <>
-      <div 
+      <div
         ref={containerRef}
+        role="button"
+        tabIndex={0}
+        aria-label="Open foto in volledig scherm"
         className={cn(
-          'relative aspect-[16/9] mb-4 rounded-2xl overflow-hidden bg-gray-100 group',
+          'relative aspect-[16/9] mb-4 group',
+          cc.border.rounded,
+          'rounded-2xl overflow-hidden',
+          'bg-gray-100',
           cc.shadow.xl,
-          isGrabbing ? 'cursor-grabbing' : 'cursor-pointer',
           'hover:shadow-2xl',
-          cc.transition.base
+          cc.transition.base,
+          isGrabbing ? 'cursor-grabbing' : 'cursor-pointer'
         )}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -87,9 +102,13 @@ const MainSlider: React.FC<MainSliderProps> = ({
           trackEvent('gallery', 'open_modal', `photo_${currentIndex}`);
           setIsModalOpen(true);
         }}
-        role="button"
-        aria-label="Open foto in volledig scherm"
-        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            trackEvent('gallery', 'open_modal_keyboard', `photo_${currentIndex}`);
+            setIsModalOpen(true);
+          }
+        }}
       >
         {/* Render only visible and adjacent slides for performance */}
         {photos.map((photo, index) => {
@@ -122,88 +141,114 @@ const MainSlider: React.FC<MainSliderProps> = ({
                 backfaceVisibility: 'hidden'
               }}
             >
-              {/* Loading placeholder */}
+              {/* Loading skeleton */}
               {!imageLoaded[photo.url] && (
-                <div className={cn('absolute inset-0 bg-gray-200', animations.pulse)} />
+                <div className={cn(cc.loading.skeleton, 'absolute inset-0')} />
               )}
 
               <img
                 src={photo.url}
                 alt={photo.alt_text}
-                className={`
-                  w-full h-full object-cover 
-                  transition-transform duration-300 
-                  group-hover:scale-[1.02]
-                  ${!imageLoaded[photo.url] ? 'opacity-0' : 'opacity-100'}
-                `}
                 loading="lazy"
                 onLoad={() => handleImageLoad(photo.url)}
-                style={{ 
+                className={cn(
+                  'w-full h-full object-cover',
+                  cc.transition.transform,
+                  'group-hover:scale-[1.02]',
+                  !imageLoaded[photo.url] ? 'opacity-0' : 'opacity-100'
+                )}
+                style={{
                   willChange: 'transform',
-                  transform: `translate3d(0, 0, 0)` 
+                  transform: 'translate3d(0, 0, 0)'
                 }}
               />
             </div>
           );
         })}
 
-        {/* Overlay met gradient */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+        {/* Hover gradient overlay */}
+        <div
+          className={cn(
+            cc.overlay.gradient,
+            'opacity-0 group-hover:opacity-100',
+            cc.transition.fast
+          )}
           style={{ willChange: 'opacity' }}
+          aria-hidden="true"
         />
 
-        {/* Navigation Buttons met hover effect */}
-        <div 
-          className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex items-center justify-between"
+        {/* Navigation buttons */}
+        <div
+          className={cn(cc.flex.between, 'absolute inset-x-4 top-1/2 -translate-y-1/2')}
           onClick={(e) => e.stopPropagation()}
         >
-          <NavigationButton 
-            direction="previous" 
+          <NavigationButton
+            direction="previous"
             onClick={onPrevious}
             disabled={isAnimating}
           />
-          <NavigationButton 
-            direction="next" 
+          <NavigationButton
+            direction="next"
             onClick={onNext}
             disabled={isAnimating}
           />
         </div>
 
-        {/* Slide counter */}
-        <div 
-          className={cn('absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1', cc.border.circle, cc.text.small)}
+        {/* Photo counter */}
+        <div
+          className={cn(
+            cc.badge.base,
+            'absolute bottom-4 left-4',
+            'bg-black/50 text-white',
+            cc.border.circle
+          )}
           onClick={(e) => e.stopPropagation()}
+          aria-label={`Foto ${currentIndex + 1} van ${photos.length}`}
         >
           {currentIndex + 1} / {photos.length}
         </div>
 
-        {/* Fullscreen indicator */}
-        <div className={cn('absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity', cc.text.small)}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+        {/* Fullscreen expand icon */}
+        <div
+          className={cn(
+            'absolute top-4 right-4 p-2',
+            'bg-black/50 text-white',
+            cc.border.circle,
+            'opacity-0 group-hover:opacity-100',
+            cc.transition.fast
+          )}
+          aria-hidden="true"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+            />
           </svg>
         </div>
       </div>
 
-      <Suspense fallback={
-        <div className={cn('fixed inset-0 bg-black/50 flex items-center justify-center', cc.zIndex.modal)}>
-          <div className={cn('w-12 h-12 border-4 border-white/20 border-t-white', cc.border.circle, 'animate-spin')} />
-        </div>
-      }>
-        <ImageModal
-          photo={currentPhoto}
-          isOpen={isModalOpen}
-          onClose={() => {
-            trackEvent('gallery', 'close_modal', `photo_${currentIndex}`);
-            setIsModalOpen(false);
-          }}
-          onNext={onNext}
-          onPrevious={onPrevious}
-          totalPhotos={photos.length}
-          currentIndex={currentIndex}
-        />
-      </Suspense>
+      {/* Modal - Direct render for debugging */}
+      <ImageModal
+        photo={currentPhoto}
+        isOpen={isModalOpen}
+        onClose={() => {
+          trackEvent('gallery', 'close_modal', `photo_${currentIndex}`);
+          setIsModalOpen(false);
+        }}
+        onNext={onNext}
+        onPrevious={onPrevious}
+        totalPhotos={photos.length}
+        currentIndex={currentIndex}
+      />
     </>
   );
 };
