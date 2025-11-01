@@ -33,7 +33,11 @@ const CountdownTimer: React.FC = memo(() => {
   const countdownDisplay = useMemo(() => {
     if (!timeLeft) {
       return (
-        <div className={`text-center ${cc.text.h4} ${colors.primary.text}`}>
+        <div className={cn(
+          'text-center font-heading font-semibold leading-snug',
+          'text-xl sm:text-2xl md:text-3xl lg:text-4xl',
+          colors.primary.text
+        )}>
           Het evenement is succesvol afgelopen, bedankt en tot volgend jaar!
         </div>
       );
@@ -43,10 +47,18 @@ const CountdownTimer: React.FC = memo(() => {
       <div className="flex justify-center items-center space-x-2 sm:space-x-6 text-center" role="group" aria-label="Tijd tot evenement">
         {Object.entries(timeLeft).map(([unit, value]) => (
           <div key={unit} className="p-2" role="presentation">
-            <div className={cn(cc.typography.display, colors.primary.text)}>
+            <div className={cn(
+              'font-heading font-bold leading-none tracking-tight',
+              'text-3xl sm:text-4xl md:text-5xl lg:text-6xl',
+              colors.primary.text
+            )}>
               {String(value).padStart(2, '0')}
             </div>
-            <div className={`${cc.text.small} ${cc.typography.uppercase} ${cc.text.muted}`}>
+            <div className={cn(
+              'font-body text-sm uppercase tracking-wide',
+              'text-xs sm:text-sm md:text-base',
+              'text-gray-600'
+            )}>
               {unit === 'days' ? 'Dagen' : unit === 'hours' ? 'Uren' : unit === 'minutes' ? 'Minuten' : 'Seconden'}
             </div>
           </div>

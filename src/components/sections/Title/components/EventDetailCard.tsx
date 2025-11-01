@@ -149,13 +149,21 @@ const EventDetailCard: React.FC<EventDetailCardProps> = ({
         </motion.div>
         
         <h3
-          className={cn(cc.text.h4, 'text-gray-900')}
+          className={cn(
+            'font-heading font-semibold leading-snug',
+            'text-lg sm:text-xl md:text-2xl lg:text-3xl',
+            'text-gray-900'
+          )}
         >
           {title}
         </h3>
 
         <p
-          className={cn(cc.typography.caption, 'text-gray-600')}
+          className={cn(
+            'font-body leading-normal',
+            'text-sm sm:text-base md:text-lg',
+            'text-gray-600'
+          )}
         >
           {description}
         </p>

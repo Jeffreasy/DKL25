@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
-import { cc, colors } from '@/styles/shared';
+import { cc, cn, colors } from '@/styles/shared';
 
 interface CTAButtonProps {
   onClick: () => void;
@@ -27,13 +27,26 @@ const CTAButton: React.FC<CTAButtonProps> = memo(({ onClick }) => {
     >
       <motion.button
         onClick={handleClick}
-        className={`text-white px-6 py-3 sm:px-12 sm:py-5 w-full sm:w-auto ${cc.text.bodyLarge} font-bold tracking-wide ${colors.primary.bg} ${colors.primary.hover} ${cc.border.circle} ${cc.transition.base} hover:-translate-y-1 ${cc.shadow.xl} ${cc.flex.center} gap-4`}
+        className={cn(
+          'text-white px-6 py-3 sm:px-8 sm:py-4 md:px-12 md:py-5',
+          'w-full sm:w-auto',
+          'font-body font-bold tracking-wide',
+          'text-base sm:text-lg md:text-xl lg:text-2xl',
+          colors.primary.bg,
+          colors.primary.hover,
+          cc.border.circle,
+          cc.transition.base,
+          'hover:-translate-y-1',
+          cc.shadow.xl,
+          cc.flex.center,
+          'gap-3 sm:gap-4'
+        )}
         aria-label="Schrijf je nu in voor De Koninklijke Loop"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
         <span>Schrijf je nu in</span>
-        <ArrowForward sx={{ fontSize: { xs: 20, sm: 24 } }} />
+        <ArrowForward sx={{ fontSize: { xs: 20, sm: 24, md: 28, lg: 32 } }} />
       </motion.button>
     </motion.div>
   );

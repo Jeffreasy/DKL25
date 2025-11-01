@@ -17,12 +17,20 @@ const TitleHeader: React.FC<TitleHeaderProps> = memo(({ title, subtitle }) => {
     >
       <h1
         id="title-section-heading"
-        className={cn(cc.typography.display, 'text-primary')}
+        className={cn(
+          'font-heading font-bold leading-none tracking-tight',
+          'text-3xl sm:text-4xl md:text-5xl lg:text-6xl',
+          'text-primary'
+        )}
       >
         {title}
       </h1>
       <p
-        className={cn(cc.typography.lead, 'text-gray-800 max-w-2xl mx-auto')}
+        className={cn(
+          'font-body leading-relaxed',
+          'text-base sm:text-lg md:text-xl lg:text-2xl',
+          'text-gray-800 max-w-2xl mx-auto'
+        )}
       >
         {subtitle}
       </p>

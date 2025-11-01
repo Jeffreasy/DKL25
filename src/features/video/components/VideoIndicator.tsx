@@ -31,18 +31,31 @@ const DotIndicator: React.FC<DotIndicatorProps> = memo(({
   );
 
   return (
-    <div className={cn(cc.flex.center, 'gap-2', className)}>
+    <div className={cn(cc.flex.center, 'gap-3', className)} role="tablist" aria-label="Video slides">
       {indicators.map((index) => (
         <button
           key={index}
           onClick={() => handleClick(index)}
-          className={cn(
-            'w-2 h-2',
-            cc.border.circle,
-            cc.transition.base,
-            index === current ? cn(colors.primary.bg, 'w-4') : 'bg-gray-300'
-          )}
+          role="tab"
+          aria-selected={index === current}
           aria-label={`Ga naar slide ${index + 1}`}
+          className={cn(
+            'transition-all duration-300 ease-out',
+            cc.border.circle,
+            cc.a11y.focusVisible,
+            'hover:scale-110 active:scale-95',
+            index === current 
+              ? cn(
+                  colors.primary.bg,
+                  'w-10 h-3 shadow-md',
+                  'ring-2 ring-primary/30'
+                )
+              : cn(
+                  'bg-gray-400 hover:bg-gray-500',
+                  'w-3 h-3',
+                  'shadow-sm hover:shadow-md'
+                )
+          )}
         />
       ))}
     </div>
@@ -51,4 +64,4 @@ const DotIndicator: React.FC<DotIndicatorProps> = memo(({
 
 DotIndicator.displayName = 'DotIndicator';
 
-export default DotIndicator 
+export default DotIndicator
