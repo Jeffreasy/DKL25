@@ -143,7 +143,7 @@ const Aanmelden = memo(() => {
               "name": "Wanneer en waar vindt De Koninklijke Loop 2025 plaats?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "De Koninklijke Loop 2025 vindt plaats op 17 mei 2025. De startlocatie is bij de Grote Kerk, Loolaan 16, 7315 AB Apeldoorn. Zorg dat je op tijd aanwezig bent voor je start."
+                "text": "De Koninklijke Loop 2025 vindt plaats op 16 mei 2025. De startlocatie is bij de Grote Kerk, Loolaan 16, 7315 AB Apeldoorn. Zorg dat je op tijd aanwezig bent voor je start."
               }
             },
             {
@@ -173,7 +173,7 @@ const Aanmelden = memo(() => {
               Aanmelden voor De Koninklijke Loop 2025
             </h1>
             <p className={cn(cc.text.body, 'text-gray-600 text-center max-w-2xl mx-auto mb-8')}>
-              Schrijf je nu in voor De Koninklijke Loop 2025. Kies je rol, selecteer je afstand en doe mee aan dit inspirerende wandelevenement op 17 mei 2025.
+              Schrijf je nu in voor De Koninklijke Loop 2025. Kies je rol, selecteer je afstand en doe mee aan dit inspirerende wandelevenement op 16 mei 2025.
             </p>
 
             <div className={cn('bg-white rounded-xl', cc.shadow.lg)}>

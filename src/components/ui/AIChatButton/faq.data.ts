@@ -30,12 +30,12 @@ interface FAQItem {
         },
         {
           question: "Wanneer is De Koninklijke Loop?",
-          answer: "De Koninklijke Loop (DKL) vindt op zaterdag 17 mei 2026 plaats.",
+          answer: "De Koninklijke Loop (DKL) vindt op zaterdag 16 mei 2026 plaats.",
           icon: "📅"
         },
         {
           question: "Wanneer vindt DKL 2026 plaats?",
-          answer: "DKL (De Koninklijke Loop) 2026 vindt op zaterdag 17 mei 2026 plaats.",
+          answer: "DKL (De Koninklijke Loop) 2026 vindt op zaterdag 16 mei 2026 plaats.",
           icon: "📅"
         },
         {

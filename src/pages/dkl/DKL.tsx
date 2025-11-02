@@ -15,7 +15,7 @@ const DKL: React.FC = memo(() => {
     <>
       <SEO
         title="Wat is DKL? De Koninklijke Loop 2026 - Toegankelijk Wandelevenement"
-        description="Ontdek DKL (De Koninklijke Loop) 2026: wandel over de historische Koninklijke Weg van Kootwijk naar Apeldoorn. Kies uit 2.5, 6, 10 of 15 KM. Volledig rolstoeltoegankelijk evenement op 17 mei 2026."
+        description="Ontdek DKL (De Koninklijke Loop) 2026: wandel over de historische Koninklijke Weg van Kootwijk naar Apeldoorn. Kies uit 2.5, 6, 10 of 15 KM. Volledig rolstoeltoegankelijk evenement op 16 mei 2026."
         route="/wat-is-de-koninklijkeloop"
         type="website"
         images={[
@@ -153,7 +153,7 @@ const DKL: React.FC = memo(() => {
               "name": "Wat is DKL of De Koninklijke Loop?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "DKL (De Koninklijke Loop) is een uniek, toegankelijk wandelevenement op 17 mei 2026 waarbij deelnemers over de historische Koninklijke Weg wandelen van Kootwijk naar Apeldoorn. Het evenement is speciaal ontworpen voor toegankelijkheid en inclusiviteit."
+                "text": "DKL (De Koninklijke Loop) is een uniek, toegankelijk wandelevenement op 16 mei 2026 waarbij deelnemers over de historische Koninklijke Weg wandelen van Kootwijk naar Apeldoorn. Het evenement is speciaal ontworpen voor toegankelijkheid en inclusiviteit."
               }
             },
             {

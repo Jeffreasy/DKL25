@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { cc, cn, colors } from '@/styles/shared';
 
-const TARGET_EVENT_DATE = new Date('2026-05-17T09:00:00');
+const TARGET_EVENT_DATE = new Date('2026-05-16T09:00:00');
 
 const calculateTimeLeft = (targetDate: Date): { days: number; hours: number; minutes: number; seconds: number } | null => {
   const difference = +targetDate - +new Date();

@@ -228,7 +228,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             <div class="info-box">
               <h3>Belangrijke informatie</h3>
               <ul>
-                <li>Het evenement vindt plaats op 17 mei 2025</li>
+                <li>Het evenement vindt plaats op 16 mei 2025</li>
                 <li>Zorg dat je op tijd aanwezig bent voor je start</li>
                 <li>Houd onze website in de gaten voor het laatste nieuws</li>
                 <li>Neem deze bevestiging mee naar het evenement</li>
@@ -408,7 +408,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start">
                 <span className={cn(colors.primary.text, 'mr-2')}>•</span>
-                Het evenement vindt plaats op 17 mei 2025
+                Het evenement vindt plaats op 16 mei 2025
               </li>
               <li className="flex items-start">
                 <span className={cn(colors.primary.text, 'mr-2')}>•</span>

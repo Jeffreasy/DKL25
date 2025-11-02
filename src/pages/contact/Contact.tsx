@@ -140,7 +140,7 @@ const Contact: React.FC<ContactProps> = memo(({ onInschrijfClick }) => {
               "name": "Wanneer vindt de Koninklijke Loop 2026 plaats?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "De Koninklijke Loop vindt op zaterdag 17 mei 2026 plaats."
+                "text": "De Koninklijke Loop vindt op zaterdag 16 mei 2026 plaats."
               }
             },
             {

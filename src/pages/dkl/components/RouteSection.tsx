@@ -43,7 +43,7 @@ const RouteSection: React.FC = memo(() => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" aria-labelledby="route-intro">
         <h2 id="route-intro" className={cn(cc.a11y.srOnly)}>Introductie Koninklijke Loop Route</h2>
         <p className={cn(cc.typography.lead, 'text-center leading-relaxed mb-16 max-w-4xl mx-auto', cc.text.muted)}>
-          Op zaterdag 17 mei 2026, tijdens de Koninklijke Loop (DKL), wandelen we over een speciaal, toegankelijk wandelpad: het laatste stukje van de historische Koninklijke Weg.
+          Op zaterdag 16 mei 2026, tijdens de Koninklijke Loop (DKL), wandelen we over een speciaal, toegankelijk wandelpad: het laatste stukje van de historische Koninklijke Weg.
           Hoewel de volledige Koninklijke Weg 170 km lang is (van Paleis Noordeinde naar Paleis Het Loo), focust de DKL zich op het prachtige deel van Kootwijk naar Apeldoorn, met afstanden van 2.5, 6, 10 en 15 km. We finishen feestelijk bij de Grote Kerk in Apeldoorn.
         </p>
 

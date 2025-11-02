@@ -29,8 +29,8 @@ const Home: React.FC = memo(() => {
   return (
     <>
       <SEO
-        title="DKL 2026 - De Koninklijke Loop | Wandelevenement Apeldoorn 17 Mei"
-        description="DKL (De Koninklijke Loop) 2026: uniek rolstoeltoegankelijk wandelevenement in Apeldoorn op 17 mei. Kies uit 2.5, 6, 10 of 15 KM over de historische Koninklijke Weg. Voor mensen met en zonder beperking. Schrijf je nu in!"
+        title="DKL 2026 - De Koninklijke Loop | Wandelevenement Apeldoorn 16 Mei"
+        description="DKL (De Koninklijke Loop) 2026: uniek rolstoeltoegankelijk wandelevenement in Apeldoorn op 16 mei. Kies uit 2.5, 6, 10 of 15 KM over de historische Koninklijke Weg. Voor mensen met en zonder beperking. Schrijf je nu in!"
         route="/"
         type="website"
         images={[
@@ -141,7 +141,7 @@ const Home: React.FC = memo(() => {
           "@id": "https://www.dekoninklijkeloop.nl#webpage",
           "url": "https://www.dekoninklijkeloop.nl",
           "name": "DKL 2026 - De Koninklijke Loop | Wandelevenement Apeldoorn",
-          "description": "Welkom bij De Koninklijke Loop (DKL) 2026. Schrijf je in voor dit unieke, rolstoeltoegankelijke wandelevenement op 17 mei in Apeldoorn.",
+          "description": "Welkom bij De Koninklijke Loop (DKL) 2026. Schrijf je in voor dit unieke, rolstoeltoegankelijke wandelevenement op 16 mei in Apeldoorn.",
           "inLanguage": "nl-NL",
           "isPartOf": {
             "@type": "WebSite",

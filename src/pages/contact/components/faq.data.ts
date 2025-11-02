@@ -30,7 +30,7 @@ export const faqData: FAQCategory[] = [
       },
       {
         question: "Wanneer vindt de Koninklijke Loop 2025 plaats?",
-        answer: "De Koninklijke Loop vindt op zaterdag 17 mei 2025 plaats.",
+        answer: "De Koninklijke Loop vindt op zaterdag 16 mei 2025 plaats.",
         icon: "📅"
       },
       {
