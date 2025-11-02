@@ -35,8 +35,8 @@ const Aanmelden = memo(() => {
   return (
     <>
       <SEO
-        title="Aanmelden voor De Koninklijke Loop 2025 - DKL Registratie"
-        description="Schrijf je nu in voor De Koninklijke Loop 2025! Doe mee als deelnemer, vrijwilliger of begeleider. Kies uit 2.5, 6, 10 of 15 KM routes. Inclusief ondersteuning voor mensen met een beperking. Registreer direct online."
+        title="Aanmelden voor De Koninklijke Loop 2026 - DKL Registratie"
+        description="Schrijf je nu in voor De Koninklijke Loop 2026! Doe mee als deelnemer, vrijwilliger of begeleider. Kies uit 2.5, 6, 10 of 15 KM routes. Inclusief ondersteuning voor mensen met een beperking. Registreer direct online."
         route="/aanmelden"
         type="website"
         images={[
@@ -44,10 +44,10 @@ const Aanmelden = memo(() => {
           'https://www.dekoninklijkeloop.nl/images/registration-og.jpg'
         ]}
         isEventPage={true}
-        eventName="De Koninklijke Loop 2025"
-        eventStartDate="2025-05-17T09:00:00+02:00"
-        eventEndDate="2025-05-17T15:00:00+02:00"
-        eventDescription="Meld je aan voor De Koninklijke Loop 2025 - een uniek sponsorloop evenement mede georganiseerd door mensen met een beperking voor mensen met een beperking. Kies je afstand en rol, en doe mee aan dit inspirerende wandelevenement."
+        eventName="De Koninklijke Loop 2026"
+        eventStartDate="2026-05-17T09:00:00+02:00"
+        eventEndDate="2026-05-17T15:00:00+02:00"
+        eventDescription="Meld je aan voor De Koninklijke Loop 2026 - een uniek sponsorloop evenement mede georganiseerd door mensen met een beperking voor mensen met een beperking. Kies je afstand en rol, en doe mee aan dit inspirerende wandelevenement."
         eventLocationName="Grote Kerk"
         eventLocationAddress={{
           streetAddress: "Loolaan 16",
@@ -87,8 +87,8 @@ const Aanmelden = memo(() => {
           "@type": "WebPage",
           "@id": "https://www.dekoninklijkeloop.nl/aanmelden#webpage",
           "url": "https://www.dekoninklijkeloop.nl/aanmelden",
-          "name": "Aanmelden voor De Koninklijke Loop 2025",
-          "description": "Schrijf je in voor De Koninklijke Loop 2025. Registreer als deelnemer, vrijwilliger of begeleider voor dit unieke wandelevenement.",
+          "name": "Aanmelden voor De Koninklijke Loop 2026",
+          "description": "Schrijf je in voor De Koninklijke Loop 2026. Registreer als deelnemer, vrijwilliger of begeleider voor dit unieke wandelevenement.",
           "inLanguage": "nl-NL",
           "isPartOf": {
             "@type": "WebSite",
@@ -99,7 +99,7 @@ const Aanmelden = memo(() => {
           "about": {
             "@type": "Event",
             "@id": "https://www.dekoninklijkeloop.nl/aanmelden#event",
-            "name": "De Koninklijke Loop 2025"
+            "name": "De Koninklijke Loop 2026"
           },
           "primaryImageOfPage": {
             "@type": "ImageObject",
@@ -116,7 +116,7 @@ const Aanmelden = memo(() => {
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "Hoe meld ik me aan voor De Koninklijke Loop 2025?",
+              "name": "Hoe meld ik me aan voor De Koninklijke Loop 2026?",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Je kunt je aanmelden door het registratieformulier op deze pagina in te vullen. Kies je rol (deelnemer, begeleider of vrijwilliger), selecteer je gewenste afstand (2.5, 6, 10 of 15 KM), en geef aan of je ondersteuning nodig hebt. Na het accepteren van de algemene voorwaarden kun je je inschrijving voltooien."
@@ -140,10 +140,10 @@ const Aanmelden = memo(() => {
             },
             {
               "@type": "Question",
-              "name": "Wanneer en waar vindt De Koninklijke Loop 2025 plaats?",
+              "name": "Wanneer en waar vindt De Koninklijke Loop 2026 plaats?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "De Koninklijke Loop 2025 vindt plaats op 16 mei 2025. De startlocatie is bij de Grote Kerk, Loolaan 16, 7315 AB Apeldoorn. Zorg dat je op tijd aanwezig bent voor je start."
+                "text": "De Koninklijke Loop 2026 vindt plaats op 16 mei 2026. De startlocatie is bij de Grote Kerk, Loolaan 16, 7315 AB Apeldoorn. Zorg dat je op tijd aanwezig bent voor je start."
               }
             },
             {
@@ -170,10 +170,10 @@ const Aanmelden = memo(() => {
         <div className={cn(cc.container.base)}>
           <div className={cn(cc.container.narrow)}>
             <h1 className={cn(cc.text.h1, 'text-gray-900 mb-4 text-center', cc.typography.heading)}>
-              Aanmelden voor De Koninklijke Loop 2025
+              Aanmelden voor De Koninklijke Loop 2026
             </h1>
             <p className={cn(cc.text.body, 'text-gray-600 text-center max-w-2xl mx-auto mb-8')}>
-              Schrijf je nu in voor De Koninklijke Loop 2025. Kies je rol, selecteer je afstand en doe mee aan dit inspirerende wandelevenement op 16 mei 2025.
+              Schrijf je nu in voor De Koninklijke Loop 2026. Kies je rol, selecteer je afstand en doe mee aan dit inspirerende wandelevenement op 16 mei 2026.
             </p>
 
             <div className={cn('bg-white rounded-xl', cc.shadow.lg)}>

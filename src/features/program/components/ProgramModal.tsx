@@ -128,7 +128,7 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ isOpen, onClose, initialTab
                 </div>
                 <div>
                   <Dialog.Title as="h3" className={cn(cc.text.h5, 'leading-6 text-gray-900 mb-4')}>
-                    Programma DKL 2025
+                    Programma DKL 2026
                   </Dialog.Title>
                   <div className={cn('flex flex-col gap-y-3 p-4 mb-4 border bg-orange-50 text-gray-700', colors.primary.border, 'border-primary/30', cc.border.rounded)}>
                     <div className={cn(cc.flex.start, 'gap-x-2')}>

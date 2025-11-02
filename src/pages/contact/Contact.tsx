@@ -169,7 +169,7 @@ const Contact: React.FC<ContactProps> = memo(({ onInschrijfClick }) => {
             },
             {
               "@type": "Question",
-              "name": "Moet je betalen om mee te doen met DKL 25?",
+              "name": "Moet je betalen om mee te doen met DKL 26?",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Deelname aan de loop is helemaal gratis. Wel moet je jezelf van tevoren opgeven via het inschrijfformulier."
@@ -185,7 +185,7 @@ const Contact: React.FC<ContactProps> = memo(({ onInschrijfClick }) => {
             },
             {
               "@type": "Question",
-              "name": "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 25?",
+              "name": "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 26?",
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Er kunnen maximaal 75 mensen meedoen met de Koninklijke Loop. Zorg dus dat je op tijd inschrijft!"

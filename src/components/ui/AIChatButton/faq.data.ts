@@ -67,7 +67,7 @@ interface FAQItem {
           icon: "💸"
         },
         {
-          question: "Moet je betalen om mee te doen met DKL 25?",
+          question: "Moet je betalen om mee te doen met DKL 26?",
           answer: "Deelname aan de loop is helemaal gratis. Wel moet je jezelf van tevoren opgeven.",
           icon: "💸"
         },
@@ -77,7 +77,7 @@ interface FAQItem {
           icon: "🤖"
         },
         {
-          question: "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 25?",
+          question: "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 26?",
           answer: "Er kunnen maximaal 75 mensen meedoen met de Koninklijke Loop. Zorg dus dat je op tijd inschrijft!",
           icon: "💡"
         },

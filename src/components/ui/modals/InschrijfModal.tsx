@@ -35,7 +35,7 @@ export const InschrijfModal: React.FC<InschrijfModalProps> = memo(({ isOpen, onC
           <div className="relative">
             <div className="bg-primary p-4 sm:p-6 flex items-center justify-between">
               <Dialog.Title className={cn(cc.text.h2, 'text-white tracking-tight')}>
-                Inschrijving 2025
+                Inschrijving 2026
               </Dialog.Title>
               <button
                 onClick={handleClose}

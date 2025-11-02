@@ -36,12 +36,12 @@ export const TermsModal = memo(({ isOpen, onClose, onAccept }: TermsModalProps) 
           {/* Content met volledige voorwaarden */}
           <div className="p-6 max-h-[calc(100vh-16rem)] overflow-y-auto">
             <div className="prose prose-sm max-w-none text-gray-600 prose-headings:text-gray-900 prose-strong:text-gray-900">
-              <p className={cn(cc.text.body, 'text-gray-900')}>Koninklijke Loop – 16 mei 2025</p>
+              <p className={cn(cc.text.body, 'text-gray-900')}>Koninklijke Loop – 16 mei 2026</p>
 
               <h3 className={cn(cc.text.h5, 'text-gray-900 mt-6 mb-4')}>Artikel 1: Definities</h3>
-              <p><strong>1.1 Organisatoren:</strong> De rechtspersonen en/of natuurlijke personen die verantwoordelijk zijn voor de organisatie van het Evenement, te weten de Koninklijke Loop op 16 mei 2025.</p>
+              <p><strong>1.1 Organisatoren:</strong> De rechtspersonen en/of natuurlijke personen die verantwoordelijk zijn voor de organisatie van het Evenement, te weten de Koninklijke Loop op 16 mei 2026.</p>
               <p><strong>1.2 Deelnemer:</strong> De natuurlijke persoon (m/v/o), niet handelend als ondernemer, die zich op een door de Organisatoren toegestane wijze heeft ingeschreven voor deelname aan het Evenement.</p>
-              <p><strong>1.3 Evenement:</strong> De Koninklijke Loop, een sponsorloop die door de Organisatoren wordt gehouden op 16 mei 2025.</p>
+              <p><strong>1.3 Evenement:</strong> De Koninklijke Loop, een sponsorloop die door de Organisatoren wordt gehouden op 16 mei 2026.</p>
               <p><strong>1.4 Overeenkomst:</strong> De overeenkomst tussen Deelnemer en Organisatoren betreffende deelname aan het Evenement.</p>
 
               <h3 className={cn(cc.text.h5, 'text-gray-900 mt-6 mb-4')}>Artikel 2: Deelname</h3>

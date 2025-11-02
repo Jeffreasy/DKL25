@@ -228,7 +228,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             <div class="info-box">
               <h3>Belangrijke informatie</h3>
               <ul>
-                <li>Het evenement vindt plaats op 16 mei 2025</li>
+                <li>Het evenement vindt plaats op 16 mei 2026</li>
                 <li>Zorg dat je op tijd aanwezig bent voor je start</li>
                 <li>Houd onze website in de gaten voor het laatste nieuws</li>
                 <li>Neem deze bevestiging mee naar het evenement</li>
@@ -320,9 +320,9 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             "event": {
               "@type": "Event",
               "@id": "https://www.dekoninklijkeloop.nl/aanmelden#event",
-              "name": "De Koninklijke Loop 2025",
-              "startDate": "2025-05-17T09:00:00+02:00",
-              "endDate": "2025-05-17T15:00:00+02:00",
+              "name": "De Koninklijke Loop 2026",
+              "startDate": "2026-05-17T09:00:00+02:00",
+              "endDate": "2026-05-17T15:00:00+02:00",
               "location": {
                 "@type": "Place",
                 "name": VENUE.name,
@@ -342,7 +342,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             "underName": data.naam,
             "reservationFor": {
               "@type": "Event",
-              "name": "De Koninklijke Loop 2025"
+              "name": "De Koninklijke Loop 2026"
             }
           }
         })}
@@ -408,7 +408,7 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start">
                 <span className={cn(colors.primary.text, 'mr-2')}>•</span>
-                Het evenement vindt plaats op 16 mei 2025
+                Het evenement vindt plaats op 16 mei 2026
               </li>
               <li className="flex items-start">
                 <span className={cn(colors.primary.text, 'mr-2')}>•</span>

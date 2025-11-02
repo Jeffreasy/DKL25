@@ -232,7 +232,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-10"
-        aria-label="Registratieformulier voor De Koninklijke Loop 2025"
+        aria-label="Registratieformulier voor De Koninklijke Loop 2026"
         noValidate
       >
         {/* Contactgegevens */}

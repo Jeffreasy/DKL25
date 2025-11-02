@@ -29,8 +29,8 @@ export const faqData: FAQCategory[] = [
         icon: "📍"
       },
       {
-        question: "Wanneer vindt de Koninklijke Loop 2025 plaats?",
-        answer: "De Koninklijke Loop vindt op zaterdag 16 mei 2025 plaats.",
+        question: "Wanneer vindt de Koninklijke Loop 2026 plaats?",
+        answer: "De Koninklijke Loop vindt op zaterdag 16 mei 2026 plaats.",
         icon: "📅"
       },
       {
@@ -52,7 +52,7 @@ export const faqData: FAQCategory[] = [
         actionText: "Schrijf je nu in"
       },
       {
-        question: "Moet je betalen om mee te doen met DKL 25?",
+        question: "Moet je betalen om mee te doen met DKL 26?",
         answer: "Deelname aan de loop is helemaal gratis. Wel moet je jezelf van tevoren opgeven.",
         icon: "💸"
       },
@@ -62,13 +62,13 @@ export const faqData: FAQCategory[] = [
         icon: "🤖"
       },
       {
-        question: "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 25?",
+        question: "Hoeveel mensen kunnen er maximaal meelopen tijdens DKL 26?",
         answer: "Er kunnen maximaal 75 mensen meedoen met de Koninklijke Loop. Zorg dus dat je op tijd inschrijft!",
         icon: "💡"
       },
       {
         question: "Wanneer sluit de inschrijving?",
-        answer: "Je kunt je inschrijven t/m 7 mei 2025. Let wel op: er kunnen maximaal 75 wandelaars deelnemen, dus wees er op tijd bij!",
+        answer: "Je kunt je inschrijven t/m 7 mei 2026. Let wel op: er kunnen maximaal 75 wandelaars deelnemen, dus wees er op tijd bij!",
         icon: "⚠"
       },
       {
