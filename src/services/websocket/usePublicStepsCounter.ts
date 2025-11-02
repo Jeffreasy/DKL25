@@ -26,8 +26,8 @@ interface PublicStepsCounterState {
 }
 
 const WEBSOCKET_CONFIG = {
-  reconnectInterval: 3000,
-  maxReconnectAttempts: 10,
+  reconnectInterval: 2000,
+  maxReconnectAttempts: 3, // Snel naar polling fallback na 3 mislukte pogingen
   fallbackPollingInterval: 10000, // Poll elke 10 seconden als WebSocket faalt
 } as const;
 
