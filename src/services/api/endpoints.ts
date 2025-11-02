@@ -1,6 +1,7 @@
 /**
  * API Endpoints
  * Centralized endpoint definitions for the backend API
+ * Note: /api prefix is handled by Vite proxy in development
  */
 
 export const API_ENDPOINTS = {
@@ -43,7 +44,7 @@ export const API_ENDPOINTS = {
     roles: '/api/rbac/roles',
     roleDetails: (roleId: string) => `/api/rbac/roles/${roleId}`,
     rolePermissions: (roleId: string) => `/api/rbac/roles/${roleId}/permissions`,
-    assignPermission: (roleId: string, permissionId: string) => 
+    assignPermission: (roleId: string, permissionId: string) =>
       `/api/rbac/roles/${roleId}/permissions/${permissionId}`,
     userRoles: (userId: string) => `/api/users/${userId}/roles`,
     userPermissions: (userId: string) => `/api/users/${userId}/permissions`,

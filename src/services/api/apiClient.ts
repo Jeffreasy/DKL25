@@ -6,7 +6,11 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { tokenManager } from '../auth/tokenManager';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dklemailservice.onrender.com';
+// In development: use Vite proxy (empty string uses relative URLs)
+// In production: use full backend URL
+const API_BASE_URL = import.meta.env.DEV
+  ? ''
+  : (import.meta.env.VITE_API_BASE_URL || 'https://dklemailservice.onrender.com');
 
 class ApiClient {
   private client: AxiosInstance;

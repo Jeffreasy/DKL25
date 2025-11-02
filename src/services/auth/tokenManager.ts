@@ -126,8 +126,14 @@ class TokenManager {
     this.isRefreshing = true;
 
     try {
+      // In development: use proxy (relative URL)
+      // In production: use full backend URL
+      const baseUrl = import.meta.env.DEV
+        ? ''
+        : (import.meta.env.VITE_API_BASE_URL || 'https://dklemailservice.onrender.com');
+      
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh`,
+        `${baseUrl}/api/auth/refresh`,
         {
           method: 'POST',
           headers: {
