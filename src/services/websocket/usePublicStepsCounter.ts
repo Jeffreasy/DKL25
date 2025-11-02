@@ -132,7 +132,7 @@ export function usePublicStepsCounter() {
     try {
       const ws = new WebSocket(wsUrl);
 
-      ws.onopen = () => {
+      ws.onopen = async () => {
         console.log('[usePublicStepsCounter] ✅ WebSocket connected');
         setState(prev => ({ ...prev, isConnected: true }));
         reconnectAttemptsRef.current = 0;
@@ -145,6 +145,12 @@ export function usePublicStepsCounter() {
         };
         ws.send(JSON.stringify(subscribeMessage));
         console.log('[usePublicStepsCounter] ✅ Subscribed to channels:', subscribeMessage.channels);
+
+        // Fetch initial data via REST API
+        const initialSteps = await fetchStepsViaREST();
+        if (initialSteps > 0) {
+          setState(prev => ({ ...prev, totalSteps: initialSteps, lastUpdate: Date.now() }));
+        }
       };
 
       ws.onmessage = (event) => {
