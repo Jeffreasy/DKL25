@@ -70,7 +70,7 @@ export const PARTNER_TIERS = {
  * API Configuration
  */
 export const API_CONFIG = {
-  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8082',
+  baseUrl: import.meta.env.VITE_API_URL || 'https://dklemailservice.onrender.com',
   timeout: 5000
 } as const
 
