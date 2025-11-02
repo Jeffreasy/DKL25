@@ -104,9 +104,9 @@ export function usePublicStepsCounter() {
   }, []);
 
   /**
-   * Connect to WebSocket
+   * Connect to WebSocket with public user_id
    */
-  const connectWebSocket = useCallback(() => {
+  const connectWebSocketWithPublicUser = useCallback(() => {
     // Don't reconnect if we're at max attempts
     if (reconnectAttemptsRef.current >= WEBSOCKET_CONFIG.maxReconnectAttempts) {
       console.warn('[usePublicStepsCounter] Max reconnect attempts reached, using polling only');
@@ -114,12 +114,12 @@ export function usePublicStepsCounter() {
       return;
     }
 
-    // Get WebSocket URL
+    // Get WebSocket URL - gebruik /api/ws/steps met public user_id
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsBaseUrl = API_CONFIG.baseUrl.replace(/^https?:\/\//, '');
-    const wsUrl = `${protocol}//${wsBaseUrl}/ws/steps/public`;
+    const wsUrl = `${protocol}//${wsBaseUrl}/api/ws/steps?user_id=public&token=`;
 
-    console.log('[usePublicStepsCounter] Connecting to:', wsUrl);
+    console.log('[usePublicStepsCounter] Connecting to:', wsUrl.replace(/token=.*/, 'token=[HIDDEN]'));
 
     try {
       const ws = new WebSocket(wsUrl);
@@ -170,7 +170,7 @@ export function usePublicStepsCounter() {
           if (reconnectAttemptsRef.current < WEBSOCKET_CONFIG.maxReconnectAttempts) {
             console.log(`[usePublicStepsCounter] Reconnecting... (attempt ${reconnectAttemptsRef.current})`);
             reconnectTimeoutRef.current = window.setTimeout(() => {
-              connectWebSocket();
+              connectWebSocketWithPublicUser();
             }, WEBSOCKET_CONFIG.reconnectInterval);
           } else {
             // Start polling as fallback
@@ -192,7 +192,7 @@ export function usePublicStepsCounter() {
    */
   useEffect(() => {
     // Try WebSocket first
-    connectWebSocket();
+    connectWebSocketWithPublicUser();
 
     // Cleanup on unmount
     return () => {
@@ -205,7 +205,7 @@ export function usePublicStepsCounter() {
       }
       stopPolling();
     };
-  }, [connectWebSocket, stopPolling]);
+  }, [connectWebSocketWithPublicUser, stopPolling]);
 
   return {
     totalSteps: state.totalSteps,
