@@ -1,11 +1,11 @@
 /**
  * Program Service
- * API service for program schedule operations using PostgREST
+ * API service for program schedule operations via backend
  */
 
-import type { ProgramItem } from '../types'
-
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
+import { apiClient } from '../../../services/api/apiClient';
+import { API_ENDPOINTS } from '../../../services/api/endpoints';
+import type { ProgramItem } from '../types';
 
 export const programService = {
   /**
@@ -13,34 +13,22 @@ export const programService = {
    */
   fetchVisible: async (): Promise<ProgramItem[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/program-schedule`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data: ProgramItem[] = await response.json()
-      return data
+      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.program}?visible=true&sortBy=order_number&sortOrder=asc`);
     } catch (error) {
-      throw new Error('Er ging iets mis bij het ophalen van het programma')
+      console.error('Error fetching visible program items:', error);
+      throw new Error('Er ging iets mis bij het ophalen van het programma');
     }
   },
 
   /**
-   * Fetch all program items
+   * Fetch all program items (requires admin permission)
    */
   fetchAll: async (): Promise<ProgramItem[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/program-schedule/admin`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data: ProgramItem[] = await response.json()
-      return data
+      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.program}?sortBy=order_number&sortOrder=asc`);
     } catch (error) {
-      throw new Error('Er ging iets mis bij het ophalen van alle programma items')
+      console.error('Error fetching all program items:', error);
+      throw new Error('Er ging iets mis bij het ophalen van alle programma items');
     }
   },
 
@@ -49,19 +37,13 @@ export const programService = {
    */
   fetchById: async (id: string): Promise<ProgramItem | null> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/program-schedule/${id}`)
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null
-        }
-        throw new Error(`HTTP error! status: ${response.status}`)
+      return await apiClient.get<ProgramItem>(`${API_ENDPOINTS.program}/${id}`);
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return null;
       }
-
-      const data: ProgramItem = await response.json()
-      return data
-    } catch (error) {
-      return null
+      console.error('Error fetching program item by ID:', error);
+      return null;
     }
   },
 
@@ -70,16 +52,10 @@ export const programService = {
    */
   fetchByCategory: async (category: string): Promise<ProgramItem[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/program-schedule?category=eq.${encodeURIComponent(category)}`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data: ProgramItem[] = await response.json()
-      return data
+      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.program}?category=${encodeURIComponent(category)}`);
     } catch (error) {
-      throw new Error('Er ging iets mis bij het ophalen van programma items per categorie')
+      console.error('Error fetching program items by category:', error);
+      throw new Error('Er ging iets mis bij het ophalen van programma items per categorie');
     }
   },
 
@@ -88,16 +64,12 @@ export const programService = {
    */
   fetchWithLocations: async (): Promise<ProgramItem[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/program-schedule?latitude=not.is.null&longitude=not.is.null`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data: ProgramItem[] = await response.json()
-      return data
+      // Note: Backend should support filtering on non-null fields
+      const allItems = await apiClient.get<ProgramItem[]>(API_ENDPOINTS.program);
+      return allItems.filter(item => item.latitude != null && item.longitude != null);
     } catch (error) {
-      throw new Error('Er ging iets mis bij het ophalen van programma items met locaties')
+      console.error('Error fetching program items with locations:', error);
+      throw new Error('Er ging iets mis bij het ophalen van programma items met locaties');
     }
   },
 
@@ -106,12 +78,12 @@ export const programService = {
    */
   groupByCategory: (items: ProgramItem[]): Record<string, ProgramItem[]> => {
     return items.reduce((acc, item) => {
-      const category = item.category || 'Overig'
+      const category = item.category || 'Overig';
       if (!acc[category]) {
-        acc[category] = []
+        acc[category] = [];
       }
-      acc[category].push(item)
-      return acc
-    }, {} as Record<string, ProgramItem[]>)
+      acc[category].push(item);
+      return acc;
+    }, {} as Record<string, ProgramItem[]>);
   }
-}
+};

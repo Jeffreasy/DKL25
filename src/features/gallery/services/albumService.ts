@@ -1,11 +1,11 @@
 /**
  * Album Service
- * API service for album operations using PostgREST
+ * API service for album operations via backend
  */
 
-import type { Album, Photo } from '../types'
-
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
+import { apiClient } from '../../../services/api/apiClient';
+import { API_ENDPOINTS } from '../../../services/api/endpoints';
+import type { Album, Photo } from '../types';
 
 export const albumService = {
   /**
@@ -13,41 +13,22 @@ export const albumService = {
    */
   fetchVisible: async (): Promise<Album[]> => {
     try {
-      console.log('Fetching albums from:', `${POSTGREST_URL}/albums`)
-
-      const response = await fetch(`${POSTGREST_URL}/albums`)
-
-      if (!response.ok) {
-        console.error('HTTP error:', response.status, response.statusText)
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data: Album[] = await response.json()
-      console.log('Fetched albums:', data)
-      return data
+      return await apiClient.get<Album[]>(`${API_ENDPOINTS.albums}?visible=true&sortBy=order_number&sortOrder=asc`);
     } catch (error) {
-      console.error('Error fetching visible albums:', error)
-      throw new Error('Er ging iets mis bij het ophalen van de albums')
+      console.error('Error fetching visible albums:', error);
+      throw new Error('Er ging iets mis bij het ophalen van de albums');
     }
   },
 
   /**
-   * Fetch all albums
+   * Fetch all albums (requires admin permission)
    */
   fetchAll: async (): Promise<Album[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/albums/admin`)
-
-      if (!response.ok) {
-        console.error('HTTP error:', response.status, response.statusText)
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data: Album[] = await response.json()
-      return data
+      return await apiClient.get<Album[]>(`${API_ENDPOINTS.albums}?sortBy=order_number&sortOrder=asc`);
     } catch (error) {
-      console.error('Error fetching all albums:', error)
-      throw new Error('Er ging iets mis bij het ophalen van alle albums')
+      console.error('Error fetching all albums:', error);
+      throw new Error('Er ging iets mis bij het ophalen van alle albums');
     }
   },
 
@@ -56,21 +37,13 @@ export const albumService = {
    */
   fetchById: async (id: string): Promise<Album | null> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/albums/${id}`)
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null
-        }
-        console.error('HTTP error:', response.status, response.statusText)
-        throw new Error(`HTTP error! status: ${response.status}`)
+      return await apiClient.get<Album>(`${API_ENDPOINTS.albums}/${id}`);
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        return null;
       }
-
-      const data: Album = await response.json()
-      return data
-    } catch (error) {
-      console.error('Error fetching album by ID:', error)
-      return null
+      console.error('Error fetching album by ID:', error);
+      return null;
     }
   },
 
@@ -79,42 +52,22 @@ export const albumService = {
    */
   fetchWithPhotos: async (albumId: string): Promise<Album | null> => {
     try {
-      // First get the album
-      const album = await albumService.fetchById(albumId)
+      // Get album
+      const album = await albumService.fetchById(albumId);
       if (!album) {
-        return null
+        return null;
       }
 
-      // Then get the photos for this album
-      const response = await fetch(`${POSTGREST_URL}/api/album-photos?album_id=eq.${albumId}&order=order_number.asc`)
-
-      if (!response.ok) {
-        console.error('HTTP error:', response.status, response.statusText)
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const albumPhotos = await response.json()
-
-      // Get the actual photo data for each album photo
-      const photoPromises = albumPhotos.map(async (albumPhoto: any) => {
-        const response = await fetch(`${POSTGREST_URL}/api/photos?id=eq.${albumPhoto.photo_id}`)
-        if (response.ok) {
-          const photos = await response.json()
-          return photos.length > 0 ? photos[0] : null
-        }
-        return null
-      })
-
-      const photos = await Promise.all(photoPromises)
-      const validPhotos = photos.filter((photo): photo is Photo => photo !== null)
+      // Get photos for this album via backend endpoint
+      const photos = await apiClient.get<Photo[]>(`${API_ENDPOINTS.albums}/${albumId}/photos?sortBy=order_number&sortOrder=asc`);
 
       return {
         ...album,
-        photos: validPhotos
-      }
+        photos: photos
+      };
     } catch (error) {
-      console.error('Error fetching album with photos:', error)
-      return null
+      console.error('Error fetching album with photos:', error);
+      return null;
     }
   },
 
@@ -123,18 +76,12 @@ export const albumService = {
    */
   fetchWithCovers: async (): Promise<Album[]> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/api/albums?cover_photo_id=not.is.null`)
-
-      if (!response.ok) {
-        console.error('HTTP error:', response.status, response.statusText)
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data: Album[] = await response.json()
-      return data
+      // Note: Backend should support filtering on non-null fields
+      const allAlbums = await apiClient.get<Album[]>(API_ENDPOINTS.albums);
+      return allAlbums.filter(album => album.cover_photo_id != null);
     } catch (error) {
-      console.error('Error fetching albums with covers:', error)
-      throw new Error('Er ging iets mis bij het ophalen van albums met covers')
+      console.error('Error fetching albums with covers:', error);
+      throw new Error('Er ging iets mis bij het ophalen van albums met covers');
     }
   }
-}
+};
