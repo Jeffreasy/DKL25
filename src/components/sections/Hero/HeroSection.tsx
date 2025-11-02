@@ -30,6 +30,8 @@ const HERO_CONFIG = {
 const fetchTotalSteps = async (): Promise<number> => {
   try {
     const apiUrl = `${API_CONFIG.baseUrl}/api/total-steps?year=2026`;
+    console.log('[HeroSection] Fetching steps from:', apiUrl);
+    
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -37,16 +39,27 @@ const fetchTotalSteps = async (): Promise<number> => {
       },
     });
     
+    console.log('[HeroSection] Response status:', response.status);
+    
     if (!response.ok) {
-      // If API is not accessible, use demo data
-      console.warn('[HeroSection] API not available, using demo data');
+      console.warn('[HeroSection] API not available (status:', response.status, '), using demo data');
       return getDemoSteps();
     }
     
     const data = await response.json();
-    return data.total_steps || 0;
+    console.log('[HeroSection] API response data:', data);
+    console.log('[HeroSection] Total steps from API:', data.total_steps);
+    
+    const steps = data.total_steps || 0;
+    if (steps === 0) {
+      console.warn('[HeroSection] API returned 0 steps, using demo data');
+      return getDemoSteps();
+    }
+    
+    return steps;
   } catch (error) {
-    console.warn('[HeroSection] Error fetching total steps, using demo data:', error);
+    console.error('[HeroSection] Error fetching total steps:', error);
+    console.warn('[HeroSection] Using demo data due to error');
     return getDemoSteps();
   }
 };
