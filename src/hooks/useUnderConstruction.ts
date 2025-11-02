@@ -1,27 +1,63 @@
 import { useState, useEffect } from 'react';
+import { API_CONFIG, API_ENDPOINTS } from '@/config/constants';
 
-interface UnderConstructionData {
+/**
+ * Social link interface matching backend API
+ */
+export interface SocialLink {
+  platform: string;
+  url: string;
+}
+
+/**
+ * UnderConstruction data interface matching backend API response
+ * @see https://dklemailservice.onrender.com/api/under-construction/active
+ */
+export interface UnderConstructionData {
   id: number;
   is_active: boolean;
   title: string;
   message: string;
-  footer_text: string;
-  logo_url?: string;
-  expected_date?: string;
-  progress_percentage?: number;
-  social_links?: { platform: string; url: string }[];
-  contact_email?: string;
-  newsletter_enabled?: boolean;
+  footer_text: string | null;
+  logo_url: string | null;
+  expected_date: string | null;
+  social_links: SocialLink[] | null;
+  progress_percentage: number | null;
+  contact_email: string | null;
+  newsletter_enabled: boolean;
   created_at: string;
   updated_at: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+/**
+ * Hook return type
+ */
+export interface UseUnderConstructionReturn {
+  data: UnderConstructionData | null;
+  loading: boolean;
+  error: Error | null;
+}
 
-export const useUnderConstruction = () => {
+
+/**
+ * Custom hook to fetch active maintenance mode status from backend API
+ *
+ * @returns {UseUnderConstructionReturn} Object containing data, loading state, and error
+ *
+ * @example
+ * ```typescript
+ * const { data, loading, error } = useUnderConstruction();
+ *
+ * if (loading) return <LoadingScreen />;
+ * if (error) return <ErrorPage />;
+ * if (data && data.is_active) return <MaintenancePage data={data} />;
+ * return <NormalApp />;
+ * ```
+ */
+export const useUnderConstruction = (): UseUnderConstructionReturn => {
   const [data, setData] = useState<UnderConstructionData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchUnderConstruction = async () => {
@@ -29,59 +65,47 @@ export const useUnderConstruction = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/under-construction/active`, {
+        const response = await fetch(`${API_CONFIG.baseUrl}${API_ENDPOINTS.underConstruction}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
+          // Add timeout for better UX
+          signal: AbortSignal.timeout(API_CONFIG.timeout),
         });
 
         if (response.status === 404) {
-          // No active under construction found - this is normal, not an error
+          // No active maintenance mode - this is expected and normal
           setData(null);
           setLoading(false);
           return;
         }
 
         if (!response.ok) {
-          // Only log non-404 errors
-          console.error(`Failed to fetch under construction: HTTP ${response.status}`);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const result = await response.json();
+        const result: UnderConstructionData = await response.json();
 
-        // Transform backend data to match frontend interface
-        const transformedData: UnderConstructionData = {
-          id: result.id,
-          is_active: result.is_active,
-          title: result.title,
-          message: result.message,
-          footer_text: result.footer_text || '',
-          logo_url: result.logo_url,
-          expected_date: result.expected_date,
-          progress_percentage: result.progress_percentage,
-          social_links: result.social_links ? JSON.parse(result.social_links) : undefined,
-          contact_email: result.contact_email,
-          newsletter_enabled: result.newsletter_enabled,
-          created_at: result.created_at,
-          updated_at: result.updated_at,
-        };
-
-        setData(transformedData);
+        // Backend now returns data in correct format, no transformation needed
+        setData(result);
       } catch (err) {
-        // Only log actual errors, not expected 404s (handled above)
-        if (err instanceof Error && !err.message.includes('404')) {
-          console.error('Failed to fetch under construction data:', err);
-        }
-        setError(err instanceof Error ? err.message : 'Failed to fetch under construction data');
-        // Don't set data to null on error - keep existing data if available
+        console.error('Failed to fetch under construction data:', err);
+        const errorObj = err instanceof Error ? err : new Error('Failed to fetch under construction data');
+        setError(errorObj);
+        // On error, assume site is available (fail open)
+        setData(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUnderConstruction();
+
+    // Optional: Poll for changes every minute
+    const interval = setInterval(fetchUnderConstruction, 60000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return { data, loading, error };

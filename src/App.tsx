@@ -11,6 +11,8 @@ import { usePerformanceTracking } from './hooks/usePerformanceTracking';
 import UnderConstruction from './components/common/UnderConstruction';
 import NormalApp from './components/NormalApp';
 import LoadingScreen from './components/common/LoadingScreen';
+import { AuthProvider } from './contexts/AuthContext';
+import { PermissionProvider } from './contexts/PermissionContext';
 
 // Initialize Google Analytics
 initGA(import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-XXXXXXXXXX');
@@ -40,7 +42,11 @@ const App: React.FC = memo(() => {
       trackInteraction('fallback_normal_mode', 'api_error');
       return (
         <Router>
-          <NormalApp />
+          <AuthProvider>
+            <PermissionProvider>
+              <NormalApp />
+            </PermissionProvider>
+          </AuthProvider>
         </Router>
       );
     }
@@ -49,7 +55,11 @@ const App: React.FC = memo(() => {
     trackInteraction('normal_mode', 'active');
     return (
       <Router>
-        <NormalApp />
+        <AuthProvider>
+          <PermissionProvider>
+            <NormalApp />
+          </PermissionProvider>
+        </AuthProvider>
       </Router>
     );
   }, [data, loading, error, trackInteraction]);

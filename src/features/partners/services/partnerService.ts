@@ -1,47 +1,28 @@
 /**
  * Partners Service
- * API service for partner operations using PostgREST
+ * API service for partner operations via backend
  */
 
-import type { Partner } from '../types'
+import { createDataService } from '../../../services/api/dataService';
+import { API_ENDPOINTS } from '../../../services/api/endpoints';
+import type { Partner } from '../types';
 
-const POSTGREST_URL = import.meta.env.VITE_POSTGREST_URL || '/api'
+// Create data service for partners
+const dataService = createDataService<Partner>(API_ENDPOINTS.partners);
 
 export const partnerService = {
   /**
    * Fetch all visible partners
    */
   fetchVisible: async (): Promise<Partner[]> => {
-    try {
-      const response = await fetch(`${POSTGREST_URL}/partners`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      throw new Error('Er ging iets mis bij het ophalen van de partners')
-    }
+    return dataService.fetchVisible({ sortBy: 'order_number', sortOrder: 'asc' });
   },
 
   /**
    * Fetch all partners
    */
   fetchAll: async (): Promise<Partner[]> => {
-    try {
-      const response = await fetch(`${POSTGREST_URL}/partners?order=order_number.asc`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      throw new Error('Er ging iets mis bij het ophalen van alle partners')
-    }
+    return dataService.fetchAll({ sortBy: 'order_number', sortOrder: 'asc' });
   },
 
   /**
@@ -49,16 +30,9 @@ export const partnerService = {
    */
   fetchById: async (id: string): Promise<Partner | null> => {
     try {
-      const response = await fetch(`${POSTGREST_URL}/partners?id=eq.${id}`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      return data.length > 0 ? data[0] : null
+      return await dataService.fetchById(id);
     } catch (error) {
-      return null
+      return null;
     }
   },
 
@@ -66,18 +40,10 @@ export const partnerService = {
    * Fetch partners by tier
    */
   fetchByTier: async (tier: string): Promise<Partner[]> => {
-    try {
-      const response = await fetch(`${POSTGREST_URL}/partners?tier=eq.${tier}&visible=eq.true&order=order_number.asc`)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      return data
-    } catch (error) {
-      throw new Error('Er ging iets mis bij het ophalen van partners per tier')
-    }
+    // Note: This requires backend support for tier filtering
+    // Alternative: fetch all visible and filter client-side
+    const partners = await dataService.fetchVisible();
+    return partners.filter(p => p.tier === tier);
   },
 
   /**
@@ -85,12 +51,12 @@ export const partnerService = {
    */
   groupByTier: (partners: Partner[]): Record<string, Partner[]> => {
     return partners.reduce((acc, partner) => {
-      const tier = partner.tier
+      const tier = partner.tier;
       if (!acc[tier]) {
-        acc[tier] = []
+        acc[tier] = [];
       }
-      acc[tier].push(partner)
-      return acc
-    }, {} as Record<string, Partner[]>)
+      acc[tier].push(partner);
+      return acc;
+    }, {} as Record<string, Partner[]>);
   }
-}
+};

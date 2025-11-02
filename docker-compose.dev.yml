@@ -1,0 +1,82 @@
+version: '3.9'
+
+services:
+  # ==============================================
+  # Frontend Development (Hot Reload)
+  # ==============================================
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: dkl-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+      - VITE_GA_MEASUREMENT_ID=${VITE_GA_MEASUREMENT_ID}
+      - VITE_EMAIL_SERVICE_URL=${VITE_EMAIL_SERVICE_URL}
+      - VITE_CLOUDINARY_CLOUD_NAME=${VITE_CLOUDINARY_CLOUD_NAME}
+    networks:
+      - dkl-network
+    stdin_open: true
+    tty: true
+    labels:
+      - "com.dekoninklijkeloop.description=DKL Frontend Development Server"
+
+  # ==============================================
+  # Redis Cache
+  # ==============================================
+  redis:
+    image: redis:7-alpine
+    container_name: dkl-redis-dev
+    ports:
+      - "6381:6379"
+    command: redis-server --loglevel warning
+    volumes:
+      - redis-dev-data:/data
+    networks:
+      - dkl-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    labels:
+      - "com.dekoninklijkeloop.description=Redis Cache (Development)"
+
+  # ==============================================
+  # Redis Commander (Management UI)
+  # ==============================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: dkl-redis-commander-dev
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8082:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - dkl-network
+    labels:
+      - "com.dekoninklijkeloop.description=Redis Management UI"
+
+# ==============================================
+# Networks
+# ==============================================
+networks:
+  dkl-network:
+    driver: bridge
+
+# ==============================================
+# Volumes
+# ==============================================
+volumes:
+  redis-dev-data:
+    driver: local

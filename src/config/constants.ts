@@ -67,6 +67,14 @@ export const PARTNER_TIERS = {
 } as const
 
 /**
+ * API Configuration
+ */
+export const API_CONFIG = {
+  baseUrl: 'https://dklemailservice.onrender.com',
+  timeout: 5000
+} as const
+
+/**
  * API endpoints
  */
 export const API_ENDPOINTS = {
@@ -77,7 +85,8 @@ export const API_ENDPOINTS = {
   photos: '/api/photos',
   videos: '/api/videos',
   program: '/api/program',
-  radio: '/api/radio'
+  radio: '/api/radio',
+  underConstruction: '/api/under-construction/active'
 } as const
 
 /**

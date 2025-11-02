@@ -1,79 +1,32 @@
+/**
+ * Email Service
+ * Wrapper around backend email service for backward compatibility
+ */
+
+import { emailService as backendEmailService } from '../services/email/emailService';
 import type { ContactFormData } from '@/types/contact';
 import type { RegistrationFormData } from '@/pages/Aanmelden/types/schema';
 
-interface EmailParams {
-  type: 'contact' | 'aanmelding';
-  to: string;
-  subject: string;
-  data: {
-    naam: string;
-    email: string;
-    bericht?: string;
-    rol?: string;
-    afstand?: string;
-    ondersteuning?: string;
-    bijzonderheden?: string;
-  };
-  replyTo?: string;
-}
-
-const N8N_WEBHOOK_URL = 'https://jeffreyed.app.n8n.cloud/webhook/b128339d-4dad-4945-a7bd-e7da64c419cd';
-
-// Basis email service
-export const sendEmail = async (params: EmailParams) => {
-  try {
-    const response = await fetch(N8N_WEBHOOK_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(params)
-    });
-
-    if (response.type === 'opaque') {
-      console.log(`Email sent (${params.type}):`, {
-        to: params.to,
-        subject: params.subject
-      });
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error(`${params.type} email error:`, error);
-    throw error;
-  }
-};
-
-// Helper functies blijven hetzelfde
+/**
+ * Send contact form email via backend
+ */
 export const sendContactEmail = async (data: ContactFormData) => {
-  return sendEmail({
-    type: 'contact',
-    to: data.email,
-    subject: 'Bedankt voor je bericht - De Koninklijke Loop',
-    data: {
-      naam: data.naam,
-      email: data.email,
-      bericht: data.bericht
-    },
-    replyTo: 'info@dekoninklijkeloop.nl'
+  return backendEmailService.sendContactEmail(data);
+};
+
+/**
+ * Send registration confirmation email via backend
+ */
+export const sendAanmeldingEmail = async (data: RegistrationFormData) => {
+  return backendEmailService.sendRegistrationEmail({
+    naam: data.naam,
+    email: data.email,
+    rol: data.rol,
+    afstand: data.afstand,
+    ondersteuning: data.ondersteuning,
+    bijzonderheden: data.bijzonderheden
   });
 };
 
-export const sendAanmeldingEmail = async (data: RegistrationFormData) => {
-  return sendEmail({
-    type: 'aanmelding',
-    to: data.email,
-    subject: 'Bedankt voor je aanmelding - De Koninklijke Loop 2026',
-    data: {
-      naam: data.naam,
-      email: data.email,
-      rol: data.rol,
-      afstand: data.afstand,
-      ondersteuning: data.ondersteuning,
-      bijzonderheden: data.bijzonderheden
-    },
-    replyTo: 'info@dekoninklijkeloop.nl'
-  });
-}; 
+// Export backend email service for direct use
+export { emailService } from '../services/email/emailService';

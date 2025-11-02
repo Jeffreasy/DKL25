@@ -20,7 +20,15 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "clean": "rm -rf dist node_modules/.vite",
-    "api": "ts-node server.ts"
+    "api": "ts-node server.ts",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:dev:build": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:prod": "docker-compose up",
+    "docker:prod:build": "docker-compose up --build",
+    "docker:prod:down": "docker-compose down",
+    "docker:build": "docker build -t dkl-frontend .",
+    "docker:clean": "docker-compose down -v && docker system prune -f"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -31,6 +39,7 @@
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@supabase/supabase-js": "^2.75.0",
+    "axios": "^1.6.5",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.2.0",
     "focus-trap-react": "^11.0.4",

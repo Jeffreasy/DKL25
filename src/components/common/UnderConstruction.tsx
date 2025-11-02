@@ -1,63 +1,62 @@
 import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { SEO } from './SEO';
-import { useUnderConstruction } from '../../hooks/useUnderConstruction';
+import { useUnderConstruction, type UnderConstructionData } from '../../hooks/useUnderConstruction';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import { cc, cn, colors, animations, icons } from '@/styles/shared';
 
-// Define countdown renderer outside component to prevent re-renders
-const countdownRenderer = ({ days, hours, minutes, seconds, completed }: any) => {
-  if (completed) {
-    return <p className={cn(cc.text.muted, cc.typography.body)}>We zijn bijna klaar!</p>;
+/**
+ * Get social media icon for platform
+ * Returns appropriate emoji icon for social media platform
+ */
+const getSocialIcon = (platform: string): JSX.Element | null => {
+  const iconClasses = cn(icons.lg, icons.primary, icons.interactive);
+  
+  switch (platform.toLowerCase()) {
+    case 'twitter':
+      return <span className={iconClasses} aria-hidden="true">🐦</span>;
+    case 'instagram':
+      return <span className={iconClasses} aria-hidden="true">📷</span>;
+    case 'youtube':
+      return <span className={iconClasses} aria-hidden="true">▶️</span>;
+    case 'facebook':
+      return <span className={iconClasses} aria-hidden="true">📘</span>;
+    case 'linkedin':
+      return <span className={iconClasses} aria-hidden="true">💼</span>;
+    default:
+      return <span className={iconClasses} aria-hidden="true">🔗</span>;
   }
-
-  return (
-    <div className={cn(cc.flex.center, 'gap-4 mb-4')} aria-label="Countdown tot lancering" aria-live="polite">
-      <div className="text-center">
-        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{days}</span>
-        <span className={cn(cc.text.small, cc.text.muted)}>Dagen</span>
-      </div>
-      <div className="text-center">
-        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{hours}</span>
-        <span className={cn(cc.text.small, cc.text.muted)}>Uren</span>
-      </div>
-      <div className="text-center">
-        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{minutes}</span>
-        <span className={cn(cc.text.small, cc.text.muted)}>Minuten</span>
-      </div>
-      <div className="text-center">
-        <span className={cn(cc.text.bodyLarge, colors.primary.text)}>{seconds}</span>
-        <span className={cn(cc.text.small, cc.text.muted)}>Seconden</span>
-      </div>
-    </div>
-  );
 };
 
-interface UnderConstructionData {
-  id: number;
-  is_active: boolean;
-  title: string;
-  message: string;
-  footer_text: string;
-  logo_url?: string;
-  expected_date?: string;
-  progress_percentage?: number;
-  social_links?: { platform: string; url: string }[];
-  contact_email?: string;
-  newsletter_enabled?: boolean;
-  created_at: string;
-  updated_at: string;
-}
+/**
+ * Format date string to Dutch locale
+ */
+const formatDate = (dateString: string | null): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('nl-NL', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return '';
+  }
+};
 
+/**
+ * UnderConstruction Component
+ * Displays maintenance mode page when backend API returns active maintenance status
+ */
 const UnderConstruction: React.FC = memo(() => {
   // Performance tracking
   const { trackInteraction } = usePerformanceTracking('UnderConstructionComponent');
 
-  const { data, loading, error } = useUnderConstruction() as {
-    data: UnderConstructionData | null;
-    loading: boolean;
-    error: Error | null;
-  };
+  const { data, loading, error } = useUnderConstruction();
 
   // Memoize accessibility checks to prevent recalculation
   const accessibilityPrefs = useMemo(() => {
@@ -144,22 +143,6 @@ const UnderConstruction: React.FC = memo(() => {
       </>
     );
   }
-// Define social icon function outside component to prevent re-renders
-const getSocialIcon = (platform: string) => {
-  const iconClasses = cn(icons.lg, icons.primary, icons.interactive);
-  switch (platform.toLowerCase()) {
-    case 'twitter':
-      return <span className={iconClasses} aria-hidden="true">🐦</span>;
-    case 'instagram':
-      return <span className={iconClasses} aria-hidden="true">📷</span>;
-    case 'facebook':
-      return <span className={iconClasses} aria-hidden="true">📘</span>;
-    case 'linkedin':
-      return <span className={iconClasses} aria-hidden="true">💼</span>;
-    default:
-      return null;
-  }
-};
 
   // Define main content styles
   const mainStyles = {
@@ -221,18 +204,15 @@ const getSocialIcon = (platform: string) => {
                 <div className={mainStyles.sectionHeader}>
                   <span className={mainStyles.sectionIcon} aria-hidden="true">⏰</span>
                   <span className={mainStyles.sectionTitle}>
-                    Verwachte lancering
+                    Verwachte terugkeer
                   </span>
                 </div>
-                <div className={cn(cc.flex.center, 'gap-4 mb-4')} aria-label="Countdown tot lancering" aria-live="polite">
-                  <div className="text-center">
-                    <span className={cn(cc.text.bodyLarge, colors.primary.text)}>17</span>
-                    <span className={cn(cc.text.small, cc.text.muted)}>mei 2026</span>
-                  </div>
-                </div>
+                <p className={cn(cc.text.body, colors.primary.text, 'font-semibold')}>
+                  {formatDate(data.expected_date)}
+                </p>
               </div>
             )}
-            {data?.progress_percentage !== undefined && data.progress_percentage > 0 && (
+            {data?.progress_percentage !== null && data.progress_percentage !== undefined && data.progress_percentage > 0 && (
               <div className={mainStyles.section}>
                 <div className={mainStyles.progressContainer}>
                   <div className={cc.progress.container}>
@@ -291,7 +271,8 @@ const getSocialIcon = (platform: string) => {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    alert('Nieuwsbrief signup nog te implementeren!');
+                    trackInteraction('newsletter_submit', 'attempted');
+                    alert('Nieuwsbrief aanmelding wordt binnenkort geactiveerd!');
                   }}
                   className={mainStyles.newsletterForm}
                 >
@@ -316,9 +297,11 @@ const getSocialIcon = (platform: string) => {
                 </p>
               </div>
             )}
-            <p className={mainStyles.footer}>
-              {data?.footer_text || 'Bedankt voor uw geduld!'}
-            </p>
+            {data?.footer_text && (
+              <p className={mainStyles.footer}>
+                {data.footer_text}
+              </p>
+            )}
           </motion.div>
         </div>
       </div>

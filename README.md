@@ -66,6 +66,24 @@ npm run lint         # Run ESLint
 npm run type-check   # TypeScript validation
 ```
 
+### 🐳 Docker Setup (Optioneel)
+
+Voor consistente development environments en production-ready deployment:
+
+```bash
+# Development met hot reload
+docker-compose -f docker-compose.dev.yml up
+
+# Access services
+# Frontend: http://localhost:5173
+# Redis Commander: http://localhost:8081
+
+# Production build
+docker-compose up --build
+```
+
+**📖 Zie:** [`DOCKER_SETUP.md`](DOCKER_SETUP.md) voor complete instructies
+
 ---
 
 ## 📚 Documentatie
@@ -82,8 +100,9 @@ npm run type-check   # TypeScript validation
 | 🎨 **[Styling](docs/styling/)** | 2 | Design system, color & typography |
 | 🔍 **[SEO](docs/seo/)** | 1 | Complete SEO strategie |
 | 🔧 **[Technical](docs/technical/)** | 3 | Implementation, events, fonts |
+| 🐳 **[Infrastructure](docs/infrastructure/)** | 1 | Docker & Redis integratie |
 
-**Totaal:** 19+ professionele documenten
+**Totaal:** 20+ professionele documenten
 
 ### Quick Reference
 
@@ -105,6 +124,11 @@ npm run type-check   # TypeScript validation
 **Voor Font/Styling Issues:**
 - Font Management: [`docs/technical/FONT_MANAGEMENT.md`](docs/technical/FONT_MANAGEMENT.md)
 - Design System: [`docs/styling/DESIGN_SYSTEM.md`](docs/styling/DESIGN_SYSTEM.md)
+
+**Voor Docker & Deployment:**
+- Docker Setup: [`DOCKER_SETUP.md`](DOCKER_SETUP.md)
+- Redis Integration: [`docs/infrastructure/DOCKER_REDIS_INTEGRATION_GUIDE.md`](docs/infrastructure/DOCKER_REDIS_INTEGRATION_GUIDE.md)
+- Implementation Summary: [`DOCKER_REDIS_IMPLEMENTATION_SUMMARY.md`](DOCKER_REDIS_IMPLEMENTATION_SUMMARY.md)
 
 ---
 
@@ -130,6 +154,8 @@ npm run type-check   # TypeScript validation
 - **CDN:** Cloudinary + Vercel Edge
 - **Analytics:** Google Analytics 4
 - **Monitoring:** Vercel Analytics
+- **Caching:** Redis 7 (Optional)
+- **Containers:** Docker + Docker Compose
 
 ---
 
@@ -285,11 +311,21 @@ Zie [`docs/performance/LIGHTHOUSE_OPTIMIZATIONS.md`](docs/performance/LIGHTHOUSE
 
 ## 📊 Project Status
 
-**Versie:** 2.1.0  
-**Status:** ✅ Production Ready  
-**Laatste Update:** 27 Oktober 2024
+**Versie:** 2.2.0
+**Status:** ✅ Production Ready
+**Laatste Update:** 1 November 2024
 
-### Recent Updates (v2.1.0)
+### Recent Updates (v2.2.0 - November 2024)
+
+🐳 **Docker & Redis Integration**
+- Complete Docker setup (production + development)
+- Redis caching infrastructure (90%+ sneller)
+- Rate limiting middleware
+- Backend Go implementation
+- 13 nieuwe configuratie bestanden
+- 2500+ regels nieuwe code
+
+### Previous Updates (v2.1.0 - Oktober 2024)
 
 ✅ **Font System Overhaul**
 - 5 corrupt fonts vervangen en gevalideerd
@@ -370,8 +406,8 @@ Gemaakt met ❤️ voor De Koninklijke Loop door het development team.
 
 ---
 
-**Version:** 2.1.0  
-**Last Updated:** 27 Oktober 2024  
-**Status:** 🚀 Production Ready
+**Version:** 2.2.0
+**Last Updated:** 1 November 2024
+**Status:** 🚀 Production Ready | 🐳 Docker Ready
 
-**Documentation:** [`docs/`](docs/README.md) | **Issues:** [GitHub Issues](https://github.com/Jeffreasy/DKL25/issues)
+**Documentation:** [`docs/`](docs/README.md) | **Docker:** [`DOCKER_SETUP.md`](DOCKER_SETUP.md) | **Issues:** [GitHub Issues](https://github.com/Jeffreasy/DKL25/issues)

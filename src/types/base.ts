@@ -117,4 +117,11 @@ export interface QueryOptions {
     page: number
     pageSize: number
   }
+  // Simple query parameters
+  visible?: boolean
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+  limit?: number
+  offset?: number
+  search?: string
 }
