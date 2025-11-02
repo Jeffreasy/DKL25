@@ -1,15 +1,13 @@
 /**
- * usePublicStepsCounter - Vereenvoudigde hook voor public total steps tracking
- * 
- * Deze hook is speciaal gemaakt voor de HeroSection total steps counter.
- * Het gebruikt WebSocket voor real-time updates met fallback naar polling.
- * 
+ * usePublicStepsCounter - Public total steps tracking met WebSocket + polling fallback
+ *
  * Features:
- * - WebSocket real-time updates
+ * - WebSocket real-time updates met subscribe logic
  * - Automatische fallback naar REST API polling bij problemen
- * - Geen authenticatie vereist (public endpoint)
- * - Auto-reconnect
- * 
+ * - Welcome message handling
+ * - Multiple message types support
+ * - Auto-reconnect met exponential backoff
+ *
  * Usage:
  * ```tsx
  * const { totalSteps, isConnected } = usePublicStepsCounter();
@@ -27,8 +25,9 @@ interface PublicStepsCounterState {
 
 const WEBSOCKET_CONFIG = {
   reconnectInterval: 2000,
-  maxReconnectAttempts: 0, // Gebruik direct polling (WebSocket werkt niet op backend)
-  fallbackPollingInterval: 10000, // Poll elke 10 seconden
+  maxReconnectAttempts: 3,
+  maxReconnectInterval: 30000,
+  fallbackPollingInterval: 10000, // Poll elke 10 seconden als WebSocket faalt
 } as const;
 
 /**
@@ -115,18 +114,14 @@ export function usePublicStepsCounter() {
     }
 
     // Get WebSocket URL
-    // In development: gebruik relatieve URL via Vite proxy
-    // In productie: gebruik direct backend URL
     const isDevelopment = window.location.hostname === 'localhost';
     let wsUrl: string;
     
     if (isDevelopment) {
-      // Development: gebruik relatieve URL die door Vite proxy gaat
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const host = window.location.host;
       wsUrl = `${protocol}//${host}/api/ws/steps?user_id=public&token=`;
     } else {
-      // Production: gebruik direct backend URL
       const protocol = API_CONFIG.baseUrl.startsWith('https') ? 'wss:' : 'ws:';
       const backendHost = API_CONFIG.baseUrl.replace(/^https?:\/\//, '');
       wsUrl = `${protocol}//${backendHost}/api/ws/steps?user_id=public&token=`;
@@ -138,29 +133,56 @@ export function usePublicStepsCounter() {
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        console.log('[usePublicStepsCounter] WebSocket connected');
+        console.log('[usePublicStepsCounter] ✅ WebSocket connected');
         setState(prev => ({ ...prev, isConnected: true }));
         reconnectAttemptsRef.current = 0;
-        stopPolling(); // Stop polling when WebSocket is connected
+        stopPolling();
 
-        // Subscribe to total updates
-        ws.send(JSON.stringify({
+        // ✨ CRUCIALE STAP: SUBSCRIBEN NAAR CHANNELS
+        const subscribeMessage = {
           type: 'subscribe',
-          channels: ['total_updates'],
-        }));
+          channels: ['total_updates', 'step_updates', 'leaderboard_updates']
+        };
+        ws.send(JSON.stringify(subscribeMessage));
+        console.log('[usePublicStepsCounter] ✅ Subscribed to channels:', subscribeMessage.channels);
       };
 
       ws.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data);
-          console.log('[usePublicStepsCounter] WebSocket message:', message);
+          console.log('[WebSocket] 📨 Message received:', message.type, message);
 
-          if (message.type === 'total_update') {
-            setState(prev => ({
-              ...prev,
-              totalSteps: message.total_steps || 0,
-              lastUpdate: Date.now(),
-            }));
+          // Handle verschillende message types
+          switch (message.type) {
+            case 'welcome':
+              console.log('[WebSocket] 🎉 Welcome:', message.message);
+              console.log('[WebSocket] 📡 Available channels:', message.available_channels);
+              break;
+
+            case 'total_update':
+              setState(prev => ({
+                ...prev,
+                totalSteps: message.total_steps || 0,
+                lastUpdate: Date.now(),
+              }));
+              console.log('[WebSocket] 🔄 Total steps updated:', message.total_steps);
+              break;
+
+            case 'step_update':
+              console.log('[WebSocket] 👟 Participant stepped:', message.naam, '+', message.delta, 'steps');
+              // De backend stuurt ook een total_update, dus we hoeven hier niets te doen
+              break;
+
+            case 'leaderboard_update':
+              console.log('[WebSocket] 🏆 Leaderboard updated:', message.top_n, 'entries');
+              break;
+
+            case 'pong':
+              console.log('[WebSocket] 💓 Pong received');
+              break;
+
+            default:
+              console.log('[WebSocket] Unknown message type:', message.type);
           }
         } catch (error) {
           console.error('[usePublicStepsCounter] Message parse error:', error);
@@ -168,25 +190,29 @@ export function usePublicStepsCounter() {
       };
 
       ws.onerror = (error) => {
-        console.error('[usePublicStepsCounter] WebSocket error:', error);
+        console.error('[usePublicStepsCounter] ❌ WebSocket error:', error);
       };
 
       ws.onclose = (event) => {
-        console.log('[usePublicStepsCounter] WebSocket closed:', event.code, event.reason);
+        console.log('[usePublicStepsCounter] 👋 WebSocket closed:', event.code, event.reason);
         setState(prev => ({ ...prev, isConnected: false }));
         wsRef.current = null;
 
-        // If not a clean close, try to reconnect
+        // Auto-reconnect met exponential backoff
         if (event.code !== 1000) {
           reconnectAttemptsRef.current++;
           
           if (reconnectAttemptsRef.current < WEBSOCKET_CONFIG.maxReconnectAttempts) {
-            console.log(`[usePublicStepsCounter] Reconnecting... (attempt ${reconnectAttemptsRef.current})`);
+            const delay = Math.min(
+              WEBSOCKET_CONFIG.reconnectInterval * Math.pow(1.5, reconnectAttemptsRef.current - 1),
+              WEBSOCKET_CONFIG.maxReconnectInterval
+            );
+            console.log(`[usePublicStepsCounter] 🔄 Reconnecting in ${delay}ms (attempt ${reconnectAttemptsRef.current})`);
             reconnectTimeoutRef.current = window.setTimeout(() => {
               connectWebSocketWithPublicUser();
-            }, WEBSOCKET_CONFIG.reconnectInterval);
+            }, delay);
           } else {
-            // Start polling as fallback
+            console.warn('[usePublicStepsCounter] ⚠️ Max reconnect attempts reached, switching to polling');
             startPolling();
           }
         }
