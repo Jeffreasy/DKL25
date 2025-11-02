@@ -114,10 +114,11 @@ export function usePublicStepsCounter() {
       return;
     }
 
-    // Get WebSocket URL - gebruik /api/ws/steps met public user_id
+    // Get WebSocket URL - gebruik relatieve URL zodat het door Vite proxy gaat in development
+    // In productie wijst dit direct naar de juiste server
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsBaseUrl = API_CONFIG.baseUrl.replace(/^https?:\/\//, '');
-    const wsUrl = `${protocol}//${wsBaseUrl}/api/ws/steps?user_id=public&token=`;
+    const host = window.location.host; // Gebruik huidige host (localhost:5173 in dev)
+    const wsUrl = `${protocol}//${host}/api/ws/steps?user_id=public&token=`;
 
     console.log('[usePublicStepsCounter] Connecting to:', wsUrl.replace(/token=.*/, 'token=[HIDDEN]'));
 

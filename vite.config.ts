@@ -205,6 +205,7 @@ export default defineConfig({
         target: 'https://dklemailservice.onrender.com',
         changeOrigin: true,
         secure: true,
+        ws: true, // Enable WebSocket proxying
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.error('Proxy error:', err);
