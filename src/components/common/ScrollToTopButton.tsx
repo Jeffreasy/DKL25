@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo, useCallback, useMemo } from 'react';
-import { throttle } from 'lodash';
+import debounce from 'lodash.debounce';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { cc, cn, colors, animations } from '@/styles/shared';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
@@ -39,7 +39,7 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = memo(({
   }), []);
 
   // Memoize scroll handler with useCallback
-  const toggleVisibility = useCallback(throttle(() => {
+  const toggleVisibility = useCallback(debounce(() => {
     setIsVisible(window.scrollY > scrollThreshold);
   }, 100), [scrollThreshold]);
 

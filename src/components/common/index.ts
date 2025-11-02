@@ -13,4 +13,3 @@ export { SEO } from './SEO';
 export { CSSConfetti } from './CSSConfetti';
 export { LazySection } from './LazySection';
 export { OptimizedImage } from './OptimizedImage';
-export { ResponsiveImage } from './ResponsiveImage';

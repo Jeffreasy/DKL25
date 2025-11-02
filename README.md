@@ -96,13 +96,13 @@ docker-compose up --build
 |-----------|------------|--------------|
 | 🏗️ **[Architecture](docs/architecture/)** | 4 | Project setup, folder structuur, backend API |
 | 📚 **[Guides](docs/guides/)** | 4 | Development, refactoring, code quality |
-| ⚡ **[Performance](docs/performance/)** | 5 | Lighthouse, optimalisaties, monitoring |
+| ⚡ **[Performance](docs/performance/)** | 6 | Lighthouse, build optimalisaties, monitoring |
 | 🎨 **[Styling](docs/styling/)** | 2 | Design system, color & typography |
 | 🔍 **[SEO](docs/seo/)** | 1 | Complete SEO strategie |
-| 🔧 **[Technical](docs/technical/)** | 3 | Implementation, events, fonts |
-| 🐳 **[Infrastructure](docs/infrastructure/)** | 1 | Docker & Redis integratie |
+| 🔧 **[Technical](docs/technical/)** | 4 | Implementation, maintenance mode, events, fonts |
+| 🐳 **[Infrastructure](docs/infrastructure/)** | 6 | Docker & Redis integratie, deployment guides |
 
-**Totaal:** 20+ professionele documenten
+**Totaal:** 27+ professionele documenten
 
 ### Quick Reference
 
@@ -125,10 +125,20 @@ docker-compose up --build
 - Font Management: [`docs/technical/FONT_MANAGEMENT.md`](docs/technical/FONT_MANAGEMENT.md)
 - Design System: [`docs/styling/DESIGN_SYSTEM.md`](docs/styling/DESIGN_SYSTEM.md)
 
-**Voor Docker & Deployment:**
-- Docker Setup: [`DOCKER_SETUP.md`](DOCKER_SETUP.md)
-- Redis Integration: [`docs/infrastructure/DOCKER_REDIS_INTEGRATION_GUIDE.md`](docs/infrastructure/DOCKER_REDIS_INTEGRATION_GUIDE.md)
-- Implementation Summary: [`DOCKER_REDIS_IMPLEMENTATION_SUMMARY.md`](DOCKER_REDIS_IMPLEMENTATION_SUMMARY.md)
+**Voor Docker & Redis:**
+- Quick Start: [`DOCKER_SETUP.md`](DOCKER_SETUP.md) & [`REDIS_QUICK_START.md`](REDIS_QUICK_START.md)
+- Complete Guide: [`docs/infrastructure/DOCKER_REDIS_INTEGRATION_GUIDE.md`](docs/infrastructure/DOCKER_REDIS_INTEGRATION_GUIDE.md)
+- Decision Guide: [`docs/infrastructure/DOCKER_REDIS_DECISION_GUIDE.md`](docs/infrastructure/DOCKER_REDIS_DECISION_GUIDE.md)
+- Implementation: [`docs/infrastructure/DOCKER_REDIS_IMPLEMENTATION_SUMMARY.md`](docs/infrastructure/DOCKER_REDIS_IMPLEMENTATION_SUMMARY.md)
+- Render Setup: [`docs/infrastructure/RENDER_REDIS_SETUP_GUIDE.md`](docs/infrastructure/RENDER_REDIS_SETUP_GUIDE.md)
+- Next Steps: [`docs/infrastructure/IMPLEMENTATION_NEXT_STEPS.md`](docs/infrastructure/IMPLEMENTATION_NEXT_STEPS.md)
+
+**Voor Maintenance Mode:**
+- Integration: [`docs/technical/MAINTENANCE_MODE_INTEGRATION.md`](docs/technical/MAINTENANCE_MODE_INTEGRATION.md)
+
+**Voor Build & Performance:**
+- Build Summary: [`docs/performance/BUILD_OPTIMIZATION_SUMMARY.md`](docs/performance/BUILD_OPTIMIZATION_SUMMARY.md)
+- Build Report: [`docs/performance/BUILD_OPTIMIZATION_REPORT.md`](docs/performance/BUILD_OPTIMIZATION_REPORT.md)
 
 ---
 

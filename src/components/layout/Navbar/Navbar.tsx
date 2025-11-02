@@ -1,7 +1,7 @@
 import React, { useState, useCallback, memo, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
-import { throttle } from 'lodash';
+import debounce from 'lodash.debounce';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { usePerformanceTracking } from '@/hooks/usePerformanceTracking';
 import NavItem from './NavItem';
@@ -32,7 +32,7 @@ const Navbar = memo<NavbarProps>(({ className = '', showSocials = true, customLo
   }, [trackInteraction]);
 
   // Memoize scroll handler with useCallback
-  const handleScroll = useCallback(throttle(() => {
+  const handleScroll = useCallback(debounce(() => {
     const shouldBeScrolled = window.scrollY > 20;
     if (isScrolled !== shouldBeScrolled) {
       setIsScrolled(shouldBeScrolled);
