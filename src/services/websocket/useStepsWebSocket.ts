@@ -33,7 +33,7 @@ import {
   BadgeEarnedMessage,
   ConnectionState,
   StepsWebSocketConfig,
-} from './steps-websocket-client';
+} from './stepsWebSocketClient';
 
 // Hook State Interface
 export interface StepsWebSocketState {
@@ -105,7 +105,7 @@ export function useStepsWebSocket(
     );
 
     // Setup event listeners
-    client.onStateChange((connectionState) => {
+    client.onStateChange((connectionState: ConnectionState) => {
       setState((prev) => ({
         ...prev,
         connected: connectionState === ConnectionState.CONNECTED,
@@ -113,28 +113,28 @@ export function useStepsWebSocket(
       }));
     });
 
-    client.on<StepUpdateMessage>('step_update', (data) => {
+    client.on<StepUpdateMessage>('step_update', (data: StepUpdateMessage) => {
       setState((prev) => ({
         ...prev,
         latestUpdate: data,
       }));
     });
 
-    client.on<TotalUpdateMessage>('total_update', (data) => {
+    client.on<TotalUpdateMessage>('total_update', (data: TotalUpdateMessage) => {
       setState((prev) => ({
         ...prev,
         totalSteps: data.total_steps,
       }));
     });
 
-    client.on<LeaderboardUpdateMessage>('leaderboard_update', (data) => {
+    client.on<LeaderboardUpdateMessage>('leaderboard_update', (data: LeaderboardUpdateMessage) => {
       setState((prev) => ({
         ...prev,
         leaderboard: data,
       }));
     });
 
-    client.on<BadgeEarnedMessage>('badge_earned', (data) => {
+    client.on<BadgeEarnedMessage>('badge_earned', (data: BadgeEarnedMessage) => {
       setState((prev) => ({
         ...prev,
         latestBadge: data,

@@ -147,7 +147,7 @@ export class StepsWebSocketClient {
   
   private reconnectAttempts: number = 0;
   private reconnectTimeout: number;
-  private pingInterval: number | null = null;
+  private pingInterval: ReturnType<typeof setInterval> | null = null;
   
   private _state: ConnectionState = ConnectionState.DISCONNECTED;
   private subscriptions: Set<string> = new Set();
