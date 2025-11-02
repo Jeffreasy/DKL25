@@ -29,7 +29,7 @@ const HERO_CONFIG = {
  */
 const fetchTotalSteps = async (): Promise<number> => {
   try {
-    const apiUrl = `${API_CONFIG.baseUrl}/api/total-steps?year=2026`;
+    const apiUrl = `${API_CONFIG.baseUrl}/api/total-steps`;
     console.log('[HeroSection] Fetching steps from:', apiUrl);
     
     const response = await fetch(apiUrl, {
