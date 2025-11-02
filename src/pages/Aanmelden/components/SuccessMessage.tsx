@@ -321,8 +321,8 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = memo(({ data }) => 
               "@type": "Event",
               "@id": "https://www.dekoninklijkeloop.nl/aanmelden#event",
               "name": "De Koninklijke Loop 2026",
-              "startDate": "2026-05-17T09:00:00+02:00",
-              "endDate": "2026-05-17T15:00:00+02:00",
+              "startDate": "2026-05-16T09:00:00+02:00",
+              "endDate": "2026-05-16T15:00:00+02:00",
               "location": {
                 "@type": "Place",
                 "name": VENUE.name,

@@ -11,7 +11,7 @@ export const EVENT_INFO = {
   shortName: 'DKL',
   year: 2026,
   edition: 25,
-  date: '2026-05-17',
+  date: '2026-05-16',
   location: 'Leiderdorp',
   organizer: 'Stichting De Kerstloop Leiderdorp'
 } as const

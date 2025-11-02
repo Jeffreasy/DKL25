@@ -45,8 +45,8 @@ const Aanmelden = memo(() => {
         ]}
         isEventPage={true}
         eventName="De Koninklijke Loop 2026"
-        eventStartDate="2026-05-17T09:00:00+02:00"
-        eventEndDate="2026-05-17T15:00:00+02:00"
+        eventStartDate="2026-05-16T09:00:00+02:00"
+        eventEndDate="2026-05-16T15:00:00+02:00"
         eventDescription="Meld je aan voor De Koninklijke Loop 2026 - een uniek sponsorloop evenement mede georganiseerd door mensen met een beperking voor mensen met een beperking. Kies je afstand en rol, en doe mee aan dit inspirerende wandelevenement."
         eventLocationName="Grote Kerk"
         eventLocationAddress={{

@@ -24,8 +24,8 @@ const DKL: React.FC = memo(() => {
         ]}
         isEventPage={true}
         eventName="De Koninklijke Loop (DKL) 2026"
-        eventStartDate="2026-05-17T09:00:00+02:00"
-        eventEndDate="2026-05-17T15:00:00+02:00"
+        eventStartDate="2026-05-16T09:00:00+02:00"
+        eventEndDate="2026-05-16T15:00:00+02:00"
         eventDescription="DKL is een uniek, toegankelijk wandelevenement over de historische Koninklijke Weg. Wandel van Kootwijk naar Apeldoorn over een rolstoelvriendelijke route met keuze uit 2.5, 6, 10 of 15 kilometer."
         eventLocationName="Grote Kerk"
         eventLocationAddress={{
