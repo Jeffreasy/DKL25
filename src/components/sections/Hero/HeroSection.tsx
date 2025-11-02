@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useCallback, memo, useState } from 'react';
+import React, { useEffect, useRef, useCallback, memo, useMemo } from 'react';
 import BackgroundVideo from '../../../features/video/components/BackgroundVideo';
 import { trackEvent } from '@/utils/googleAnalytics';
 import { cc, cn } from '@/styles/shared';
-import { API_CONFIG } from '@/config/constants';
+import { usePublicStepsCounter } from '@/services/websocket/usePublicStepsCounter';
 
 // ============================================================================
 // Constants
@@ -16,64 +16,7 @@ const HERO_CONFIG = {
   videoTitle: 'Achtergrondvideo van de Koninklijke Loop 2026',
   observerThreshold: 0.5,
   stepsToMeters: 0.76, // Gemiddelde stap lengte in meters
-  apiRefreshInterval: 5000, // 5 seconden - real-time updates
 } as const;
-
-// ============================================================================
-// API Service
-// ============================================================================
-
-/**
- * Fetch total steps from API
- * Falls back to demo data in development or when API is unavailable
- */
-const fetchTotalSteps = async (): Promise<number> => {
-  try {
-    const apiUrl = `${API_CONFIG.baseUrl}/api/total-steps`;
-    console.log('[HeroSection] Fetching steps from:', apiUrl);
-    
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    console.log('[HeroSection] Response status:', response.status);
-    
-    if (!response.ok) {
-      console.warn('[HeroSection] API not available (status:', response.status, '), using demo data');
-      return getDemoSteps();
-    }
-    
-    const data = await response.json();
-    console.log('[HeroSection] API response data:', data);
-    console.log('[HeroSection] Total steps from API:', data.total_steps);
-    
-    const steps = data.total_steps || 0;
-    if (steps === 0) {
-      console.warn('[HeroSection] API returned 0 steps, using demo data');
-      return getDemoSteps();
-    }
-    
-    return steps;
-  } catch (error) {
-    console.error('[HeroSection] Error fetching total steps:', error);
-    console.warn('[HeroSection] Using demo data due to error');
-    return getDemoSteps();
-  }
-};
-
-/**
- * Get demo steps for development/fallback
- * Returns a realistic number that updates slowly
- */
-const getDemoSteps = (): number => {
-  // Base demo value + small variation based on time for realistic feel
-  const baseSteps = 125000;
-  const timeVariation = Math.floor(Date.now() / 100000) % 5000;
-  return baseSteps + timeVariation;
-};
 
 /**
  * Convert steps to meters
@@ -195,7 +138,16 @@ HeroContent.displayName = 'HeroContent';
  */
 const HeroSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const [totalMeters, setTotalMeters] = useState<number>(0);
+  
+  // ============================================================================
+  // Real-time Steps via WebSocket
+  // ============================================================================
+  
+  const { totalSteps, isConnected } = usePublicStepsCounter();
+  
+  const totalMeters = useMemo(() => {
+    return stepsToMeters(totalSteps);
+  }, [totalSteps]);
 
   // ============================================================================
   // Event Handlers
@@ -221,28 +173,6 @@ const HeroSection: React.FC = () => {
   // ============================================================================
   // Effects
   // ============================================================================
-
-  /**
-   * Fetch and update total steps/meters
-   * Refreshes periodically to show live updates
-   */
-  useEffect(() => {
-    const updateTotalSteps = async () => {
-      const steps = await fetchTotalSteps();
-      const meters = stepsToMeters(steps);
-      setTotalMeters(meters);
-    };
-
-    // Initial fetch
-    updateTotalSteps();
-
-    // Set up periodic refresh
-    const interval = setInterval(updateTotalSteps, HERO_CONFIG.apiRefreshInterval);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
 
   /**
    * Track hero section visibility using Intersection Observer
