@@ -16,7 +16,7 @@ const HERO_CONFIG = {
   videoTitle: 'Achtergrondvideo van de Koninklijke Loop 2026',
   observerThreshold: 0.5,
   stepsToMeters: 0.76, // Gemiddelde stap lengte in meters
-  apiRefreshInterval: 30000, // 30 seconden
+  apiRefreshInterval: 5000, // 5 seconden - real-time updates
 } as const;
 
 // ============================================================================
