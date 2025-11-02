@@ -126,11 +126,15 @@ class TokenManager {
     this.isRefreshing = true;
 
     try {
-      // In development: use proxy (relative URL)
-      // In production: use full backend URL
-      const baseUrl = import.meta.env.DEV
-        ? ''
-        : (import.meta.env.VITE_API_BASE_URL || 'https://dklemailservice.onrender.com');
+      // Match apiClient logic: localhost uses proxy, production uses full backend URL
+      const getBaseUrl = () => {
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+          return ''; // Use Vite proxy
+        }
+        return import.meta.env.VITE_API_BASE_URL || 'https://dklemailservice.onrender.com';
+      };
+      
+      const baseUrl = getBaseUrl();
       
       const response = await fetch(
         `${baseUrl}/api/auth/refresh`,

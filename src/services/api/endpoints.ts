@@ -1,7 +1,9 @@
 /**
  * API Endpoints
  * Centralized endpoint definitions for the backend API
- * Note: /api prefix is handled by Vite proxy in development
+ *
+ * Development: baseURL='' (empty), Vite proxy matches /api/* and forwards to backend
+ * Production: baseURL='https://dklemailservice.onrender.com', /api/ prefix is part of full URL
  */
 
 export const API_ENDPOINTS = {
