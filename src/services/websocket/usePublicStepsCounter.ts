@@ -44,6 +44,7 @@ export function usePublicStepsCounter() {
   const reconnectTimeoutRef = useRef<number | null>(null);
   const pollingIntervalRef = useRef<number | null>(null);
   const reconnectAttemptsRef = useRef<number>(0);
+  const connectFunctionRef = useRef<(() => void) | null>(null);
 
   /**
    * Fetch steps via REST API (fallback)
@@ -215,7 +216,7 @@ export function usePublicStepsCounter() {
             );
             console.log(`[usePublicStepsCounter] 🔄 Reconnecting in ${delay}ms (attempt ${reconnectAttemptsRef.current})`);
             reconnectTimeoutRef.current = window.setTimeout(() => {
-              connectWebSocketWithPublicUser();
+              connectFunctionRef.current?.();
             }, delay);
           } else {
             console.warn('[usePublicStepsCounter] ⚠️ Max reconnect attempts reached, switching to polling');
@@ -230,7 +231,14 @@ export function usePublicStepsCounter() {
       reconnectAttemptsRef.current++;
       startPolling();
     }
-  }, [startPolling, stopPolling]);
+  }, [fetchStepsViaREST, startPolling, stopPolling]);
+
+  /**
+   * Store latest function reference for recursive calls
+   */
+  useEffect(() => {
+    connectFunctionRef.current = connectWebSocketWithPublicUser;
+  }, [connectWebSocketWithPublicUser]);
 
   /**
    * Initialize connection
