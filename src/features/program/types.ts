@@ -2,10 +2,21 @@
  * Program Feature Types
  */
 
-import type { Database } from '../../types/supabase'
 import type { OrderedEntity, VisibleEntity } from '../../types/base'
 
-export type ProgramScheduleRow = Database['public']['Tables']['program_schedule']['Row']
+export type ProgramScheduleRow = {
+  id: string
+  time: string
+  event_description: string
+  category: string | null
+  icon_name: string | null
+  latitude: number | null
+  longitude: number | null
+  order_number: number
+  created_at: string
+  updated_at: string
+  visible: boolean
+}
 
 export interface ProgramItem extends OrderedEntity {
   time: string

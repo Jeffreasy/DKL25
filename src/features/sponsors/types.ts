@@ -2,10 +2,10 @@
  * Sponsors Feature Types
  */
 
-import type { Database } from '../../types/supabase'
+import type { Sponsor as SponsorType } from '../../types/supabase'
 import type { OrderedEntity, LogoEntity } from '../../types/base'
 
-export type SponsorRow = Database['public']['Tables']['sponsors']['Row']
+export type SponsorRow = SponsorType
 
 export interface Sponsor extends OrderedEntity, LogoEntity {
   description: string | null

@@ -1,6 +1,5 @@
 // types.ts
 import { TextStyling } from '@/types/shared';
-import type { Database } from '@/types/supabase';
 
 export type TitleSectionRow = {
   id: string;

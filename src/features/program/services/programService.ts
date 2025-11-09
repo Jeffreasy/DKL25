@@ -13,7 +13,7 @@ export const programService = {
    */
   fetchVisible: async (): Promise<ProgramItem[]> => {
     try {
-      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.program}?visible=true&sortBy=order_number&sortOrder=asc`);
+      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.programSchedule}?visible=true&sortBy=order_number&sortOrder=asc`);
     } catch (error) {
       console.error('Error fetching visible program items:', error);
       throw new Error('Er ging iets mis bij het ophalen van het programma');
@@ -25,7 +25,7 @@ export const programService = {
    */
   fetchAll: async (): Promise<ProgramItem[]> => {
     try {
-      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.program}?sortBy=order_number&sortOrder=asc`);
+      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.programSchedule}?sortBy=order_number&sortOrder=asc`);
     } catch (error) {
       console.error('Error fetching all program items:', error);
       throw new Error('Er ging iets mis bij het ophalen van alle programma items');
@@ -37,10 +37,13 @@ export const programService = {
    */
   fetchById: async (id: string): Promise<ProgramItem | null> => {
     try {
-      return await apiClient.get<ProgramItem>(`${API_ENDPOINTS.program}/${id}`);
-    } catch (error: any) {
-      if (error.response?.status === 404) {
-        return null;
+      return await apiClient.get<ProgramItem>(`${API_ENDPOINTS.programSchedule}/${id}`);
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { status?: number } };
+        if (axiosError.response?.status === 404) {
+          return null;
+        }
       }
       console.error('Error fetching program item by ID:', error);
       return null;
@@ -52,7 +55,7 @@ export const programService = {
    */
   fetchByCategory: async (category: string): Promise<ProgramItem[]> => {
     try {
-      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.program}?category=${encodeURIComponent(category)}`);
+      return await apiClient.get<ProgramItem[]>(`${API_ENDPOINTS.programSchedule}?category=${encodeURIComponent(category)}`);
     } catch (error) {
       console.error('Error fetching program items by category:', error);
       throw new Error('Er ging iets mis bij het ophalen van programma items per categorie');
@@ -65,7 +68,7 @@ export const programService = {
   fetchWithLocations: async (): Promise<ProgramItem[]> => {
     try {
       // Note: Backend should support filtering on non-null fields
-      const allItems = await apiClient.get<ProgramItem[]>(API_ENDPOINTS.program);
+      const allItems = await apiClient.get<ProgramItem[]>(API_ENDPOINTS.programSchedule);
       return allItems.filter(item => item.latitude != null && item.longitude != null);
     } catch (error) {
       console.error('Error fetching program items with locations:', error);

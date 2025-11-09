@@ -1,5 +1,5 @@
 import { RegistrationFormData } from '../types/schema';
-import { useEffect, useState, memo, useCallback } from 'react';
+import { useEffect, useState, memo } from 'react';
 import QRCode from 'qrcode';
 import { toast } from 'react-hot-toast';
 import { cc, cn, colors } from '@/styles/shared';

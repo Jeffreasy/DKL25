@@ -2,10 +2,10 @@
  * Video Feature Types
  */
 
-import type { Database } from '../../types/supabase'
+import type { Video as VideoType } from '../../types/supabase'
 import type { OrderedEntity, MediaEntity } from '../../types/base'
 
-export type VideoRow = Database['public']['Tables']['videos']['Row']
+export type VideoRow = VideoType
 
 export interface Video extends OrderedEntity, MediaEntity {
   video_id: string

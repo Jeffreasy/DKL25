@@ -2,12 +2,27 @@
  * Gallery Feature Types
  */
 
-import type { Database } from '../../types/supabase'
+import type { Photo as PhotoType } from '../../types/supabase'
 import type { OrderedEntity, MediaEntity, VisibleEntity } from '../../types/base'
 
-export type PhotoRow = Database['public']['Tables']['photos']['Row']
-export type AlbumRow = Database['public']['Tables']['albums']['Row']
-export type AlbumPhotoRow = Database['public']['Tables']['album_photos']['Row']
+export type PhotoRow = PhotoType
+export type AlbumRow = {
+  id: string
+  title: string
+  description: string | null
+  cover_photo_id: string | null
+  visible: boolean | null
+  order_number: number | null
+  created_at: string | null
+  updated_at: string | null
+}
+export type AlbumPhotoRow = {
+  id: string
+  album_id: string | null
+  photo_id: string | null
+  order_number: number | null
+  created_at: string | null
+}
 
 export interface Photo extends VisibleEntity, MediaEntity {
   alt_text: string

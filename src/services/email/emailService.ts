@@ -38,11 +38,20 @@ class EmailService {
 
       console.log('Contact email sent successfully');
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Contact email error:', error);
-      throw new Error(
-        error.response?.data?.error || 'Kon email niet verzenden'
-      );
+      const errorMessage = error instanceof Error &&
+        'response' in error &&
+        typeof error.response === 'object' &&
+        error.response !== null &&
+        'data' in error.response &&
+        typeof error.response.data === 'object' &&
+        error.response.data !== null &&
+        'error' in error.response.data &&
+        typeof error.response.data.error === 'string'
+          ? error.response.data.error
+          : 'Kon email niet verzenden';
+      throw new Error(errorMessage);
     }
   }
 
@@ -60,16 +69,26 @@ class EmailService {
           afstand: data.afstand,
           ondersteuning: data.ondersteuning,
           bijzonderheden: data.bijzonderheden,
+          privacy_akkoord: true, // Backend requires this field
         }
       );
 
       console.log('Registration email sent successfully');
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration email error:', error);
-      throw new Error(
-        error.response?.data?.error || 'Kon bevestigingsmail niet verzenden'
-      );
+      const errorMessage = error instanceof Error &&
+        'response' in error &&
+        typeof error.response === 'object' &&
+        error.response !== null &&
+        'data' in error.response &&
+        typeof error.response.data === 'object' &&
+        error.response.data !== null &&
+        'error' in error.response.data &&
+        typeof error.response.data.error === 'string'
+          ? error.response.data.error
+          : 'Kon bevestigingsmail niet verzenden';
+      throw new Error(errorMessage);
     }
   }
 
@@ -89,11 +108,20 @@ class EmailService {
 
       console.log('Custom email sent successfully');
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Send email error:', error);
-      throw new Error(
-        error.response?.data?.error || 'Kon email niet verzenden'
-      );
+      const errorMessage = error instanceof Error &&
+        'response' in error &&
+        typeof error.response === 'object' &&
+        error.response !== null &&
+        'data' in error.response &&
+        typeof error.response.data === 'object' &&
+        error.response.data !== null &&
+        'error' in error.response.data &&
+        typeof error.response.data.error === 'string'
+          ? error.response.data.error
+          : 'Kon email niet verzenden';
+      throw new Error(errorMessage);
     }
   }
 }

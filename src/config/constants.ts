@@ -78,7 +78,8 @@ export const API_CONFIG = {
  * API endpoints
  */
 export const API_ENDPOINTS = {
-  registration: '/api/aanmeldingen',
+  registration: '/api/participants', // Updated from aanmeldingen to participants
+  eventRegistration: '/api/event-registrations', // New endpoint for event-specific registrations
   contact: '/api/contact',
   partners: '/api/partners',
   sponsors: '/api/sponsors',

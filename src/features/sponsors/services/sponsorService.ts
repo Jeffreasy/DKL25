@@ -69,7 +69,7 @@ export const sponsorService = {
     return {
       ...sponsorRow,
       logo: sponsorRow.logo_url,
-      website: sponsorRow.website_url || undefined,
+      website: sponsorRow.website_url || null,
       visible: sponsorRow.visible ?? true
     };
   }

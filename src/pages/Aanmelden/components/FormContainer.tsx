@@ -17,7 +17,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
   onSuccess
 }) => {
   // Performance tracking
-  const { trackInteraction, trackPerformanceMetric } = usePerformanceTracking('FormContainer');
+  const { trackInteraction } = usePerformanceTracking('FormContainer');
 
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -171,25 +171,44 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
       
       const validatedData = validateForm(data);
 
-      // Stap 1: Opslaan via backend API
+      // Stap 1: Opslaan via backend API - Nieuwe schema (V28)
       try {
-        await apiClient.post(API_ENDPOINTS.aanmeldingen, {
+        // Eerst participant aanmaken
+        const participantResponse = await apiClient.post(API_ENDPOINTS.participants, {
           naam: validatedData.naam,
           email: validatedData.email,
           telefoon: validatedData.telefoon,
-          rol: validatedData.rol,
-          afstand: validatedData.afstand,
-          ondersteuning: validatedData.ondersteuning,
-          bijzonderheden: validatedData.bijzonderheden,
           terms: validatedData.terms,
         });
 
+        // Als er een event is, maak ook een event_registration aan
+        // Gebruik de huidige event ID voor De Koninklijke Loop 2026
+        const DKL_2026_EVENT_ID = '550e8400-e29b-41d4-a716-446655440000';
+        if (participantResponse.id) {
+          await apiClient.post(API_ENDPOINTS.eventRegistrations, {
+            event_id: DKL_2026_EVENT_ID,
+            participant_id: participantResponse.id,
+            status_key: 'nieuw',
+            participant_role_name: validatedData.rol,
+            distance_route: validatedData.afstand,
+            bijzonderheden: validatedData.bijzonderheden,
+            notities: validatedData.ondersteuning !== 'Nee' ? `Ondersteuning: ${validatedData.ondersteuning}` : null,
+          });
+        }
+
         // Track successful database save
         logEvent('registration', 'database_save_success', `${validatedData.rol}_${validatedData.afstand}`);
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle specific error codes
-        if (error.response?.status === 409 || error.response?.data?.error?.includes('duplicate')) {
+        const axiosError = error as { response?: { status: number; data?: { error?: string } } };
+        if (axiosError?.response?.status === 409 || axiosError?.response?.data?.error?.includes('duplicate')) {
           throw new Error('Je bent al ingeschreven met dit e-mailadres.');
+        }
+        if (axiosError?.response?.status === 400) {
+          throw new Error('De ingevoerde gegevens zijn ongeldig. Controleer alle velden.');
+        }
+        if (axiosError?.response?.status === 500) {
+          throw new Error('Er is een technische fout opgetreden. Probeer het later opnieuw.');
         }
         throw new Error('Er ging iets mis bij je aanmelding. Probeer het later opnieuw.');
       }
@@ -197,9 +216,12 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
       // Stap 2: Verstuur bevestigingsmail via backend
       try {
         await sendAanmeldingEmail(validatedData);
+        // Track successful email send
+        logEvent('registration', 'email_send_success', `${validatedData.rol}_${validatedData.afstand}`);
       } catch (error) {
         // Email failure doesn't block registration
         console.error('Email send error:', error);
+        logEvent('registration', 'email_send_failure', `${validatedData.rol}_${validatedData.afstand}`);
         toast.error('Je aanmelding is verwerkt, maar er was een probleem met de bevestigingsmail.');
       }
 
@@ -212,9 +234,10 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
       onSuccess(validatedData);
     } catch (error) {
       // Track form submission failure
-      logEvent('registration', 'form_submit_failure', error instanceof Error ? error.message : 'unknown_error');
+      const errorMessage = error instanceof Error ? error.message : 'unknown_error';
+      logEvent('registration', 'form_submit_failure', errorMessage);
 
-      setSubmitError(error instanceof Error ? error.message : 'Er ging iets mis bij je aanmelding');
+      setSubmitError(error instanceof Error ? error.message : 'Er ging iets mis bij je aanmelding. Probeer het later opnieuw.');
     } finally {
       setIsSubmitting(false);
     }
@@ -261,7 +284,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                   if (e.target.value.length > 0) {
                     trackInteraction('input_interaction', 'naam_field');
                   }
-                }, [trackInteraction])}
+                }, [trackInteraction, register])}
               />
               {errors.naam && (
                 <p className={cn(cc.form.errorMessage)}>{errors.naam.message}</p>
@@ -287,7 +310,7 @@ const FormContainer: React.FC<{ onSuccess: (data: RegistrationFormData) => void 
                   if (e.target.value.length > 0) {
                     trackInteraction('input_interaction', 'email_field');
                   }
-                }, [trackInteraction])}
+                }, [trackInteraction, register])}
               />
               {errors.email && (
                 <p className={cn(cc.form.errorMessage)}>{errors.email.message}</p>

@@ -38,7 +38,7 @@ export interface NamedEntity extends BaseEntity {
  */
 export interface LogoEntity extends NamedEntity {
   logo: string
-  website?: string
+  website: string | null
 }
 
 /**

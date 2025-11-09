@@ -7,6 +7,7 @@ import { cc, cn, animations } from '@/styles/shared';
 import TitleHeader from './components/TitleHeader';
 import EventImage from './components/EventImage';
 import ParticipantCounter from './components/ParticipantCounter';
+import StepsCounter from './components/StepsCounter';
 import CountdownTimer from './components/CountdownTimer';
 import EventDetailsGrid from './components/EventDetailsGrid';
 import CTAButton from './components/CTAButton';
@@ -125,7 +126,15 @@ SectionDivider.displayName = 'SectionDivider';
 const SocialMediaWrapper = memo<{
   isLoading: boolean;
   error: string | null;
-  socialEmbeds: any[];
+  socialEmbeds: Array<{
+    id: string;
+    platform: 'facebook' | 'instagram';
+    embed_code: string;
+    order_number: number;
+    visible: boolean;
+    created_at: string;
+    updated_at: string;
+  }>;
 }>(({ isLoading, error, socialEmbeds }) => {
   if (isLoading || socialEmbeds.length === 0) return null;
 
@@ -187,6 +196,8 @@ const TitleContent = memo<{
         />
 
         <ParticipantCounter count={displayData.participant_count} />
+
+        <StepsCounter />
 
         <CountdownTimer />
 
